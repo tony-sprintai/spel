@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#28465f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rikets karta">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="ikon-180.png">
+<link rel="icon" type="image/png" href="ikon-192.png">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<title>Rikets karta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=Lilita+One&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Layout: fullskärms-3D (kartan på ett bord) med HUD i kanterna och menyer som mittpaneler. */
+:root{
+  --navy:#16213f; --navy-2:#223062; --panel:rgba(18,26,56,.88);
+  --gold:#f6c445; --gold-dk:#b9831c; --paper:#fff7e6; --muted:#b9c3e6;
+  --o0:#8f897c; --o1:#2f6be0; --o2:#d8392f; --o3:#2fa84f; --o4:#dca81c;
+  --f-title:"Grenze Gotisch","Times New Roman",serif;
+  --f-ui:"Lilita One","Arial Black",Impact,system-ui,sans-serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:#1b1712;}
+body{color:var(--paper);font-family:var(--f-body);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
+#app{position:fixed;inset:0;overflow:hidden;}
+#c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 55%,rgba(10,6,2,.45) 100%);}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+
+/* ---------- etiketter över borgar och kolonner ---------- */
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.cl{position:absolute;left:0;top:0;display:flex;align-items:center;gap:3px;padding:2px 8px 2px 6px;border-radius:11px;font-family:var(--f-ui);font-size:16px;line-height:18px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.45);box-shadow:0 2px 0 rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.25);font-variant-numeric:tabular-nums;white-space:nowrap;will-change:transform;transition:box-shadow .15s;}
+.cl svg{width:13px;height:13px;fill:#fff;opacity:.95;flex:none;}
+.cl.o0{background:var(--o0)}.cl.o1{background:var(--o1)}.cl.o2{background:var(--o2)}.cl.o3{background:var(--o3)}.cl.o4{background:var(--o4)}
+.cl.sel{box-shadow:0 0 0 3px #fff,0 0 14px 4px rgba(255,255,255,.7);}
+.cl.tgt{box-shadow:0 0 0 3px var(--gold),0 0 16px 6px rgba(246,196,69,.8);}
+.cl.bump{animation:bump .35s ease-out;}
+@keyframes bump{0%{scale:1}35%{scale:1.35}100%{scale:1}}
+.ql{position:absolute;left:0;top:0;padding:0 5px;border-radius:7px;font-family:var(--f-ui);font-size:12px;line-height:14px;color:#fff;border:1.5px solid rgba(255,255,255,.85);will-change:transform;font-variant-numeric:tabular-nums;opacity:.92;text-shadow:0 1px 0 rgba(0,0,0,.4);}
+.ql.o1{background:var(--o1)}.ql.o2{background:var(--o2)}.ql.o3{background:var(--o3)}.ql.o4{background:var(--o4)}
+#drag{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+#drag line{stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:2 12;animation:dash .5s linear infinite;filter:drop-shadow(0 0 4px rgba(47,107,224,.95));}
+@keyframes dash{to{stroke-dashoffset:-14}}
+#drag text{font-family:var(--f-ui);font-size:22px;fill:#fff;paint-order:stroke;stroke:#16213f;stroke-width:5px;}
+#drag text.ok{fill:#8dffa0}#drag text.no{fill:#ff9a8f}
+
+/* ---------- HUD ---------- */
+#hud{position:absolute;inset:0;pointer-events:none;font-family:var(--f-ui);}
+#hud .top{position:absolute;left:0;right:0;top:0;max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:10px;}
+.iconbtn{pointer-events:auto;width:44px;height:44px;border-radius:14px;background:var(--panel);display:grid;place-items:center;box-shadow:0 3px 0 rgba(0,0,0,.35);flex:none;}
+.iconbtn svg{width:22px;height:22px;fill:var(--paper);}
+.mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;align-items:stretch;}
+.mid .row1{display:flex;justify-content:space-between;align-items:center;font-size:16px;text-shadow:0 2px 0 rgba(0,0,0,.6);gap:8px;}
+#lvlName{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#timer{display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums;background:var(--panel);border-radius:10px;padding:2px 8px;flex:none;}
+#timer i{width:13px;height:13px;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:rgba(255,255,255,.25);}
+#timer i.on{background:var(--gold);}
+#power{height:12px;border-radius:6px;overflow:hidden;display:flex;background:rgba(0,0,0,.5);box-shadow:0 2px 0 rgba(0,0,0,.3),inset 0 0 0 2px rgba(0,0,0,.35);}
+#power b{height:100%;transition:width .4s;}
+#hud .bottom{position:absolute;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(12px,env(safe-area-inset-left,0px));display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+#speedBtn{pointer-events:auto;min-width:64px;height:52px;border-radius:16px;background:var(--panel);font-size:22px;box-shadow:0 4px 0 rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;gap:4px;padding:0 12px;}
+#speedBtn svg{width:22px;height:22px;fill:var(--paper);}
+#speedBtn.on{background:linear-gradient(#ffd866,#eaa922);color:#3f2700;box-shadow:0 4px 0 var(--gold-dk);}
+#speedBtn.on svg{fill:#3f2700;}
+#zoomOut{pointer-events:auto;}
+#hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);transform:translateX(-50%);background:var(--panel);padding:10px 16px;border-radius:14px;font-family:var(--f-body);font-weight:800;font-size:15px;max-width:min(88vw,420px);text-align:center;text-wrap:balance;animation:bob 1.2s ease-in-out infinite;box-shadow:0 0 0 2px rgba(246,196,69,.6);}
+@keyframes bob{50%{transform:translate(-50%,-6px)}}
+#banner{position:absolute;left:0;right:0;top:30%;text-align:center;font-family:var(--f-ui);font-size:40px;text-shadow:0 4px 0 rgba(0,0,0,.45);pointer-events:none;opacity:0;padding:0 16px;}
+#banner.show{animation:banner 2s ease-out forwards;}
+#banner small{display:block;font-size:19px;color:var(--gold);}
+@keyframes banner{0%{opacity:0;transform:scale(.6)}12%{opacity:1;transform:scale(1.08)}20%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);background:var(--panel);border-radius:12px;padding:7px 14px;font-weight:800;font-size:14px;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;}
+#toast.show{opacity:1;}
+#fps{position:absolute;right:12px;bottom:80px;font:12px/1 ui-monospace,monospace;background:rgba(0,0,0,.5);padding:4px 6px;border-radius:6px;}
+
+/* ---------- skärmar ---------- */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 16px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));overflow-y:auto;}
+.scrim{background:linear-gradient(rgba(12,18,40,.25),rgba(12,18,40,.65));}
+.panel{width:100%;max-width:400px;background:var(--panel);border-radius:26px;padding:22px 18px;box-shadow:0 0 0 3px rgba(246,196,69,.55),0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:14px;align-items:stretch;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.panel h2{margin:0;text-align:center;font-family:var(--f-ui);font-weight:400;font-size:32px;text-wrap:balance;}
+.panel p{margin:0;text-align:center;font-weight:800;color:var(--muted);text-wrap:balance;}
+.btn{font-family:var(--f-ui);font-size:23px;padding:13px 18px;border-radius:18px;background:linear-gradient(#ffd866,#eaa922);color:#3f2700;box-shadow:0 6px 0 var(--gold-dk),0 10px 18px rgba(0,0,0,.3);transition:transform .08s,box-shadow .08s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--gold-dk);}
+.btn.green{background:linear-gradient(#7ad66a,#3f9c3a);color:#fff;box-shadow:0 6px 0 #2a6b27,0 10px 18px rgba(0,0,0,.3);text-shadow:0 2px 0 rgba(0,0,0,.3);}
+.btn.green:active{box-shadow:0 2px 0 #2a6b27;}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--paper);box-shadow:0 4px 0 rgba(0,0,0,.35);font-size:19px;padding:11px 14px;}
+.btn.ghost:active{box-shadow:0 1px 0 rgba(0,0,0,.35);}
+.row{display:flex;gap:10px;}
+.row>*{flex:1;min-width:0;}
+.goldpill{align-self:center;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.35);border-radius:999px;padding:6px 14px 6px 8px;font-family:var(--f-ui);font-size:22px;font-variant-numeric:tabular-nums;}
+.coin{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#f6c445 45%,#c98c12);box-shadow:inset 0 -2px 0 rgba(0,0,0,.2);flex:none;}
+
+#start{justify-content:space-between;}
+.titleblock{margin-top:5vh;text-align:center;filter:drop-shadow(0 6px 0 rgba(20,20,50,.35));}
+.titleblock h1{margin:0;font-family:var(--f-title);font-weight:800;font-size:clamp(54px,16vw,96px);line-height:.88;color:var(--paper);-webkit-text-stroke:2px #3a2508;text-shadow:0 4px 0 #3a2508,0 8px 0 rgba(0,0,0,.25);}
+.titleblock h1 span{display:block;color:var(--gold);}
+.titleblock p{margin:14px auto 0;max-width:30ch;font-weight:800;font-size:16px;color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.8);text-wrap:balance;}
+.startmenu{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;margin-bottom:2vh;}
+.startmenu .btn.green{font-size:28px;padding:17px;}
+
+/* kampanjkarta */
+#mapScr .panel{max-width:440px;padding:16px 12px;gap:10px;}
+#campSvg{width:100%;height:auto;max-height:62vh;display:block;}
+#campSvg .node{cursor:pointer;}
+#campSvg .node circle.b{stroke:#3a2508;stroke-width:3;}
+#campSvg .node text{font-family:var(--f-ui);text-anchor:middle;pointer-events:none;}
+#campSvg .node .nm{font-size:11px;fill:#3a2508;font-family:var(--f-body);font-weight:900;}
+#campSvg .node.lock{cursor:default;}
+#campSvg .cur circle.b{animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{50%{stroke:#fff;stroke-width:5}}
+
+/* intro, resultat, butik */
+.foes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.foe{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border-radius:12px;padding:6px 10px;font-weight:900;font-size:14px;}
+.foe i{width:14px;height:14px;border-radius:4px;flex:none;}
+.foe small{color:var(--muted);font-weight:800;}
+.tip{background:rgba(246,196,69,.12);border-radius:14px;padding:10px 12px;font-weight:800;font-size:15px;text-align:center;color:#ffe9b0;text-wrap:balance;}
+.stars{display:flex;justify-content:center;gap:6px;margin:4px 0 2px;}
+.stars i{width:62px;height:62px;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:rgba(255,255,255,.14);transform:scale(.6);transition:transform .3s cubic-bezier(.3,1.8,.5,1),background .2s;}
+.stars i:nth-child(2){width:76px;height:76px;margin-top:-12px;}
+.stars i.on{background:linear-gradient(#fff2a6,#f6c445 50%,#d8961a);transform:scale(1);}
+.reslines{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:15px;color:var(--muted);text-align:center;}
+.cards{display:flex;flex-direction:column;gap:10px;}
+.card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border-radius:18px;padding:10px;}
+.card .ic{width:50px;height:50px;border-radius:14px;background:var(--navy-2);display:grid;place-items:center;flex:none;}
+.card .ic svg{width:30px;height:30px;fill:var(--gold);}
+.card .info{flex:1;min-width:0;}
+.card h3{margin:0;font-family:var(--f-ui);font-weight:400;font-size:19px;}
+.card p{margin:2px 0 4px;font-size:13px;color:var(--muted);text-align:left;}
+.pips{display:flex;gap:3px;}
+.pips i{flex:1;max-width:18px;height:6px;border-radius:3px;background:rgba(255,255,255,.18);}
+.pips i.on{background:var(--gold);}
+.buy{font-family:var(--f-ui);font-size:18px;min-width:80px;padding:10px;border-radius:14px;background:linear-gradient(#7ad66a,#3f9c3a);box-shadow:0 4px 0 #2a6b27;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;flex:none;}
+.buy .coin{width:18px;height:18px;}
+.buy:active{transform:translateY(3px);box-shadow:0 1px 0 #2a6b27;}
+.buy[disabled]{background:rgba(255,255,255,.12);box-shadow:none;color:var(--muted);pointer-events:none;}
+.tiny{font-size:12px;color:var(--muted);text-align:center;}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:14px;font-weight:800;align-items:center;}
+.legend b{font-family:var(--f-ui);font-weight:400;color:var(--gold);}
+@media (prefers-reduced-motion:reduce){#hint{animation:none}#drag line{animation:none}}
+</style>
+
+<div id="app">
+  <canvas id="c"></canvas>
+  <div id="vig"></div>
+  <div id="labels"></div>
+  <svg id="drag"></svg>
+
+  <div id="hud" hidden>
+    <div class="top">
+      <button class="iconbtn" id="pauseBtn" aria-label="Paus"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></button>
+      <div class="mid">
+        <div class="row1"><span id="lvlName">Bana 1</span><span id="timer"><i></i><i></i><i></i><span id="timeTxt">0:00</span></span></div>
+        <div id="power"></div>
+      </div>
+      <button class="iconbtn sndbtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
+    </div>
+    <div id="hint" hidden></div>
+    <div class="bottom">
+      <button class="iconbtn" id="zoomOut" aria-label="Visa hela kartan"><svg viewBox="0 0 24 24"><path d="M4 9V4h5v2H6v3zM15 4h5v5h-2V6h-3zM4 15h2v3h3v2H4zM18 18v-3h2v5h-5v-2z"/></svg></button>
+      <button id="speedBtn" aria-label="Dubbel fart"><svg viewBox="0 0 24 24"><path d="M3 5l8 7-8 7zM12 5l8 7-8 7z"/></svg><span id="speedTxt">×1</span></button>
+    </div>
+  </div>
+  <div id="banner"></div>
+  <div id="toast"></div>
+  <div id="fps" hidden></div>
+
+  <!-- Start -->
+  <div class="screen" id="start">
+    <div class="titleblock">
+      <h1>Rikets<span>karta</span></h1>
+      <p>Dra dina riddare från borg till borg och färga hela riket blått.</p>
+    </div>
+    <div class="startmenu">
+      <div class="goldpill"><i class="coin"></i><span class="goldN">0</span></div>
+      <button class="btn green" id="playBtn">Spela</button>
+      <div class="row">
+        <button class="btn ghost" id="mapBtn">Kartan</button>
+        <button class="btn ghost" id="shopBtn">Rustkammaren</button>
+        <button class="btn ghost sndbtn" style="flex:0 0 56px" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
+      </div>
+      <button class="btn ghost" id="helpBtn">Så spelar du</button>
+    </div>
+  </div>
+
+  <!-- Kampanjkarta -->
+  <div class="screen scrim" id="mapScr" hidden>
+    <div class="panel">
+      <h2>Riket Valdmark</h2>
+      <svg id="campSvg" viewBox="0 0 360 540"></svg>
+      <div class="row"><button class="btn ghost" id="mapShop">Rustkammaren</button><button class="btn ghost" id="mapBack">Tillbaka</button></div>
+    </div>
+  </div>
+
+  <!-- Hjälp -->
+  <div class="screen scrim" id="helpScr" hidden>
+    <div class="panel">
+      <h2>Så spelar du</h2>
+      <div class="legend">
+        <b>Mål</b><span>ta alla fiendeborgar. Förlorar du din sista borg är banan förlorad.</span>
+        <b>Dra</b><span>från din blå borg till en annan. Halva styrkan marscherar dit. Siffran blir grön om den räcker.</span>
+        <b>Svep</b><span>över flera av dina borgar på vägen så skickar alla och anländer samtidigt.</span>
+        <b>Vägar</b><span>kolonner går via dina egna borgar. Står en främmande borg i vägen anfaller de den först. Möts två kolonner slåss de.</span>
+        <b>Tryck</b><span>på din borg och sedan på målet fungerar också.</span>
+        <b>Nyp</b><span>för att zooma. Dra på tom mark för att flytta kartan.</span>
+        <b>By</b><span>liten och producerar långsamt.</span>
+        <b>Borg</b><span>standard. Huvudborgar har krona och producerar mer.</span>
+        <b>Fästning</b><span>varje försvarare räknas som 1,5.</span>
+        <b>Smedja</b><span>producerar inget men gör alla dina trupper 20 % starkare.</span>
+      </div>
+      <button class="btn green" id="helpBack">Uppfattat</button>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="screen scrim" id="introScr" hidden>
+    <div class="panel">
+      <p id="inNum">Bana 1 av 12</p>
+      <h2 id="inName">Ekdalen</h2>
+      <div class="foes" id="inFoes"></div>
+      <div class="tip" id="inTip"></div>
+      <p class="tiny" id="inStars"></p>
+      <button class="btn green" id="goBtn">Till strid!</button>
+      <button class="btn ghost" id="inBack">Kartan</button>
+    </div>
+  </div>
+
+  <!-- Paus -->
+  <div class="screen scrim" id="pauseScr" hidden>
+    <div class="panel">
+      <h2>Paus</h2>
+      <button class="btn green" id="resumeBtn">Fortsätt</button>
+      <button class="btn ghost" id="restartBtn">Börja om banan</button>
+      <button class="btn ghost" id="quitBtn">Till kartan</button>
+    </div>
+  </div>
+
+  <!-- Resultat -->
+  <div class="screen scrim" id="resultScr" hidden>
+    <div class="panel">
+      <h2 id="resTitle">Seger!</h2>
+      <div class="stars" id="resStars"><i></i><i></i><i></i></div>
+      <div class="reslines">
+        <div id="resSub">Ekdalen är ditt</div>
+        <div class="goldpill" id="resGoldPill"><i class="coin"></i><span id="resGold">+0</span></div>
+      </div>
+      <button class="btn green" id="resNext">Nästa bana</button>
+      <div class="row">
+        <button class="btn ghost" id="resShop">Rustkammaren</button>
+        <button class="btn ghost" id="resMap">Kartan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rustkammaren -->
+  <div class="screen scrim" id="shopScr" hidden>
+    <div class="panel">
+      <h2>Rustkammaren</h2>
+      <div class="goldpill"><i class="coin"></i><span class="goldN">0</span></div>
+      <div class="cards" id="shopList"></div>
+      <button class="btn green" id="shopPlay">Spela</button>
+      <button class="btn ghost" id="shopBack">Tillbaka</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Visar ett tydligt meddelande om 3D-motorn inte går att ladda
+setTimeout(function(){ if(!window.__rk){ var d=document.createElement('div'); d.className='screen scrim'; d.innerHTML='<div class="panel"><h2>Spelet laddade inte</h2><p>3D-motorn hämtades inte. Kontrollera nätet och ladda om sidan.</p></div>'; document.getElementById('app').appendChild(d); } }, 12000);
+</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ================= Grund ================= */
+const $ = id => document.getElementById(id);
+const clamp = (v,a,b) => v<a?a:v>b?b:v;
+const lerp = (a,b,t) => a+(b-a)*t;
+const sstep = (a,b,v) => { const t = clamp((v-a)/(b-a),0,1); return t*t*(3-2*t); };
+const rnd = (a,b) => a + Math.random()*(b-a);
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function makeNoise(seed){
+  const r = mulberry32(seed), p = new Uint8Array(512), v = new Float32Array(256);
+  for(let i=0;i<256;i++){ p[i]=i; v[i]=r(); }
+  for(let i=255;i>0;i--){ const j=(r()*(i+1))|0; const t=p[i]; p[i]=p[j]; p[j]=t; }
+  for(let i=0;i<256;i++) p[i+256]=p[i];
+  const h = (x,y) => v[p[(p[x&255]+y)&255]];
+  return (x,y) => { const xi=Math.floor(x), yi=Math.floor(y), xf=x-xi, yf=y-yi, u=xf*xf*(3-2*xf), w=yf*yf*(3-2*yf);
+    return lerp(lerp(h(xi,yi),h(xi+1,yi),u), lerp(h(xi,yi+1),h(xi+1,yi+1),u), w); };
+}
+
+/* ================= Spelregler och data ================= */
+const P1 = 1;                                   // spelaren
+const OCOL = [0xa59f8e, 0x2f6be0, 0xd8392f, 0x2fa84f, 0xe8b31f];
+const OCSS = ['#8f897c','#2f6be0','#d8392f','#2fa84f','#dca81c'];
+const LORDS = {
+  2:{name:'Röde Ragnar', kind:'aggr', trait:'aggressiv'},
+  3:{name:'Gröna Greta', kind:'caut', trait:'försiktig'},
+  4:{name:'Gule Gunnar', kind:'opp',  trait:'opportunist'},
+};
+const TYPES = {
+  by:  {name:'By',       prod:.55, cap:30, def:1},
+  borg:{name:'Borg',     prod:.9,  cap:50, def:1},
+  fast:{name:'Fästning', prod:.65, cap:60, def:1.5},
+  smed:{name:'Smedja',   prod:0,   cap:30, def:1},
+};
+const CAPITAL_PROD = 1.3, SMED_BONUS = 1.2, BASE_SPEED = 2.4;
+const LEVELS = [
+  {name:'Ekdalen',     n:6,  foes:[3],     par:80, seed:3007,  tip:'Dra från din blå borg till en grå by. Halva styrkan marscherar dit. Ta alla gröna borgar för att vinna.'},
+  {name:'Vargmon',     n:7,  foes:[4],     par:85, seed:12591,  tip:'Ny borgtyp: Fästning. Där räknas varje försvarare som 1,5. Ta den med en stor styrka.'},
+  {name:'Silverbäck',  n:8,  foes:[2],     par:95, seed:19612,  tip:'Ny borgtyp: Smedja. Den producerar inget men gör alla dina trupper 20 % starkare.'},
+  {name:'Ljungheden',  n:10, foes:[3,4],   par:100, seed:27097, tip:'Svep över flera av dina borgar innan du släpper, så anfaller alla samtidigt.'},
+  {name:'Kråkfjäll',   n:11, foes:[2,3],   par:150, seed:33018, tip:'Herrarna slåss också mot varandra. Låt dem nöta ner sig och slå sedan till.'},
+  {name:'Dimsjön',     n:13, foes:[2,4],   par:170, seed:41603, tip:'Tryck på ×1 nere till höger för dubbel fart.'},
+  {name:'Järnmark',    n:14, foes:[3,4],   par:240, seed:48523, tip:'Möts två kolonner på vägen slåss de. Skicka en större kolonn för att stoppa ett anfall.'},
+  {name:'Örnklippan',  n:16, foes:[2,3,4], par:240, seed:57441, tip:'Tre herrar. Ragnar anfaller hårt, Greta försvarar sig och Gunnar slår mot den som är svag.'},
+  {name:'Guldslätten', n:18, foes:[2,3,4], par:270, seed:64361, tip:'Huvudborgar har en krona och producerar mer. Ta dem först.'},
+  {name:'Stormnäs',    n:20, foes:[2,3,4], par:260, seed:72613, tip:'Nyp för att zooma och dra på tom mark för att flytta kartan.'},
+  {name:'Svartskog',   n:22, foes:[2,3,4], par:290, seed:83196, tip:'Byar är billiga att ta men ger lite. Fästningar och smedjor avgör kriget.'},
+  {name:'Kronlandet',  n:25, foes:[2,3,4], par:300, seed:90984, tip:'Rikets hjärta. Den som håller Kronlandet håller hela Valdmark.'},
+];
+const NL = LEVELS.length;
+const UPG = {
+  march:{name:'Snabbare marsch', desc:'Dina kolonner går 12 % fortare per nivå', max:5, cost:[60,120,200,300,420],
+    icon:'<path d="M13 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM9.8 8.9 7 22h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.3 7.3 0 0 0 19 12v-2a5 5 0 0 1-4.3-2.4l-1-1.6A2 2 0 0 0 12 5c-.3 0-.5.1-.8.1L6 7.3V12h2V8.6z"/>'},
+  capital:{name:'Huvudborgens produktion', desc:'Din huvudborg tar fram 20 % fler soldater per nivå', max:5, cost:[80,150,240,350,480],
+    icon:'<path d="M3 21V9l3 2V6l3 2V3h6v5l3-2v5l3-2v12z"/>'},
+  start:{name:'Startbonus', desc:'+6 soldater i huvudborgen när banan börjar', max:5, cost:[80,150,240,350,480],
+    icon:'<path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5zm-1 6h2v3h3v2h-3v3h-2v-3H8v-2h3z"/>'},
+  sword:{name:'Vassare svärd', desc:'Dina trupper slåss 6 % hårdare per nivå', max:5, cost:[100,180,280,400,540],
+    icon:'<path d="M14.5 3 21 3v6.5l-9.3 9.3 1.8 1.8-1.4 1.4-3-3-3.6 3.6-1.4-1.4 3.6-3.6-3-3 1.4-1.4 1.8 1.8z"/>'},
+};
+const ICON = {
+  crown:'<svg viewBox="0 0 24 24"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>',
+  fast:'<svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5z"/></svg>',
+  smed:'<svg viewBox="0 0 24 24"><path d="M2 8h13l1-2h6v4c-3 0-5 1-6 3l2 4H6l2-4c-3 0-5-2-6-5zM6 19h12v2H6z"/></svg>',
+};
+
+/* ================= Sparning ================= */
+const SAVE_KEY = 'riketskarta.v1';
+const freshSave = () => ({gold:0, unlocked:1, stars:Array(NL).fill(0), best:Array(NL).fill(0), upg:{march:0,capital:0,start:0,sword:0}, mute:false, help:false});
+function loadSave(){
+  try{
+    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if(s && s.upg){ const d = freshSave(); return {...d, ...s, upg:{...d.upg, ...s.upg}, stars:(s.stars||[]).concat(d.stars).slice(0,NL), best:(s.best||[]).concat(d.best).slice(0,NL)}; }
+  }catch(e){}
+  return freshSave();
+}
+let save = loadSave();
+function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+
+/* ================= Bangenerering ================= */
+function edgeR(L,x,z){ const a = Math.atan2(z/L.rz, x/L.rx); return 1 + 0.13*(L.nz(Math.cos(a)*1.6+L.ph, Math.sin(a)*1.6+3.1)*2-1) + 0.07*(L.nz(x*.18+9, z*.18+4)*2-1); }
+function landRR(L,x,z){ return Math.hypot(x/L.rx, z/L.rz); }
+function landAt(L,x,z){ const e = edgeR(L,x,z); return 1 - sstep(e-0.1, e, landRR(L,x,z)); }
+function fbm(L,x,z){ return L.nz(x,z)*.6 + L.nz(x*2.1+7,z*2.1+3)*.28 + L.nz(x*4.3+1,z*4.3+9)*.12; }
+function segDist(px,pz,ax,az,bx,bz){ const dx=bx-ax, dz=bz-az, l2=dx*dx+dz*dz; const t = l2? clamp(((px-ax)*dx+(pz-az)*dz)/l2,0,1):0; return Math.hypot(px-ax-dx*t, pz-az-dz*t); }
+function polyDist(px,pz,pts){ let m=1e9; for(let i=0;i+3<pts.length;i+=2) m=Math.min(m, segDist(px,pz,pts[i],pts[i+1],pts[i+2],pts[i+3])); return m; }
+function baseHeight(L,x,z){
+  const land = landAt(L,x,z);
+  let h = -1.0 + land*(1.28 + 0.45*(fbm(L,x*.11,z*.11)-.5));
+  for(const m of L.mounts){ const d2=(x-m.x)**2+(z-m.z)**2; if(d2<m.s*m.s*9) h += land*m.h*Math.exp(-d2/(2*m.s*m.s))*(.7+.6*L.nz(x*.7+m.x,z*.7)); }
+  return h;
+}
+function heightAt(L,x,z){
+  let h = baseHeight(L,x,z);
+  for(const r of L.rivers){ const d = polyDist(x,z,r); if(d<1.1){ const t = 1-sstep(.28,1.0,d); h = lerp(h, -0.32, t*landAt(L,x,z)); } }
+  for(const c of L.cs){ const d = Math.hypot(x-c.x,z-c.z); if(d<2.4) h = lerp(h, c.h, sstep(2.4,1.35,d)); }
+  return h;
+}
+
+function genLevel(idx, seedIn){
+  let seed = seedIn ?? LEVELS[idx].seed ?? (1009 + idx*7919);
+  for(let k=0;k<60;k++, seed+=101){ const L = tryGen(idx, seed); if(L) return L; }
+  throw new Error('kunde inte skapa bana');
+}
+function tryGen(idx, seed){
+  const def = LEVELS[idx], rng = mulberry32(seed), N = def.n, sp = 5.5;
+  const R = Math.sqrt(N*sp*sp*.95/Math.PI) + 2.4;
+  const L = {idx, seed, N, rx:R*.78, rz:R*1.34, nz:makeNoise(seed*3+1), ph:rng()*10, mounts:[], rivers:[], cs:[], foes:def.foes.slice()};
+  L.W = 2*L.rx + 12; L.D = 2*L.rz + 12;
+  // borgar
+  let minD = sp, tries = 0;
+  while(L.cs.length<N && tries<9000){
+    tries++; if(tries%1800===0) minD *= .94;
+    const x=(rng()*2-1)*L.rx*.9, z=(rng()*2-1)*L.rz*.9;
+    if(landRR(L,x,z) > edgeR(L,x,z)-0.24) continue;
+    if(L.cs.some(c=>(c.x-x)**2+(c.z-z)**2 < minD*minD)) continue;
+    L.cs.push({id:L.cs.length, x, z});
+  }
+  if(L.cs.length<N) return null;
+  const cs = L.cs;
+  // grannar via Voronoi på ett rutnät
+  const adj = cs.map(()=>new Set());
+  for(let x=-L.rx*1.1; x<=L.rx*1.1; x+=.45) for(let z=-L.rz*1.1; z<=L.rz*1.1; z+=.45){
+    if(landAt(L,x,z) < .5) continue;
+    let a=-1,b=-1,da=1e9,db=1e9;
+    for(const c of cs){ const d=Math.hypot(c.x-x,c.z-z); if(d<da){ db=da; b=a; da=d; a=c.id; } else if(d<db){ db=d; b=c.id; } }
+    if(db-da < .5){ adj[a].add(b); adj[b].add(a); }
+  }
+  const dist = (a,b) => Math.hypot(cs[a].x-cs[b].x, cs[a].z-cs[b].z);
+  for(let a=0;a<N;a++) for(const b of [...adj[a]]) if(dist(a,b) > sp*2.25){ adj[a].delete(b); adj[b].delete(a); }
+  // se till att allt hänger ihop
+  for(;;){
+    const comp = new Int16Array(N).fill(-1); let nc=0;
+    for(let s=0;s<N;s++){ if(comp[s]>=0) continue; const st=[s]; comp[s]=nc; while(st.length){ const v=st.pop(); for(const w of adj[v]) if(comp[w]<0){ comp[w]=nc; st.push(w); } } nc++; }
+    if(nc===1) break;
+    let best=null, bd=1e9;
+    for(let a=0;a<N;a++) for(let b=0;b<N;b++) if(comp[a]===0 && comp[b]!==0 && dist(a,b)<bd){ bd=dist(a,b); best=[a,b]; }
+    adj[best[0]].add(best[1]); adj[best[1]].add(best[0]);
+  }
+  L.adj = adj.map(s=>[...s]);
+  L.edges = []; for(let a=0;a<N;a++) for(const b of L.adj[a]) if(a<b) L.edges.push([a,b]);
+  L.elen = cs.map((_,a)=>cs.map((_,b)=>dist(a,b)));
+  // startpositioner: du längst ner (närmast kameran), herrarna så långt bort som möjligt
+  const starts = [];
+  let pi = 0; for(const c of cs) if(c.z - Math.abs(c.x)*.3 > cs[pi].z - Math.abs(cs[pi].x)*.3) pi = c.id;
+  starts.push(pi);
+  for(let f=0; f<def.foes.length; f++){
+    let bi=-1, bv=-1;
+    for(const c of cs){ if(starts.includes(c.id)) continue; const v = Math.min(...starts.map((s,k)=>dist(s,c.id)*(k===0?1.15:1))); if(v>bv){ bv=v; bi=c.id; } }
+    starts.push(bi);
+  }
+  if(dist(starts[0],starts[1]) < sp*1.6) return null;
+  // typer och neutrala styrkor
+  const w = {by:.5, borg:.3, fast: idx>=1?.13:0, smed: idx>=2?.08:0};
+  const pick = () => { let r = rng()*(w.by+w.borg+w.fast+w.smed); for(const k in w){ r-=w[k]; if(r<=0) return k; } return 'by'; };
+  for(const c of cs){ c.type = pick(); c.owner0 = 0; c.home = 0; }
+  const free = cs.filter(c=>!starts.includes(c.id));
+  if(idx>=1 && !cs.some(c=>c.type==='fast' && !starts.includes(c.id))){ free[(rng()*free.length)|0].type='fast'; }
+  if(idx>=2 && !cs.some(c=>c.type==='smed' && !starts.includes(c.id))){ const f2 = free.filter(c=>c.type!=='fast'); f2[(rng()*f2.length)|0].type='smed'; }
+  const smeds = cs.filter(c=>c.type==='smed'); for(let i=1+Math.floor(N/9); i<smeds.length; i++) smeds[i].type='by';
+  starts.forEach((s,k)=>{ const c=cs[s]; c.type='borg'; c.owner0 = k===0 ? P1 : def.foes[k-1]; c.home = c.owner0; });
+  // spelaren ska alltid ha minst en lätt granne att börja med
+  if(!L.adj[starts[0]].some(j=>!cs[j].owner0 && (cs[j].type==='by' || cs[j].type==='borg'))) return null;
+  for(const c of cs){
+    if(c.owner0){ c.n0 = 20 + (c.owner0===P1 ? 0 : Math.round(idx*.5)); continue; }
+    const g = idx*.6;
+    c.n0 = Math.round({by:5+rng()*4+g, borg:9+rng()*5+g, fast:9+rng()*5+g, smed:7+rng()*4+g}[c.type]);
+  }
+  // berg långt från borgar och vägar
+  const nm = 2 + Math.floor(N/6);
+  for(let t=0; t<400 && L.mounts.length<nm; t++){
+    const x=(rng()*2-1)*L.rx, z=(rng()*2-1)*L.rz;
+    if(landRR(L,x,z) > edgeR(L,x,z)-.2) continue;
+    const dc = Math.min(...cs.map(c=>Math.hypot(c.x-x,c.z-z)));
+    const de = Math.min(...L.edges.map(([a,b])=>segDist(x,z,cs[a].x,cs[a].z,cs[b].x,cs[b].z)));
+    const room = Math.min(dc-1.6, de-.6);
+    if(room < 1.6) continue;
+    if(L.mounts.some(m=>Math.hypot(m.x-x,m.z-z)<3)) continue;
+    L.mounts.push({x,z,h:1.4+rng()*1.5, s:clamp(room/2.6,.7,1.5)});
+  }
+  // floder från inlandet ut mot kusten
+  const nr = N>=12 ? 2 : 1;
+  for(let t=0; t<60 && L.rivers.length<nr; t++){
+    let x=(rng()*2-1)*L.rx*.5, z=(rng()*2-1)*L.rz*.5;
+    if(Math.min(...cs.map(c=>Math.hypot(c.x-x,c.z-z))) < 2.6) continue;
+    let a = Math.atan2(z, x) + (rng()-.5);
+    const pts=[x,z]; let ok=false;
+    for(let s=0;s<120;s++){
+      let moved=false;
+      for(const da of [0,.5,-.5,1,-1,1.5,-1.5]){
+        const a2 = a + da + (L.nz(x*.4+s,z*.4)-.5)*.6, nx = x+Math.cos(a2)*.5, nzz = z+Math.sin(a2)*.5;
+        if(Math.min(...cs.map(c=>Math.hypot(c.x-nx,c.z-nzz))) < 2.5) continue;
+        x=nx; z=nzz; a=lerp(a,a2,.5); moved=true; break;
+      }
+      if(!moved) break;
+      pts.push(x,z);
+      if(landAt(L,x,z) < .05){ ok=true; break; }
+    }
+    if(ok && pts.length>16) L.rivers.push(pts);
+  }
+  for(const c of cs) c.h = Math.max(.32, baseHeight(L,c.x,c.z));
+  return L;
+}
+
+/* ================= Spellogik (fungerar utan grafik, även i snabbspolning) ================= */
+const AIK = {
+  aggr:{think:2.2, margin:1.25, reserve:4,  lord:1.5, neutral:.9,  player:1.0, maxSrc:3, reinforce:.25, rear:.7},
+  caut:{think:2.1, margin:1.3,  reserve:7,  lord:.9,  neutral:1.4, player:.85, maxSrc:2, reinforce:1,   rear:.95},
+  opp: {think:1.6, margin:1.12, reserve:6,  lord:1.1, neutral:1.0, player:.9,  maxSrc:3, reinforce:.55, rear:.8},
+};
+function newState(L, opt={}){
+  const S = {L, t:0, cs:L.cs.map(c=>({id:c.id, x:c.x, z:c.z, type:c.type, home:c.home, owner:c.owner0, n:c.n0, cap:TYPES[c.type].cap})),
+    cols:[], ev:[], over:false, winner:0, demo:!!opt.demo, nextId:1, smed:[0,0,0,0,0], dead:[0,0,0,0,0], ai:[], aiPace:1,
+    mods:[0,1,2,3,4].map(()=>({atk:1, prod:1, march:1, capProd:1}))};
+  S.present = [P1, ...L.foes];
+  const aiProd = 1 + L.idx*.008;
+  for(const o of L.foes) S.mods[o].prod = aiProd;
+  if(opt.demo){
+    const kinds = opt.kinds || {1:'opp'};
+    S.ai.push({owner:P1, kind:kinds[1]||'opp', timer:1+Math.random()});
+    for(const o of L.foes) S.ai.push({owner:o, kind:kinds[o]||LORDS[o].kind, timer:1+Math.random()});
+    S.mods[P1].prod = aiProd;
+  } else {
+    const u = opt.upg || save.upg;
+    Object.assign(S.mods[P1], {atk:1+.06*u.sword, march:1+.12*u.march, capProd:1+.2*u.capital});
+    for(const c of S.cs) if(c.home===P1) c.n += 6*u.start;
+    for(const o of L.foes) S.ai.push({owner:o, kind:LORDS[o].kind, timer:2.2+Math.random()*1.5});
+    S.aiPace = [1.9,1.6,1.45][L.idx] ?? 1.4 - L.idx*.02;
+  }
+  return S;
+}
+const hasSmed = (S,o) => o>0 && S.smed[o]>0;
+const atkMul = (S,o) => S.mods[o].atk * (hasSmed(S,o)?SMED_BONUS:1);
+const defMul = (S,c) => TYPES[c.type].def * (hasSmed(S,c.owner)?SMED_BONUS:1) * (c.owner?S.mods[c.owner].atk:1);
+function prodRate(S,c){
+  if(!c.owner) return 0;
+  let p = TYPES[c.type].prod * S.mods[c.owner].prod;
+  if(c.home){ p *= CAPITAL_PROD; if(c.home===P1 && c.owner===P1) p *= S.mods[P1].capProd; }
+  return p;
+}
+function dijkstra(S, src, o, avoid=1000){
+  const N = S.cs.length, d = new Float32Array(N).fill(1e9), prev = new Int16Array(N).fill(-1), done = new Uint8Array(N);
+  d[src] = 0;
+  for(;;){
+    let u=-1, bd=1e9; for(let i=0;i<N;i++) if(!done[i] && d[i]<bd){ bd=d[i]; u=i; }
+    if(u<0) break; done[u]=1;
+    const pen = (u!==src && S.cs[u].owner!==o) ? avoid : 0;   // undvik att marschera genom andras borgar
+    for(const v of S.L.adj[u]){ const nd = d[u] + S.L.elen[u][v] + pen; if(nd<d[v]){ d[v]=nd; prev[v]=u; } }
+  }
+  return {d, prev};
+}
+function makeCol(S, o, n, path){
+  const pts = [], cum = [0];
+  for(const id of path){ pts.push(S.cs[id].x, S.cs[id].z); }
+  for(let i=1;i<path.length;i++) cum.push(cum[i-1] + S.L.elen[path[i-1]][path[i]]);
+  const q = {id:S.nextId++, o, n, path, pts, cum, len:cum[cum.length-1], d:0, seg:0, to:path[path.length-1], from:path[0], v:BASE_SPEED*S.mods[o].march, dead:false};
+  S.cols.push(q); return q;
+}
+// Vägen går helst genom egna borgar. Ligger en främmande borg i vägen stannar kolonnen där och anfaller den.
+function route(S, sid, tid, o){
+  const dj = dijkstra(S, sid, o);
+  const path=[tid]; let u=tid; while(u!==sid && u>=0){ u = dj.prev[u]; if(u>=0) path.unshift(u); }
+  if(path[0]!==sid) return null;
+  for(let i=1;i<path.length-1;i++) if(S.cs[path[i]].owner!==o) return path.slice(0,i+1);
+  return path;
+}
+function send(S, srcs, tid, o){
+  let tot = 0; const made = [];
+  for(const sid of srcs){
+    if(sid===tid) continue;
+    const s = S.cs[sid]; if(s.owner!==o || s.n < 2) continue;
+    const path = route(S, sid, tid, o); if(!path) continue;
+    const k = Math.floor(s.n/2); s.n -= k;
+    made.push(makeCol(S, o, k, path)); tot += k;
+  }
+  // ett svep från flera borgar anländer samtidigt: kolonner med kort väg väntar i borgen
+  const far = Math.max(0, ...made.map(q=>q.len));
+  for(const q of made) q.d = -(far - q.len);
+  if(tot) S.ev.push({k:'send', o, to:tid, n:tot, real:made.map(q=>q.to)});
+  return tot;
+}
+function colPos(q, d, out){
+  d = clamp(d, 0, q.len);
+  let i = 0; while(i < q.cum.length-2 && d > q.cum[i+1]) i++;
+  const l = q.cum[i+1]-q.cum[i], t = l>0 ? (d-q.cum[i])/l : 0;
+  out.x = lerp(q.pts[i*2], q.pts[i*2+2], t); out.z = lerp(q.pts[i*2+1], q.pts[i*2+3], t);
+  out.dx = (q.pts[i*2+2]-q.pts[i*2])/(l||1); out.dz = (q.pts[i*2+3]-q.pts[i*2+1])/(l||1);
+  return out;
+}
+const _pa = {}, _pb = {};
+function fight(S, a, b){
+  const ea = a.n*atkMul(S,a.o), eb = b.n*atkMul(S,b.o);
+  colPos(a, a.d, _pa);
+  S.ev.push({k:'fight', x:_pa.x, z:_pa.z, a:a.o, b:b.o, n:Math.min(a.n,b.n)});
+  if(ea > eb){ a.n = Math.max(1, Math.round((ea-eb)/atkMul(S,a.o))); b.dead = true; }
+  else if(eb > ea){ b.n = Math.max(1, Math.round((eb-ea)/atkMul(S,b.o))); a.dead = true; }
+  else { a.dead = b.dead = true; }
+}
+function colFights(S){
+  const C = S.cols;
+  for(const q of C){ colPos(q, q.d, q); }
+  for(let i=0;i<C.length;i++){
+    const a = C[i]; if(a.dead || a.d < 0) continue;
+    for(let j=i+1;j<C.length;j++){
+      const b = C[j]; if(b.dead || a.o===b.o || b.d < 0) continue;
+      if(Math.abs(a.x-b.x) > 3 || Math.abs(a.z-b.z) > 3) continue;
+      const a0=a.path[a.seg], a1=a.path[a.seg+1], b0=b.path[b.seg], b1=b.path[b.seg+1];
+      let hit = false;
+      if(a0===b1 && a1===b0){ // samma väg, mot varandra
+        const pa = a.d - a.cum[a.seg], pb = S.L.elen[a0][a1] - (b.d - b.cum[b.seg]);
+        hit = pa >= pb - .3;
+      } else hit = Math.hypot(a.x-b.x, a.z-b.z) < .6;
+      if(hit){ fight(S,a,b); if(a.dead) break; }
+    }
+  }
+}
+function arrive(S, q){
+  q.dead = true;
+  const c = S.cs[q.to];
+  if(c.owner===q.o){ c.n += q.n; S.ev.push({k:'reinf', c:c.id, o:q.o, n:q.n}); return; }
+  const A = q.n*atkMul(S,q.o), D = c.n*defMul(S,c);
+  if(A > D){
+    const from = c.owner;
+    c.owner = q.o; c.n = Math.max(1, (A-D)/atkMul(S,q.o));
+    S.ev.push({k:'capture', c:c.id, from, to:q.o});
+  } else {
+    c.n = Math.max(0, (D-A)/defMul(S,c));
+    S.ev.push({k:'hit', c:c.id, o:q.o, def:c.owner});
+  }
+}
+function endCheck(S){
+  const alive = [0,0,0,0,0];
+  for(const c of S.cs) if(c.owner) alive[c.owner]++;
+  for(const q of S.cols) alive[q.o]++;
+  for(const o of S.present) if(!alive[o] && !S.dead[o]){ S.dead[o]=1; S.ev.push({k:'elim', o}); }
+  if(S.demo){
+    const left = S.present.filter(o=>alive[o]);
+    if(left.length<=1){ S.over = true; S.winner = left[0]||0; }
+  } else if(!alive[P1]){ S.over = true; S.winner = -1; }
+  else if(S.L.foes.every(o=>!alive[o])){ S.over = true; S.winner = P1; }
+}
+function step(S, dt){
+  if(S.over) return;
+  S.t += dt;
+  S.smed.fill(0); for(const c of S.cs) if(c.type==='smed' && c.owner) S.smed[c.owner]++;
+  for(const c of S.cs){
+    if(!c.owner) continue;
+    if(c.n < c.cap) c.n = Math.min(c.cap, c.n + prodRate(S,c)*dt);
+    else if(c.n > c.cap) c.n = Math.max(c.cap, c.n - Math.max(.8, (c.n-c.cap)*.06)*dt);
+  }
+  for(const q of S.cols){
+    q.d += q.v*dt;
+    // passerar en borg på vägen: är den inte längre egen anfaller kolonnen den
+    while(q.seg < q.path.length-2 && q.d >= q.cum[q.seg+1]){
+      const node = q.path[q.seg+1];
+      if(S.cs[node].owner !== q.o){ q.to = node; q.len = q.cum[q.seg+1]; q.d = q.len; break; }
+      q.seg++;
+    }
+  }
+  colFights(S);
+  for(const q of S.cols) if(!q.dead && q.d >= q.len) arrive(S,q);
+  S.cols = S.cols.filter(q=>!q.dead);
+  for(const a of S.ai){
+    a.timer -= dt;
+    if(a.timer<=0){ a.timer = AIK[a.kind].think*(.75+Math.random()*.5)*S.aiPace; if(!S.dead[a.owner]) aiThink(S,a); }
+  }
+  endCheck(S);
+}
+
+/* ---------- datorherrarna ---------- */
+function aiThink(S, ai){
+  const o = ai.owner, k = AIK[ai.kind], N = S.cs.length;
+  const mine = S.cs.filter(c=>c.owner===o);
+  if(!mine.length) return;
+  const atk = atkMul(S,o), spd = BASE_SPEED*S.mods[o].march;
+  const threat = new Float32Array(N), friend = new Float32Array(N), third = new Float32Array(N), ownInc = new Float32Array(N);
+  for(const q of S.cols){
+    const c = S.cs[q.to];
+    if(q.o===o) ownInc[q.to] += q.n;
+    if(q.o===c.owner) friend[q.to] += q.n;
+    else { if(c.owner===o) threat[q.to] += q.n*atkMul(S,q.o); else if(q.o!==o) third[q.to] += q.n*atkMul(S,q.o); }
+  }
+  const DJ = {}; for(const c of mine) DJ[c.id] = dijkstra(S, c.id, o).d;
+  // 1. försvar: skicka förstärkning till en hotad borg
+  if(Math.random() < k.reinforce){
+    for(const c of mine){
+      if(threat[c.id] <= (c.n+ownInc[c.id])*defMul(S,c)*.95) continue;
+      let best=null, bd=1e9;
+      for(const s of mine) if(s!==c && s.n>=8 && !threat[s.id] && DJ[s.id][c.id]<bd){ bd=DJ[s.id][c.id]; best=s; }
+      if(best && bd/spd < 12){ send(S,[best.id],c.id,o); return; }
+    }
+  }
+  // 2. anfall
+  // utan anfall en stund samlar herren fler borgar och tar större risk, så ingen kan gömma sig för evigt
+  const idle = ai.idle||0, maxSrc = k.maxSrc + Math.floor(idle/3), margin = Math.max(1.05, k.margin - idle*.04);
+  let best=null, bestScore=0;
+  const srcAll = mine.filter(s=>s.n >= k.reserve+2 && !(threat[s.id] > s.n*defMul(S,s)*.7));
+  for(const t of S.cs){
+    if(t.owner===o || !srcAll.length) continue;
+    const srcs = srcAll.slice().sort((a,b)=>DJ[a.id][t.id]-DJ[b.id][t.id]);
+    if(DJ[srcs[0].id][t.id] > 60) continue;
+    const eta = DJ[srcs[0].id][t.id]/spd;
+    let defN = t.n + prodRate(S,t)*eta + friend[t.id] - ownInc[t.id]*0;
+    if(ai.kind==='opp') defN -= third[t.id]/Math.max(.5,defMul(S,t))*.8;
+    defN = Math.max(0, defN);
+    const need = defN*defMul(S,t)*margin + 1 - ownInc[t.id]*atk;
+    let sum = 0, used = [], maxEta = 0;
+    for(const s of srcs){ if(used.length>=maxSrc) break; sum += Math.floor(s.n/2)*atk; used.push(s.id); maxEta = Math.max(maxEta, DJ[s.id][t.id]/spd); if(sum>=need) break; }
+    if(sum < need) continue;
+    let v = {by:1, borg:1.5, fast:1.35, smed:1.45}[t.type] * (t.home?1.3:1);
+    v *= t.owner===0 ? k.neutral : k.lord*(t.owner===P1?k.player:1);
+    if(ai.kind==='opp'){ v *= 1 + 1.4*(1 - Math.min(1, t.n/(t.cap*.5))); if(third[t.id]>0) v *= 1.5; }
+    if(ai.kind==='aggr' && t.owner && t.owner!==o) v *= 1.15;
+    const score = v / (maxEta + used.length*1.2 + need*.05 + 2);
+    if(score > bestScore){ bestScore = score; best = {t:t.id, used}; }
+  }
+  if(best){ send(S, best.used, best.t, o); ai.idle = 0; return; }
+  ai.idle = idle + 1;
+  // 3. flytta trupper från baklandet till fronten
+  const front = mine.filter(c=>S.L.adj[c.id].some(j=>S.cs[j].owner!==o));
+  if(!front.length) return;
+  for(const r of mine){
+    if(front.includes(r) || r.n < r.cap*k.rear) continue;
+    let tgt=null, bv=1e9;
+    for(const f of front){ const v = f.n + DJ[r.id][f.id]*.5; if(v<bv){ bv=v; tgt=f; } }
+    if(tgt){ send(S,[r.id],tgt.id,o); return; }
+  }
+}
+
+/* ---------- snabbspolning för test ---------- */
+function simulate({level=11, seed, seconds=1200, dt=1/30, kinds, campaign=false, upg}={}){
+  const L = genLevel(level, seed);
+  let S;
+  if(campaign){ S = newState(L, {upg:upg||{march:0,capital:0,start:0,sword:0}}); S.ai.push({owner:P1, kind:(kinds&&kinds[1])||'opp', timer:1}); }
+  else S = newState(L, {demo:true, kinds});
+  const t0 = performance.now(); let caps = 0, fights = 0;
+  while(S.t < seconds && !S.over){ step(S, dt); for(const e of S.ev){ if(e.k==='capture') caps++; if(e.k==='fight') fights++; } S.ev.length = 0; }
+  const own = [0,0,0,0,0]; for(const c of S.cs) own[c.owner]++;
+  return {level:level+1, seed:L.seed, castles:L.N, winner:S.over?S.winner:0, seconds:Math.round(S.t), captures:caps, fights, owners:own, ms:Math.round(performance.now()-t0)};
+}
+
+/* ================= Ljud (WebAudio-syntes) ================= */
+const Snd = {
+  ctx:null, master:null, nb:null, last:{},
+  init(){
+    try{
+      if(!this.ctx){
+        const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+        this.ctx = new AC(); this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
+        const n = this.ctx.sampleRate*.5|0; this.nb = this.ctx.createBuffer(1,n,this.ctx.sampleRate);
+        const d = this.nb.getChannelData(0); for(let i=0;i<n;i++) d[i] = Math.random()*2-1;
+      }
+      this.master.gain.value = save.mute ? 0 : .55;
+      if(this.ctx.state === 'suspended') this.ctx.resume();
+    }catch(e){}
+  },
+  ok(key, gap){ if(!this.ctx || save.mute) return false; const t=this.ctx.currentTime; if(key && this.last[key] && t-this.last[key]<gap) return false; if(key) this.last[key]=t; return true; },
+  tone(f,d,type='square',v=.2,f2=null,delay=0,lp=0){
+    try{
+      const c=this.ctx, t=c.currentTime+delay, o=c.createOscillator(), g=c.createGain();
+      o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(v,t+.012); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+      let n = o; if(lp){ const fl=c.createBiquadFilter(); fl.type='lowpass'; fl.frequency.value=lp; o.connect(fl); n=fl; }
+      n.connect(g); g.connect(this.master); o.start(t); o.stop(t+d+.03);
+    }catch(e){}
+  },
+  noise(d,v,freq,delay=0,q=1){
+    try{
+      const c=this.ctx, t=c.currentTime+delay, s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+      s.buffer=this.nb; f.type='bandpass'; f.frequency.value=freq; f.Q.value=q;
+      g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+      s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random()*.3); s.stop(t+d+.03);
+    }catch(e){}
+  },
+  drum(delay=0, acc=1){ this.tone(120*acc,.2,'sine',.55,50,delay); this.noise(.09,.22*acc,220,delay,.8); },
+  drums(){ if(!this.ok('drums',.35)) return; this.drum(0,1); this.drum(.11,.9); this.drum(.22,1.15); this.noise(.12,.18,2400,.22,1.5); },
+  march(){ if(!this.ok('march',.6)) return; this.drum(0,.7); this.drum(.16,.6); },
+  fanfare(){ if(!this.ok('fan',.4)) return; [[523,0],[659,.1],[784,.2],[1047,.32]].forEach(([f,t],i)=>{ this.tone(f,i===3?.45:.16,'sawtooth',.09,null,t,2600); this.tone(f/2,i===3?.45:.16,'square',.05,null,t,1400); }); },
+  lost(){ if(!this.ok('lost',.5)) return; [392,349,262].forEach((f,i)=>this.tone(f,.32,'sawtooth',.08,f*.97,i*.16,1200)); },
+  clash(v=1){ if(!this.ok('clash',.07)) return; this.noise(.08,.2*v,rnd(2600,4200),0,3); this.tone(rnd(900,1300),.05,'square',.04*v); this.noise(.12,.15*v,500,.03); },
+  thud(){ if(!this.ok('thud',.1)) return; this.noise(.18,.25,300); this.tone(90,.18,'sine',.3,45); },
+  win(){ if(!this.ok()) return; [523,659,784,1047,1319,1568].forEach((f,i)=>this.tone(f,.3,'sawtooth',.08,null,i*.12,3000)); this.drum(0,1); this.drum(.48,1.2); },
+  lose(){ if(!this.ok()) return; [392,330,262,196].forEach((f,i)=>this.tone(f,.38,'triangle',.18,null,i*.2)); },
+  click(){ if(!this.ok('click',.03)) return; this.tone(880,.05,'square',.06,660); },
+  pick(){ if(!this.ok('pick',.05)) return; this.tone(520,.06,'triangle',.12,780); },
+  coin(){ if(!this.ok('coin',.05)) return; this.tone(1320,.07,'square',.07); this.tone(1760,.12,'square',.07,null,.06); },
+  star(i){ if(!this.ok()) return; this.tone(784*Math.pow(1.26,i),.2,'square',.1); },
+};
+function setMute(m){
+  save.mute = m; persist(); Snd.init();
+  document.querySelectorAll('.sndon').forEach(p => p.style.display = m ? 'none' : '');
+  document.querySelectorAll('.sndoff').forEach(p => p.style.display = m ? '' : 'none');
+}
+
+/* ================= Renderare och scen ================= */
+const canvas = $('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'});
+let pixelRatio = Math.min(window.devicePixelRatio||1, 2);
+renderer.setPixelRatio(pixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x231a12);
+const camera = new THREE.PerspectiveCamera(40, 1, .5, 400);
+scene.add(new THREE.HemisphereLight(0xeaf4ff, 0x6a5a3a, 1.2));
+const sun = new THREE.DirectionalLight(0xfff0d6, 2.3);
+sun.castShadow = true;
+const isSmall = Math.min(innerWidth, innerHeight) < 600;
+sun.shadow.mapSize.set(isSmall?1024:2048, isSmall?1024:2048);
+sun.shadow.bias = -.0005; sun.shadow.normalBias = .03;
+scene.add(sun, sun.target);
+
+/* ---------- geometri-hjälp ---------- */
+const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _v = new THREE.Vector3(), _s3 = new THREE.Vector3(), _col = new THREE.Color();
+function part(geo, color, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=1,sy=1,sz=1){
+  let g = geo.index ? geo.toNonIndexed() : geo;
+  g.deleteAttribute('uv');
+  _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(rx,ry,rz)), _s3.set(sx,sy,sz));
+  g.applyMatrix4(_m4);
+  const c = new THREE.Color(color), n = g.attributes.position.count, a = new Float32Array(n*3);
+  for(let i=0;i<n;i++){ a[i*3]=c.r; a[i*3+1]=c.g; a[i*3+2]=c.b; }
+  g.setAttribute('color', new THREE.BufferAttribute(a,3));
+  return g;
+}
+function merge(parts){
+  let tot = 0; for(const p of parts) tot += p.attributes.position.count;
+  const pos = new Float32Array(tot*3), nor = new Float32Array(tot*3), col = new Float32Array(tot*3);
+  let o = 0;
+  for(const p of parts){ pos.set(p.attributes.position.array,o*3); nor.set(p.attributes.normal.array,o*3); col.set(p.attributes.color.array,o*3); o += p.attributes.position.count; p.dispose(); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  g.setAttribute('normal', new THREE.BufferAttribute(nor,3));
+  g.setAttribute('color', new THREE.BufferAttribute(col,3));
+  g.computeBoundingSphere();
+  return g;
+}
+const Box = (w,h,d) => new THREE.BoxGeometry(w,h,d);
+const Cyl = (rt,rb,h,s=8) => new THREE.CylinderGeometry(rt,rb,h,s);
+const Cone = (r,h,s=8) => new THREE.ConeGeometry(r,h,s);
+const vcMat = new THREE.MeshLambertMaterial({vertexColors:true});
+const ownerMat = OCOL.map(c => new THREE.MeshLambertMaterial({color:c}));
+const flagMat = OCOL.map(c => new THREE.MeshLambertMaterial({color:c, side:THREE.DoubleSide}));
+function canvasTex(w,h,draw,rep){
+  const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const g = cv.getContext('2d'); draw(g,w,h);
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  if(rep){ t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0],rep[1]); }
+  return t;
+}
+const woodTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#6b4325'; g.fillRect(0,0,w,h);
+  for(let i=0;i<70;i++){ g.strokeStyle=`rgba(${rnd(30,70)|0},${rnd(15,35)|0},5,${rnd(.15,.4)})`; g.lineWidth=rnd(1,3); g.beginPath(); const y=rnd(0,h); g.moveTo(0,y); g.bezierCurveTo(w*.3,y+rnd(-8,8),w*.6,y+rnd(-8,8),w,y); g.stroke(); }
+  for(let i=0;i<4;i++){ g.fillStyle='rgba(30,15,5,.35)'; g.beginPath(); g.ellipse(rnd(0,w),rnd(0,h),rnd(6,12),rnd(3,5),0,0,7); g.fill(); }
+},[3,3]);
+const waterTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#ffffff'; g.fillRect(0,0,w,h);
+  for(let i=0;i<90;i++){ g.strokeStyle=`rgba(200,230,255,${rnd(.0,.6)})`; g.lineWidth=rnd(1,2.2); g.beginPath(); const x=rnd(0,w), y=rnd(0,h), l=rnd(8,24); g.moveTo(x,y); g.quadraticCurveTo(x+l/2,y-3,x+l,y); g.stroke(); }
+},[6,6]);
+
+/* ---------- terrängmaterial: landskapen färgas efter ägare direkt i shadern ---------- */
+const MAXS = 25;
+const TU = {
+  uSite:{value:Array.from({length:MAXS},()=>new THREE.Vector4(999,999,0,1e4))},
+  uColA:{value:Array.from({length:MAXS},()=>new THREE.Color())},
+  uColB:{value:Array.from({length:MAXS},()=>new THREE.Color())},
+  uCount:{value:0},
+};
+const terrMat = new THREE.MeshLambertMaterial({vertexColors:true});
+terrMat.onBeforeCompile = sh => {
+  Object.assign(sh.uniforms, TU);
+  sh.vertexShader = sh.vertexShader
+    .replace('#include <common>', '#include <common>\nattribute float aLand;\nvarying vec2 vMP;\nvarying float vLand;')
+    .replace('#include <project_vertex>', '#include <project_vertex>\nvMP = (modelMatrix*vec4(transformed,1.0)).xz; vLand = aLand;');
+  sh.fragmentShader = sh.fragmentShader
+    .replace('#include <common>', `#include <common>
+uniform vec4 uSite[${MAXS}]; uniform vec3 uColA[${MAXS}]; uniform vec3 uColB[${MAXS}]; uniform int uCount;
+varying vec2 vMP; varying float vLand;`)
+    .replace('#include <color_fragment>', `#include <color_fragment>
+{
+  float d1 = 1e9; int i1 = 0;
+  for(int i=0;i<${MAXS};i++){ if(i>=uCount) break; vec2 q = vMP-uSite[i].xy; float d = dot(q,q); if(d<d1){ d1=d; i1=i; } }
+  vec4 sa = uSite[i1];
+  float eAll = 1e3, eDiff = 1e3;
+  for(int i=0;i<${MAXS};i++){ if(i>=uCount) break; if(i==i1) continue; vec4 sb = uSite[i]; float l = max(length(sb.xy-sa.xy),1e-3); vec2 q = vMP-sb.xy; float e = (dot(q,q)-d1)/(2.0*l); eAll = min(eAll,e); if(abs(sb.z-sa.z)>0.5) eDiff = min(eDiff,e); }
+  float r = sqrt(d1);
+  vec3 oc = r < sa.w ? uColB[i1] : uColA[i1];
+  float front = sa.w < 900.0 ? (1.0 - smoothstep(0.0, 0.45, abs(r - sa.w))) : 0.0;
+  float land = vLand;
+  vec3 nat = diffuseColor.rgb;
+  float inner = 1.0 - smoothstep(0.0, 2.4, eDiff);
+  float str = sa.z < 0.5 ? 0.3 : 0.56;
+  vec3 fill = mix(nat, oc*0.95, (str + 0.3*inner) * land);
+  float line = (1.0 - smoothstep(0.05, 0.2, eDiff)) * land;
+  float thin = (1.0 - smoothstep(0.015, 0.07, eAll)) * land * (1.0 - line);
+  fill *= 1.0 - 0.25*thin;
+  vec3 glow = mix(oc, vec3(1.0), 0.35);
+  diffuseColor.rgb = mix(fill, glow, line);
+  totalEmissiveRadiance += glow*(line*0.55 + inner*0.07*land) + vec3(1.0,0.92,0.7)*front*land*0.9;
+}`);
+};
+
+/* ---------- riddarfigurer (InstancedMesh per färg) ---------- */
+function knightGeo(o){
+  const body = OCOL[o], dk = new THREE.Color(body).multiplyScalar(.7).getHex();
+  const P = [];
+  P.push(part(Box(.34,.3,.24), 0x3a3a44, 0,.15,0));
+  P.push(part(Box(.46,.44,.32), body, 0,.52,0));
+  P.push(part(Box(.48,.08,.34), 0xf3e2b0, 0,.34,0));
+  P.push(part(Cyl(.18,.19,.28,8), 0xe2e7ee, 0,.88,0));
+  P.push(part(Box(.26,.05,.04), 0x161a22, 0,.9,-.18));
+  P.push(part(new THREE.SphereGeometry(.19,8,4,0,Math.PI*2,0,Math.PI/2), 0xe2e7ee, 0,1.02,0));
+  P.push(part(Box(.06,.2,.32), dk, 0,1.2,.04));
+  P.push(part(Box(.1,.44,.38), dk, -.3,.54,-.03));
+  P.push(part(Cyl(.025,.025,1.4,5), 0x6b4626, .3,.7,-.06, -.12,0,0));
+  P.push(part(Cone(.06,.2,5), 0xd5dae2, .3,1.42,-.15, -.12,0,0));
+  const g = merge(P); g.scale(.38,.38,.38); return g;
+}
+const MAXU = 1100;
+const unitIM = OCOL.map((_,o)=>{
+  const im = new THREE.InstancedMesh(knightGeo(o), vcMat, MAXU);
+  im.instanceMatrix.setUsage(THREE.DynamicDrawUsage); im.frustumCulled = false; im.count = 0; im.castShadow = true;
+  scene.add(im); return im;
+});
+
+/* ---------- borgmodeller ---------- */
+const STONE = 0xcdc4b2, STONE_DK = 0x9d9483, STONE_FT = 0xb2a998, WOOD = 0x8a5a32, PLASTER = 0xeadcb8;
+function crenels(P, x0,x1,z, y, color, rotY=0){ for(let x=x0; x<=x1+1e-3; x+=.24){ const cx = rotY? z : x, cz = rotY? x : z; P.push(part(Box(.13,.14,.13), color, cx, y, cz)); } }
+function buildCastleGeo(type){
+  const B = [], O = [];
+  if(type==='by'){
+    B.push(part(Cyl(1.15,1.28,.22,16), 0x8d8b6c, 0,.11,0));
+    for(const [x,z,r,s] of [[-.5,.25,.3,1],[.48,.35,-.2,.9],[.05,-.45,.1,1.05]]){
+      B.push(part(Box(.6*s,.42*s,.5*s), PLASTER, x,.22+.21*s,z, 0,r,0));
+      B.push(part(Box(.12,.2,.03), 0x5a3a22, x,.32,z+.26*s, 0,r,0));
+      O.push(part(Cone(.5*s,.36*s,4), 0xffffff, x,.22+.42*s+.18*s,z, 0,r+Math.PI/4,0));
+    }
+    B.push(part(Box(.32,.95,.32), PLASTER, .62,.69,-.42));
+    O.push(part(Cone(.3,.5,4), 0xffffff, .62,1.41,-.42, 0,Math.PI/4,0));
+    for(let i=0;i<18;i++){ const a=i/18*Math.PI*2; if(Math.abs(a-Math.PI/2)<.35) continue; B.push(part(Cyl(.045,.055,.42,5), WOOD, Math.cos(a)*1.05,.42,Math.sin(a)*1.05)); }
+    return {B, O, flag:[.62,1.66,-.42], h:1.6};
+  }
+  if(type==='borg'){
+    B.push(part(Cyl(1.25,1.38,.24,18), STONE_DK, 0,.12,0));
+    B.push(part(Box(1.0,1.4,.95), STONE, 0,.94,-.2));
+    crenels(B,-.42,.42,.1,1.71,STONE); crenels(B,-.42,.42,-.62,1.71,STONE);
+    for(const sx of [-1,1]){
+      B.push(part(Cyl(.3,.34,1.75,10), STONE, sx*.72,1.0,.42));
+      B.push(part(Cyl(.36,.36,.14,10), STONE_DK, sx*.72,1.88,.42));
+      O.push(part(Cone(.42,.62,10), 0xffffff, sx*.72,2.26,.42));
+    }
+    B.push(part(Box(1.2,.75,.24), STONE, 0,.6,.55));
+    crenels(B,-.5,.5,.55,1.04,STONE);
+    B.push(part(Box(.38,.48,.05), 0x2b1d14, 0,.48,.68));
+    O.push(part(Box(.32,.48,.03), 0xffffff, 0,1.2,.29));
+    return {B, O, flag:[0,1.78,-.2], h:2.2};
+  }
+  if(type==='fast'){
+    B.push(part(Cyl(1.45,1.58,.26,20), 0x857d6e, 0,.13,0));
+    for(const [x,z,w,d] of [[0,.92,1.84,.26],[0,-.92,1.84,.26],[.92,0,.26,1.84],[-.92,0,.26,1.84]]) B.push(part(Box(w,.85,d), STONE_FT, x,.68,z));
+    crenels(B,-.8,.8,.92,1.17,STONE_FT); crenels(B,-.8,.8,-.92,1.17,STONE_FT); crenels(B,-.8,.8,.92,1.17,STONE_FT,1); crenels(B,-.8,.8,-.92,1.17,STONE_FT,1);
+    for(const sx of [-1,1]) for(const sz of [-1,1]){
+      B.push(part(Cyl(.32,.37,1.35,10), STONE_FT, sx*.92,.92,sz*.92));
+      B.push(part(Cyl(.39,.39,.16,10), STONE_DK, sx*.92,1.66,sz*.92));
+      O.push(part(Cone(.4,.5,10), 0xffffff, sx*.92,1.99,sz*.92));
+    }
+    B.push(part(Box(.9,2.0,.9), STONE, 0,1.24,-.05));
+    O.push(part(Cone(.78,.75,4), 0xffffff, 0,2.62,-.05, 0,Math.PI/4,0));
+    B.push(part(Box(.42,.55,.05), 0x2b1d14, 0,.53,1.06));
+    O.push(part(Box(.3,.5,.03), 0xffffff, 0,1.5,.41));
+    return {B, O, flag:[0,3.0,-.05], h:3.1};
+  }
+  // smedja
+  B.push(part(Cyl(1.15,1.28,.22,16), 0x7f776a, 0,.11,0));
+  B.push(part(Box(1.25,.62,.82), 0xa7774a, 0,.53,-.12));
+  for(const x of [-.6,0,.6]) B.push(part(Box(.07,.64,.07), 0x4a2f1c, x,.53,.3));
+  O.push(part(Cone(.98,.48,4), 0xffffff, 0,1.08,-.12, 0,Math.PI/4,0, 1.32,1,.95));
+  B.push(part(Box(.3,1.35,.3), 0x8b8378, .4,.92,-.35));
+  B.push(part(Box(.36,.08,.36), 0x6d665c, .4,1.62,-.35));
+  B.push(part(Box(.32,.12,.15), 0x2d2d33, -.5,.34,.55));
+  B.push(part(Box(.12,.14,.1), 0x2d2d33, -.5,.25,.55));
+  B.push(part(Cyl(.12,.12,.26,8), WOOD, .55,.35,.6));
+  B.push(part(Box(.36,.24,.05), 0xff8a2a, 0,.4,.3));
+  for(let i=0;i<14;i++){ const a=i/14*Math.PI*2; if(Math.abs(a-Math.PI/2)<.5) continue; B.push(part(Cyl(.04,.05,.32,5), WOOD, Math.cos(a)*1.05,.37,Math.sin(a)*1.05)); }
+  return {B, O, flag:[-.5,1.45,-.4], h:1.9, smoke:[.4,1.75,-.35]};
+}
+const CGEO = {};
+for(const t of Object.keys(TYPES)){
+  const r = buildCastleGeo(t);
+  CGEO[t] = {body:merge(r.B), own:merge(r.O), flag:r.flag, h:r.h, smoke:r.smoke};
+}
+const poleGeo = merge([part(Cyl(.025,.025,.75,5), 0x3a2a1a, 0,.375,0), part(new THREE.SphereGeometry(.05,6,4), 0xf6c445, 0,.77,0)]);
+const flagGeo = new THREE.PlaneGeometry(.5,.3,4,1); flagGeo.translate(.25,0,0);
+const crownGeo = merge([part(Cyl(.2,.17,.14,10), 0xf6c445, 0,0,0), ...[0,1,2,3,4].map(i=>part(Cone(.06,.16,4), 0xf6c445, Math.cos(i*1.256)*.17,.13,Math.sin(i*1.256)*.17))]);
+const ringGeo = new THREE.RingGeometry(1.5,1.72,48); ringGeo.rotateX(-Math.PI/2);
+
+/* ---------- partiklar ---------- */
+const MAXP = 900;
+const PT = {n:0, f:['x','y','z','vx','vy','vz','life','max','s','r','g','b','gr']};
+for(const f of PT.f) PT[f] = new Float32Array(MAXP);
+const partIM = new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshLambertMaterial(), MAXP);
+partIM.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+partIM.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(MAXP*3),3);
+partIM.frustumCulled = false; partIM.count = 0; scene.add(partIM);
+function burst(x,y,z,color,n,spd=3,size=.12,life=.6,up=3,gr=12){
+  _col.set(color);
+  for(let k=0;k<n;k++){
+    if(PT.n>=MAXP) return;
+    const i = PT.n++, a = Math.random()*6.283, s = rnd(.3,1)*spd;
+    PT.x[i]=x; PT.y[i]=y; PT.z[i]=z; PT.vx[i]=Math.cos(a)*s; PT.vz[i]=Math.sin(a)*s; PT.vy[i]=rnd(.4,1)*up;
+    PT.life[i]=PT.max[i]=life*rnd(.7,1.2); PT.s[i]=size*rnd(.7,1.3); PT.gr[i]=gr;
+    const l = rnd(.85,1.15); PT.r[i]=_col.r*l; PT.g[i]=_col.g*l; PT.b[i]=_col.b*l;
+  }
+}
+function updateParticles(dt){
+  const col = partIM.instanceColor.array; let j = 0;
+  for(let i=0;i<PT.n;i++){
+    PT.life[i]-=dt; if(PT.life[i]<=0) continue;
+    PT.vy[i]-=PT.gr[i]*dt; PT.x[i]+=PT.vx[i]*dt; PT.y[i]+=PT.vy[i]*dt; PT.z[i]+=PT.vz[i]*dt;
+    if(i!==j) for(const f of PT.f) PT[f][j]=PT[f][i];
+    const k = PT.life[j]/PT.max[j], s = PT.gr[j]<0 ? PT.s[j]*(1.6-k) : PT.s[j]*Math.min(1,k*2);
+    _m4.compose(_v.set(PT.x[j],PT.y[j],PT.z[j]), _q.setFromEuler(_e.set(PT.life[j]*5,PT.life[j]*7,0)), _s3.set(s,s,s));
+    partIM.setMatrixAt(j,_m4);
+    col[j*3]=PT.r[j]; col[j*3+1]=PT.g[j]; col[j*3+2]=PT.b[j];
+    j++;
+  }
+  PT.n = j; partIM.count = j;
+  partIM.instanceMatrix.needsUpdate = true; partIM.instanceColor.needsUpdate = true;
+}
+
+/* ================= Världen för en bana ================= */
+let W = null;      // grafik för aktuell bana
+let G = null;      // aktuellt spelläge
+const labelsEl = $('labels');
+function disposeWorld(){
+  if(!W) return;
+  scene.remove(W.group);
+  W.group.traverse(o=>{ if(o.userData.own){ o.geometry?.dispose(); if(o.material!==vcMat && o.material!==terrMat) o.material?.dispose(); } });
+  for(const c of W.cs){ c.lbl.remove(); c.ringM.dispose(); }
+  for(const l of W.qlbl) l.el.remove();
+  W = null;
+}
+function buildWorld(L){
+  disposeWorld();
+  const group = new THREE.Group(); scene.add(group);
+  W = {L, group, cs:[], qlbl:[], t:0, smokeT:0};
+  // terräng
+  const segX = Math.round(L.W/.3), segZ = Math.round(L.D/.3);
+  const geo = new THREE.PlaneGeometry(L.W, L.D, segX, segZ); geo.rotateX(-Math.PI/2);
+  const pos = geo.attributes.position, nv = pos.count;
+  const col = new Float32Array(nv*3), landA = new Float32Array(nv), hArr = new Float32Array(nv);
+  const cSand = new THREE.Color(0xd9c48f), cG1 = new THREE.Color(0x8cbf5c), cG2 = new THREE.Color(0x5f9a44), cRock = new THREE.Color(0x8d8473), cSnow = new THREE.Color(0xf2f2ee), cDeep = new THREE.Color(0x1d4a66), cShal = new THREE.Color(0x4b8e9c), cForest = new THREE.Color(0x4c7f37);
+  const tc = new THREE.Color();
+  for(let i=0;i<nv;i++){
+    const x = pos.getX(i), z = pos.getZ(i);
+    const h = heightAt(L,x,z); hArr[i] = h; pos.setY(i, h);
+    const land = landAt(L,x,z), f = fbm(L,x*.25,z*.25);
+    if(h < 0){ tc.copy(cDeep).lerp(cShal, clamp(1+h*1.1,0,1)); }
+    else {
+      tc.copy(cG1).lerp(cG2, clamp(f*1.6-.4,0,1));
+      const fo = L.nz(x*.22+40,z*.22+40); if(fo>.56) tc.lerp(cForest, clamp((fo-.56)*5,0,.8));
+      tc.lerp(cSand, 1-sstep(.04,.2,h));
+      const mf = sstep(.85,1.5,h); tc.lerp(cRock, mf); tc.lerp(cSnow, sstep(1.95,2.3,h+f*.3));
+    }
+    col[i*3]=tc.r; col[i*3+1]=tc.g; col[i*3+2]=tc.b;
+    landA[i] = land*sstep(-.02,.12,h)*(1-.55*sstep(.85,1.6,h));
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(col,3));
+  geo.setAttribute('aLand', new THREE.BufferAttribute(landA,1));
+  geo.computeVertexNormals();
+  const terr = new THREE.Mesh(geo, terrMat); terr.receiveShadow = true; terr.userData.own = 1; group.add(terr);
+  W.hm = {a:hArr, sx:segX, sz:segZ};
+  // vatten
+  const wg = new THREE.PlaneGeometry(L.W, L.D); wg.rotateX(-Math.PI/2);
+  W.waterTex = waterTex;
+  const water = new THREE.Mesh(wg, new THREE.MeshPhongMaterial({color:0x3f8fc6, map:waterTex, transparent:true, opacity:.8, shininess:90, specular:0x9fd4ff, depthWrite:false}));
+  water.position.y = .0; water.userData.own = 1; water.renderOrder = 2; group.add(water);
+  // bord och ram
+  const tw = L.W+30, td = L.D+30;
+  const table = new THREE.Mesh(new THREE.BoxGeometry(tw,1,td), new THREE.MeshLambertMaterial({map:woodTex, color:0x9a7a5a}));
+  table.position.y = -1.62; table.receiveShadow = true; table.userData.own = 1; group.add(table);
+  const fr = [], fw = .8;
+  for(const [x,z,w,d] of [[0,-(L.D/2+fw/2),L.W+fw*2,fw],[0,L.D/2+fw/2,L.W+fw*2,fw],[-(L.W/2+fw/2),0,fw,L.D],[L.W/2+fw/2,0,fw,L.D]]){
+    fr.push(part(Box(w,1.5,d), 0x5a361c, x,-.4,z));
+    fr.push(part(Box(w*(w>d?1:.4)+(w>d?0:.0),.08,d*(d>w?1:.4)), 0xd9a63a, x,.37,z));
+  }
+  const frame = new THREE.Mesh(merge(fr), vcMat); frame.castShadow = frame.receiveShadow = true; frame.userData.own = 1; group.add(frame);
+  // sol och skuggor
+  const ext = Math.max(L.W,L.D)/2+2;
+  sun.position.set(-ext*.55, ext*1.6, ext*.7); sun.target.position.set(0,0,0);
+  Object.assign(sun.shadow.camera, {left:-ext, right:ext, top:ext, bottom:-ext, near:1, far:ext*5});
+  sun.shadow.camera.updateProjectionMatrix();
+  // vägar och broar
+  const rp = [], bp = [];
+  for(const [a,b] of L.edges){
+    const A = L.cs[a], B = L.cs[b], len = Math.hypot(B.x-A.x,B.z-A.z), dx=(B.x-A.x)/len, dz=(B.z-A.z)/len, px=-dz, pz=dx;
+    const n = Math.ceil(len/.35), pts = [];
+    for(let i=0;i<=n;i++){ const t=i/n, x=A.x+(B.x-A.x)*t, z=A.z+(B.z-A.z)*t; pts.push([x, z, Math.max(hm(x,z), .1)+.04, t*len]); }
+    for(let i=0;i<n;i++){
+      const [x0,z0,y0,d0] = pts[i], [x1,z1,y1,d1] = pts[i+1];
+      if(d1 < 1.25 || d0 > len-1.25) continue;
+      const w = .27;
+      const g = new THREE.BufferGeometry();
+      const v = new Float32Array([x0-px*w,y0,z0-pz*w, x0+px*w,y0,z0+pz*w, x1+px*w,y1,z1+pz*w, x0-px*w,y0,z0-pz*w, x1+px*w,y1,z1+pz*w, x1-px*w,y1,z1-pz*w]);
+      g.setAttribute('position', new THREE.BufferAttribute(v,3)); g.computeVertexNormals();
+      rp.push(part(g, (i%2)?0xc2a374:0xbb9c6c));
+      if(hm(x0,z0) < .06) bp.push(part(Box(.75,.07,.4), 0x7a5230, x0,y0+.02,z0, 0,Math.atan2(dx,dz)+Math.PI/2,0));
+    }
+  }
+  if(rp.length){ const roads = new THREE.Mesh(merge(rp), new THREE.MeshLambertMaterial({vertexColors:true, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2})); roads.receiveShadow = true; roads.userData.own = 1; group.add(roads); }
+  if(bp.length){ const br = new THREE.Mesh(merge(bp), vcMat); br.castShadow = true; br.userData.own = 1; group.add(br); }
+  // skog
+  const trees = [];
+  for(let x=-L.W/2+1; x<L.W/2-1; x+=.75) for(let z=-L.D/2+1; z<L.D/2-1; z+=.75){
+    const jx = x + (L.nz(x*3,z*3)-.5)*.6, jz = z + (L.nz(z*3+5,x*3)-.5)*.6;
+    const fo = L.nz(jx*.22+40,jz*.22+40); if(fo < .53) continue;
+    const h = hm(jx,jz); if(h < .14 || h > 1.25) continue;
+    if(L.cs.some(c=>Math.hypot(c.x-jx,c.z-jz)<2.0)) continue;
+    if(L.edges.some(([a,b])=>segDist(jx,jz,L.cs[a].x,L.cs[a].z,L.cs[b].x,L.cs[b].z)<.65)) continue;
+    trees.push([jx,h,jz,.7+L.nz(jx*5,jz*5)*.6]);
+  }
+  if(trees.length){
+    const tg = merge([part(Cyl(.06,.08,.3,5),0x6b4626,0,.15,0), part(Cone(.38,.6,7),0x2f7d3b,0,.55,0), part(Cone(.28,.5,7),0x3c9447,0,.85,0)]);
+    const tm = new THREE.InstancedMesh(tg, vcMat, trees.length);
+    trees.forEach((t,i)=>{ _m4.compose(_v.set(t[0],t[1]-.05,t[2]), _q.setFromEuler(_e.set(0,t[3]*9,0)), _s3.set(t[3],t[3]*rnd(.85,1.2),t[3])); tm.setMatrixAt(i,_m4); tm.setColorAt(i,_col.setHSL(rnd(.27,.36),rnd(.35,.6),rnd(.45,.62)).multiplyScalar(1.6)); });
+    tm.castShadow = true; tm.receiveShadow = true; tm.userData.own = 1; group.add(tm);
+  }
+  // borgar
+  for(const c of L.cs){
+    const gq = CGEO[c.type], g = new THREE.Group();
+    g.position.set(c.x, c.h, c.z); g.rotation.y = (L.nz(c.x,c.z)-.5)*.5;
+    const body = new THREE.Mesh(gq.body, vcMat); body.castShadow = body.receiveShadow = true; g.add(body);
+    const own = new THREE.Mesh(gq.own, ownerMat[0]); own.castShadow = true; g.add(own);
+    const pole = new THREE.Mesh(poleGeo, vcMat); pole.position.set(...gq.flag); g.add(pole);
+    const flag = new THREE.Mesh(flagGeo, flagMat[0]); flag.position.set(gq.flag[0], gq.flag[1]+.58, gq.flag[2]); g.add(flag);
+    if(c.home){ const cr = new THREE.Mesh(crownGeo, vcMat); cr.position.set(0, gq.h+.35, 0); g.add(cr); W.crown = W.crown||[]; W.crown.push(cr); }
+    const ringM = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.0, depthWrite:false});
+    const ring = new THREE.Mesh(ringGeo, ringM); ring.userData.ownMat = 1; ring.position.set(c.x, c.h+.04, c.z); ring.renderOrder = 3; group.add(ring);
+    group.add(g);
+    const lbl = document.createElement('div'); lbl.className = 'cl o0'; labelsEl.appendChild(lbl);
+    W.cs.push({g, own, flag, ring, ringM, lbl, top:gq.h+.9, owner:-1, shown:-1, sx:0, sy:0, vis:false, smoke:gq.smoke, type:c.type, home:c.home});
+  }
+  // terränguniforms
+  TU.uCount.value = L.N;
+  for(let i=0;i<MAXS;i++){ if(i<L.N){ TU.uSite.value[i].set(L.cs[i].x, L.cs[i].z, 0, 1e4); } else TU.uSite.value[i].set(999,999,-1,1e4); }
+  W.camFit = fitDist();
+}
+function hm(x,z){
+  const h = W.hm, L = W.L;
+  const fx = clamp((x+L.W/2)/L.W*h.sx, 0, h.sx-1e-3), fz = clamp((z+L.D/2)/L.D*h.sz, 0, h.sz-1e-3);
+  const ix = fx|0, iz = fz|0, tx = fx-ix, tz = fz-iz, r = h.sx+1;
+  const a = h.a[iz*r+ix], b = h.a[iz*r+ix+1], c = h.a[(iz+1)*r+ix], d = h.a[(iz+1)*r+ix+1];
+  return lerp(lerp(a,b,tx), lerp(c,d,tx), tz);
+}
+function setCastleOwner(i, o, wave){
+  const v = W.cs[i];
+  if(v.owner === o) return;
+  const prev = v.owner;
+  v.owner = o; v.own.material = ownerMat[o]; v.flag.material = flagMat[o];
+  v.lbl.className = 'cl o'+o; v.shown = -1;
+  const s = TU.uSite.value[i];
+  if(wave && prev>=0){ TU.uColA.value[i].copy(TU.uColB.value[i]); TU.uColB.value[i].setHex(OCOL[o]); s.w = 0; }
+  else { TU.uColA.value[i].setHex(OCOL[o]); TU.uColB.value[i].setHex(OCOL[o]); s.w = 1e4; }
+  s.z = o;
+}
+function syncAll(){ for(let i=0;i<G.cs.length;i++) setCastleOwner(i, G.cs[i].owner, false); }
+
+/* ================= Kamera ================= */
+const cam = {tx:0, tz:0, dist:40, yaw:0, pitch:1.04, intro:0, minD:9, maxD:80};
+function fitDist(){
+  const L = W.L, t = Math.tan(camera.fov*Math.PI/360), a = clamp(innerWidth/Math.max(1,innerHeight), .2, 5);
+  return Math.max((L.rx+1.4)/(t*a), (L.rz+2.6)*Math.sin(cam.pitch)/t*1.05);
+}
+function resize(){
+  if(!innerWidth || !innerHeight) return;
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  if(W){ W.camFit = fitDist(); cam.maxD = W.camFit*1.12; cam.dist = isFinite(cam.dist) ? clamp(cam.dist, cam.minD, cam.maxD) : W.camFit; }
+}
+function framePlay(){
+  const L = W.L, fit = fitDist();
+  cam.maxD = fit*1.12;
+  const t = Math.tan(camera.fov*Math.PI/360), a = clamp(innerWidth/Math.max(1,innerHeight), .2, 5);
+  const comfy = (innerWidth/12)/2/(t*a);       // minst cirka 12 px per enhet på skärmen
+  cam.dist = Math.min(fit, Math.max(comfy, 15));
+  const home = G.cs.find(c=>c.home===P1) || G.cs[0];
+  const k = cam.dist < fit*.97 ? .55 : 0;
+  cam.tx = home.x*k; cam.tz = home.z*k + 1.2; cam.yaw = 0;
+  clampCam();
+}
+function clampCam(){
+  const L = W.L; cam.dist = clamp(cam.dist, cam.minD, cam.maxD);
+  cam.tx = clamp(cam.tx, -L.rx, L.rx); cam.tz = clamp(cam.tz, -L.rz, L.rz);
+}
+function updateCamera(dt){
+  let d = cam.dist;
+  if(cam.intro>0){ cam.intro = Math.max(0, cam.intro - dt*.9); const k = cam.intro*cam.intro; d *= 1 + k*.9; }
+  const cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+  camera.position.set(cam.tx + Math.sin(cam.yaw)*cp*d, sp*d, cam.tz + Math.cos(cam.yaw)*cp*d);
+  camera.lookAt(cam.tx, .3, cam.tz);
+}
+
+/* ================= Etiketter, figurer, effekter per bildruta ================= */
+const _pt = {}, _p = new THREE.Vector3();
+function project(x,y,z,out){ _p.set(x,y,z).project(camera); out.x = (_p.x*.5+.5)*innerWidth; out.y = (-_p.y*.5+.5)*innerHeight; out.ok = _p.z < 1; return out; }
+const iconFor = c => c.home ? ICON.crown : c.type==='fast' ? ICON.fast : c.type==='smed' ? ICON.smed : '';
+function placeUnit(o, x, y, z, yaw, s=1){
+  const im = unitIM[o]; if(im.count >= MAXU) return;
+  _m4.compose(_v.set(x,y,z), _q.setFromAxisAngle(_s3.set(0,1,0), yaw), _v.clone().set(s,s,s)); im.setMatrixAt(im.count++, _m4);
+}
+function renderState(dt){
+  W.t += dt;
+  for(const im of unitIM) im.count = 0;
+  const T = W.t, sp = {};
+  // borgar
+  for(let i=0;i<G.cs.length;i++){
+    const c = G.cs[i], v = W.cs[i], Lc = W.L.cs[i];
+    if(v.owner !== c.owner) setCastleOwner(i, c.owner, true);
+    const n = Math.floor(c.n);
+    if(n !== v.shown){ v.shown = n; v.lbl.innerHTML = iconFor(c) + n; }
+    v.flag.rotation.y = Math.sin(T*2.4+i)*.35;
+    project(c.x, Lc.h+v.top, c.z, sp); v.sx = sp.x; v.sy = sp.y; v.vis = sp.ok;
+    v.lbl.style.transform = `translate(${sp.x.toFixed(1)}px,${sp.y.toFixed(1)}px) translate(-50%,-100%)`;
+    // garnison: små riddare framför borgen
+    if(c.owner){
+      const k = Math.min(9, Math.ceil(c.n/6));
+      for(let j=0;j<k;j++){ const gx = c.x + ((j%3)-1)*.3 + .05, gz = c.z + 1.25 + Math.floor(j/3)*.3; placeUnit(c.owner, gx, hm(gx,gz), gz, Math.PI+Math.sin(T+j)*.15); }
+    }
+    // smedjerök
+    if(v.smoke && Math.random() < dt*5){ const s = v.smoke, a = v.g.rotation.y, ca=Math.cos(a), sa=Math.sin(a); burst(c.x + s[0]*ca + s[2]*sa, Lc.h+s[1], c.z - s[0]*sa + s[2]*ca, 0x9a9a9a, 1, .3, .16, 2.2, .6, -.35); }
+    // ring: markering
+    const selected = drag.sel.includes(i), tgt = drag.tgt===i;
+    v.ringM.opacity = selected ? .75+Math.sin(T*8)*.2 : tgt ? .85 : 0;
+    v.ringM.color.setHex(tgt ? 0xf6c445 : 0xffffff);
+    v.lbl.classList.toggle('sel', selected); v.lbl.classList.toggle('tgt', tgt);
+  }
+  // kolonner
+  let qi = 0;
+  for(const q of G.cols){
+    const figs = clamp(Math.ceil(q.n/2.5), 2, 36), rows = Math.ceil(figs/3);
+    colPos(q, q.d, _pt);
+    const yaw = Math.atan2(-_pt.dx, -_pt.dz);
+    for(let f=0; f<figs; f++){
+      const r = Math.floor(f/3), dd = q.d - r*.34 - .2;
+      if(dd < 1.0 && q.d < q.len) continue;
+      const p = colPos(q, dd, _pa), lat = ((f%3)-1)*.2*(figs<3?0:1);
+      const x = p.x - p.dz*lat, z = p.z + p.dx*lat;
+      const y = Math.max(hm(x,z), .1) + .04 + Math.abs(Math.sin(T*11 + f*1.7 + q.id))*.05;
+      placeUnit(q.o, x, y, z, Math.atan2(-p.dx,-p.dz));
+    }
+    let l = W.qlbl[qi];
+    if(!l){ const el = document.createElement('div'); el.className='ql'; labelsEl.appendChild(el); l = W.qlbl[qi] = {el, n:-1, o:-1}; }
+    if(l.n!==q.n || l.o!==q.o){ l.n=q.n; l.o=q.o; l.el.className='ql o'+q.o; l.el.textContent = q.n; }
+    project(_pt.x, Math.max(hm(_pt.x,_pt.z),.1)+.6, _pt.z, sp);
+    l.el.hidden = !sp.ok || q.d < 1.2;
+    l.el.style.transform = `translate(${sp.x.toFixed(1)}px,${sp.y.toFixed(1)}px) translate(-50%,-100%)`;
+    qi++;
+  }
+  for(let i=qi;i<W.qlbl.length;i++) W.qlbl[i].el.hidden = true;
+  for(const im of unitIM) im.instanceMatrix.needsUpdate = true;
+  // erövringsvåg i terrängen
+  for(let i=0;i<W.L.N;i++){ const s = TU.uSite.value[i]; if(s.w < 900){ s.w += dt*11; if(s.w > 30){ s.w = 1e4; TU.uColA.value[i].copy(TU.uColB.value[i]); } } }
+  if(W.crown) for(const c of W.crown) c.rotation.y = T*.8;
+  waterTex.offset.set(T*.01, T*.006);
+}
+function handleEvents(){
+  for(const e of G.ev){
+    if(e.k==='send'){ if(e.o===P1) Snd.drums(); }
+    else if(e.k==='capture'){
+      const c = G.cs[e.c], h = W.L.cs[e.c].h;
+      burst(c.x, h+1.2, c.z, OCOL[e.to], 26, 3.5, .14, .9, 5);
+      burst(c.x, h+1.2, c.z, 0xf6c445, 10, 2.5, .1, .8, 5);
+      const lb = W.cs[e.c].lbl; lb.classList.remove('bump'); void lb.offsetWidth; lb.classList.add('bump');
+      if(e.to===P1) Snd.fanfare(); else if(e.from===P1){ Snd.lost(); toast(`${LORDS[e.to]?.name||'Fienden'} tog en av dina borgar`); } else Snd.thud();
+    }
+    else if(e.k==='hit'){ const c = G.cs[e.c]; burst(c.x, W.L.cs[e.c].h+.8, c.z, 0xdddddd, 10, 2.5, .09, .5, 3); if(e.o===P1||e.def===P1) Snd.clash(.8);
+      if(e.o===P1 && mode==='play'){ toast(`Anfallet räckte inte. ${Math.floor(c.n)} försvarare kvar.`); const lb = W.cs[e.c].lbl; lb.classList.remove('bump'); void lb.offsetWidth; lb.classList.add('bump'); } }
+    else if(e.k==='fight'){ burst(e.x, Math.max(hm(e.x,e.z),.1)+.4, e.z, 0xffe0a0, 16, 3, .1, .5, 4); burst(e.x, Math.max(hm(e.x,e.z),.1)+.4, e.z, OCOL[e.a], 6, 2.5, .1, .6, 3); burst(e.x, Math.max(hm(e.x,e.z),.1)+.4, e.z, OCOL[e.b], 6, 2.5, .1, .6, 3); if(e.a===P1||e.b===P1) Snd.clash(1); }
+    else if(e.k==='reinf'){ if(e.o===P1){ const lb = W.cs[e.c].lbl; lb.classList.remove('bump'); void lb.offsetWidth; lb.classList.add('bump'); } }
+    else if(e.k==='elim' && mode==='play' && e.o!==P1){ banner(`${LORDS[e.o].name}<small>är besegrad!</small>`); }
+  }
+  G.ev.length = 0;
+}
+
+/* ================= HUD ================= */
+let toastT = 0;
+function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('show'); toastT = 2.4; }
+function banner(html){ const bn = $('banner'); bn.innerHTML = html; bn.classList.remove('show'); void bn.offsetWidth; bn.classList.add('show'); }
+const powerEl = $('power'); const powerSeg = OCOL.map((_,o)=>{ const b = document.createElement('b'); b.style.background = OCSS[o]; powerEl.appendChild(b); return b; });
+let hudAcc = 0;
+function updateHud(dt){
+  hudAcc += dt; if(hudAcc < .25) return; hudAcc = 0;
+  const tot = [0,0,0,0,0]; let all = 0;
+  for(const c of G.cs){ tot[c.owner] += c.n; all += c.n; }
+  for(const q of G.cols){ tot[q.o] += q.n; all += q.n; }
+  const order = [1,2,3,4,0];
+  order.forEach((o,k)=>{ powerSeg[o].style.width = (tot[o]/Math.max(1,all)*100).toFixed(1)+'%'; powerSeg[o].style.order = k; });
+  const t = G.t, m = Math.floor(t/60), s = Math.floor(t%60);
+  $('timeTxt').textContent = m+':'+String(s).padStart(2,'0');
+  const st = starsFor(t), stars = $('timer').querySelectorAll('i');
+  stars.forEach((e,i)=>e.classList.toggle('on', i<st));
+}
+const starsFor = t => { const par = LEVELS[curIdx].par; return t<=par ? 3 : t<=par*1.6 ? 2 : 1; };
+
+/* ================= Styrning: dra, nyp, panorera ================= */
+const drag = {sel:[], tgt:-1, active:false, x:0, y:0, armed:false};
+const pointers = new Map();
+let gesture = null;   // 'send' | 'pan' | 'pinch'
+let gStart = null;
+const dragSvg = $('drag');
+const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _plane = new THREE.Plane(new THREE.Vector3(0,1,0), -.3), _hit = new THREE.Vector3();
+function ground(x,y){ _ndc.set(x/innerWidth*2-1, -(y/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera); return _ray.ray.intersectPlane(_plane, _hit) ? {x:_hit.x, z:_hit.z} : null; }
+function pickCastle(x,y){
+  let best=-1, bd=1e9;
+  for(let i=0;i<W.cs.length;i++){
+    const v = W.cs[i]; if(!v.vis) continue;
+    // träffyta: etiketten och borgen under den
+    project(G.cs[i].x, W.L.cs[i].h+.6, G.cs[i].z, _pt);
+    const d = Math.min(Math.hypot(v.sx-x, v.sy-10-y), Math.hypot(_pt.x-x, _pt.y-y));
+    if(d<bd){ bd=d; best=i; }
+  }
+  const r = Math.max(34, 1.6*innerWidth/(2*cam.dist*Math.tan(camera.fov*Math.PI/360)*camera.aspect));
+  return bd < r ? best : -1;
+}
+function drawDrag(){
+  let html = '';
+  if(drag.active || drag.armed){
+    const tx = drag.tgt>=0 ? W.cs[drag.tgt].sx : drag.x, ty = drag.tgt>=0 ? W.cs[drag.tgt].sy+8 : drag.y;
+    if(drag.active || drag.tgt>=0) for(const i of drag.sel){ if(i===drag.tgt) continue; const v = W.cs[i]; html += `<line x1="${v.sx.toFixed(1)}" y1="${(v.sy+8).toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}"/>`; }
+    const n = drag.sel.reduce((s,i)=> s + (i!==drag.tgt ? Math.floor(G.cs[i].n/2) : 0), 0);
+    let cls = '';
+    if(drag.tgt>=0 && G.cs[drag.tgt].owner!==P1){ const t = G.cs[drag.tgt]; cls = n*atkMul(G,P1) > (t.n+prodRate(G,t)*4)*defMul(G,t) ? 'ok' : 'no'; }
+    if(drag.active && n>0) html += `<text class="${cls}" x="${(tx+16).toFixed(1)}" y="${(ty-14).toFixed(1)}">${n}${cls==='no'?' för få':''}</text>`;
+  }
+  dragSvg.innerHTML = html;
+}
+function clearDrag(){ drag.sel = []; drag.tgt = -1; drag.active = false; drag.armed = false; drawDrag(); }
+function doSend(srcs, tgt){
+  const before = G.cols.length;
+  const n = send(G, srcs, tgt, P1);
+  const stop = G.cols.slice(before).find(q=>q.to!==tgt);
+  if(stop) toast(`Vägen är spärrad. Kolonnen anfaller ${{by:'byn',borg:'borgen',fast:'fästningen',smed:'smedjan'}[G.cs[stop.to].type]} på vägen först.`);
+  if(n && hintStep===1){ hintStep = 2; setHint(LEVELS[curIdx].foes.length ? `Bra! Fortsätt tills alla ${['','','röda','gröna','gula'][LEVELS[curIdx].foes[0]]} borgar är dina.` : ''); setTimeout(()=>{ if(hintStep===2) setHint(''); }, 4500); }
+  return n;
+}
+canvas.addEventListener('pointerdown', e => {
+  if(!W || (mode!=='play' && mode!=='intro')) return;
+  Snd.init();
+  try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY, x0:e.clientX, y0:e.clientY});
+  if(pointers.size===2){
+    // nyp: avbryt eventuell dragning
+    drag.active = false; drag.sel = drag.armed ? drag.sel : []; drag.tgt = -1; drawDrag();
+    const [a,b] = [...pointers.values()];
+    gesture = 'pinch'; gStart = {d:Math.hypot(a.x-b.x,a.y-b.y), dist:cam.dist, g:ground((a.x+b.x)/2,(a.y+b.y)/2)};
+    return;
+  }
+  if(pointers.size>2) return;
+  const i = mode==='play' ? pickCastle(e.clientX, e.clientY) : -1;
+  if(i>=0 && G.cs[i].owner===P1){
+    drag.prev = drag.armed ? drag.sel.slice() : null; drag.armed = false;
+    gesture = 'send'; drag.sel = [i]; drag.active = true; drag.x = e.clientX; drag.y = e.clientY; drag.tgt = -1; Snd.pick();
+  } else {
+    gesture = 'pan'; gStart = {g:ground(e.clientX,e.clientY), tx:cam.tx, tz:cam.tz, pick:i};
+  }
+});
+canvas.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId); if(!p) return;
+  p.x = e.clientX; p.y = e.clientY;
+  if(gesture==='send'){
+    drag.x = p.x; drag.y = p.y;
+    const i = pickCastle(p.x, p.y);
+    if(i>=0 && G.cs[i].owner===P1 && !drag.sel.includes(i) && Math.hypot(p.x-p.x0,p.y-p.y0)>12){ drag.sel.push(i); Snd.pick(); }
+    drag.tgt = (i>=0 && !(drag.sel.length===1 && drag.sel[0]===i)) ? i : -1;
+    if(hintStep===1 && drag.tgt>=0) {}
+  } else if(gesture==='pan' && gStart.g){
+    if(Math.hypot(p.x-p.x0,p.y-p.y0) < 6) return;
+    // flytta kameran så att samma markpunkt ligger kvar under fingret
+    cam.tx = gStart.tx; cam.tz = gStart.tz; updateCamera(0);
+    const g = ground(p.x,p.y); if(!g) return;
+    cam.tx = gStart.tx - (g.x - gStart.g.x); cam.tz = gStart.tz - (g.z - gStart.g.z); clampCam();
+  } else if(gesture==='pinch' && pointers.size>=2){
+    const [a,b] = [...pointers.values()];
+    const d = Math.hypot(a.x-b.x,a.y-b.y);
+    cam.dist = gStart.dist * gStart.d/Math.max(20,d); clampCam(); updateCamera(0);
+    const g = ground((a.x+b.x)/2,(a.y+b.y)/2);
+    if(g && gStart.g){ cam.tx -= g.x - gStart.g.x; cam.tz -= g.z - gStart.g.z; clampCam(); }
+  }
+  drawDrag();
+});
+function endPointer(e){
+  const p = pointers.get(e.pointerId); if(!p) return;
+  pointers.delete(e.pointerId);
+  const moved = Math.hypot(p.x-p.x0, p.y-p.y0);
+  if(gesture==='send'){
+    const i = pickCastle(p.x, p.y);
+    if(i>=0 && !(drag.sel.length===1 && drag.sel[0]===i)){ doSend(drag.sel.filter(s=>s!==i), i); clearDrag(); }
+    else if(moved < 12 && i===drag.sel[0]){
+      // tryck: borgen blir vald, tryck sedan på målet. Var en annan egen borg redan vald skickas förstärkning hit.
+      const prev = drag.prev; drag.prev = null;
+      if(prev && !prev.includes(i)){ doSend(prev, i); clearDrag(); }
+      else if(prev){ clearDrag(); }
+      else { drag.active = false; drag.armed = true; drag.tgt = -1; drawDrag(); }
+    }
+    else clearDrag();
+  } else if(gesture==='pan' && moved < 10 && mode==='play'){
+    const i = gStart.pick;
+    if(drag.armed){
+      if(i>=0 && !drag.sel.includes(i)) doSend(drag.sel.slice(), i);
+      clearDrag();
+    } else if(i>=0 && G.cs[i].owner!==P1){ toast(`${TYPES[G.cs[i].type].name}${G.cs[i].home?' (huvudborg)':''} · ${G.cs[i].owner?LORDS[G.cs[i].owner].name:'neutral'}. Dra från en blå borg hit.`); }
+  }
+  if(pointers.size===0) gesture = null;
+  else if(pointers.size===1 && gesture==='pinch'){ const [q] = [...pointers.values()]; q.x0=q.x; q.y0=q.y; gesture='pan'; gStart = {g:ground(q.x,q.y), tx:cam.tx, tz:cam.tz, pick:-1}; }
+}
+canvas.addEventListener('pointerup', endPointer);
+canvas.addEventListener('pointercancel', e => { pointers.delete(e.pointerId); if(!pointers.size){ gesture=null; if(drag.active) clearDrag(); } });
+canvas.addEventListener('wheel', e => { if(!W || mode==='menu') return; e.preventDefault(); cam.dist *= Math.exp(e.deltaY*.0012); clampCam(); }, {passive:false});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('keydown', e => {
+  if(e.key==='Escape'){ if(mode==='play') pause(); else if(mode==='pause') resume(); }
+  if(e.key===' ' && mode==='play'){ e.preventDefault(); toggleSpeed(); }
+});
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden && mode==='play') pause(); });
+window.addEventListener('resize', resize);
+
+/* ================= Skärmar och flöde ================= */
+const screens = ['start','mapScr','helpScr','introScr','pauseScr','resultScr','shopScr'];
+let mode = 'menu', curIdx = 0, speed = 1, hintStep = 0, endT = 0;
+function show(id){ screens.forEach(s => $(s).hidden = s!==id); }
+function goldUI(){ document.querySelectorAll('.goldN').forEach(e=>e.textContent = save.gold); }
+function setHint(t){ $('hint').textContent = t; $('hint').hidden = !t; }
+function nextIdx(){ return Math.min(save.unlocked-1, NL-1); }
+
+function startAttract(){
+  const L = genLevel(7, 4242 + Math.floor(Math.random()*50)*13);
+  G = newState(L, {demo:true, kinds:{1:'opp'}});
+  buildWorld(L); syncAll();
+  cam.dist = fitDist()*.95; cam.tx = 0; cam.tz = 0; cam.yaw = 0; cam.intro = 0;
+  mode = 'menu'; $('hud').hidden = true; clearDrag(); setHint('');
+}
+function toMenu(){
+  startAttract(); show('start'); goldUI();
+  const n = nextIdx();
+  $('playBtn').textContent = save.stars[NL-1]>0 && save.unlocked>NL ? 'Spela Kronlandet' : `Spela bana ${n+1}: ${LEVELS[n].name}`;
+}
+function openMap(){ if(mode!=='menu') toMenu(); show('mapScr'); renderCamp(); }
+function prepLevel(idx){
+  Snd.init();
+  curIdx = idx;
+  const L = genLevel(idx);
+  G = newState(L);
+  buildWorld(L); syncAll(); framePlay(); cam.intro = 1;
+  mode = 'intro'; updateSpeedBtn(); clearDrag(); setHint('');
+  $('hud').hidden = true;
+  $('inNum').textContent = `Bana ${idx+1} av ${NL}`;
+  $('inName').textContent = LEVELS[idx].name;
+  $('inFoes').innerHTML = LEVELS[idx].foes.map(o=>`<span class="foe"><i style="background:${OCSS[o]}"></i>${LORDS[o].name} <small>${LORDS[o].trait}</small></span>`).join('');
+  $('inTip').textContent = LEVELS[idx].tip;
+  const par = LEVELS[idx].par;
+  $('inStars').textContent = `Tre stjärnor om du vinner inom ${Math.floor(par/60)}:${String(par%60).padStart(2,'0')}, två inom ${Math.floor(par*1.6/60)}:${String(Math.round(par*1.6%60)).padStart(2,'0')}.`;
+  show('introScr');
+}
+function beginBattle(){
+  if(!save.help){ save.help = true; persist(); $('helpBack').dataset.go = 'battle'; show('helpScr'); return; }
+  show(null); $('hud').hidden = false; mode = 'play';
+  $('lvlName').textContent = `${curIdx+1}. ${LEVELS[curIdx].name}`;
+  hintStep = curIdx===0 ? 1 : 0;
+  setHint(hintStep ? 'Dra från din blå borg till en grå by' : '');
+  banner(`${LEVELS[curIdx].name}<small>Till strid!</small>`);
+  Snd.drums(); hudAcc = 1;
+}
+function pause(){ if(mode!=='play') return; mode = 'pause'; clearDrag(); show('pauseScr'); }
+function resume(){ show(null); mode = 'play'; }
+function toggleSpeed(){ speed = speed===1 ? 2 : 1; updateSpeedBtn(); Snd.click(); }
+function updateSpeedBtn(){ $('speedTxt').textContent = '×'+speed; $('speedBtn').classList.toggle('on', speed===2); }
+function finish(){
+  const won = G.winner===P1, idx = curIdx;
+  mode = 'end'; endT = 0; clearDrag(); setHint('');
+  let stars = 0, gold = 0;
+  if(won){
+    stars = starsFor(G.t);
+    const first = save.stars[idx]===0;
+    gold = Math.round((60 + 18*idx)*(first?1:.5)) + stars*10;
+    save.stars[idx] = Math.max(save.stars[idx], stars);
+    save.best[idx] = save.best[idx] ? Math.min(save.best[idx], Math.round(G.t)) : Math.round(G.t);
+    save.unlocked = Math.max(save.unlocked, idx+2);
+    save.gold += gold; persist();
+    Snd.win(); banner(`Seger!<small>${LEVELS[idx].name} är ditt</small>`);
+  } else { Snd.lose(); banner('Riket föll'); }
+  setTimeout(()=>showResult(won, stars, gold), 1600);
+}
+function showResult(won, stars, gold){
+  $('hud').hidden = true; show('resultScr');
+  const idx = curIdx;
+  $('resTitle').textContent = won ? 'Seger!' : 'Riket föll';
+  const m = Math.floor(G.t/60), s = Math.floor(G.t%60);
+  $('resSub').textContent = won ? `${LEVELS[idx].name} är ditt på ${m}:${String(s).padStart(2,'0')}` : `Du förlorade alla borgar i ${LEVELS[idx].name}. Förbättra trupperna i Rustkammaren eller försök igen.`;
+  $('resStars').hidden = !won; $('resGoldPill').hidden = !won;
+  $('resGold').textContent = '+'+gold;
+  const st = $('resStars').querySelectorAll('i'); st.forEach(e=>e.classList.remove('on'));
+  if(won) st.forEach((e,i)=>{ if(i<stars) setTimeout(()=>{ e.classList.add('on'); Snd.star(i); }, 300+i*320); });
+  const last = idx===NL-1;
+  playNext = won && !last ? idx+1 : idx;
+  $('resNext').textContent = won ? (last ? 'Hela riket är ditt!' : 'Nästa bana') : 'Försök igen';
+  $('resNext').onclick = () => { Snd.click(); if(won && last){ toMenu(); return; } prepLevel(won ? idx+1 : idx); };
+  goldUI();
+}
+function renderShop(){
+  const list = $('shopList'); list.innerHTML = '';
+  for(const [k,u] of Object.entries(UPG)){
+    const lv = save.upg[k], max = lv>=u.max, cost = max ? 0 : u.cost[lv];
+    const d = document.createElement('div'); d.className = 'card';
+    d.innerHTML = `<div class="ic"><svg viewBox="0 0 24 24">${u.icon}</svg></div><div class="info"><h3>${u.name}</h3><p>${u.desc}</p><div class="pips">${Array.from({length:u.max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</div></div>`;
+    const b = document.createElement('button'); b.className = 'buy';
+    b.innerHTML = max ? 'Max' : `<i class="coin"></i>${cost}`;
+    b.disabled = max || save.gold < cost;
+    b.onclick = () => { if(save.gold < cost || max) return; save.gold -= cost; save.upg[k]++; persist(); Snd.coin(); goldUI(); renderShop(); };
+    d.appendChild(b); list.appendChild(d);
+  }
+  $('shopPlay').textContent = `Spela bana ${(shopBackTo==='resultScr' ? playNext : nextIdx())+1}`;
+  goldUI();
+}
+let shopBackTo = 'start', playNext = 0;
+function openShop(from){ shopBackTo = from; if(mode==='end'){ const keep = shopBackTo; toMenu(); shopBackTo = keep; } show('shopScr'); renderShop(); }
+
+/* ---------- kampanjkartan ---------- */
+const NODES = [[90,492],[196,470],[288,424],[236,360],[126,346],[66,276],[160,232],[272,250],[300,168],[204,118],[98,94],[196,36]];
+function renderCamp(){
+  const svg = $('campSvg');
+  let h = `<defs><pattern id="pp" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#e9d7a6"/><circle cx="2" cy="3" r=".7" fill="#d8c08a"/></pattern></defs>
+  <rect width="360" height="540" rx="18" fill="#3d7ea6"/>
+  <path d="M44 524 C 8 430, 26 318, 24 214 C 22 110, 84 14, 196 10 C 304 8, 348 88, 338 182 C 330 262, 352 330, 326 418 C 304 498, 226 532, 142 530 Z" fill="url(#pp)" stroke="#8b6a3a" stroke-width="4"/>
+  <path d="M28 318 C 90 324, 140 312, 200 318 M218 214 C 252 222, 290 212, 336 220" stroke="#7fb0c8" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <g fill="#9f9480">${[[60,180],[80,165],[250,300],[268,312],[150,420]].map(([x,y])=>`<path d="M${x-12} ${y+8} L${x} ${y-10} L${x+12} ${y+8}Z"/>`).join('')}</g>
+  <path d="M${NODES.map(p=>p.join(' ')).join(' L')}" stroke="#7a4a1a" stroke-width="3" stroke-dasharray="2 7" fill="none" stroke-linecap="round"/>`;
+  NODES.forEach(([x,y],i)=>{
+    const lock = i >= save.unlocked, st = save.stars[i], cur = i===nextIdx() && !st;
+    const fill = lock ? '#8d8576' : st ? '#2f6be0' : '#f6c445';
+    h += `<g class="node ${lock?'lock':''} ${cur?'cur':''}" data-i="${i}">
+      <circle class="b" cx="${x}" cy="${y}" r="16" fill="${fill}"/>
+      <text x="${x}" y="${y+6}" font-size="17" fill="${lock?'#4d473d':st?'#fff':'#3f2700'}">${lock?'🔒':i+1}</text>
+      <text class="nm" x="${x}" y="${y+30}">${LEVELS[i].name}</text>
+      ${st?`<text x="${x}" y="${y-21}" font-size="12" fill="#e2a514">${'★'.repeat(st)}<tspan fill="#b5a888">${'★'.repeat(3-st)}</tspan></text>`:''}
+    </g>`;
+  });
+  svg.innerHTML = h;
+  svg.querySelectorAll('.node').forEach(n => n.addEventListener('click', ()=>{ const i = +n.dataset.i; if(i < save.unlocked){ Snd.click(); prepLevel(i); } }));
+}
+
+/* ---------- knappar ---------- */
+const on = (id, f) => $(id).addEventListener('click', ()=>{ Snd.init(); Snd.click(); f(); });
+on('playBtn', ()=>prepLevel(nextIdx()));
+on('mapBtn', openMap);
+on('shopBtn', ()=>openShop('start'));
+on('helpBtn', ()=>{ $('helpBack').dataset.go = ''; show('helpScr'); });
+on('helpBack', ()=>{ if($('helpBack').dataset.go==='battle'){ $('helpBack').dataset.go=''; beginBattle(); } else show('start'); });
+on('mapBack', ()=>show('start'));
+on('mapShop', ()=>openShop('mapScr'));
+on('goBtn', beginBattle);
+on('inBack', openMap);
+on('pauseBtn', pause);
+on('resumeBtn', resume);
+on('restartBtn', ()=>{ prepLevel(curIdx); beginBattle(); });
+on('quitBtn', openMap);
+on('resShop', ()=>openShop('resultScr'));
+on('resMap', openMap);
+on('shopPlay', ()=>prepLevel(shopBackTo==='resultScr' ? playNext : nextIdx()));
+on('shopBack', ()=>{ if(shopBackTo==='resultScr'){ toMenu(); show('mapScr'); renderCamp(); } else if(shopBackTo==='mapScr'){ show('mapScr'); renderCamp(); } else show('start'); });
+on('speedBtn', ()=>{ speed = speed===1 ? 2 : 1; updateSpeedBtn(); });
+on('zoomOut', ()=>{ if(!W) return; const target = cam.dist >= cam.maxD*.9 ? null : 1; if(target){ cam.dist = cam.maxD/1.12; cam.tx = 0; cam.tz = 0; } else framePlay(); });
+document.querySelectorAll('.sndbtn').forEach(b => b.addEventListener('click', ()=>{ setMute(!save.mute); Snd.click(); }));
+
+/* ================= Huvudloop ================= */
+const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
+let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0;
+function tick(dt){
+  if(mode==='play'){
+    let left = dt*speed;
+    while(left > 1e-6){ const h = Math.min(left, 1/30); step(G, h); left -= h; }
+    handleEvents();
+    if(G.over) finish();
+  } else if(mode==='menu'){
+    step(G, dt*1.6); G.ev.length = 0; cam.yaw += dt*.05;
+    if(G.over || G.t > 400){ endT += dt; if(endT > 3){ endT = 0; startAttract(); } }
+  } else if(mode==='end'){ handleEvents(); }
+  if(toastT>0){ toastT -= dt; if(toastT<=0) $('toast').classList.remove('show'); }
+  updateCamera(dt);
+  renderState(mode==='pause' ? 0 : dt);
+  if(mode!=='menu') updateParticles(mode==='pause'?0:dt); else updateParticles(dt);
+  if(mode==='play') updateHud(dt);
+  if(drag.active || drag.armed) drawDrag();
+  labelsEl.style.visibility = mode==='menu' ? 'hidden' : 'visible';
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt = (now - last)/1000; last = now;
+  if(dt > .05) dt = .05;
+  tick(dt);
+  renderer.render(scene, camera);
+  fAcc += dt; fN++;
+  if(fAcc >= .5){ const fps = fN/fAcc; window.__fps = fps; if(showFps) fpsEl.textContent = `${fps.toFixed(0)} fps · dpr ${pixelRatio} · ${renderer.info.render.calls} anrop`; fAcc = 0; fN = 0;
+    if(mode==='play'){ slowAcc += fps; slowN++; if(slowN>=4){ const avg = slowAcc/slowN; slowAcc=0; slowN=0; if(avg<40 && pixelRatio>1.25){ pixelRatio = Math.max(1.25, pixelRatio-.25); renderer.setPixelRatio(pixelRatio); resize(); } } }
+  }
+}
+// testkrok
+window.__rk = { AIK, G:()=>G, W:()=>W, mode:()=>mode, save:()=>save, cam, simulate, prepLevel, beginBattle, toMenu, LEVELS,
+  send:(srcs,t)=>doSend(srcs,t),
+  step(n=60, dt=1/60, render=true){ const t0=performance.now(); for(let k=0;k<n;k++){ tick(dt); if(render) renderer.render(scene,camera); } return {ms:+((performance.now()-t0)/n).toFixed(2), mode, t:G&&+G.t.toFixed(1)}; },
+  screen(i){ const v = W.cs[i]; return {x:v.sx, y:v.sy}; },
+  setSave(s){ save = {...freshSave(), ...s}; persist(); }, reset(){ save = freshSave(); persist(); } };
+
+resize();
+setMute(save.mute);
+toMenu();
+requestAnimationFrame(t => { last = t; frame(t); });
+</script>

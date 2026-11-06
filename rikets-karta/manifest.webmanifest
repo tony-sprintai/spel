@@ -1,0 +1,24 @@
+{
+  "name": "Rikets karta",
+  "short_name": "Rikets karta",
+  "lang": "sv",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#28465f",
+  "theme_color": "#28465f",
+  "icons": [
+    {
+      "src": "ikon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
