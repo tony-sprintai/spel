@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#24602f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sågverket">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="ikon-180.png">
+<link rel="icon" type="image/png" href="ikon-192.png">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sågverket</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Baloo+2:wght@600;700;800&display=swap">
+<style>
+/* Layout: fullskärms-3D av sågverket, HUD i kanterna, stationspanel som ark nertill. En fast spelvärld (skog), ett tema. */
+:root{
+  --spruce:#16271f; --panel:rgba(20,36,29,.9); --panel-2:#22392e;
+  --saw:#ffc93c; --saw-dk:#b98a12; --leaf:#5fbf4a; --leaf-dk:#347a27;
+  --falu:#c2432f; --cream:#fff6e3; --muted:#b9c9bd; --steel:#9aa6b2; --sky:#a9d6ee;
+  --f-title:"Alfa Slab One","Rockwell","Georgia",serif;
+  --f-ui:"Baloo 2","Arial Rounded MT Bold",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--sky);}
+body{color:var(--cream);font-family:var(--f-ui);font-weight:700;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
+#app{position:fixed;inset:0;overflow:hidden;}
+#c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
+.num{font-variant-numeric:tabular-nums;}
+
+/* ---------- HUD ---------- */
+#hud{position:absolute;inset:0;pointer-events:none;}
+.top{position:absolute;left:0;right:0;top:0;max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px;}
+.toprow{display:flex;align-items:flex-start;gap:8px;}
+#cash{pointer-events:auto;flex:1;min-width:0;background:var(--panel);border-radius:18px;padding:6px 14px 6px 8px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+.coin{width:30px;height:30px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff2b0,#ffc93c 45%,#c4860e);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);display:grid;place-items:center;color:#7a4f00;font-family:var(--f-title);font-size:13px;}
+#money{font-family:var(--f-title);font-size:clamp(19px,6vw,26px);line-height:1;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#rate{font-size:14px;color:var(--muted);line-height:1.1;white-space:nowrap;}
+#rate b{color:var(--saw);font-weight:800;}
+.iconbtn{pointer-events:auto;width:46px;height:46px;border-radius:15px;background:var(--panel);display:grid;place-items:center;box-shadow:0 3px 0 rgba(0,0,0,.3);flex:none;position:relative;}
+.iconbtn svg{width:24px;height:24px;fill:var(--cream);}
+#prestBtn{background:linear-gradient(#7fd36b,#3f9c3a);}
+#prestBtn.pulse{animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{50%{transform:scale(1.08)}}
+#mission{pointer-events:auto;align-self:stretch;background:var(--panel);border-radius:16px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;text-align:left;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#mission .mt{display:flex;justify-content:space-between;gap:10px;font-size:15px;line-height:1.15;}
+#mission .mt span:first-child{min-width:0;}
+#mission .mr{color:var(--saw);white-space:nowrap;}
+#mission .bar{height:8px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden;}
+#mission .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fe06f,#4fb33c);border-radius:4px;transition:width .3s;}
+#mission .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+#mission.done{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;animation:pulse 1.2s ease-in-out infinite;}
+#mission.done .lbl,#mission.done .mr{color:#3d2600;}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.lab{position:absolute;left:0;top:0;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:3px;white-space:nowrap;will-change:transform;}
+.lab .pill{background:var(--panel);border-radius:999px;padding:1px 10px 0;font-size:14px;display:flex;align-items:center;gap:5px;box-shadow:0 2px 0 rgba(0,0,0,.3);}
+.lab .up{display:none;width:18px;height:18px;border-radius:50%;background:var(--leaf);color:#fff;font-size:13px;line-height:18px;text-align:center;}
+.lab.can .up{display:block;}
+.lab .tag{display:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:1px 6px 0;}
+.lab.slow .tag.bn{display:block;background:var(--falu);}
+.lab.rush .tag.rs{display:block;background:var(--saw);color:#3d2600;}
+.lab.lock .pill{background:rgba(20,36,29,.75);border:2px dashed var(--saw);}
+.lab.idle .tag.tap{display:block;background:rgba(20,36,29,.8);color:var(--muted);}
+#floats{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.ft{position:absolute;left:0;top:0;font-family:var(--f-title);font-size:20px;color:#fff3c4;text-shadow:0 2px 0 rgba(0,0,0,.5);white-space:nowrap;will-change:transform,opacity;}
+.ft.big{font-size:28px;color:var(--saw);}
+#toast{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--f-title);font-size:26px;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.5);pointer-events:none;opacity:0;max-width:min(90%,420px);text-wrap:balance;background:var(--panel);border-radius:20px;padding:12px 20px 10px;box-shadow:0 0 0 2px rgba(255,201,60,.5),0 10px 24px rgba(0,0,0,.35);}
+#toast small{display:block;font-family:var(--f-ui);font-size:17px;color:var(--saw);}
+#toast.show{animation:toast 2s ease-out forwards;}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}22%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%)}}
+#fps{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 8px);font:12px/1 ui-monospace,monospace;background:rgba(0,0,0,.5);padding:4px 6px;border-radius:6px;}
+#hintbar{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%);background:var(--panel);border-radius:999px;padding:6px 16px 4px;font-size:15px;white-space:nowrap;color:var(--muted);}
+
+/* ---------- Stationspanel ---------- */
+#sheet{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:0 max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(16px,env(safe-area-inset-left,0px));pointer-events:none;transform:translateY(0);transition:transform .22s ease-out;}
+#sheet.off{transform:translateY(120%);}
+.sheetin{pointer-events:auto;width:100%;max-width:520px;background:var(--panel);border-radius:22px;padding:12px 14px 14px;box-shadow:0 0 0 2px rgba(255,201,60,.45),0 14px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:9px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.sh-head{display:flex;align-items:center;gap:10px;}
+.sh-head h3{margin:0;font-family:var(--f-title);font-weight:400;font-size:22px;line-height:1.05;flex:1;min-width:0;}
+.sh-head h3 small{display:block;font-family:var(--f-ui);font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+#pLevel{font-family:var(--f-title);font-size:18px;background:rgba(0,0,0,.35);border-radius:10px;padding:3px 10px 1px;white-space:nowrap;}
+#pClose{width:38px;height:38px;border-radius:12px;background:rgba(0,0,0,.35);display:grid;place-items:center;flex:none;}
+#pClose svg{width:18px;height:18px;fill:var(--cream);}
+.sh-stats{display:flex;gap:12px;font-size:15px;line-height:1.2;flex-wrap:wrap;}
+.sh-stats div{min-width:0;}
+.sh-stats .k{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+#pNext{color:#9be27f;}
+.mile{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);}
+.mile .bar{height:7px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden;}
+.mile .bar i{display:block;height:100%;background:var(--saw);border-radius:4px;}
+#pNote{font-size:14px;line-height:1.25;color:var(--cream);background:rgba(194,67,47,.28);border-radius:10px;padding:6px 10px 5px;}
+#pNote.ok{background:rgba(95,191,74,.18);}
+.sh-buy{display:flex;gap:8px;align-items:stretch;}
+.mult{display:flex;flex-direction:column;gap:4px;}
+.mult button{background:rgba(0,0,0,.35);border-radius:9px;font-size:13px;padding:2px 8px 0;min-width:46px;flex:1;}
+.mult button[aria-pressed="true"]{background:var(--saw);color:#3d2600;}
+.btn{border-radius:16px;font-family:var(--f-ui);font-weight:800;font-size:18px;line-height:1.1;padding:10px 12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,box-shadow .08s,filter .15s;}
+.btn small{font-size:15px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.btn small .coin{width:16px;height:16px;font-size:0;}
+.btn.buy{flex:1;background:linear-gradient(#7fd36b,#3f9c3a);color:#fff;box-shadow:0 5px 0 var(--leaf-dk);text-shadow:0 1px 0 rgba(0,0,0,.3);}
+.btn.buy:active{transform:translateY(3px);box-shadow:0 2px 0 var(--leaf-dk);}
+.btn.gold{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;box-shadow:0 5px 0 var(--saw-dk);}
+.btn.gold:active{transform:translateY(3px);box-shadow:0 2px 0 var(--saw-dk);}
+.btn.ghost{background:rgba(0,0,0,.35);box-shadow:none;}
+.btn[disabled]{filter:grayscale(.85) brightness(.7);pointer-events:none;}
+#pFm{width:100%;}
+#pFmDone{font-size:14px;color:#9be27f;text-align:center;}
+
+/* ---------- Skärmar ---------- */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-block:calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 16px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-y:auto;}
+.scrim{background:rgba(12,24,18,.5);}
+.panel{width:calc(100% - 8px);max-width:400px;margin:auto 0;background:var(--panel);border-radius:24px;padding:20px 18px;box-shadow:0 0 0 3px rgba(255,201,60,.5),0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:12px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.panel h2{margin:0;text-align:center;font-family:var(--f-title);font-weight:400;font-size:30px;line-height:1.05;text-wrap:balance;}
+.panel p{margin:0;text-align:center;font-size:16px;line-height:1.35;color:var(--muted);text-wrap:pretty;}
+.panel p b{color:var(--cream);}
+.big{font-family:var(--f-title);font-size:34px;color:var(--saw);text-align:center;}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:16px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:4px;}
+.kv span:last-child{color:var(--saw);}
+.row{display:flex;gap:10px;}
+.row>*{flex:1;min-width:0;}
+.pbar{height:12px;border-radius:6px;background:rgba(0,0,0,.4);overflow:hidden;}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#8fe06f,#4fb33c);}
+#start{justify-content:space-between;background:linear-gradient(rgba(10,24,16,0) 40%,rgba(10,24,16,.55));}
+.titleblock{margin-top:7vh;text-align:center;}
+.titleblock h1{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(50px,15vw,96px);line-height:.95;color:var(--cream);text-shadow:0 4px 0 #4a2c12,0 9px 0 rgba(0,0,0,.25);letter-spacing:.01em;}
+.titleblock .saw{display:inline-block;color:var(--saw);}
+.titleblock p{margin:12px auto 0;max-width:28ch;font-size:18px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.6);text-wrap:balance;}
+.startmenu{width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px;margin-bottom:3vh;}
+.startmenu .btn{font-size:28px;padding:16px;}
+#guide{position:absolute;left:0;top:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,0);will-change:transform;z-index:5;}
+#guide .gb{background:var(--cream);color:#2b1f10;border-radius:14px;padding:8px 12px 6px;font-size:15px;max-width:240px;text-align:center;line-height:1.25;box-shadow:0 4px 12px rgba(0,0,0,.35);pointer-events:auto;}
+#guide .gb button{display:block;margin:6px auto 0;background:var(--leaf);color:#fff;border-radius:10px;padding:3px 16px 1px;font-weight:800;}
+#guide .ga{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;animation:bob .8s ease-in-out infinite;}
+#guide.down .ga{border-top:20px solid var(--saw);order:2;}
+#guide.up .ga{border-bottom:20px solid var(--saw);order:-1;}
+@keyframes bob{50%{transform:translateY(6px)}}
+@media (min-width:900px){
+  #sheet{justify-content:flex-start;padding-left:max(20px,env(safe-area-inset-left,0px));}
+  .sheetin{max-width:400px;}
+}
+@media (max-height:520px) and (min-width:560px){
+  #sheet{top:0;left:auto;width:min(380px,48vw);align-items:flex-end;padding-top:calc(env(safe-area-inset-top,0px) + 8px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);}
+  #sheet.off{transform:translateX(110%);}
+  .sheetin{max-height:100%;overflow-y:auto;gap:6px;padding:10px 12px;}
+  .top{max-width:none;flex-direction:row;align-items:flex-start;}
+  .toprow{flex:1;min-width:0;}
+  #mission{flex:1;min-width:0;max-width:340px;}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+
+<div id="app">
+  <canvas id="c" aria-label="Sågverket i 3D"></canvas>
+  <div id="labels"></div>
+  <div id="floats"></div>
+  <div id="hud" hidden>
+    <div class="top">
+      <div class="toprow">
+        <div id="cash"><i class="coin">kr</i><div style="min-width:0"><div id="money" class="num">0</div><div id="rate" class="num"><b>0</b> kr/min</div></div></div>
+        <button class="iconbtn" id="prestBtn" hidden aria-label="Ny skog"><svg viewBox="0 0 24 24"><path d="M12 2 5 11h3l-4 6h6v5h4v-5h6l-4-6h3z"/></svg></button>
+        <button class="iconbtn" id="sndBtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z"/><path class="sndon" d="M15.5 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM18.3 5.7a9 9 0 0 1 0 12.6l-1.4-1.4a7 7 0 0 0 0-9.8z"/><path class="sndoff" d="m15 9.4 1.4-1.4 2.1 2.1 2.1-2.1L22 9.4l-2.1 2.1 2.1 2.1-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z"/></svg></button>
+        <button class="iconbtn" id="menuBtn" aria-label="Meny"><svg viewBox="0 0 24 24"><path d="M3 5h18v3H3zM3 10.5h18v3H3zM3 16h18v3H3z"/></svg></button>
+      </div>
+      <button id="mission" aria-label="Uppdrag"><span class="lbl" id="mLbl">Uppdrag</span><span class="mt"><span id="mText">–</span><span class="mr num" id="mRew"></span></span><span class="bar"><i id="mBar"></i></span></button>
+    </div>
+    <div id="hintbar">Tryck på en maskin</div>
+    <div id="fps" hidden></div>
+  </div>
+  <div id="toast"></div>
+
+  <div id="sheet" class="off" aria-live="polite">
+    <div class="sheetin">
+      <div class="sh-head">
+        <h3><small id="pLine">Brädlinjen</small><span id="pName">Sågen</span></h3>
+        <span id="pLevel" class="num">Nv 1</span>
+        <button id="pClose" aria-label="Stäng"><svg viewBox="0 0 24 24"><path d="m5 3 7 7 7-7 2 2-7 7 7 7-2 2-7-7-7 7-2-2 7-7-7-7z"/></svg></button>
+      </div>
+      <div id="pMain">
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div class="sh-stats"><div><span class="k">Takt nu</span><span id="pRate" class="num">0</span></div><div><span class="k">Efter köp</span><span id="pNext" class="num">0</span></div></div>
+          <div class="mile"><span id="pMileT">Nivå 25: dubbel fart och ny maskin</span><span class="bar"><i id="pMile"></i></span></div>
+          <div id="pNote">–</div>
+          <div class="sh-buy">
+            <div class="mult" role="group" aria-label="Antal nivåer"><button id="m1" aria-pressed="true">×1</button><button id="m10" aria-pressed="false">×10</button><button id="mMax" aria-pressed="false">Max</button></div>
+            <button class="btn buy" id="pBuy"><span id="pBuyT">Uppgradera</span><small><i class="coin"></i><span id="pBuyC" class="num">0</span></small></button>
+          </div>
+          <button class="btn gold" id="pFm"><span id="pFmT">Anställ förman</span><small><i class="coin"></i><span id="pFmC" class="num">0</span></small></button>
+          <div id="pFmDone" hidden></div>
+        </div>
+      </div>
+      <div id="pLock" hidden style="display:flex;flex-direction:column;gap:9px">
+        <div id="pLockT" style="font-size:15px;line-height:1.3;color:var(--muted)"></div>
+        <button class="btn buy" id="pUnlock"><span>Lås upp linjen</span><small><i class="coin"></i><span id="pUnlockC" class="num">0</span></small></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="guide" hidden><div class="gb"><span id="gText"></span><button id="gOk" hidden>OK</button></div><div class="ga"></div></div>
+
+  <div class="screen" id="start">
+    <div class="titleblock"><h1>Såg<span class="saw">verket</span></h1><p>Fäll skog, såga brädor och bygg ut ditt sågverk i gläntan.</p></div>
+    <div class="startmenu"><button class="btn buy" id="playBtn">Spela</button></div>
+  </div>
+
+  <div class="screen scrim" id="awayScr" hidden>
+    <div class="panel">
+      <h2>Välkommen tillbaka</h2>
+      <p id="awayTxt">Du var borta en stund.</p>
+      <div class="big num" id="awayAmt">+0 kr</div>
+      <p style="font-size:13px">Upp till 8 timmar räknas medan spelet är stängt.</p>
+      <button class="btn buy" id="awayOk">Hämta</button>
+    </div>
+  </div>
+
+  <div class="screen scrim" id="menuScr" hidden>
+    <div class="panel">
+      <h2>Sågverket</h2>
+      <div class="kv"><span>Intjänat denna omgång</span><span id="stRun" class="num">0</span></div>
+      <div class="kv"><span>Intjänat totalt</span><span id="stAll" class="num">0</span></div>
+      <div class="kv"><span>Brädor levererade</span><span id="stBoards" class="num">0</span></div>
+      <div class="kv"><span>Frön (permanent bonus)</span><span id="stSeeds" class="num">0</span></div>
+      <button class="btn gold" id="menuPrest">Ny skog</button>
+      <div class="row"><button class="btn ghost" id="menuSnd">Ljud: på</button><button class="btn ghost" id="menuReset">Börja om</button></div>
+      <button class="btn buy" id="menuClose">Fortsätt spela</button>
+    </div>
+  </div>
+
+  <div class="screen scrim" id="prestScr" hidden>
+    <div class="panel">
+      <h2>Ny skog</h2>
+      <p>Sälj sågverket och plantera ny skog. Pengar, maskiner och linjer nollställs, men du får <b>frön</b>. Varje frö ger <b>+25 % intäkt</b> för alltid.</p>
+      <div class="kv"><span>Intjänat denna omgång</span><span id="prRun" class="num">0</span></div>
+      <div class="kv"><span>Frön du får</span><span id="prSeeds" class="num">0</span></div>
+      <div class="kv"><span>Intäkt efteråt</span><span id="prMult" class="num">×1</span></div>
+      <div id="prLock"><p id="prLockT" style="margin-bottom:6px">Låses upp när du tjänat 10 M kr i den här omgången.</p><div class="pbar"><i id="prBar"></i></div></div>
+      <button class="btn buy" id="prGo">Sälj och plantera</button>
+      <button class="btn ghost" id="prBack">Tillbaka</button>
+    </div>
+  </div>
+
+  <div class="screen scrim" id="resetScr" hidden>
+    <div class="panel">
+      <h2>Börja om från noll?</h2>
+      <p>Allt nollställs, även frön och statistik. Det går inte att ångra.</p>
+      <div class="row"><button class="btn ghost" id="resetNo">Avbryt</button><button class="btn gold" id="resetYes">Nollställ</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.__errs=[]; window.addEventListener('error', e => window.__errs.push(String(e.message)+' @'+e.lineno));
+// Visar ett tydligt meddelande om 3D-motorn inte går att ladda
+setTimeout(function(){ if(!window.__sv){ var d=document.createElement('div'); d.className='screen scrim'; d.innerHTML='<div class="panel"><h2>Spelet laddade inte</h2><p>3D-motorn hämtades inte. Kontrollera nätet och ladda om sidan.</p></div>'; document.getElementById('app').appendChild(d); } }, 15000);
+</script>
+<script>
+/*ECON-START*/
+/* ================= EKONOMI: all balans som data. Justera här. ================= */
+const ECON = {
+  startMoney: 40,
+  costGrowth: 1.10,          // priset per nivå multipliceras med detta
+  milestoneEvery: 25,        // var 25:e nivå: dubbel fart och nytt utseende
+  milestoneMult: 2,
+  noForeman: 0.35,           // fart utan förman (andel)
+  rushMult: 2.5,             // fart när du trycker för att skynda på
+  rushPerTap: 1.5,           // sekunder per tryck
+  rushMax: 10,               // max sparad skyndatid
+  offlineCapH: 8,            // tak för intäkt medan spelet är stängt
+  bufferSec: 3,              // hur många sekunders flöde som ryms i kön före en maskin
+  minBuffer: 12,
+  spill: 1,                  // spån per sågad stock
+  price: { board: 5, pellet: 50, furn: 300 },   // kr per brädor / pelletssäck / möbel
+  lines: {
+    brador:  { name: 'Brädor',  cost: 0 },
+    pellets: { name: 'Pellets', cost: 2500 },
+    mobler:  { name: 'Möbler',  cost: 250000 },
+  },
+  stations: [
+    { id: 'hugg',  line: 'brador',  name: 'Skogshuggarna', unit: 'stockar',  base: 0.55, cost: 12, foreman: 30 },
+    { id: 'bark',  line: 'brador',  name: 'Barkmaskinen',  unit: 'stockar',  base: 0.70, cost: 18, foreman: 60 },
+    { id: 'sag',   line: 'brador',  name: 'Sågen',         unit: 'stockar',  base: 0.50, cost: 26, foreman: 100 },
+    { id: 'hyvel', line: 'brador',  name: 'Hyveln',        unit: 'brädor',   base: 0.60, cost: 34, foreman: 150 },
+    { id: 'kaj',   line: 'brador',  name: 'Lastkajen',     unit: 'brädor',   base: 0.80, cost: 44, foreman: 200 },
+    { id: 'press', line: 'pellets', name: 'Pelletspressen',unit: 'säckar',   base: 0.50, cost: 800, foreman: 4000 },
+    { id: 'pkaj',  line: 'pellets', name: 'Pelletskajen',  unit: 'säckar',   base: 0.60, cost: 1000, foreman: 6000 },
+    { id: 'snick', line: 'mobler',  name: 'Snickeriet',    unit: 'möbler',   base: 0.50, cost: 15000, foreman: 100000 },
+    { id: 'mkaj',  line: 'mobler',  name: 'Möbelkajen',    unit: 'möbler',   base: 0.60, cost: 20000, foreman: 150000 },
+  ],
+  // Ny skog: frön = (intjänat denna omgång / seedDiv)^exp. Varje frö ger +perSeed i permanent multiplikator.
+  prestige: { minEarned: 1e8, seedDiv: 1e7, exp: 1 / 3, perSeed: 0.25 },
+  // Uppdrag i ordning. mins = belöning i minuters intäkt, cash = minsta belöning.
+  missions: [
+    { t: 'foreman', n: 1,                      text: 'Anställ en förman',                  cash: 40,   mins: 0.5 },
+    { t: 'deliver', p: 'board', n: 100,        text: 'Leverera 100 brädor',                cash: 80,   mins: 1 },
+    { t: 'level',   s: 'sag', n: 10,           text: 'Uppgradera sågen till nivå 10',      cash: 150,  mins: 1 },
+    { t: 'foreman', n: 5,                      text: 'Anställ förmän på alla fem stationer', cash: 300, mins: 1 },
+    { t: 'rate',    n: 3000,                   text: 'Nå 3 000 kr/min',                    cash: 500,  mins: 1 },
+    { t: 'unlock',  l: 'pellets',              text: 'Lås upp pelletslinjen',              cash: 1000, mins: 1 },
+    { t: 'deliver', p: 'pellet', n: 500,       text: 'Leverera 500 pelletssäckar',         cash: 2000, mins: 1 },
+    { t: 'rate',    n: 10000,                  text: 'Nå 10 000 kr/min',                   cash: 3000, mins: 1 },
+    { t: 'allLevel',l: 'brador', n: 25,        text: 'Alla stationer i brädlinjen nivå 25', cash: 5000, mins: 1 },
+    { t: 'deliver', p: 'board', n: 25000,      text: 'Leverera 25 000 brädor',             cash: 8000, mins: 1 },
+    { t: 'unlock',  l: 'mobler',               text: 'Lås upp möbellinjen',                cash: 20000, mins: 1 },
+    { t: 'deliver', p: 'furn', n: 500,         text: 'Leverera 500 möbler',                cash: 50000, mins: 1.5 },
+    { t: 'rate',    n: 1e6,                    text: 'Nå 1 M kr/min',                      cash: 1e5,  mins: 1.5 },
+    { t: 'allLevel',l: 'pellets', n: 50,       text: 'Pelletslinjen nivå 50',              cash: 2e5,  mins: 1.5 },
+    { t: 'rate',    n: 1e7,                    text: 'Nå 10 M kr/min',                     cash: 1e6,  mins: 2 },
+  ],
+};
+
+/* ================= Modell (används av spelet och av simuleringen) ================= */
+const ST = {}; ECON.stations.forEach(s => ST[s.id] = s);
+const STATION_IDS = ECON.stations.map(s => s.id);
+const BUF_IDS = ['bark', 'sag', 'hyvel', 'kaj', 'press', 'pkaj', 'snick', 'mkaj'];
+
+function freshRun(seeds = 0) {
+  const lv = {}, fm = {}, q = {};
+  STATION_IDS.forEach(id => { lv[id] = ST[id].line === 'brador' ? 1 : 0; fm[id] = false; });
+  BUF_IDS.forEach(id => q[id] = 0);
+  return { money: ECON.startMoney, earnedRun: 0, seeds, lv, fm, q,
+           lines: { brador: true, pellets: false, mobler: false },
+           del: { board: 0, pellet: 0, furn: 0 }, mi: 0 };
+}
+function lvRate(id, L) {
+  if (L <= 0) return 0;
+  return ST[id].base * L * Math.pow(ECON.milestoneMult, Math.floor(L / ECON.milestoneEvery));
+}
+function upCost(id, L, n = 1) {
+  const g = ECON.costGrowth, c = ST[id].cost * Math.pow(g, L - 1);
+  return n === 1 ? c : c * (Math.pow(g, n) - 1) / (g - 1);
+}
+function maxBuy(id, L, money) {
+  const g = ECON.costGrowth, c = ST[id].cost * Math.pow(g, L - 1);
+  if (money < c) return 0;
+  return Math.max(1, Math.floor(Math.log(money * (g - 1) / c + 1) / Math.log(g)));
+}
+function effRate(S, id, rush) {
+  return lvRate(id, S.lv[id]) * (S.fm[id] ? 1 : ECON.noForeman) * (rush && rush[id] > 0 ? ECON.rushMult : 1);
+}
+function incomeMult(S) { return 1 + S.seeds * ECON.prestige.perSeed; }
+// Stationärt flöde (per sekund). Används för kr/min, offline-intäkt och flaskhals.
+function flows(S, rush) {
+  const r = {}; STATION_IDS.forEach(id => r[id] = effRate(S, id, rush));
+  const furnCap = S.lines.mobler ? Math.min(r.snick, r.mkaj) : 0;
+  const down = Math.min(r.hyvel, r.kaj + furnCap);
+  const sawn = Math.min(r.hugg, r.bark, r.sag, down);
+  const F = Math.min(sawn, furnCap), K = sawn - F;
+  const P = S.lines.pellets ? Math.min(sawn * ECON.spill, r.press, r.pkaj) : 0;
+  return { r, sawn, K, F, P };
+}
+function incomePerSec(S, rush) {
+  const f = flows(S, rush);
+  return (f.K * ECON.price.board + f.F * ECON.price.furn + f.P * ECON.price.pellet) * incomeMult(S);
+}
+// Vilken station bromsar varje linje? (lägsta takten)
+function bottlenecks(S) {
+  // Pekar bara ut en station som faktiskt begränsar intäkten.
+  const f = flows(S), r = f.r, out = {};
+  const furnCap = S.lines.mobler ? Math.min(r.snick, r.mkaj) : 0;
+  const main = ['hugg', 'bark', 'sag', 'hyvel', 'kaj'];
+  const need = { hugg: r.hugg, bark: r.bark, sag: r.sag, hyvel: r.hyvel, kaj: r.kaj + furnCap };
+  let b = main[0];
+  main.forEach(id => { if (need[id] < need[b] - 1e-9) b = id; });
+  // Om möbellinjen tar allt virke är det den som bromsar, inte kajen.
+  if (!(b === 'kaj' && S.lines.mobler && r.kaj > 1e-9 && furnCap < f.sawn - 1e-9 && f.K >= r.kaj - 1e-9)) out.brador = b;
+  if (b === 'kaj' && S.lines.mobler && f.K < r.kaj - 1e-9) out.brador = b;
+  if (S.lines.pellets && f.P < f.sawn * ECON.spill - 1e-9) out.pellets = r.press <= r.pkaj ? 'press' : 'pkaj';
+  if (S.lines.mobler && furnCap < f.sawn - 1e-9) out.mobler = r.snick <= r.mkaj ? 'snick' : 'mkaj';
+  return out;
+}
+function seedsFor(earnedRun) {
+  const p = ECON.prestige;
+  return earnedRun < p.minEarned ? 0 : Math.floor(Math.pow(earnedRun / p.seedDiv, p.exp));
+}
+// Uppdrag efter listan genereras: allt högre kr/min och leveranser.
+function getMission(i) {
+  const L = ECON.missions;
+  if (i < L.length) return L[i];
+  const k = i - L.length;
+  if (k % 2 === 0) { const n = 1e7 * Math.pow(10, k / 2 + 1); return { t: 'rate', n, text: 'Nå ' + fmt(n) + ' kr/min', cash: n / 10, mins: 2 }; }
+  const n = 1e5 * Math.pow(4, (k + 1) / 2); return { t: 'deliver', p: 'board', n, text: 'Leverera ' + fmt(n) + ' brädor', cash: 1e6, mins: 2 };
+}
+function missionProgress(S, m) {
+  switch (m.t) {
+    case 'foreman': return Math.min(1, STATION_IDS.filter(id => S.fm[id]).length / m.n);
+    case 'deliver': return Math.min(1, S.del[m.p] / m.n);
+    case 'level': return Math.min(1, S.lv[m.s] / m.n);
+    case 'rate': return Math.min(1, incomePerSec(S) * 60 / m.n);
+    case 'unlock': return S.lines[m.l] ? 1 : 0;
+    case 'allLevel': { const ids = STATION_IDS.filter(id => ST[id].line === m.l); return Math.min(1, Math.min(...ids.map(id => S.lv[id])) / m.n); }
+  }
+  return 0;
+}
+function missionReward(S, m) { return Math.max(m.cash, Math.round(incomePerSec(S) * 60 * m.mins)); }
+// Vätskemodell med köer, för det synliga flödet i spelet. dt <= 0.1 s.
+function bufCap(S, id) {
+  const r = effRate(S, id); return Math.max(ECON.minBuffer, r * ECON.bufferSec * ECON.rushMult);
+}
+function stepFlow(S, rush, dt) {
+  const q = S.q, r = {}, f = {};
+  STATION_IDS.forEach(id => { r[id] = effRate(S, id, rush) * dt; f[id] = 0; });
+  const cap = {}; BUF_IDS.forEach(id => cap[id] = bufCap(S, id));
+  const out = { board: 0, pellet: 0, furn: 0 };
+  let x;
+  x = Math.min(q.kaj, r.kaj); q.kaj -= x; out.board += x; f.kaj = x;
+  if (S.lines.mobler) { x = Math.min(q.mkaj, r.mkaj); q.mkaj -= x; out.furn += x; f.mkaj = x;
+    x = Math.min(q.snick, r.snick, cap.mkaj - q.mkaj); x = Math.max(0, x); q.snick -= x; q.mkaj += x; f.snick = x; }
+  if (S.lines.pellets) { x = Math.min(q.pkaj, r.pkaj); q.pkaj -= x; out.pellet += x; f.pkaj = x;
+    x = Math.max(0, Math.min(q.press, r.press, cap.pkaj - q.pkaj)); q.press -= x; q.pkaj += x; f.press = x; }
+  const spS = S.lines.mobler ? Math.max(0, cap.snick - q.snick) : 0, spK = Math.max(0, cap.kaj - q.kaj);
+  x = Math.max(0, Math.min(q.hyvel, r.hyvel, spS + spK)); q.hyvel -= x; f.hyvel = x;
+  const toS = Math.min(x, spS); q.snick += toS; q.kaj += x - toS; f.toSnick = toS;
+  x = Math.max(0, Math.min(q.sag, r.sag, cap.hyvel - q.hyvel)); q.sag -= x; q.hyvel += x; f.sag = x;
+  if (S.lines.pellets) q.press = Math.min(cap.press, q.press + x * ECON.spill);
+  x = Math.max(0, Math.min(q.bark, r.bark, cap.sag - q.sag)); q.bark -= x; q.sag += x; f.bark = x;
+  x = Math.max(0, Math.min(r.hugg, cap.bark - q.bark)); q.bark += x; f.hugg = x;
+  const m = incomeMult(S);
+  out.money = (out.board * ECON.price.board + out.pellet * ECON.price.pellet + out.furn * ECON.price.furn) * m;
+  out.f = f;
+  return out;
+}
+const UNITS = ['', 'k', 'M', 'B', 'T', 'aa', 'ab', 'ac', 'ad', 'ae', 'af', 'ag'];
+function fmt(n) {
+  if (!isFinite(n)) return '∞';
+  if (n < 0) return '−' + fmt(-n);
+  if (n < 1e6) return n < 10 && n % 1 ? n.toFixed(1).replace('.', ',') : Math.floor(n).toLocaleString('sv-SE');
+  let i = 0; while (n >= 1000 && i < UNITS.length - 1) { n /= 1000; i++; }
+  const s = n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2);
+  return s.replace('.', ',') + ' ' + UNITS[i];
+}
+/*ECON-END*/
+</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ================= Grund ================= */
+const $ = id => document.getElementById(id);
+const rand = (a,b) => a + Math.random()*(b-a);
+const clamp = (v,a,b) => v<a?a:v>b?b:v;
+const lerp = (a,b,t) => a+(b-a)*t;
+
+/* ================= Sparning ================= */
+const SAVE_KEY = 'sagverket.v1';
+let S = freshRun(0);
+let meta = { earnedAll:0, mute:false, guide:0, t:Date.now(), started:false };
+const rush = {}; STATION_IDS.forEach(id => rush[id] = 0);
+function loadSave(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if(raw && raw.S && raw.meta){
+      const d = freshRun(raw.S.seeds||0);
+      S = {...d, ...raw.S, lv:{...d.lv, ...raw.S.lv}, fm:{...d.fm, ...raw.S.fm}, q:{...d.q, ...raw.S.q}, lines:{...d.lines, ...raw.S.lines}, del:{...d.del, ...raw.S.del}};
+      meta = {...meta, ...raw.meta};
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+function persist(){ meta.t = Date.now(); try{ localStorage.setItem(SAVE_KEY, JSON.stringify({S, meta})); }catch(e){} }
+const hadSave = loadSave();
+const awaySec = hadSave ? Math.max(0, (Date.now() - meta.t)/1000) : 0;   // läses innan något hinner spara om tidsstämpeln
+
+/* ================= Ljud (WebAudio-syntes) ================= */
+const Snd = {
+  ctx:null, master:null, nb:null, last:{},
+  init(){
+    try{
+      if(!this.ctx){
+        const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+        this.ctx = new AC(); this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
+        const n = this.ctx.sampleRate*0.6|0; this.nb = this.ctx.createBuffer(1,n,this.ctx.sampleRate);
+        const d = this.nb.getChannelData(0); for(let i=0;i<n;i++) d[i] = Math.random()*2-1;
+      }
+      this.master.gain.value = meta.mute ? 0 : 0.6;
+      if(this.ctx.state === 'suspended') this.ctx.resume();
+    }catch(e){}
+  },
+  ok(key, gap){ if(!this.ctx || meta.mute || this.ctx.state!=='running') return false; const t=this.ctx.currentTime; if(key && this.last[key] && t-this.last[key]<gap) return false; if(key) this.last[key]=t; return true; },
+  tone(f,d,type='square',v=.2,f2=null,delay=0){
+    const c=this.ctx, t=c.currentTime+delay, o=c.createOscillator(), g=c.createGain();
+    o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t+d+0.03);
+  },
+  noise(d,v,freq,delay=0,q=1,type='bandpass',f2=null){
+    const c=this.ctx, t=c.currentTime+delay, s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain();
+    s.buffer=this.nb; f.type=type; f.frequency.setValueAtTime(freq,t); if(f2) f.frequency.exponentialRampToValueAtTime(f2,t+d); f.Q.value=q;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v,t+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random()*0.2); s.stop(t+d+0.03);
+  },
+  // sågljud: sågklinga som tar i virket
+  saw(v=1){ if(!this.ok('saw',0.5)) return; this.noise(.55,.09*v,2400,0,4,'bandpass',3600); this.tone(190,.55,'sawtooth',.035*v,240); this.tone(380,.5,'sawtooth',.02*v,470); },
+  // kassaklang
+  cash(){ if(!this.ok('cash',0.25)) return; this.noise(.06,.18,5000,0,2); this.tone(1568,.09,'square',.07); this.tone(2093,.32,'square',.07,null,.07); this.tone(2637,.25,'triangle',.05,null,.07); },
+  chop(){ if(!this.ok('chop',0.35)) return; this.tone(rand(260,330),.09,'sine',.12,120); this.noise(.05,.08,1800,0,2); },
+  tap(){ if(!this.ok('tap',0.05)) return; this.tone(rand(520,620),.07,'square',.05,900); },
+  buy(){ if(!this.ok('buy',0.06)) return; this.tone(660,.07,'square',.06); this.tone(990,.12,'square',.06,null,.05); },
+  hire(){ if(!this.ok()) return; [784,988,1175].forEach((f,i)=>this.tone(f,.12,'triangle',.12,null,i*.08)); },
+  tier(){ if(!this.ok()) return; [523,659,784,1047,1319].forEach((f,i)=>this.tone(f,.2,'square',.07,null,i*.07)); },
+  done(){ if(!this.ok()) return; [659,880,1175].forEach((f,i)=>this.tone(f,.16,'square',.07,null,i*.09)); this.cash(); },
+  thud(){ if(!this.ok('thud',0.3)) return; this.tone(90,.3,'sine',.25,45); this.noise(.2,.08,400); },
+  click(){ if(!this.ok('click',0.03)) return; this.tone(880,.04,'square',.04,700); },
+};
+function setMute(m){
+  meta.mute = m; persist(); Snd.init();
+  document.querySelectorAll('.sndon').forEach(p => p.style.display = m ? 'none' : '');
+  document.querySelectorAll('.sndoff').forEach(p => p.style.display = m ? '' : 'none');
+  $('menuSnd').textContent = m ? 'Ljud: av' : 'Ljud: på';
+}
+
+/* ================= Renderare och scen ================= */
+const canvas = $('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'});
+let pixelRatio = Math.min(window.devicePixelRatio||1, 2);
+renderer.setPixelRatio(pixelRatio);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+const scene = new THREE.Scene();
+const FOG = 0xa9d6ee;
+scene.background = new THREE.Color(FOG);
+scene.fog = new THREE.Fog(FOG, 70, 140);
+const camera = new THREE.PerspectiveCamera(38, 1, 1, 300);
+scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x5d7d3a, 1.3));
+const sun = new THREE.DirectionalLight(0xfff0d6, 2.3);
+sun.position.set(-18, 34, 14); sun.target.position.set(0, 0, -2);
+sun.castShadow = true;
+const isSmall = Math.min(innerWidth, innerHeight) < 600;
+sun.shadow.mapSize.set(isSmall?1024:2048, isSmall?1024:2048);
+Object.assign(sun.shadow.camera, {left:-30, right:30, top:30, bottom:-30, near:1, far:110});
+sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
+scene.add(sun, sun.target);
+
+/* ---------- geometri-hjälp ---------- */
+const _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _v = new THREE.Vector3(), _s = new THREE.Vector3(), _one = new THREE.Vector3(1,1,1);
+function part(geo, color, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=1,sy=1,sz=1){
+  let g = geo.index ? geo.toNonIndexed() : geo;
+  g.deleteAttribute('uv');
+  _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(rx,ry,rz)), _s.set(sx,sy,sz));
+  g.applyMatrix4(_m4);
+  const c = new THREE.Color(color), n = g.attributes.position.count, a = new Float32Array(n*3);
+  for(let i=0;i<n;i++){ a[i*3]=c.r; a[i*3+1]=c.g; a[i*3+2]=c.b; }
+  g.setAttribute('color', new THREE.BufferAttribute(a,3));
+  return g;
+}
+function merge(parts){
+  let tot = 0; for(const p of parts) tot += p.attributes.position.count;
+  const pos = new Float32Array(tot*3), nor = new Float32Array(tot*3), col = new Float32Array(tot*3);
+  let o = 0;
+  for(const p of parts){ pos.set(p.attributes.position.array,o*3); nor.set(p.attributes.normal.array,o*3); col.set(p.attributes.color.array,o*3); o += p.attributes.position.count; p.dispose(); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  g.setAttribute('normal', new THREE.BufferAttribute(nor,3));
+  g.setAttribute('color', new THREE.BufferAttribute(col,3));
+  g.computeBoundingSphere();
+  return g;
+}
+const Box = (w,h,d) => new THREE.BoxGeometry(w,h,d);
+const Cyl = (rt,rb,h,s=10) => new THREE.CylinderGeometry(rt,rb,h,s);
+const Cone = (r,h,s=8) => new THREE.ConeGeometry(r,h,s);
+const vcMat = new THREE.MeshLambertMaterial({vertexColors:true});
+function mesh(geo, shadow=true){ const m = new THREE.Mesh(geo, vcMat); m.castShadow = shadow; m.receiveShadow = true; return m; }
+function canvasTex(w,h,draw,rep){
+  const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const g = cv.getContext('2d'); draw(g,w,h);
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  if(rep){ t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0],rep[1]); }
+  return t;
+}
+
+/* ================= Värld ================= */
+const GRAY = 0x9aa4ae, DARK = 0x58616b, CONC = 0xdcdfe2, WOOD = 0x8a5a32;
+const TIER_COL = [0xffc93c, 0xff8a3d, 0x2ec4b6, 0xe5484d, 0x9b6bff, 0x3fa8ff, 0xffe066];
+const ROAD_Z = 19;
+const POS = {hugg:[0,-19], bark:[0,-11], sag:[0,-3], hyvel:[0,5], kaj:[0,13.4], press:[8,-3], pkaj:[8,13.4], snick:[-8,5], mkaj:[-8,13.4]};
+const world = new THREE.Group(); scene.add(world);
+const grassTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#5fb54e'; g.fillRect(0,0,w,h);
+  for(let i=0;i<1500;i++){ const s=rand(2,7); g.fillStyle=`hsla(${rand(88,120)},${rand(40,62)}%,${rand(34,54)}%,${rand(.25,.6)})`; g.fillRect(rand(0,w),rand(0,h),s*.5,s); }
+  for(let i=0;i<30;i++){ g.fillStyle=Math.random()<.5?'rgba(255,255,255,.7)':'rgba(255,220,90,.75)'; g.beginPath(); g.arc(rand(0,w),rand(0,h),1.6,0,7); g.fill(); }
+},[50,50]);
+const yardTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#8f969d'; g.fillRect(0,0,w,h);
+  for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?70:255},${rand(.03,.09)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); }
+  g.strokeStyle='rgba(80,86,94,.25)'; g.lineWidth=2; g.strokeRect(1,1,w-2,h-2);
+},[8,10]);
+const roadTex = canvasTex(64,256,(g,w,h)=>{
+  g.fillStyle='#4f555c'; g.fillRect(0,0,w,h);
+  for(let i=0;i<500;i++){ g.fillStyle=`rgba(255,255,255,${rand(.02,.07)})`; g.fillRect(rand(0,w),rand(0,h),2,2); }
+  g.fillStyle='#f3f0e2'; g.fillRect(w/2-2,10,4,h/2-20);
+  g.fillStyle='#e9e5d3'; g.fillRect(2,0,3,h); g.fillRect(w-5,0,3,h);
+},[1,24]);
+const beltTexBase = canvasTex(64,64,(g,w,h)=>{
+  g.fillStyle='#2f6fd6'; g.fillRect(0,0,w,h);
+  g.fillStyle='#3f86f0'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,8); }
+  g.fillStyle='rgba(255,255,255,.18)'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,2); }
+},[1,1]);
+let trees = null, treeG = null;
+{
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshLambertMaterial({map:grassTex}));
+  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; world.add(ground);
+  const yard = new THREE.Mesh(new THREE.PlaneGeometry(30,40), new THREE.MeshLambertMaterial({map:yardTex}));
+  yard.rotation.x = -Math.PI/2; yard.position.set(0,.02,-2); yard.receiveShadow = true; world.add(yard);
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(4.6,240), new THREE.MeshLambertMaterial({map:roadTex}));
+  road.rotation.x = -Math.PI/2; road.rotation.z = Math.PI/2; road.position.set(0,.03,ROAD_Z); road.receiveShadow = true; world.add(road);
+  // staket runt gården
+  const fp = [];
+  const post = (x,z) => fp.push(part(Box(.14,.9,.14), 0xf2efe6, x,.45,z));
+  for(let x=-15;x<=15;x+=1.5){ if(Math.abs(x)>3.5) post(x,-22); }
+  for(let z=-22;z<=16.5;z+=1.5){ post(-15,z); post(15,z); }
+  for(const sx of [-1,1]) fp.push(part(Box(11.5,.1,.08), 0xffc93c, sx*9.25,.75,-22), part(Box(11.5,.1,.08), 0xffc93c, sx*9.25,.4,-22));
+  for(const sx of [-15,15]) fp.push(part(Box(.08,.1,38.5), 0xffc93c, sx,.75,-2.75), part(Box(.08,.1,38.5), 0xffc93c, sx,.4,-2.75));
+  const fence = mesh(merge(fp)); world.add(fence);
+  // skog runt gläntan
+  treeG = merge([
+    part(Cyl(.16,.24,1.1,6),0x7a5230,0,.55,0),
+    part(Cone(1.25,1.9,7),0x2e8a44,0,1.8,0),
+    part(Cone(.98,1.6,7),0x3aa452,0,2.7,0),
+    part(Cone(.62,1.25,7),0x52bd60,0,3.5,0),
+  ]);
+  const T = [];
+  for(let i=0;i<2600 && T.length<520;i++){
+    const x = rand(-70,70), z = rand(-80,45);
+    if(Math.abs(x)<17 && z>-30 && z<23) continue;   // gläntan
+    if(Math.abs(z-ROAD_Z)<3.4) continue;             // vägen
+    T.push([x,z,rand(.85,1.6),rand(0,6.28)]);
+  }
+  trees = new THREE.InstancedMesh(treeG, vcMat, T.length);
+  T.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*rand(.9,1.2),t[2])); trees.setMatrixAt(i,_m4); });
+  trees.castShadow = true; trees.receiveShadow = true; world.add(trees);
+  const rockG = merge([part(new THREE.DodecahedronGeometry(.6,0),0x9a9a9a)]);
+  const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),0x3d9d48,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),0x4fb257,.5,.3,.2)]);
+  for(const [geo,count] of [[rockG,26],[bushG,40]]){
+    const im = new THREE.InstancedMesh(geo, vcMat, count);
+    for(let i=0;i<count;i++){ let x,z; do{ x=rand(-26,26); z=rand(-34,30); }while(Math.abs(x)<15.6 && z>-19 && z<17 || Math.abs(z-ROAD_Z)<3); _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.3))); im.setMatrixAt(i,_m4); }
+    im.castShadow = true; world.add(im);
+  }
+}
+
+/* ---------- partiklar ---------- */
+const MAXP = 500;
+const pGeo = new THREE.BoxGeometry(.12,.12,.12);
+const pMat = new THREE.MeshLambertMaterial({color:0xffffff});
+const pIM = new THREE.InstancedMesh(pGeo, pMat, MAXP); pIM.count = 0; pIM.frustumCulled = false; world.add(pIM);
+const P = { n:0, x:new Float32Array(MAXP), y:new Float32Array(MAXP), z:new Float32Array(MAXP), vx:new Float32Array(MAXP), vy:new Float32Array(MAXP), vz:new Float32Array(MAXP), life:new Float32Array(MAXP), max:new Float32Array(MAXP), s:new Float32Array(MAXP), g:new Float32Array(MAXP), c:[] };
+const _col = new THREE.Color();
+function burst(x,y,z,color,n,spd=3,size=1,life=.7,up=3,grav=9){
+  for(let k=0;k<n;k++){
+    let i = P.n < MAXP ? P.n++ : (Math.random()*MAXP|0);
+    P.x[i]=x; P.y[i]=y; P.z[i]=z; const a=rand(0,6.28), r=rand(.2,1)*spd;
+    P.vx[i]=Math.cos(a)*r; P.vz[i]=Math.sin(a)*r; P.vy[i]=rand(.4,1)*up; P.life[i]=P.max[i]=life*rand(.7,1.2); P.s[i]=size*rand(.6,1.3); P.g[i]=grav;
+    pIM.setColorAt(i, _col.set(Array.isArray(color)?color[k%color.length]:color));
+  }
+  if(pIM.instanceColor) pIM.instanceColor.needsUpdate = true;
+}
+function updateParticles(dt){
+  for(let i=0;i<P.n;i++){
+    P.life[i]-=dt;
+    if(P.life[i]<=0){ const j=--P.n; for(const k of ['x','y','z','vx','vy','vz','life','max','s','g']) P[k][i]=P[k][j]; if(pIM.instanceColor){ pIM.getColorAt(j,_col); pIM.setColorAt(i,_col); } i--; continue; }
+    P.vy[i]-=P.g[i]*dt; P.x[i]+=P.vx[i]*dt; P.y[i]+=P.vy[i]*dt; P.z[i]+=P.vz[i]*dt;
+    if(P.y[i]<.05){ P.y[i]=.05; P.vy[i]*=-.3; P.vx[i]*=.6; P.vz[i]*=.6; }
+    const s = P.s[i]*Math.min(1,P.life[i]/P.max[i]*2.5);
+    _m4.compose(_v.set(P.x[i],P.y[i],P.z[i]), _q.setFromEuler(_e.set(P.life[i]*4,P.life[i]*3,0)), _s.set(s,s,s)); pIM.setMatrixAt(i,_m4);
+  }
+  pIM.count = P.n; pIM.instanceMatrix.needsUpdate = true; if(pIM.instanceColor) pIM.instanceColor.needsUpdate = true;
+}
+
+/* ================= Stationer ================= */
+// Varje station byggs om när den når en ny nivågräns (var 25:e nivå): större, ny färg, fler klingor.
+function tierOf(L){ return Math.min(TIER_COL.length-1, Math.floor(L/ECON.milestoneEvery)); }
+function pad(P2, w=4.4, d=4.2){ P2.push(part(Box(w,.24,d), CONC, 0,.12,0)); for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.6,.05,.18), 0xffc93c, sx*(w/2-.4),.26,sz*(d/2-.12))); }
+function buildStation(id, tier){
+  const g = new THREE.Group(), acc = TIER_COL[tier], spin = [], bob = [], P2 = [];
+  const out = { g, spin, bob, emit:new THREE.Vector3(0,1.5,0), top:2.8 };
+  const add = (geo, shadow=true) => { const m = mesh(geo, shadow); g.add(m); return m; };
+  if(id==='hugg'){
+    pad(P2, 6.2, 4.6);
+    // huggarstuga i falu rödfärg
+    P2.push(part(Box(2.4,1.6,1.9), 0x9e2b25, -1.5,1.04,-.7), part(Box(.5,.95,.06), 0xf2efe6, -1.5,.72,.26), part(Box(.62,.44,.06), 0xf2efe6, -2.3,1.2,.26), part(Box(.5,.32,.07), 0xffe7a0, -2.3,1.2,.27));
+    P2.push(part(Box(2.7,.12,1.3), 0x3a3a3a, -1.5,2.1,-.25, .62,0,0), part(Box(2.7,.12,1.3), 0x3a3a3a, -1.5,2.1,-1.15, -.62,0,0));
+    for(const sx of [-1,1]) P2.push(part(Box(.08,1.6,.08), 0xf2efe6, -1.5+sx*1.2,1.04,.26));
+    // stockhög
+    const rows = 3 + Math.min(3,tier);
+    for(let r=0;r<rows;r++) for(let k=0;k<rows-r;k++) P2.push(part(Cyl(.24,.24,2.2,8), 0x6b4426, 1.4+(k-(rows-r-1)/2)*.5, .5+r*.43, -.6, 0,0,Math.PI/2));
+    for(let r=0;r<rows;r++) for(let k=0;k<rows-r;k++) P2.push(part(Cyl(.2,.2,.04,8), 0xe2bf86, 1.4+(k-(rows-r-1)/2)*.5+1.11, .5+r*.43, -.6, 0,0,Math.PI/2));
+    // kran med tierfärg
+    P2.push(part(Box(.3,2.6,.3), acc, 2.6,1.5,1.2), part(Box(2.6,.24,.24), acc, 1.5,2.8,1.2), part(Cyl(.03,.03,1.1,4), 0x333333, .5,2.2,1.2));
+    out.emit.set(1.4,1.4,-.6); out.top = 3.3;
+  } else if(id==='bark'){
+    pad(P2);
+    P2.push(part(Box(3,1.1,2.8), GRAY, 0,.79,0), part(Box(3.1,.14,2.9), acc, 0,1.4,0));
+    P2.push(part(Box(.25,1.6,.25), DARK, -1.35,1.9,0), part(Box(.25,1.6,.25), DARK, 1.35,1.9,0));
+    const drumP = [part(Cyl(.85,.85,2.6,14), 0x6d7680, 0,0,0, Math.PI/2,0,0)];
+    const rings = 2 + Math.min(4,tier);
+    for(let k=0;k<rings;k++) drumP.push(part(Cyl(.93,.93,.16,14), acc, 0,0,-1.1+k*(2.2/(rings-1)), Math.PI/2,0,0));
+    for(let k=0;k<6;k++){ const a=k/6*Math.PI*2; drumP.push(part(Box(.12,.12,2.5), DARK, Math.cos(a)*.86,Math.sin(a)*.86,0)); }
+    const drum = add(merge(drumP)); drum.position.set(0,2.15,0); spin.push({m:drum, ax:'z', sp:3});
+    out.emit.set(0,2.2,-1.3); out.top = 3.4;
+  } else if(id==='sag'){
+    pad(P2);
+    P2.push(part(Box(3.2,.9,3.0), DARK, 0,.69,0), part(Box(3.3,.12,3.1), acc, 0,1.18,0));
+    // portal
+    for(const sx of [-1,1]) P2.push(part(Box(.32,2.6,.32), acc, sx*1.5,2.4,.2), part(Box(.7,.18,.7), 0x3a3a3a, sx*1.5,1.28,.2));
+    P2.push(part(Box(3.4,.38,.42), acc, 0,3.7,.2), part(Box(.9,.6,.6), GRAY, 0,3.45,.2));
+    const n = 1 + Math.min(3,tier);
+    for(let k=0;k<n;k++){
+      const bp = [part(Cyl(.95,.95,.06,24), 0xd7dde3, 0,0,0, 0,0,Math.PI/2), part(Cyl(.22,.22,.12,10), 0x3a3a3a, 0,0,0, 0,0,Math.PI/2)];
+      for(let t=0;t<16;t++){ const a=t/16*Math.PI*2; bp.push(part(Box(.06,.16,.1), 0xaab3bc, 0,Math.cos(a)*1.0,Math.sin(a)*1.0, a,0,0)); }
+      const blade = add(merge(bp)); blade.position.set((k-(n-1)/2)*.42, 2.2, .2); spin.push({m:blade, ax:'x', sp:-14});
+    }
+    out.emit.set(0,1.5,1.1); out.top = 4.3;
+  } else if(id==='hyvel'){
+    pad(P2);
+    P2.push(part(Box(2.8,1.2,3.2), GRAY, 0,.84,0), part(Box(2.9,.5,1.4), acc, 0,1.7,-.5), part(Box(2.9,.08,3.3), DARK, 0,1.46,0));
+    // spånrör
+    P2.push(part(Cyl(.22,.22,2.2,8), acc, 1.1,2.5,-.5), part(Cyl(.22,.22,1.4,8), acc, 1.1,3.6,-1.2, Math.PI/2,0,0), part(Cyl(.35,.25,.5,8), DARK, 1.1,3.6,-1.95, Math.PI/2,0,0));
+    const nr = 2 + Math.min(3,tier);
+    for(let k=0;k<nr;k++){ const r = add(merge([part(Cyl(.2,.2,2.6,10), 0xd7dde3, 0,0,0, 0,0,Math.PI/2), part(Box(2.62,.06,.42), DARK, 0,0,0)])); r.position.set(0,1.62,.5+k*.38-(nr-1)*.19+.3); spin.push({m:r, ax:'x', sp:-9}); }
+    out.emit.set(1.1,4.0,-2.1); out.top = 4.2;
+  } else if(id==='kaj' || id==='pkaj' || id==='mkaj'){
+    P2.push(part(Box(5.2,.7,3.6), CONC, 0,.35,.4), part(Box(5.2,.08,.3), 0xffc93c, 0,.72,2.05));
+    for(let k=0;k<6;k++) P2.push(part(Box(.4,.09,.32), 0x2b2b2b, -2.1+k*.85,.73,2.05));
+    // portalkran
+    for(const sx of [-1,1]) P2.push(part(Box(.26,3.2,.26), acc, sx*2.3,2.3,-.6), part(Box(.26,3.2,.26), acc, sx*2.3,2.3,1.8));
+    P2.push(part(Box(4.9,.28,.28), acc, 0,3.9,-.6), part(Box(4.9,.28,.28), acc, 0,3.9,1.8), part(Box(.6,.4,2.8), GRAY, 0,3.75,.6));
+    if(id==='kaj') for(let k=0;k<3+Math.min(3,tier);k++) P2.push(part(Box(1.6,.1,.5), 0xf0d39a, -1.2,.76+k*.11,.6), part(Box(1.6,.1,.5), 0xf0d39a, 1.2,.76+k*.11,.2));
+    if(id==='pkaj') for(let k=0;k<2+Math.min(3,tier);k++){ P2.push(part(Box(1.2,.12,1), WOOD, -1.3,.76,.6)); P2.push(part(Box(.5,.3,.4), 0xf2efe6, -1.6,1+k*.3,.4), part(Box(.5,.3,.4), 0xf2efe6, -1.0,1+k*.3,.8)); }
+    if(id==='mkaj'){ P2.push(part(Box(5.4,.14,1.4), acc, 0,3.0,-1.3, -.25,0,0)); for(let k=0;k<4;k++) P2.push(part(Box(.12,2.4,.12), 0xf2efe6, -2.5+k*1.66,1.9,-1.7)); }
+    const hook = add(merge([part(Cyl(.03,.03,1.4,4), 0x333333, 0,-.7,0), part(Box(.5,.2,.5), 0xffc93c, 0,-1.45,0)])); hook.position.set(0,3.6,.6); bob.push({m:hook, base:3.6, amp:.5, sp:1.4});
+    out.emit.set(0,1.2,2.2); out.top = 4.4;
+  } else if(id==='press'){
+    pad(P2);
+    P2.push(part(Cyl(1.1,1.1,3.2,14), 0xd7dde3, -.8,1.84,-.6), part(Cone(1.1,.8,14), acc, -.8,3.84,-.6), part(Cyl(1.14,1.14,.16,14), acc, -.8,1.0,-.6));
+    if(tier>=2) P2.push(part(Cyl(.8,.8,2.4,12), 0xd7dde3, 1.2,1.44,-1.1), part(Cone(.8,.6,12), acc, 1.2,2.94,-1.1));
+    P2.push(part(Box(1.6,1.3,1.6), GRAY, .9,.89,.6), part(Box(1.7,.18,1.7), acc, .9,2.4,.6), part(Box(.2,1,.2), DARK, .3,1.9,.1), part(Box(.2,1,.2), DARK, 1.5,1.9,1.1));
+    const pis = add(merge([part(Box(1.0,.5,1.0), acc, 0,0,0), part(Cyl(.12,.12,1,6), 0xd7dde3, 0,.6,0)])); pis.position.set(.9,1.9,.6); bob.push({m:pis, base:1.9, amp:.25, sp:5});
+    out.emit.set(.9,1.7,1.4); out.top = 4.5;
+  } else if(id==='snick'){
+    pad(P2, 4.6, 4.2);
+    P2.push(part(Box(3.4,2.1,2.8), 0x9e2b25, 0,1.29,-.2));
+    for(const sx of [-1,1]) for(const sz of [-1,1]) P2.push(part(Box(.12,2.1,.12), 0xf2efe6, sx*1.7,1.29,-.2+sz*1.4));
+    P2.push(part(Box(3.8,.14,1.8), 0x34373b, 0,2.75,-1.0, .58,0,0), part(Box(3.8,.14,1.8), 0x34373b, 0,2.75,.6, -.58,0,0));
+    P2.push(part(Box(1.1,1.4,.08), 0x6b4426, 0,.94,1.22), part(Box(.7,.55,.07), 0xffe7a0, -1.1,1.5,1.22), part(Box(.7,.55,.07), 0xffe7a0, 1.1,1.5,1.22));
+    P2.push(part(Box(.4,1.2,.4), 0x7c3a2b, 1.0,3.3,-.8), part(Box(1.6,.5,.1), acc, 0,2.3,1.27));
+    out.emit.set(1.0,4.0,-.8); out.top = 4.3; out.smoke = true;
+  }
+  const base = add(merge(P2)); base.castShadow = true;
+  return out;
+}
+const stations = {};
+const hitMeshes = [];
+const hitMat = new THREE.MeshBasicMaterial({visible:false});
+function lockedGroup(id){
+  const g = new THREE.Group(), P2 = [];
+  P2.push(part(Box(4.4,.18,4.2), 0xb7bcc2, 0,.09,0));
+  for(let k=0;k<8;k++){ const a=k/8*Math.PI*2; P2.push(part(Box(.5,.06,.16), 0xffc93c, Math.cos(a)*1.8,.2,Math.sin(a)*1.8, 0,-a,0)); }
+  P2.push(part(Box(.16,1.6,.16), WOOD, 0,.8,0), part(Box(1.8,.9,.12), 0xe6c48a, 0,1.6,.1));
+  const m = mesh(merge(P2)); g.add(m); return g;
+}
+for(const id of STATION_IDS){
+  const [x,z] = POS[id];
+  const root = new THREE.Group(); root.position.set(x,0,z); world.add(root);
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(5,4.5,4.6), hitMat); hit.position.set(0,2,0); hit.userData.id = id; root.add(hit); hitMeshes.push(hit);
+  stations[id] = { root, built:null, tier:-1, locked:null, pop:0, shake:0, act:0, smokeT:0 };
+}
+function refreshStation(id, celebrate=false){
+  const st = stations[id], L = S.lv[id], unlocked = S.lines[ST[id].line];
+  if(!unlocked){
+    if(st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; }
+    if(!st.locked){ st.locked = lockedGroup(id); st.root.add(st.locked); }
+    return;
+  }
+  if(st.locked){ st.root.remove(st.locked); st.locked = null; }
+  const t = tierOf(L);
+  if(t !== st.tier){
+    if(st.built){ st.root.remove(st.built.g); st.built.g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
+    st.built = buildStation(id, t); st.root.add(st.built.g); st.tier = t;
+    if(celebrate){ st.pop = 1; const e = st.root.position; burst(e.x, 3, e.z, TIER_COL, 60, 5, 1.2, 1.4, 7); Snd.tier(); toast('Ny maskin!', ST[id].name + ' går dubbelt så fort'); }
+  }
+  const s = 1 + .06*t + .0025*(L % ECON.milestoneEvery);
+  st.built.g.scale.setScalar(s);
+}
+
+/* ================= Transportband och virke ================= */
+const BELTS = [
+  {a:[0,-16.6], b:[0,-13.2], kind:'log',   q:'bark'},
+  {a:[0,-8.8],  b:[0,-5.2],  kind:'logp',  q:'sag'},
+  {a:[0,-.9],   b:[0,2.8],   kind:'board', q:'hyvel'},
+  {a:[0,7.1],   b:[0,11.4],  kind:'plank', q:'kaj'},
+  {a:[1.7,-3],  b:[6.3,-3],  kind:'chip',  q:'press', line:'pellets'},
+  {a:[8,-.8],   b:[8,11.4],  kind:'sack',  q:'pkaj',  line:'pellets'},
+  {a:[-1.6,5],  b:[-6.4,5],  kind:'plank', q:'snick', line:'mobler'},
+  {a:[-8,7.1],  b:[-8,11.4], kind:'furn',  q:'mkaj',  line:'mobler'},
+];
+const BELT_Y = .62, BELT_V = 1.9;
+const ITEM = {
+  log:  {sp:.5,  h:.22, geo:merge([part(Cyl(.22,.22,1.1,8),0x6b4426,0,0,0,0,0,Math.PI/2), part(Cyl(.19,.19,1.12,8),0xd9b27c,0,0,0,0,0,Math.PI/2)])},
+  logp: {sp:.5,  h:.2,  geo:merge([part(Cyl(.2,.2,1.1,8),0xd8b57a,0,0,0,0,0,Math.PI/2), part(Cyl(.17,.17,1.12,8),0xf0d6a2,0,0,0,0,0,Math.PI/2)])},
+  board:{sp:.36, h:.1,  geo:merge([part(Box(1.05,.09,.26),0xc89a5e,0,0,0), part(Box(1.05,.09,.26),0xb98b52,0,.1,0)])},
+  plank:{sp:.36, h:.1,  geo:merge([part(Box(1.05,.08,.26),0xf2d7a2,0,0,0), part(Box(1.05,.08,.26),0xe9c98c,0,.09,0), part(Box(1.05,.08,.26),0xf2d7a2,0,.18,0)])},
+  chip: {sp:.3,  h:.06, geo:merge([part(Box(.18,.1,.18),0xe8c98a,-.15,0,0,0,.4,0), part(Box(.16,.1,.16),0xd9b06a,.12,0,.05,0,.9,0), part(Box(.14,.1,.14),0xf0d6a2,0,.08,-.05,0,.2,0)])},
+  sack: {sp:.55, h:.16, geo:merge([part(Box(.6,.3,.44),0xf2efe6,0,0,0), part(Box(.62,.1,.46),0x4f9e3a,0,.02,0)])},
+  furn: {sp:.8,  h:.05, geo:merge([part(Box(.55,.08,.55),0xb8763e,0,.32,0), part(Box(.55,.55,.08),0xb8763e,0,.6,-.24), ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([a,b])=>part(Box(.07,.32,.07),0x8a5a32,a*.22,.16,b*.22))])},
+};
+const itemIM = {};
+for(const k in ITEM){ const im = new THREE.InstancedMesh(ITEM[k].geo, vcMat, 220); im.count = 0; im.castShadow = true; im.frustumCulled = false; world.add(im); itemIM[k] = im; ITEM[k].n = 0; }
+for(const b of BELTS){
+  const ax = b.b[0]-b.a[0], az = b.b[1]-b.a[1]; b.len = Math.hypot(ax,az); b.dx = ax/b.len; b.dz = az/b.len; b.yaw = Math.atan2(b.dx, b.dz);
+  const g = new THREE.Group(); g.position.set(b.a[0],0,b.a[1]); g.rotation.y = b.yaw;
+  const P2 = [part(Box(1.5,.5,b.len+.3), DARK, 0,.3,b.len/2)];
+  for(const sx of [-1,1]) P2.push(part(Box(.12,.2,b.len+.3), 0xffc93c, sx*.72,.62,b.len/2));
+  for(let z=.4;z<b.len;z+=1.4) for(const sx of [-1,1]) P2.push(part(Box(.12,.3,.12), 0x3a3f45, sx*.6,.15,z));
+  g.add(mesh(merge(P2)));
+  const tex = beltTexBase.clone(); tex.needsUpdate = true; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, b.len/1.1);
+  const top = new THREE.Mesh(new THREE.PlaneGeometry(1.25, b.len+.2), new THREE.MeshLambertMaterial({map:tex}));
+  top.rotation.x = -Math.PI/2; top.position.set(0,.56,b.len/2); top.receiveShadow = true; g.add(top);
+  b.tex = tex; b.g = g; world.add(g);
+  b.slots = Math.max(2, Math.floor((b.len-.3)/ITEM[b.kind].sp));
+  b.mov = []; b.acc = 0; b.flow = 0; b.qv = 0;
+}
+// flygande stockar från skogen till stockhögen
+const flyLogs = [];
+
+/* ================= Skogshuggare och träd som fälls ================= */
+const CT = [];
+for(let i=0;i<16;i++){ const row = i%2; CT.push({x:-10.5+i*1.4+rand(-.3,.3), z:-24.4-row*1.9+rand(-.4,.4), st:'grown', t:0, s:rand(.9,1.2), ry:rand(0,6), claimed:false}); }
+const ctIM = new THREE.InstancedMesh(treeG, vcMat, CT.length); ctIM.castShadow = true; world.add(ctIM);
+const stumpIM = new THREE.InstancedMesh(merge([part(Cyl(.24,.28,.28,8),0x7a5230,0,.14,0), part(Cyl(.2,.2,.02,8),0xe2bf86,0,.29,0)]), vcMat, CT.length);
+CT.forEach((t,i)=>{ _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(0,t.ry,0)), _one); stumpIM.setMatrixAt(i,_m4); }); world.add(stumpIM);
+function jackGeo(){
+  return merge([
+    part(Box(.16,.5,.18),0x2f4a7a,-.11,.25,0), part(Box(.16,.5,.18),0x2f4a7a,.11,.25,0),
+    part(Box(.48,.55,.3),0xc0392b,0,.78,0), part(Box(.5,.08,.32),0x7a1f17,0,.62,0), part(Box(.5,.06,.32),0x7a1f17,0,.85,0),
+    part(new THREE.SphereGeometry(.17,10,8),0xf1c79a,0,1.2,0), part(Cyl(.2,.22,.12,10),0xffc93c,0,1.34,0), part(Cyl(.12,.17,.1,10),0xffc93c,0,1.42,0),
+    part(Box(.12,.45,.14),0xc0392b,-.3,.82,0),
+  ]);
+}
+const armGeo = merge([part(Box(.12,.45,.14),0xc0392b,0,-.22,0), part(Cyl(.03,.03,.7,5),0x8a5a32,0,-.45,.25,Math.PI/2.4,0,0), part(Box(.06,.2,.24),0xb0b8c0,0,-.62,.52)]);
+const jacks = [];
+const jGeo = jackGeo();
+function jackCount(){ return Math.min(8, 1 + Math.floor((S.lv.hugg+4)/6)); }
+function makeJack(){
+  const g = new THREE.Group(); const b = mesh(jGeo); g.add(b);
+  const arm = mesh(armGeo); arm.position.set(.3,1.04,0); g.add(arm);
+  const home = [rand(-2.6,2.6), rand(-17.6,-16.6)];
+  g.position.set(home[0],0,home[1]); world.add(g);
+  return {g, arm, st:'idle', t:rand(0,1.5), tree:null, home, x:home[0], z:home[1], tx:0, tz:0};
+}
+function syncJacks(){ const n = jackCount(); while(jacks.length < n) jacks.push(makeJack()); }
+
+/* ================= Lastbilar ================= */
+const trucks = {};
+function makeTruck(kind, color){
+  const g = new THREE.Group();
+  const body = mesh(merge([
+    part(Box(1.6,1.4,1.7), color, 2.1,1.15,0), part(Box(1.62,.5,1.5), 0xbfe3ff, 2.35,1.45,0), part(Box(.1,.3,1.3), 0xf2efe6, 2.92,.75,0),
+    part(Box(4.0,.25,1.8), DARK, -.6,.55,0), part(Box(3.8,.1,1.7), 0x8a5a32, -.6,.72,0),
+    ...[[2.1,1],[2.1,-1],[-1.6,1],[-1.6,-1],[-.6,1],[-.6,-1]].map(([x,z])=>part(Cyl(.38,.38,.3,12),0x2b2b2b,x,.38,z*.8,Math.PI/2,0,0)),
+  ]));
+  g.add(body);
+  const cargoGeo = kind==='kaj' ? merge([part(Box(3.6,.6,1.5),0xf0d39a,0,.3,0)]) : kind==='pkaj' ? merge([part(Box(3.6,.6,1.5),0xf2efe6,0,.3,0), part(Box(3.62,.1,1.52),0x4f9e3a,0,.35,0)]) : merge([part(Box(3.6,1.0,1.5),0xb8763e,0,.5,0), part(Box(3.62,.08,1.52),0x6b4426,0,.7,0)]);
+  const cargo = mesh(cargoGeo); cargo.position.set(-.6,.77,0); g.add(cargo);
+  g.position.set(-60,0,ROAD_Z-.9); world.add(g);
+  return {g, cargo, st:'away', t:rand(0,2), money:0, x:-60};
+}
+
+/* ================= Etiketter ovanför stationerna ================= */
+const labels = {};
+for(const id of STATION_IDS){
+  const el = document.createElement('div'); el.className = 'lab';
+  el.innerHTML = `<span class="tag bn">Flaskhals</span><span class="tag rs">Skyndar på</span><span class="tag tap">Tryck för fart</span><span class="pill"><span class="nm"></span><span class="up">▲</span></span>`;
+  $('labels').appendChild(el); labels[id] = {el, nm:el.querySelector('.nm'), last:''};
+}
+
+/* ================= Kamera ================= */
+const cam = { tx:0, tz:-1, d:42, az:.42, el:.96, td:42, ttx:0, ttz:-1, orbit:0 };
+function fitCamera(){
+  const w = innerWidth, h = innerHeight; renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
+  const base = clamp(11/(Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.aspect), camera.aspect > 1 ? 30 : 34, 70);
+  cam.minD = 16; cam.maxD = 90; cam.base = base;
+}
+function updateCamera(dt){
+  cam.tx = lerp(cam.tx, cam.ttx, 1-Math.exp(-10*dt)); cam.tz = lerp(cam.tz, cam.ttz, 1-Math.exp(-10*dt)); cam.d = lerp(cam.d, cam.td, 1-Math.exp(-8*dt));
+  const az = cam.az + cam.orbit;
+  camera.position.set(cam.tx + Math.sin(az)*Math.cos(cam.el)*cam.d, Math.sin(cam.el)*cam.d, cam.tz + Math.cos(az)*Math.cos(cam.el)*cam.d);
+  camera.lookAt(cam.tx, 0, cam.tz);
+}
+const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _ground = new THREE.Plane(new THREE.Vector3(0,1,0),0), _hit = new THREE.Vector3(), _hit2 = new THREE.Vector3();
+function groundAt(cx, cy, out){ _ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera); return _ray.ray.intersectPlane(_ground, out); }
+function panBy(x0,y0,x1,y1){
+  if(!groundAt(x0,y0,_hit) || !groundAt(x1,y1,_hit2)) return;
+  cam.ttx = clamp(cam.ttx - (_hit2.x-_hit.x), -18, 18); cam.ttz = clamp(cam.ttz - (_hit2.z-_hit.z), -26, 28);
+  cam.tx = cam.ttx; cam.tz = cam.ttz;
+}
+const pointers = new Map(); let gesture = null;
+canvas.addEventListener('pointerdown', e => {
+  Snd.init();
+  try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, t:performance.now()});
+  if(pointers.size===2){ const [a,b] = [...pointers.values()]; gesture = {pinch:Math.hypot(a.x-b.x,a.y-b.y), d:cam.td}; }
+});
+canvas.addEventListener('pointermove', e => {
+  const p = pointers.get(e.pointerId); if(!p) return;
+  if(pointers.size===1){ panBy(p.x,p.y,e.clientX,e.clientY); }
+  p.x = e.clientX; p.y = e.clientY;
+  if(pointers.size===2 && gesture){ const [a,b] = [...pointers.values()]; const dist = Math.hypot(a.x-b.x,a.y-b.y); cam.td = clamp(gesture.d * gesture.pinch/Math.max(20,dist), cam.minD, cam.maxD); }
+});
+function endPointer(e){
+  const p = pointers.get(e.pointerId); if(!p) return;
+  pointers.delete(e.pointerId);
+  if(pointers.size<2) gesture = null;
+  const moved = Math.hypot(e.clientX-p.sx, e.clientY-p.sy);
+  if(e.type==='pointerup' && moved < 10 && performance.now()-p.t < 600 && pointers.size===0) tapAt(e.clientX, e.clientY);
+}
+canvas.addEventListener('pointerup', endPointer); canvas.addEventListener('pointercancel', endPointer);
+canvas.addEventListener('wheel', e => { e.preventDefault(); cam.td = clamp(cam.td * Math.exp(e.deltaY*0.001), cam.minD, cam.maxD); }, {passive:false});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+function tapAt(cx, cy){
+  if(mode!=='play') return;
+  _ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera);
+  const hits = _ray.intersectObjects(hitMeshes, false);
+  if(hits.length){ const id = hits[0].object.userData.id; tapStation(id); }
+  else selectStation(null);
+}
+
+/* ================= Spelets tillstånd ================= */
+let mode = 'menu';
+let sel = null, multMode = 1;
+const flowSm = {}; STATION_IDS.forEach(id => flowSm[id] = 0); flowSm.toSnick = 0;
+let bnCache = {}, incomeCache = 0;
+function recalc(){ bnCache = bottlenecks(S); incomeCache = incomePerSec(S); }
+function lineOf(id){ return ST[id].line; }
+function tapStation(id){
+  const st = stations[id];
+  if(S.lines[lineOf(id)]){
+    rush[id] = Math.min(ECON.rushMax, rush[id] + ECON.rushPerTap);
+    st.shake = .25; Snd.tap(); if(id==='sag') Snd.saw(1.4);
+    const p = st.root.position; burst(p.x, 2.2, p.z, [0xffc93c,0xffe58a,0xffffff], 8, 3, .9, .5, 5);
+  } else Snd.click();
+  selectStation(id);
+  if(meta.guide===0 && id==='sag') guideNext();
+}
+function selectStation(id){
+  sel = id;
+  $('sheet').classList.toggle('off', !id);
+  $('hintbar').hidden = !!id;
+  if(id){ renderPanel(true); focusStation(id); }
+}
+function focusStation(id){
+  // flytta kameran så att maskinen syns ovanför panelen
+  const [x,z] = POS[id], wide = innerWidth >= 900, land = innerHeight <= 520 && innerWidth >= 560;
+  cam.ttx = clamp(x + (wide ? -cam.d*.12 : land ? cam.d*.18 : 0), -18, 18);
+  cam.ttz = clamp(z + (wide || land ? 0 : cam.d*.07), -26, 28);
+}
+const FM_NAMES = {hugg:'Berit', bark:'Gunnar', sag:'Saga', hyvel:'Olle', kaj:'Majken', press:'Sune', pkaj:'Ingrid', snick:'Bosse', mkaj:'Elsa'};
+const LINE_TXT = {
+  brador:'Brädlinjen', pellets:'Pelletslinjen', mobler:'Möbellinjen',
+};
+const LOCK_TXT = {
+  pellets:`Spånet från sågen pressas till pellets i säckar. Varje säck ger ${ECON.price.pellet} kr, och sågen fortsätter att göra brädor som vanligt.`,
+  mobler:`Snickeriet gör möbler av hyvlade brädor. En möbel ger ${ECON.price.furn} kr i stället för ${ECON.price.board} kr för brädan.`,
+};
+function buyInfo(id){
+  const L = S.lv[id];
+  let n = multMode === 'max' ? Math.max(1, maxBuy(id, L, S.money)) : multMode;
+  return {n, cost: upCost(id, L, n)};
+}
+function rateTxt(id, L, fm){ const r = lvRate(id, L) * (fm ? 1 : ECON.noForeman); return fmt(r) + ' ' + ST[id].unit + '/s'; }
+function renderPanel(){
+  const id = sel; if(!id) return;
+  const line = lineOf(id), unlocked = S.lines[line];
+  $('pLine').textContent = unlocked ? LINE_TXT[line] : 'Ny produktionslinje';
+  $('pName').textContent = unlocked ? ST[id].name : LINE_TXT[line];
+  $('pMain').hidden = !unlocked; $('pLock').hidden = unlocked;
+  $('pLevel').hidden = !unlocked;
+  if(!unlocked){
+    $('pLockT').textContent = LOCK_TXT[line];
+    $('pUnlockC').textContent = fmt(ECON.lines[line].cost);
+    $('pUnlock').disabled = S.money < ECON.lines[line].cost;
+    return;
+  }
+  const L = S.lv[id], fm = S.fm[id], b = buyInfo(id);
+  $('pLevel').textContent = 'Nv ' + L;
+  $('pRate').textContent = rateTxt(id, L, fm);
+  $('pNext').textContent = rateTxt(id, L + b.n, fm);
+  const me = ECON.milestoneEvery, into = L % me, next = L - into + me;
+  $('pMileT').textContent = `Nivå ${next}: dubbel fart och ny maskin (${into}/${me})`;
+  $('pMile').style.width = (into/me*100) + '%';
+  $('pBuyT').textContent = 'Uppgradera +' + b.n;
+  $('pBuyC').textContent = fmt(b.cost);
+  $('pBuy').disabled = S.money < b.cost;
+  const isBn = Object.values(bnCache).includes(id);
+  let note, ok = false;
+  if(!fm) note = `Utan förman går maskinen på ${Math.round(ECON.noForeman*100)} % fart. Tryck på maskinen för att skynda på.`;
+  else if(isBn) note = 'Flaskhals: den här maskinen är långsammast i linjen. Uppgradera den först.';
+  else { note = 'Går bra. Uppgradera flaskhalsen (röd etikett) för mer pengar.'; ok = true; }
+  $('pNote').textContent = note; $('pNote').classList.toggle('ok', ok);
+  $('pFm').hidden = fm; $('pFmDone').hidden = !fm;
+  if(!fm){ $('pFmT').textContent = `Anställ ${FM_NAMES[id]} som förman`; $('pFmC').textContent = fmt(ST[id].foreman); $('pFm').disabled = S.money < ST[id].foreman; }
+  else $('pFmDone').textContent = `Förman: ${FM_NAMES[id]}. Maskinen går på full fart.`;
+}
+function setMult(m){ multMode = m; $('m1').setAttribute('aria-pressed', m===1); $('m10').setAttribute('aria-pressed', m===10); $('mMax').setAttribute('aria-pressed', m==='max'); Snd.click(); renderPanel(); }
+$('m1').onclick = () => setMult(1); $('m10').onclick = () => setMult(10); $('mMax').onclick = () => setMult('max');
+$('pClose').onclick = () => { Snd.click(); selectStation(null); };
+$('pBuy').onclick = () => {
+  const id = sel; if(!id) return; const b = buyInfo(id); if(S.money < b.cost) return;
+  S.money -= b.cost; const before = tierOf(S.lv[id]); S.lv[id] += b.n; recalc();
+  Snd.buy(); stations[id].pop = Math.max(stations[id].pop, .5);
+  const p = stations[id].root.position; burst(p.x, 2.5, p.z, [0x8fe06f,0xffffff], 14, 3, 1, .6, 5);
+  refreshStation(id, tierOf(S.lv[id]) !== before);
+  if(id==='hugg') syncJacks();
+  renderPanel(); hudNow(); if(meta.guide===1) guideNext();
+};
+$('pFm').onclick = () => {
+  const id = sel; if(!id || S.fm[id] || S.money < ST[id].foreman) return;
+  S.money -= ST[id].foreman; S.fm[id] = true; recalc();
+  Snd.hire(); toast(FM_NAMES[id] + ' är förman', ST[id].name + ' sköter sig själv');
+  const p = stations[id].root.position; burst(p.x, 3, p.z, [0xffc93c,0xffffff,0x8fe06f], 30, 4, 1, 1, 6);
+  renderPanel(); hudNow();
+};
+$('pUnlock').onclick = () => {
+  const id = sel; if(!id) return; const line = lineOf(id), c = ECON.lines[line].cost;
+  if(S.lines[line] || S.money < c) return;
+  S.money -= c; S.lines[line] = true; STATION_IDS.filter(s => lineOf(s)===line).forEach(s => { S.lv[s] = 1; refreshStation(s); });
+  recalc(); syncLines(); Snd.tier(); toast(ECON.lines[line].name + ' upplåst!', 'En ny produktionslinje');
+  for(const s of STATION_IDS.filter(s => lineOf(s)===line)){ const p = stations[s].root.position; burst(p.x, 2, p.z, TIER_COL, 40, 5, 1.2, 1.2, 7); }
+  renderPanel(); hudNow(); persist();
+};
+function syncLines(){
+  for(const b of BELTS){ b.g.visible = !b.line || S.lines[b.line]; }
+  for(const [id, color] of [['kaj',0x3f86f0],['pkaj',0x4f9e3a],['mkaj',0xe5484d]]){
+    if(S.lines[lineOf(id)] && !trucks[id]) trucks[id] = makeTruck(id, color);
+    if(trucks[id]) trucks[id].g.visible = S.lines[lineOf(id)];
+  }
+}
+
+/* ================= HUD ================= */
+const ui = { money:$('money'), rate:$('rate').querySelector('b') };
+let lastMoneyTxt = '', moneyHold = 0;
+function hudNow(){
+  const m = fmt(Math.max(0, S.money - moneyHold)) + ' kr'; if(m !== lastMoneyTxt){ ui.money.textContent = m; lastMoneyTxt = m; }
+  ui.rate.textContent = fmt(incomeCache*60);
+  const avail = seedsFor(S.earnedRun) > 0; $('prestBtn').hidden = !avail; $('prestBtn').classList.toggle('pulse', avail);
+  // uppdrag
+  const mi = getMission(S.mi), pr = missionProgress(S, mi), done = pr >= 1;
+  $('mission').classList.toggle('done', done);
+  $('mLbl').textContent = done ? 'Uppdrag klart · tryck för att hämta' : 'Uppdrag';
+  $('mText').textContent = mi.text;
+  $('mRew').textContent = '+' + fmt(missionReward(S, mi)) + ' kr';
+  $('mBar').style.width = (pr*100).toFixed(1) + '%';
+  if(sel) renderPanel();
+}
+$('mission').onclick = () => {
+  const mi = getMission(S.mi); if(missionProgress(S, mi) < 1) return;
+  const r = missionReward(S, mi); S.money += r; S.mi++; Snd.done();
+  floatScreen('+' + fmt(r) + ' kr', $('mission'));
+  toast('Uppdrag klart!', '+' + fmt(r) + ' kr'); hudNow(); persist();
+  if(meta.guide===3) guideNext();
+};
+function toast(big, small=''){ const t = $('toast'); t.innerHTML = big + (small ? `<small>${small}</small>` : ''); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); }
+const floats = [];
+function floatText(txt, x,y,z, big=false){ const el = document.createElement('div'); el.className = 'ft' + (big?' big':''); el.textContent = txt; $('floats').appendChild(el); floats.push({el, x,y,z, t:0, life:1.6}); }
+function floatScreen(txt, anchor){ const r = anchor.getBoundingClientRect(); const el = document.createElement('div'); el.className = 'ft big'; el.textContent = txt; $('floats').appendChild(el); floats.push({el, sx:r.left+r.width/2, sy:r.bottom, t:0, life:1.4}); }
+const _pv = new THREE.Vector3();
+function project(x,y,z){ _pv.set(x,y,z).project(camera); return [(_pv.x*.5+.5)*innerWidth, (-_pv.y*.5+.5)*innerHeight, _pv.z]; }
+function updateFloats(dt){
+  for(let i=floats.length-1;i>=0;i--){
+    const f = floats[i]; f.t += dt;
+    if(f.t >= f.life){ f.el.remove(); floats.splice(i,1); continue; }
+    let sx, sy; if(f.sx!==undefined){ sx=f.sx; sy=f.sy; } else { [sx,sy] = project(f.x,f.y,f.z); }
+    const k = f.t/f.life; f.el.style.transform = `translate(${sx}px,${sy - 40*k}px) translate(-50%,-50%) scale(${k<.15?k/.15:1})`; f.el.style.opacity = k>.7 ? (1-k)/.3 : 1;
+  }
+}
+function updateLabels(){
+  for(const id of STATION_IDS){
+    const L = labels[id], st = stations[id], p = st.root.position, unlocked = S.lines[lineOf(id)];
+    const top = unlocked && st.built ? st.built.top * st.built.g.scale.y : 2.6;
+    const [sx, sy, sz] = project(p.x, top + .4, p.z);
+    const vis = sz < 1 && sx > -60 && sx < innerWidth+60 && sy > -40 && sy < innerHeight+40 && mode==='play';
+    L.el.style.display = vis ? '' : 'none'; if(!vis) continue;
+    L.el.style.transform = `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
+    let txt, cls = 'lab';
+    if(!unlocked){ const line = lineOf(id); cls += ' lock'; if(id==='press'||id==='snick'){ txt = `🔒 ${ECON.lines[line].name} · ${fmt(ECON.lines[line].cost)} kr`; if(S.money >= ECON.lines[line].cost) cls += ' can'; } else txt = 'Låst'; }
+    else {
+      txt = 'Nv ' + S.lv[id];
+      if(S.money >= upCost(id, S.lv[id])) cls += ' can';
+      const isBn = Object.values(bnCache).includes(id);
+      if(isBn) cls += ' slow';
+      if(rush[id] > 0) cls += ' rush';
+      else if(!S.fm[id] && isBn) cls += ' idle';
+    }
+    const key = cls + '|' + txt;
+    if(key !== L.last){ L.last = key; L.el.className = cls; L.nm.textContent = txt; L.w = L.el.offsetWidth; }
+    const hw = (L.w||60)/2 + 4, cx = clamp(sx, hw, innerWidth - hw);
+    if(cx !== sx) L.el.style.transform = `translate(${cx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
+  }
+}
+
+/* ================= Guide (första gången) ================= */
+const GUIDE = [
+  {t:'st:sag', txt:'Tryck på sågen. Varje tryck får den att gå fortare en stund.'},
+  {t:'#pBuy', txt:'Uppgradera sågen så hinner den med fler stockar.'},
+  {t:'bn', txt:'Röd etikett betyder flaskhals. Där står virket i kö. Uppgradera den maskinen.', ok:true},
+  {t:'#mission', txt:'Klara uppdrag för extra pengar. Anställ förmän så sköter maskinerna sig själva.', ok:true},
+];
+let guideFocused = -1;
+function guideNext(){ meta.guide++; persist(); updateGuide(); }
+$('gOk').onclick = () => { Snd.click(); guideNext(); };
+function updateGuide(){
+  const gd = $('guide');
+  if(mode!=='play' || meta.guide >= GUIDE.length){ gd.hidden = true; return; }
+  const step = GUIDE[meta.guide];
+  if(meta.guide===1 && !sel){ selectStation('sag'); }
+  $('gText').textContent = step.txt; $('gOk').hidden = !step.ok;
+  let x, y, down = true;
+  if(step.t.startsWith('st:') || step.t==='bn'){
+    const id = step.t==='bn' ? (bnCache.brador || 'sag') : step.t.slice(3);
+    if(step.t==='bn' && guideFocused !== meta.guide){ guideFocused = meta.guide; if(sel) selectStation(null); cam.ttx = POS[id][0]; cam.ttz = POS[id][1] - 3; }
+    const st = stations[id], p = st.root.position, top = st.built ? st.built.top*st.built.g.scale.y : 3;
+    [x, y] = project(p.x, top + 1.6, p.z); y -= 30;
+  } else {
+    const r = $(step.t.slice(1)).getBoundingClientRect();
+    x = r.left + r.width/2;
+    if(r.top > innerHeight/2){ y = r.top - 6; } else { y = r.bottom + 6; down = false; }
+  }
+  gd.hidden = false; gd.classList.toggle('down', down); gd.classList.toggle('up', !down);
+  const h = gd.offsetHeight, w = gd.offsetWidth;
+  x = clamp(x, w/2 + 8, innerWidth - w/2 - 8);
+  const topSafe = 150;
+  if(down && y - h < topSafe){ down = false; y = Math.max(y + 30, topSafe); gd.classList.add('up'); gd.classList.remove('down'); }
+  gd.style.transform = `translate(${x}px,${down ? y - h : y}px) translate(-50%,0)`;
+}
+
+/* ================= Simulering per bildruta ================= */
+let hudT = 0, saveT = 0, sawT = 0, chopT = 0, missionWasDone = false;
+const dockOf = {kaj:'board', pkaj:'pellet', mkaj:'furn'};
+function econStep(dt){
+  for(const id of STATION_IDS) if(rush[id] > 0) rush[id] = Math.max(0, rush[id]-dt);
+  const n = Math.max(1, Math.ceil(dt/0.05)), h = dt/n;
+  const fsum = {}; STATION_IDS.forEach(id => fsum[id] = 0); fsum.toSnick = 0;
+  for(let k=0;k<n;k++){
+    const o = stepFlow(S, rush, h);
+    S.money += o.money; S.earnedRun += o.money; meta.earnedAll += o.money;
+    S.del.board += o.board; S.del.pellet += o.pellet; S.del.furn += o.furn;
+    const m = incomeMult(S);
+    if(trucks.kaj) trucks.kaj.money += o.board*ECON.price.board*m;
+    if(trucks.pkaj) trucks.pkaj.money += o.pellet*ECON.price.pellet*m;
+    if(trucks.mkaj) trucks.mkaj.money += o.furn*ECON.price.furn*m;
+    for(const id in o.f) fsum[id] += o.f[id];
+  }
+  const a = 1 - Math.exp(-3*dt);
+  for(const id in fsum) flowSm[id] = lerp(flowSm[id], fsum[id]/dt, a);
+}
+function beltFlow(b){
+  switch(b.q){
+    case 'bark': return flowSm.hugg; case 'sag': return flowSm.bark; case 'hyvel': return flowSm.sag;
+    case 'kaj': return flowSm.hyvel - flowSm.toSnick; case 'press': return S.lines.pellets ? flowSm.sag*ECON.spill : 0;
+    case 'pkaj': return flowSm.press; case 'snick': return flowSm.toSnick; case 'mkaj': return flowSm.snick;
+  }
+  return 0;
+}
+function setItem(kind, x, y, z, yaw, s=1){
+  const it = ITEM[kind]; if(it.n >= 220) return;
+  _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(0,yaw,0)), _s.set(s,s,s)); itemIM[kind].setMatrixAt(it.n++, _m4);
+}
+function updateBelts(dt){
+  for(const k in ITEM) ITEM[k].n = 0;
+  for(const b of BELTS){
+    if(!b.g.visible) continue;
+    const it = ITEM[b.kind], flow = beltFlow(b);
+    const cap = bufCap(S, b.q), qn = clamp(S.q[b.q]/cap, 0, 1);
+    b.qv = lerp(b.qv, qn * b.slots * 2, 1-Math.exp(-6*dt));
+    const qc = Math.round(b.qv), row1 = Math.min(b.slots, qc), row2 = Math.max(0, qc - b.slots);
+    const tail = b.len - row1*it.sp - .1;
+    if(flow > .02){ b.tex.offset.y -= BELT_V/1.1*dt; }
+    // nya bitar på bandet
+    const vis = Math.min(flow, 3.2);
+    b.acc += vis*dt;
+    if(b.acc >= 1){ b.acc -= Math.floor(b.acc); if(!b.mov.length || b.mov[b.mov.length-1] > it.sp*1.05) b.mov.push(0); }
+    for(let i=b.mov.length-1;i>=0;i--){ b.mov[i] += BELT_V*dt; if(b.mov[i] >= tail){ b.mov.splice(i,1); } }
+    const y0 = BELT_Y + it.h;
+    for(const s of b.mov) setItem(b.kind, b.a[0]+b.dx*s, y0, b.a[1]+b.dz*s, b.yaw);
+    for(let k=0;k<row1;k++){ const s = b.len - (k+.5)*it.sp; setItem(b.kind, b.a[0]+b.dx*s, y0, b.a[1]+b.dz*s, b.yaw); }
+    const lift = b.kind==='log'||b.kind==='logp' ? .38 : b.kind==='sack' ? .3 : b.kind==='furn' ? .7 : .2;
+    for(let k=0;k<row2;k++){ const s = b.len - (k+1)*it.sp; setItem(b.kind, b.a[0]+b.dx*s, y0+lift, b.a[1]+b.dz*s, b.yaw); }
+  }
+  // flygande stockar
+  for(let i=flyLogs.length-1;i>=0;i--){
+    const f = flyLogs[i]; f.t += dt/1.1; if(f.t >= 1){ flyLogs.splice(i,1); continue; }
+    const x = lerp(f.x0, 1.4, f.t), z = lerp(f.z0, -19.6, f.t), y = .4 + Math.sin(f.t*Math.PI)*3.5;
+    setItem('log', x, y, z, f.t*6);
+  }
+  for(const k in ITEM){ itemIM[k].count = ITEM[k].n; itemIM[k].instanceMatrix.needsUpdate = true; }
+}
+function updateMachines(dt, time){
+  for(const id of STATION_IDS){
+    const st = stations[id]; if(!st.built) continue;
+    const r = effRate(S, id), active = id==='hugg' ? 1 : clamp((flowSm[id]||0) / Math.max(1e-6, r*.5), 0, 1);
+    st.act = lerp(st.act, active, 1-Math.exp(-4*dt));
+    const sp = (.15 + st.act) * (rush[id]>0 ? 2 : 1);
+    for(const s of st.built.spin) s.m.rotation[s.ax] += s.sp*sp*dt;
+    for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.3+st.act)))*b.amp;
+    let sc = 1; if(st.pop > 0){ st.pop = Math.max(0, st.pop - dt*2); sc = 1 + Math.sin(st.pop*Math.PI)*.18; }
+    let sh = 0; if(st.shake > 0){ st.shake = Math.max(0, st.shake-dt); sh = Math.sin(time*60)*.06*st.shake/.25; }
+    st.root.scale.setScalar(sc); st.root.position.x = POS[id][0] + sh;
+    // partiklar
+    const e = st.built.emit, p = st.root.position;
+    if(id==='sag' && st.act > .1 && Math.random() < dt*(14*st.act + (rush.sag>0?20:0))) burst(p.x+e.x+rand(-.6,.6), e.y, p.z+e.z, [0xf3d9a4,0xe8c98a,0xffffff], 2, 2.6, .7, .6, 3.5);
+    if(id==='hyvel' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
+    if(id==='bark' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x+rand(-.5,.5), e.y, p.z+e.z, [0x6b4426,0x4a2e18], 1, 1.5, .8, .6, 2);
+    if(id==='press' && st.act > .1 && Math.random() < dt*3*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xd9b06a,0xc4964f], 2, 1.2, .6, .6, 2);
+    if(st.built.smoke && Math.random() < dt*2.5) burst(p.x+e.x, e.y, p.z+e.z, [0xdfe3e6,0xc9ced3], 1, .3, 2.6, 2.2, .8, -0.2);
+  }
+  if(stations.sag.act > .2 && mode==='play'){ sawT -= dt; if(sawT <= 0){ Snd.saw(.8); sawT = rand(1.8,3.2) / (rush.sag>0 ? 2.5 : 1); } }
+}
+function updateForest(dt){
+  for(const t of CT){
+    t.t += dt;
+    if(t.st==='falling' && t.t > .9){ t.st='gone'; t.t=0; Snd.thud(); burst(t.x, .4, t.z-1.5, [0x3aa452,0x52bd60,0x7a5230], 10, 2.5, 1, .8, 3); flyLogs.push({x0:t.x, z0:t.z, t:0}); }
+    else if(t.st==='gone' && t.t > 2.5){ t.st='regrow'; t.t=0; }
+    else if(t.st==='regrow' && t.t > 9){ t.st='grown'; t.t=0; t.claimed=false; }
+  }
+  CT.forEach((t,i)=>{
+    let rx = 0, s = t.s;
+    if(t.st==='falling'){ const k = Math.min(1,t.t/.9); rx = -k*k*Math.PI/2; }
+    else if(t.st==='gone'){ s = 0.0001; }
+    else if(t.st==='regrow'){ s = t.s*Math.min(1, t.t/9); }
+    _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(rx,t.ry*0,0)), _s.set(s,s,s)); ctIM.setMatrixAt(i,_m4);
+  });
+  ctIM.instanceMatrix.needsUpdate = true;
+  const speed = clamp(Math.sqrt(effRate(S,'hugg')/1.5), .7, 2.5);
+  for(const j of jacks){
+    j.t -= dt;
+    if(j.st==='idle' && j.t <= 0){
+      const free = CT.filter(t => t.st==='grown' && !t.claimed);
+      if(free.length){ const t = free[Math.random()*free.length|0]; t.claimed = true; j.tree = t; j.tx = t.x + .2; j.tz = t.z + .75; j.st = 'walk'; }
+      else j.t = 1;
+    } else if(j.st==='walk' || j.st==='back'){
+      const dx = j.tx-j.x, dz = j.tz-j.z, d = Math.hypot(dx,dz), step = 2.4*speed*dt;
+      if(d <= step){ j.x = j.tx; j.z = j.tz; if(j.st==='walk'){ j.st='chop'; j.t = 2.2/speed; } else { j.st='idle'; j.t = rand(.2,1)/speed; } }
+      else { j.x += dx/d*step; j.z += dz/d*step; j.g.rotation.y = Math.atan2(dx,dz); }
+      j.g.position.y = Math.abs(Math.sin(j.x*3+j.z*3))*.08;
+      j.arm.rotation.x = Math.sin((j.x+j.z)*4)*.5;
+    } else if(j.st==='chop'){
+      j.g.rotation.y = Math.PI; j.arm.rotation.x = -1.6 + Math.abs(Math.sin(j.t*7*speed))*1.9;
+      chopT -= dt; if(chopT<=0 && Math.sin(j.t*7*speed) > .9){ Snd.chop(); chopT = .3; burst(j.tree.x, .9, j.tree.z+.3, [0xe2bf86], 2, 1.5, .6, .4, 2); }
+      if(j.t <= 0){ j.tree.st='falling'; j.tree.t=0; j.st='back'; j.tx = j.home[0]; j.tz = j.home[1]; }
+    }
+    j.g.position.x = j.x; j.g.position.z = j.z;
+  }
+}
+function updateTrucks(dt){
+  for(const id in trucks){
+    const tr = trucks[id]; if(!tr.g.visible) continue;
+    const dockX = POS[id][0] - .2; tr.t += dt;
+    const has = (flowSm[id]||0) > .01;
+    if(tr.st==='away'){ tr.x = -60; if(tr.t > 1.2 && has){ tr.st='arrive'; tr.t=0; } }
+    else if(tr.st==='arrive'){ const k = Math.min(1, tr.t/2.6), e = 1-Math.pow(1-k,3); tr.x = lerp(-60, dockX, e); if(k>=1){ tr.st='load'; tr.t=0; } }
+    else if(tr.st==='load'){ if(tr.t > 6.5){ tr.st='leave'; tr.t=0; if(tr.money > 0){ floatText('+' + fmt(tr.money) + ' kr', dockX, 3, ROAD_Z, true); Snd.cash(); tr.money = 0; } } }
+    else if(tr.st==='leave'){ const k = Math.min(1, tr.t/2.4); tr.x = lerp(dockX, 64, k*k); if(k>=1){ tr.st='away'; tr.t=0; } }
+    tr.g.position.x = tr.x;
+    const load = tr.st==='load' ? Math.min(1, tr.t/6) : tr.st==='leave' ? 1 : 0;
+    tr.cargo.scale.set(1, Math.max(.001, load), 1); tr.cargo.visible = load > .02;
+  }
+}
+
+/* ================= Skärmar ================= */
+const SCREENS = ['start','awayScr','menuScr','prestScr','resetScr'];
+function show(id){ SCREENS.forEach(s => $(s).hidden = s!==id); }
+function startPlay(){
+  Snd.init(); setMute(meta.mute);
+  mode = 'play'; show(null); $('hud').hidden = false; meta.started = true; persist();
+  cam.orbit = 0; cam.td = cam.base; cam.ttx = 0; cam.ttz = -1;
+  if(pendingAway){ showAway(pendingAway.sec, pendingAway.amt); pendingAway = null; }
+}
+$('playBtn').onclick = startPlay;
+let pendingAway = null;
+function fmtDur(sec){ const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60); return h ? `${h} h ${m} min` : m ? `${m} min` : `${Math.round(sec)} s`; }
+function applyAway(sec){
+  // intäkt medan spelet var stängt: stationärt flöde, utan skyndning, max 8 timmar
+  if(!(sec > 20)) return null;
+  const s = Math.min(sec, ECON.offlineCapH*3600), f = flows(S), amt = incomePerSec(S)*s;
+  S.money += amt; S.earnedRun += amt; meta.earnedAll += amt;
+  S.del.board += f.K*s; S.del.furn += f.F*s; S.del.pellet += f.P*s;
+  persist();
+  return {sec, amt};
+}
+function showAway(sec, amt){
+  $('awayTxt').textContent = `Du var borta i ${fmtDur(sec)}${sec > ECON.offlineCapH*3600 ? ' (8 h räknas)' : ''}. Sågverket fortsatte att jobba under tiden.`;
+  $('awayAmt').textContent = '+' + fmt(amt) + ' kr';
+  moneyHold = amt; hudNow();
+  show('awayScr'); mode = 'away';
+}
+$('awayOk').onclick = () => { Snd.cash(); show(null); mode = 'play'; floatScreen('+' + fmt(moneyHold) + ' kr', $('cash')); holdDrain = moneyHold / 1.2; hudNow(); };
+let holdDrain = 0;
+$('menuBtn').onclick = () => { Snd.click(); openMenu(); };
+function openMenu(){ $('stRun').textContent = fmt(S.earnedRun) + ' kr'; $('stAll').textContent = fmt(meta.earnedAll) + ' kr'; $('stBoards').textContent = fmt(Math.floor(S.del.board)); $('stSeeds').textContent = `${S.seeds} (×${fmtMult(incomeMult(S))})`; show('menuScr'); mode = 'menu2'; }
+$('menuClose').onclick = () => { Snd.click(); show(null); mode = 'play'; };
+$('menuSnd').onclick = () => { setMute(!meta.mute); Snd.click(); };
+$('sndBtn').onclick = () => { setMute(!meta.mute); Snd.click(); };
+$('menuReset').onclick = () => { Snd.click(); show('resetScr'); };
+$('resetNo').onclick = () => { Snd.click(); openMenu(); };
+$('resetYes').onclick = () => { try{ localStorage.removeItem(SAVE_KEY); }catch(e){} meta = {earnedAll:0, mute:meta.mute, guide:0, t:Date.now(), started:true}; newRun(0); show(null); mode='play'; persist(); };
+function fmtMult(m){ return m.toFixed(2).replace('.', ','); }
+let prestFrom = 'hud';
+$('menuPrest').onclick = () => { Snd.click(); prestFrom = 'menu'; openPrest(); };
+$('prestBtn').onclick = () => { Snd.click(); prestFrom = 'hud'; openPrest(); };
+function openPrest(){
+  const seeds = seedsFor(S.earnedRun), mp = ECON.prestige;
+  $('prRun').textContent = fmt(S.earnedRun) + ' kr';
+  $('prSeeds').textContent = '+' + seeds;
+  $('prMult').textContent = `×${fmtMult(incomeMult(S))} → ×${fmtMult(1 + (S.seeds+seeds)*mp.perSeed)}`;
+  $('prLock').hidden = seeds > 0;
+  $('prLockT').textContent = `Låses upp när du tjänat ${fmt(mp.minEarned)} kr i den här omgången.`;
+  $('prBar').style.width = Math.min(100, S.earnedRun/mp.minEarned*100) + '%';
+  $('prGo').disabled = seeds <= 0; $('prGo').dataset.arm = ''; $('prGo').textContent = 'Sälj och plantera';
+  show('prestScr'); mode = 'menu2';
+}
+$('prGo').onclick = () => {
+  const seeds = seedsFor(S.earnedRun); if(seeds <= 0) return;
+  if(!$('prGo').dataset.arm){ $('prGo').dataset.arm = '1'; $('prGo').textContent = 'Säker? Tryck igen'; Snd.click(); return; }
+  newRun(S.seeds + seeds); show(null); mode = 'play';
+  Snd.tier(); toast('Ny skog planterad', `Intäkt ×${fmtMult(incomeMult(S))} för alltid`);
+  persist();
+};
+$('prBack').onclick = () => { Snd.click(); if(prestFrom==='menu') openMenu(); else { show(null); mode = 'play'; } };
+function newRun(seeds){
+  S = freshRun(seeds);
+  STATION_IDS.forEach(id => { rush[id] = 0; flowSm[id] = 0; refreshStation(id); });
+  for(const b of BELTS){ b.mov.length = 0; b.qv = 0; }
+  for(const id in trucks){ trucks[id].money = 0; trucks[id].st = 'away'; trucks[id].t = 0; }
+  for(const t of CT){ t.st = 'grown'; t.claimed = false; t.t = 0; }
+  for(const j of jacks){ world.remove(j.g); } jacks.length = 0; syncJacks();
+  selectStation(null); recalc(); syncLines(); hudNow();
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){ persist(); hiddenAt = Date.now(); }
+  else if(hiddenAt){ const away = (Date.now()-hiddenAt)/1000; hiddenAt = 0; const r = applyAway(away); if(r && r.sec > 60 && mode==='play') showAway(r.sec, r.amt); else hudNow(); }
+});
+let hiddenAt = 0;
+window.addEventListener('pagehide', persist);
+window.addEventListener('resize', fitCamera);
+window.addEventListener('keydown', e => { if(e.key==='Escape' && sel) selectStation(null); });
+
+/* ================= Huvudloop ================= */
+const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
+let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0, time = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  let dt = (now - last)/1000; last = now;
+  if(dt > .1) dt = .1;
+  if(dt <= 0) return;
+  tick(dt);
+}
+function tick(dt){
+  time += dt;
+  if(mode==='play' || mode==='menu2' || mode==='away' || mode==='menu') econStep(dt);
+  if(mode==='menu'){ cam.orbit += dt*.05; cam.td = cam.base*.85; }
+  updateBelts(dt); updateMachines(dt, time); updateForest(dt); updateTrucks(dt);
+  updateParticles(dt); updateCamera(dt); updateFloats(dt); updateLabels(); updateGuide();
+  if(moneyHold > 0 && mode==='play'){ moneyHold = Math.max(0, moneyHold - Math.max(holdDrain, 1)*dt); hudNow(); }
+  hudT -= dt; if(hudT <= 0){ hudT = .15; recalc(); if(mode!=='menu') hudNow();
+    const md = missionProgress(S, getMission(S.mi)) >= 1; if(md && !missionWasDone) Snd.buy(); missionWasDone = md; }
+  saveT -= dt; if(saveT <= 0){ saveT = 5; if(meta.started) persist(); }
+  renderer.render(scene, camera);
+  fAcc += dt; fN++;
+  if(fAcc >= .5){ const fps = fN/fAcc; window.__fps = fps; if(showFps) fpsEl.textContent = `${fps.toFixed(0)} fps · dpr ${pixelRatio} · ${renderer.info.render.calls} anrop`; fAcc = 0; fN = 0;
+    slowAcc += fps; slowN++; if(slowN>=4){ const avg = slowAcc/slowN; slowAcc=0; slowN=0; if(avg<45 && pixelRatio>1.25){ pixelRatio = Math.max(1.25, pixelRatio-.25); renderer.setPixelRatio(pixelRatio); fitCamera(); } } }
+}
+
+/* ================= Start ================= */
+fitCamera();
+cam.td = cam.d = cam.base*.85;
+STATION_IDS.forEach(id => refreshStation(id));
+syncJacks(); recalc(); syncLines(); setMute(meta.mute);
+if(hadSave){
+  const r = applyAway(awaySec);
+  if(r && r.sec > 60) pendingAway = r;
+  $('playBtn').textContent = 'Fortsätt';
+}
+show('start'); hudNow();
+// testkrok
+window.__sv = { S:()=>S, meta:()=>meta, camera, cam, scene, renderer, THREE, ECON, recalc, persist, hudNow, tapStation, selectStation, startPlay, newRun, applyAway, stations, BELTS, ITEM, trucks, jacks, fps:()=>window.__fps,
+  give(m){ S.money += m; hudNow(); },
+  step(sec, dt=1/30){ let ms = 0; for(let t=0;t<sec;t+=dt){ const t0 = performance.now(); econStep(dt); updateBelts(dt); updateMachines(dt, time+=dt); updateForest(dt); updateTrucks(dt); updateParticles(dt); ms += performance.now()-t0; } recalc(); hudNow(); return +(ms/(sec/dt)).toFixed(3); },
+  run(sec, dt=1/30){ for(let t=0;t<sec;t+=dt) tick(dt); return {money:S.money, fps:window.__fps}; },
+  incomeMin:()=>incomePerSec(S)*60, showFps(){ showFps=true; fpsEl.hidden=false; } };
+requestAnimationFrame(t => { last = t; frame(t); });
+</script>
