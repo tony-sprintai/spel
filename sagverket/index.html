@@ -20,17 +20,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Baloo+2:wght@600;700;800&display=swap">
 <style>
-/* Layout: fullskärms-3D av sågverket, HUD i kanterna, stationspanel som ark nertill. En fast spelvärld (skog), ett tema. */
+/* Layout: fullskärms-3D som följer gubben. HUD i kanterna, styrspak där fingret landar. En fast spelvärld (skog), ett tema. */
 :root{
   --spruce:#16271f; --panel:rgba(20,36,29,.9); --panel-2:#22392e;
   --saw:#ffc93c; --saw-dk:#b98a12; --leaf:#5fbf4a; --leaf-dk:#347a27;
-  --falu:#c2432f; --cream:#fff6e3; --muted:#b9c9bd; --steel:#9aa6b2; --sky:#a9d6ee;
+  --falu:#c2432f; --cream:#fff6e3; --muted:#b9c9bd; --sky:#a9d6ee; --storm:#5b6b7a;
   --f-title:"Alfa Slab One","Rockwell","Georgia",serif;
   --f-ui:"Baloo 2","Arial Rounded MT Bold",system-ui,-apple-system,sans-serif;
   color-scheme:dark;
 }
 [hidden]{display:none!important}
-html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--sky);}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:var(--sky);}
 body{color:var(--cream);font-family:var(--f-ui);font-weight:700;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;}
 #app{position:fixed;inset:0;overflow:hidden;}
 #c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
@@ -40,81 +40,75 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 
 /* ---------- HUD ---------- */
 #hud{position:absolute;inset:0;pointer-events:none;}
-.top{position:absolute;left:0;right:0;top:0;max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px;}
-.toprow{display:flex;align-items:flex-start;gap:8px;}
-#cash{pointer-events:auto;flex:1;min-width:0;background:var(--panel);border-radius:18px;padding:6px 14px 6px 8px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+.top{position:absolute;left:0;right:0;top:0;max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:7px;}
+.toprow{display:flex;align-items:stretch;gap:8px;}
+#cash{flex:1;min-width:0;background:var(--panel);border-radius:18px;padding:6px 12px 5px 8px;display:flex;align-items:center;gap:9px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
 .coin{width:30px;height:30px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff2b0,#ffc93c 45%,#c4860e);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);display:grid;place-items:center;color:#7a4f00;font-family:var(--f-title);font-size:13px;}
-#money{font-family:var(--f-title);font-size:clamp(19px,6vw,26px);line-height:1;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#rate{font-size:14px;color:var(--muted);line-height:1.1;white-space:nowrap;}
+#cash.bump .coin{animation:bump .25s ease-out;}
+@keyframes bump{40%{transform:scale(1.25)}}
+#money{font-family:var(--f-title);font-size:clamp(18px,5.6vw,26px);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#rate{font-size:13px;color:var(--muted);line-height:1.15;white-space:nowrap;}
 #rate b{color:var(--saw);font-weight:800;}
-.iconbtn{pointer-events:auto;width:46px;height:46px;border-radius:15px;background:var(--panel);display:grid;place-items:center;box-shadow:0 3px 0 rgba(0,0,0,.3);flex:none;position:relative;}
+#carry{background:var(--panel);border-radius:18px;padding:4px 12px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 0 rgba(0,0,0,.3);min-width:54px;}
+#carry .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);line-height:1;}
+#carryN{font-family:var(--f-title);font-size:20px;line-height:1.1;}
+#carry.full{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;}
+#carry.full .k{color:#3d2600;}
+.iconbtn{pointer-events:auto;width:44px;border-radius:15px;background:var(--panel);display:grid;place-items:center;box-shadow:0 3px 0 rgba(0,0,0,.3);flex:none;}
 .iconbtn svg{width:24px;height:24px;fill:var(--cream);}
-#prestBtn{background:linear-gradient(#7fd36b,#3f9c3a);}
-#prestBtn.pulse{animation:pulse 1.4s ease-in-out infinite;}
-@keyframes pulse{50%{transform:scale(1.08)}}
-#mission{pointer-events:auto;align-self:stretch;background:var(--panel);border-radius:16px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;text-align:left;box-shadow:0 3px 0 rgba(0,0,0,.3);}
-#mission .mt{display:flex;justify-content:space-between;gap:10px;font-size:15px;line-height:1.15;}
-#mission .mt span:first-child{min-width:0;}
-#mission .mr{color:var(--saw);white-space:nowrap;}
-#mission .bar{height:8px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden;}
-#mission .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fe06f,#4fb33c);border-radius:4px;transition:width .3s;}
-#mission .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-#mission.done{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;animation:pulse 1.2s ease-in-out infinite;}
-#mission.done .lbl,#mission.done .mr{color:#3d2600;}
-#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.lab{position:absolute;left:0;top:0;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:3px;white-space:nowrap;will-change:transform;}
-.lab .pill{background:var(--panel);border-radius:999px;padding:1px 10px 0;font-size:14px;display:flex;align-items:center;gap:5px;box-shadow:0 2px 0 rgba(0,0,0,.3);}
-.lab .up{display:none;width:18px;height:18px;border-radius:50%;background:var(--leaf);color:#fff;font-size:13px;line-height:18px;text-align:center;}
-.lab.can .up{display:block;}
-.lab .tag{display:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:1px 6px 0;}
-.lab.slow .tag.bn{display:block;background:var(--falu);}
-.lab.rush .tag.rs{display:block;background:var(--saw);color:#3d2600;}
-.lab.lock .pill{background:rgba(20,36,29,.75);border:2px dashed var(--saw);}
-.lab.idle .tag.tap{display:block;background:rgba(20,36,29,.8);color:var(--muted);}
-#floats{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.ft{position:absolute;left:0;top:0;font-family:var(--f-title);font-size:20px;color:#fff3c4;text-shadow:0 2px 0 rgba(0,0,0,.5);white-space:nowrap;will-change:transform,opacity;}
-.ft.big{font-size:28px;color:var(--saw);}
-#toast{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--f-title);font-size:26px;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.5);pointer-events:none;opacity:0;max-width:min(90%,420px);text-wrap:balance;background:var(--panel);border-radius:20px;padding:12px 20px 10px;box-shadow:0 0 0 2px rgba(255,201,60,.5),0 10px 24px rgba(0,0,0,.35);}
+#goal{align-self:stretch;background:var(--panel);border-radius:14px;padding:5px 12px 6px;display:flex;flex-direction:column;gap:3px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#goal .gt{display:flex;justify-content:space-between;gap:10px;font-size:14px;line-height:1.15;}
+#goal .gt span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#goal .gt b{color:var(--saw);white-space:nowrap;font-weight:800;}
+.bar{height:7px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden;}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8fe06f,#4fb33c);border-radius:4px;}
+#goal.can{background:linear-gradient(#7fd36b,#3f9c3a);}
+#goal.can .gt b{color:#fff;}
+#goal.can .bar i{background:#fff;}
+.card{align-self:stretch;border-radius:14px;padding:6px 12px 7px;display:flex;flex-direction:column;gap:3px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+.card .ct{display:flex;justify-content:space-between;gap:10px;font-size:15px;line-height:1.15;}
+.card .ct span:first-child{min-width:0;}
+.card .ct b{white-space:nowrap;font-weight:800;}
+#order{background:linear-gradient(#3f86f0,#2257b3);}
+#order .bar i{background:linear-gradient(90deg,#ffe066,#ffc93c);}
+#order.ok{background:linear-gradient(#7fd36b,#3f9c3a);}
+#order.miss{background:rgba(20,36,29,.9);color:var(--muted);}
+#evb{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;}
+#evb.storm{background:linear-gradient(#7d8c9b,#4b5967);color:#fff;}
+#evb.jam{background:linear-gradient(#e5604d,#a8301f);color:#fff;}
+#evb .bar i{background:rgba(0,0,0,.35);}
+#evb.storm .bar i,#evb.jam .bar i{background:rgba(255,255,255,.8);}
+.pop{animation:popin .35s ease-out;}
+@keyframes popin{0%{transform:scale(.88)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+#hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%);background:var(--panel);border-radius:18px;padding:6px 16px 4px;font-size:15px;line-height:1.25;text-align:center;width:max-content;max-width:calc(100% - 32px);text-wrap:balance;color:var(--cream);box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#hint b{color:var(--saw);}
+#fps{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 54px);font:12px/1 ui-monospace,monospace;background:rgba(0,0,0,.5);padding:4px 6px;border-radius:6px;}
+#labels,#floats{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.lab{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap;will-change:transform;}
+.lab .pill{background:var(--panel);border-radius:999px;padding:1px 10px 0;font-size:14px;line-height:1.35;display:flex;align-items:center;gap:5px;box-shadow:0 2px 0 rgba(0,0,0,.3);}
+.lab .pill .coin{width:15px;height:15px;font-size:0;}
+.lab .sub{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--cream);text-shadow:0 1px 2px rgba(0,0,0,.8);}
+.lab.can .pill{background:linear-gradient(#7fd36b,#3f9c3a);color:#fff;animation:pulse 1.1s ease-in-out infinite;}
+.lab.pay .pill{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;}
+.lab.warn .pill{background:var(--falu);color:#fff;animation:pulse .7s ease-in-out infinite;}
+.lab.gold .pill{background:linear-gradient(#fff2b0,#ffc93c);color:#5a3a00;animation:pulse .9s ease-in-out infinite;}
+.lab.info .pill{background:rgba(20,36,29,.72);font-size:13px;}
+.lab.full .pill{background:var(--saw);color:#3d2600;font-size:12px;letter-spacing:.08em;}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.ft{position:absolute;left:0;top:0;font-family:var(--f-title);font-size:19px;color:#fff3c4;text-shadow:0 2px 0 rgba(0,0,0,.55);white-space:nowrap;will-change:transform,opacity;}
+.ft.big{font-size:27px;color:var(--saw);}
+#toast{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);font-family:var(--f-title);font-size:26px;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.5);pointer-events:none;opacity:0;max-width:min(90%,420px);text-wrap:balance;background:var(--panel);border-radius:20px;padding:12px 20px 10px;box-shadow:0 0 0 2px rgba(255,201,60,.5),0 10px 24px rgba(0,0,0,.35);}
 #toast small{display:block;font-family:var(--f-ui);font-size:17px;color:var(--saw);}
-#toast.show{animation:toast 2s ease-out forwards;}
+#toast.show{animation:toast 2.2s ease-out forwards;}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}22%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%)}}
-#fps{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 8px);font:12px/1 ui-monospace,monospace;background:rgba(0,0,0,.5);padding:4px 6px;border-radius:6px;}
-#hintbar{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);transform:translateX(-50%);background:var(--panel);border-radius:999px;padding:6px 16px 4px;font-size:15px;white-space:nowrap;color:var(--muted);}
-
-/* ---------- Stationspanel ---------- */
-#sheet{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:0 max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(16px,env(safe-area-inset-left,0px));pointer-events:none;transform:translateY(0);transition:transform .22s ease-out;}
-#sheet.off{transform:translateY(120%);}
-.sheetin{pointer-events:auto;width:100%;max-width:520px;background:var(--panel);border-radius:22px;padding:12px 14px 14px;box-shadow:0 0 0 2px rgba(255,201,60,.45),0 14px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:9px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
-.sh-head{display:flex;align-items:center;gap:10px;}
-.sh-head h3{margin:0;font-family:var(--f-title);font-weight:400;font-size:22px;line-height:1.05;flex:1;min-width:0;}
-.sh-head h3 small{display:block;font-family:var(--f-ui);font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
-#pLevel{font-family:var(--f-title);font-size:18px;background:rgba(0,0,0,.35);border-radius:10px;padding:3px 10px 1px;white-space:nowrap;}
-#pClose{width:38px;height:38px;border-radius:12px;background:rgba(0,0,0,.35);display:grid;place-items:center;flex:none;}
-#pClose svg{width:18px;height:18px;fill:var(--cream);}
-.sh-stats{display:flex;gap:12px;font-size:15px;line-height:1.2;flex-wrap:wrap;}
-.sh-stats div{min-width:0;}
-.sh-stats .k{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
-#pNext{color:#9be27f;}
-.mile{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);}
-.mile .bar{height:7px;border-radius:4px;background:rgba(0,0,0,.4);overflow:hidden;}
-.mile .bar i{display:block;height:100%;background:var(--saw);border-radius:4px;}
-#pNote{font-size:14px;line-height:1.25;color:var(--cream);background:rgba(194,67,47,.28);border-radius:10px;padding:6px 10px 5px;}
-#pNote.ok{background:rgba(95,191,74,.18);}
-.sh-buy{display:flex;gap:8px;align-items:stretch;}
-.mult{display:flex;flex-direction:column;gap:4px;}
-.mult button{background:rgba(0,0,0,.35);border-radius:9px;font-size:13px;padding:2px 8px 0;min-width:46px;flex:1;}
-.mult button[aria-pressed="true"]{background:var(--saw);color:#3d2600;}
-.btn{border-radius:16px;font-family:var(--f-ui);font-weight:800;font-size:18px;line-height:1.1;padding:10px 12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,box-shadow .08s,filter .15s;}
-.btn small{font-size:15px;font-weight:700;display:flex;align-items:center;gap:5px;}
-.btn small .coin{width:16px;height:16px;font-size:0;}
-.btn.buy{flex:1;background:linear-gradient(#7fd36b,#3f9c3a);color:#fff;box-shadow:0 5px 0 var(--leaf-dk);text-shadow:0 1px 0 rgba(0,0,0,.3);}
-.btn.buy:active{transform:translateY(3px);box-shadow:0 2px 0 var(--leaf-dk);}
-.btn.gold{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;box-shadow:0 5px 0 var(--saw-dk);}
-.btn.gold:active{transform:translateY(3px);box-shadow:0 2px 0 var(--saw-dk);}
-.btn.ghost{background:rgba(0,0,0,.35);box-shadow:none;}
-.btn[disabled]{filter:grayscale(.85) brightness(.7);pointer-events:none;}
-#pFm{width:100%;}
-#pFmDone{font-size:14px;color:#9be27f;text-align:center;}
+#joy{position:absolute;left:0;top:0;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:rgba(255,255,255,.14);border:3px solid rgba(255,255,255,.4);pointer-events:none;}
+#knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#ffe58a 60%,#e9a920);box-shadow:0 4px 10px rgba(0,0,0,.35);}
+#edge{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;pointer-events:none;}
+#edge i{position:absolute;inset:0;border-radius:50%;background:var(--saw);box-shadow:0 3px 8px rgba(0,0,0,.4);display:grid;place-items:center;}
+#edge i::after{content:"";width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid #3d2600;margin-left:4px;}
+#edge.gold i{background:#fff2b0;} #edge.warn i{background:var(--falu);} #edge.warn i::after{border-left-color:#fff;}
+#flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(transparent 55%,rgba(255,201,60,.35));opacity:0;transition:opacity .3s;}
+#flash.on{opacity:1;}
 
 /* ---------- Skärmar ---------- */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-block:calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 16px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-y:auto;}
@@ -130,31 +124,27 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 .row>*{flex:1;min-width:0;}
 .pbar{height:12px;border-radius:6px;background:rgba(0,0,0,.4);overflow:hidden;}
 .pbar i{display:block;height:100%;background:linear-gradient(90deg,#8fe06f,#4fb33c);}
+.btn{border-radius:16px;font-family:var(--f-ui);font-weight:800;font-size:18px;line-height:1.1;padding:10px 12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,box-shadow .08s,filter .15s;}
+.btn.buy{background:linear-gradient(#7fd36b,#3f9c3a);color:#fff;box-shadow:0 5px 0 var(--leaf-dk);text-shadow:0 1px 0 rgba(0,0,0,.3);}
+.btn.buy:active{transform:translateY(3px);box-shadow:0 2px 0 var(--leaf-dk);}
+.btn.gold{background:linear-gradient(#ffd866,#e9a920);color:#3d2600;box-shadow:0 5px 0 var(--saw-dk);}
+.btn.gold:active{transform:translateY(3px);box-shadow:0 2px 0 var(--saw-dk);}
+.btn.ghost{background:rgba(0,0,0,.35);box-shadow:none;}
+.btn[disabled]{filter:grayscale(.85) brightness(.7);pointer-events:none;}
 #start{justify-content:space-between;background:linear-gradient(rgba(10,24,16,0) 40%,rgba(10,24,16,.55));}
 .titleblock{margin-top:7vh;text-align:center;}
-.titleblock h1{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(50px,15vw,96px);line-height:.95;color:var(--cream);text-shadow:0 4px 0 #4a2c12,0 9px 0 rgba(0,0,0,.25);letter-spacing:.01em;}
-.titleblock .saw{display:inline-block;color:var(--saw);}
-.titleblock p{margin:12px auto 0;max-width:28ch;font-size:18px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.6);text-wrap:balance;}
+.titleblock h1{margin:0;font-family:var(--f-title);font-weight:400;font-size:clamp(50px,15vw,96px);line-height:.95;color:var(--cream);text-shadow:0 4px 0 #4a2c12,0 9px 0 rgba(0,0,0,.25);}
+.titleblock .saw{color:var(--saw);}
+.titleblock p{margin:12px auto 0;max-width:30ch;font-size:18px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.6);text-wrap:balance;}
 .startmenu{width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px;margin-bottom:3vh;}
 .startmenu .btn{font-size:28px;padding:16px;}
-#guide{position:absolute;left:0;top:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,0);will-change:transform;z-index:5;}
-#guide .gb{background:var(--cream);color:#2b1f10;border-radius:14px;padding:8px 12px 6px;font-size:15px;max-width:240px;text-align:center;line-height:1.25;box-shadow:0 4px 12px rgba(0,0,0,.35);pointer-events:auto;}
-#guide .gb button{display:block;margin:6px auto 0;background:var(--leaf);color:#fff;border-radius:10px;padding:3px 16px 1px;font-weight:800;}
-#guide .ga{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;animation:bob .8s ease-in-out infinite;}
-#guide.down .ga{border-top:20px solid var(--saw);order:2;}
-#guide.up .ga{border-bottom:20px solid var(--saw);order:-1;}
-@keyframes bob{50%{transform:translateY(6px)}}
-@media (min-width:900px){
-  #sheet{justify-content:flex-start;padding-left:max(20px,env(safe-area-inset-left,0px));}
-  .sheetin{max-width:400px;}
-}
+.startmenu small{text-align:center;font-size:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7);}
 @media (max-height:520px) and (min-width:560px){
-  #sheet{top:0;left:auto;width:min(380px,48vw);align-items:flex-end;padding-top:calc(env(safe-area-inset-top,0px) + 8px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);}
-  #sheet.off{transform:translateX(110%);}
-  .sheetin{max-height:100%;overflow-y:auto;gap:6px;padding:10px 12px;}
-  .top{max-width:none;flex-direction:row;align-items:flex-start;}
-  .toprow{flex:1;min-width:0;}
-  #mission{flex:1;min-width:0;max-width:340px;}
+  .top{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;}
+  .toprow{grid-column:1;}
+  #goal{grid-column:1;}
+  .card{grid-column:2;grid-row:auto;}
+  .titleblock{margin-top:2vh;}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
@@ -163,62 +153,48 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
   <canvas id="c" aria-label="Sågverket i 3D"></canvas>
   <div id="labels"></div>
   <div id="floats"></div>
+  <div id="flash"></div>
   <div id="hud" hidden>
     <div class="top">
       <div class="toprow">
-        <div id="cash"><i class="coin">kr</i><div style="min-width:0"><div id="money" class="num">0</div><div id="rate" class="num"><b>0</b> kr/min</div></div></div>
-        <button class="iconbtn" id="prestBtn" hidden aria-label="Ny skog"><svg viewBox="0 0 24 24"><path d="M12 2 5 11h3l-4 6h6v5h4v-5h6l-4-6h3z"/></svg></button>
+        <div id="cash"><i class="coin">kr</i><div style="min-width:0"><div id="money" class="num">0</div><div id="rate" class="num" hidden><b>0</b> kr/min utan dig</div></div></div>
+        <div id="carry"><span class="k">Bär</span><span id="carryN" class="num">0/5</span></div>
         <button class="iconbtn" id="sndBtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z"/><path class="sndon" d="M15.5 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM18.3 5.7a9 9 0 0 1 0 12.6l-1.4-1.4a7 7 0 0 0 0-9.8z"/><path class="sndoff" d="m15 9.4 1.4-1.4 2.1 2.1 2.1-2.1L22 9.4l-2.1 2.1 2.1 2.1-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z"/></svg></button>
         <button class="iconbtn" id="menuBtn" aria-label="Meny"><svg viewBox="0 0 24 24"><path d="M3 5h18v3H3zM3 10.5h18v3H3zM3 16h18v3H3z"/></svg></button>
       </div>
-      <button id="mission" aria-label="Uppdrag"><span class="lbl" id="mLbl">Uppdrag</span><span class="mt"><span id="mText">–</span><span class="mr num" id="mRew"></span></span><span class="bar"><i id="mBar"></i></span></button>
+      <div id="goal"><span class="gt"><span id="gName">Nästa</span><b id="gCost" class="num"></b></span><span class="bar"><i id="gBar"></i></span></div>
+      <div id="evb" class="card" hidden><span class="ct"><span id="evT"></span><b id="evS" class="num"></b></span><span class="bar"><i id="evBar"></i></span></div>
+      <div id="order" class="card" hidden><span class="ct"><span id="oT"></span><b id="oS" class="num"></b></span><span class="bar"><i id="oBar"></i></span></div>
     </div>
-    <div id="hintbar">Tryck på en maskin</div>
+    <div id="hint"></div>
+    <div id="edge" hidden><i></i></div>
+    <div id="joy" hidden><div id="knob"></div></div>
     <div id="fps" hidden></div>
   </div>
   <div id="toast"></div>
 
-  <div id="sheet" class="off" aria-live="polite">
-    <div class="sheetin">
-      <div class="sh-head">
-        <h3><small id="pLine">Brädlinjen</small><span id="pName">Sågen</span></h3>
-        <span id="pLevel" class="num">Nv 1</span>
-        <button id="pClose" aria-label="Stäng"><svg viewBox="0 0 24 24"><path d="m5 3 7 7 7-7 2 2-7 7 7 7-2 2-7-7-7 7-2-2 7-7-7-7z"/></svg></button>
-      </div>
-      <div id="pMain">
-        <div style="display:flex;flex-direction:column;gap:9px">
-          <div class="sh-stats"><div><span class="k">Takt nu</span><span id="pRate" class="num">0</span></div><div><span class="k">Efter köp</span><span id="pNext" class="num">0</span></div></div>
-          <div class="mile"><span id="pMileT">Nivå 25: dubbel fart och ny maskin</span><span class="bar"><i id="pMile"></i></span></div>
-          <div id="pNote">–</div>
-          <div class="sh-buy">
-            <div class="mult" role="group" aria-label="Antal nivåer"><button id="m1" aria-pressed="true">×1</button><button id="m10" aria-pressed="false">×10</button><button id="mMax" aria-pressed="false">Max</button></div>
-            <button class="btn buy" id="pBuy"><span id="pBuyT">Uppgradera</span><small><i class="coin"></i><span id="pBuyC" class="num">0</span></small></button>
-          </div>
-          <button class="btn gold" id="pFm"><span id="pFmT">Anställ förman</span><small><i class="coin"></i><span id="pFmC" class="num">0</span></small></button>
-          <div id="pFmDone" hidden></div>
-        </div>
-      </div>
-      <div id="pLock" hidden style="display:flex;flex-direction:column;gap:9px">
-        <div id="pLockT" style="font-size:15px;line-height:1.3;color:var(--muted)"></div>
-        <button class="btn buy" id="pUnlock"><span>Lås upp linjen</span><small><i class="coin"></i><span id="pUnlockC" class="num">0</span></small></button>
-      </div>
-    </div>
+  <div class="screen" id="start">
+    <div class="titleblock"><h1>Såg<span class="saw">verket</span></h1><p>Fäll träd, bär stockarna och betala maskin för maskin tills sågverket går av sig självt.</p></div>
+    <div class="startmenu"><button class="btn buy" id="playBtn">Spela</button><small>Dra var som helst för att gå · WASD eller pilar på dator</small></div>
   </div>
 
-  <div id="guide" hidden><div class="gb"><span id="gText"></span><button id="gOk" hidden>OK</button></div><div class="ga"></div></div>
-
-  <div class="screen" id="start">
-    <div class="titleblock"><h1>Såg<span class="saw">verket</span></h1><p>Fäll skog, såga brädor och bygg ut ditt sågverk i gläntan.</p></div>
-    <div class="startmenu"><button class="btn buy" id="playBtn">Spela</button></div>
+  <div class="screen scrim" id="bonusScr" hidden>
+    <div class="panel">
+      <h2>Nya Sågverket</h2>
+      <p>Sågverket är ombyggt från grunden. Nu styr du själv: fäll träd, bär virket och betala maskinerna genom att ställa dig på rutorna.</p>
+      <p>Tack för ditt gamla sågverk. Här är en startbonus:</p>
+      <div class="big num" id="bonusAmt">+0 kr</div>
+      <button class="btn buy" id="bonusOk">Sätt igång</button>
+    </div>
   </div>
 
   <div class="screen scrim" id="awayScr" hidden>
     <div class="panel">
       <h2>Välkommen tillbaka</h2>
-      <p id="awayTxt">Du var borta en stund.</p>
+      <p id="awayTxt">Medhjälparna jobbade medan du var borta.</p>
       <div class="big num" id="awayAmt">+0 kr</div>
-      <p style="font-size:13px">Upp till 8 timmar räknas medan spelet är stängt.</p>
-      <button class="btn buy" id="awayOk">Hämta</button>
+      <p id="awayWhere" style="font-size:14px">Pengarna ligger i kassan vid lastkajen.</p>
+      <button class="btn buy" id="awayOk">Fortsätt</button>
     </div>
   </div>
 
@@ -227,8 +203,9 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
       <h2>Sågverket</h2>
       <div class="kv"><span>Intjänat denna omgång</span><span id="stRun" class="num">0</span></div>
       <div class="kv"><span>Intjänat totalt</span><span id="stAll" class="num">0</span></div>
-      <div class="kv"><span>Brädor levererade</span><span id="stBoards" class="num">0</span></div>
-      <div class="kv"><span>Frön (permanent bonus)</span><span id="stSeeds" class="num">0</span></div>
+      <div class="kv"><span>Sålda varor</span><span id="stSold" class="num">0</span></div>
+      <div class="kv"><span>Klarade beställningar</span><span id="stOrd" class="num">0</span></div>
+      <div class="kv"><span>Frön (bättre pris)</span><span id="stSeeds" class="num">0</span></div>
       <button class="btn gold" id="menuPrest">Ny skog</button>
       <div class="row"><button class="btn ghost" id="menuSnd">Ljud: på</button><button class="btn ghost" id="menuReset">Börja om</button></div>
       <button class="btn buy" id="menuClose">Fortsätt spela</button>
@@ -238,11 +215,11 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
   <div class="screen scrim" id="prestScr" hidden>
     <div class="panel">
       <h2>Ny skog</h2>
-      <p>Sälj sågverket och plantera ny skog. Pengar, maskiner och linjer nollställs, men du får <b>frön</b>. Varje frö ger <b>+25 % intäkt</b> för alltid.</p>
+      <p>Sälj sågverket och plantera ny skog. Pengar, maskiner och medhjälpare nollställs, men du får <b>frön</b>. Varje frö ger <b>+25 % pris</b> på allt du säljer, för alltid.</p>
       <div class="kv"><span>Intjänat denna omgång</span><span id="prRun" class="num">0</span></div>
       <div class="kv"><span>Frön du får</span><span id="prSeeds" class="num">0</span></div>
-      <div class="kv"><span>Intäkt efteråt</span><span id="prMult" class="num">×1</span></div>
-      <div id="prLock"><p id="prLockT" style="margin-bottom:6px">Låses upp när du tjänat 10 M kr i den här omgången.</p><div class="pbar"><i id="prBar"></i></div></div>
+      <div class="kv"><span>Pris efteråt</span><span id="prMult" class="num">×1</span></div>
+      <div id="prLock"><p id="prLockT" style="margin-bottom:6px"></p><div class="pbar"><i id="prBar"></i></div></div>
       <button class="btn buy" id="prGo">Sälj och plantera</button>
       <button class="btn ghost" id="prBack">Tillbaka</button>
     </div>
@@ -259,183 +236,489 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 
 <script>
 window.__errs=[]; window.addEventListener('error', e => window.__errs.push(String(e.message)+' @'+e.lineno));
-// Visar ett tydligt meddelande om 3D-motorn inte går att ladda
 setTimeout(function(){ if(!window.__sv){ var d=document.createElement('div'); d.className='screen scrim'; d.innerHTML='<div class="panel"><h2>Spelet laddade inte</h2><p>3D-motorn hämtades inte. Kontrollera nätet och ladda om sidan.</p></div>'; document.getElementById('app').appendChild(d); } }, 15000);
 </script>
 <script>
 /*ECON-START*/
 /* ================= EKONOMI: all balans som data. Justera här. ================= */
 const ECON = {
-  startMoney: 40,
-  costGrowth: 1.10,          // priset per nivå multipliceras med detta
-  milestoneEvery: 25,        // var 25:e nivå: dubbel fart och nytt utseende
-  milestoneMult: 2,
-  noForeman: 0.35,           // fart utan förman (andel)
-  rushMult: 2.5,             // fart när du trycker för att skynda på
-  rushPerTap: 1.5,           // sekunder per tryck
-  rushMax: 10,               // max sparad skyndatid
-  offlineCapH: 8,            // tak för intäkt medan spelet är stängt
-  bufferSec: 3,              // hur många sekunders flöde som ryms i kön före en maskin
-  minBuffer: 12,
-  spill: 1,                  // spån per sågad stock
-  price: { board: 5, pellet: 50, furn: 300 },   // kr per brädor / pelletssäck / möbel
-  lines: {
-    brador:  { name: 'Brädor',  cost: 0 },
-    pellets: { name: 'Pellets', cost: 2500 },
-    mobler:  { name: 'Möbler',  cost: 250000 },
+  start: 0,                        // startpengar
+  v1BonusMax: 300,                 // högsta startbonus för den som spelat v1
+  walk: 6.2,                       // gubbens fart, meter per sekund
+  carry: [5, 8, 12, 16, 22],       // hur mycket gubben bär, per ryggsäcksnivå
+  chopHit: [0.3, 0.2, 0.13],       // sekunder per yxhugg, per yxnivå
+  treeHits: 3, logsPerTree: { main: 2, skog: 3, sjo: 2 }, regrow: 18,
+  pickGap: 0.07, dropGap: 0.05,    // sekunder per sak som plockas upp / lämnas
+  padDelay: 0.45,                   // så länge gubben står på rutan innan swischen börjar
+  pay: { minRate: 16, frac: 0.6 }, // swisch: kr per sekund = max(minRate, pris * frac)
+  value: { log: 2, barked: 5, board: 12, planed: 25, sack: 14, furn: 180 },   // kr per sak vid lastkajen
+  mach: {                          // takt i saker per sekund, per = hur många in per sak ut
+    bark: { rate: 1.0 }, sag: { rate: 0.9 }, hyvel: { rate: 0.9 },
+    press: { rate: 0.5, per: 2 }, snick: { rate: 0.3, per: 3 },
   },
-  stations: [
-    { id: 'hugg',  line: 'brador',  name: 'Skogshuggarna', unit: 'stockar',  base: 0.55, cost: 12, foreman: 30 },
-    { id: 'bark',  line: 'brador',  name: 'Barkmaskinen',  unit: 'stockar',  base: 0.70, cost: 18, foreman: 60 },
-    { id: 'sag',   line: 'brador',  name: 'Sågen',         unit: 'stockar',  base: 0.50, cost: 26, foreman: 100 },
-    { id: 'hyvel', line: 'brador',  name: 'Hyveln',        unit: 'brädor',   base: 0.60, cost: 34, foreman: 150 },
-    { id: 'kaj',   line: 'brador',  name: 'Lastkajen',     unit: 'brädor',   base: 0.80, cost: 44, foreman: 200 },
-    { id: 'press', line: 'pellets', name: 'Pelletspressen',unit: 'säckar',   base: 0.50, cost: 800, foreman: 4000 },
-    { id: 'pkaj',  line: 'pellets', name: 'Pelletskajen',  unit: 'säckar',   base: 0.60, cost: 1000, foreman: 6000 },
-    { id: 'snick', line: 'mobler',  name: 'Snickeriet',    unit: 'möbler',   base: 0.50, cost: 15000, foreman: 100000 },
-    { id: 'mkaj',  line: 'mobler',  name: 'Möbelkajen',    unit: 'möbler',   base: 0.60, cost: 20000, foreman: 150000 },
-  ],
-  // Ny skog: frön = (intjänat denna omgång / seedDiv)^exp. Varje frö ger +perSeed i permanent multiplikator.
-  prestige: { minEarned: 1e8, seedDiv: 1e7, exp: 1 / 3, perSeed: 0.25 },
-  // Uppdrag i ordning. mins = belöning i minuters intäkt, cash = minsta belöning.
-  missions: [
-    { t: 'foreman', n: 1,                      text: 'Anställ en förman',                  cash: 40,   mins: 0.5 },
-    { t: 'deliver', p: 'board', n: 100,        text: 'Leverera 100 brädor',                cash: 80,   mins: 1 },
-    { t: 'level',   s: 'sag', n: 10,           text: 'Uppgradera sågen till nivå 10',      cash: 150,  mins: 1 },
-    { t: 'foreman', n: 5,                      text: 'Anställ förmän på alla fem stationer', cash: 300, mins: 1 },
-    { t: 'rate',    n: 3000,                   text: 'Nå 3 000 kr/min',                    cash: 500,  mins: 1 },
-    { t: 'unlock',  l: 'pellets',              text: 'Lås upp pelletslinjen',              cash: 1000, mins: 1 },
-    { t: 'deliver', p: 'pellet', n: 500,       text: 'Leverera 500 pelletssäckar',         cash: 2000, mins: 1 },
-    { t: 'rate',    n: 10000,                  text: 'Nå 10 000 kr/min',                   cash: 3000, mins: 1 },
-    { t: 'allLevel',l: 'brador', n: 25,        text: 'Alla stationer i brädlinjen nivå 25', cash: 5000, mins: 1 },
-    { t: 'deliver', p: 'board', n: 25000,      text: 'Leverera 25 000 brädor',             cash: 8000, mins: 1 },
-    { t: 'unlock',  l: 'mobler',               text: 'Lås upp möbellinjen',                cash: 20000, mins: 1 },
-    { t: 'deliver', p: 'furn', n: 500,         text: 'Leverera 500 möbler',                cash: 50000, mins: 1.5 },
-    { t: 'rate',    n: 1e6,                    text: 'Nå 1 M kr/min',                      cash: 1e5,  mins: 1.5 },
-    { t: 'allLevel',l: 'pellets', n: 50,       text: 'Pelletslinjen nivå 50',              cash: 2e5,  mins: 1.5 },
-    { t: 'rate',    n: 1e7,                    text: 'Nå 10 M kr/min',                     cash: 1e6,  mins: 2 },
+  upMult: 1.6,                     // varje fartuppgradering
+  qcap: { intake: 60, sag: 12, hyvel: 12, press: 20, snick: 9 },
+  pcap: { main: 80, sack: 60, furn: 40 },
+  worker: { walk: 3.8, chop: 1.6, huggCarry: 6, barCarry: 6, gap: 0.12 },
+  lake: 0.5,                       // stockar per sekund från flottningen
+  kassa: { min: 300, secs: 150 },  // kassans tak: max(min, medhjälparnas intäkt på secs sekunder). Full kassa = bärarna väntar. Chauffören tar bort taket.
+  groundLife: 75,                  // sekunder innan en stock på marken ruttnar bort
+  orders: { first: 40, gap: [80, 140], T: 90, trips: 3.5, factor: 0.9, min: 5, max: 400, bonus: 2,
+            base: { barked: .3, board: .3, planed: .3, sack: .15, furn: .05 } },
+  events: { first: 150, gap: [180, 300],
+            storm: { T: 35, every: 2 }, rush: { T: 60, mult: 2 },
+            gold: { T: 60, hits: 8, secs: 90, min: 150 }, jam: { T: 45, fix: 1.5, secs: 25, min: 30 } },
+  prestige: { min: 3e5, div: 5e4, per: 0.25 },
+  offlineCapH: 8,
+  // Betalrutor i ordning. req = vad som måste vara klart innan rutan syns ("id" eller "id:nivå").
+  // lvReq = extra krav för en viss nivå (index = antal redan köpta), så att dyra nivåer dyker upp senare.
+  pads: [
+    { id: 'bark',     kind: 'machine', m: 'bark',  name: 'Barkmaskin',          at: [3.4, -12],  cost: [20] },
+    { id: 'pack',     kind: 'pack',                name: 'Större ryggsäck',     at: [7.5, -17.5], cost: [60, 1200, 7000, 20000], req: ['bark'], lvReq: { 2: ['snick'], 3: ['chauffor'] } },
+    { id: 'sag',      kind: 'machine', m: 'sag',   name: 'Såg',                 at: [3.4, -5],   cost: [120], req: ['bark'] },
+    { id: 'yxa',      kind: 'axe',                 name: 'Vassare yxa',         at: [10.8, -17.5], cost: [200, 5000], req: ['sag'], lvReq: { 1: ['press'] } },
+    { id: 'hugg',     kind: 'hire',    role: 'hugg', name: 'Huggare',           at: [-5, -17.5], cost: [300, 1600, 5000], req: ['sag'] },
+    { id: 'hyvel',    kind: 'machine', m: 'hyvel', name: 'Hyvel',               at: [3.4, 2],    cost: [600], req: ['hugg'] },
+    { id: 'barare',   kind: 'hire',    role: 'bar', name: 'Bärare',             at: [4.6, 6.4],  cost: [1000, 3000, 9000], req: ['hyvel'] },
+    { id: 'up_bark',  kind: 'up',      m: 'bark',  name: 'Snabbare barkmaskin', at: [3.4, -12],  cost: [800, 6000, 15000], req: ['hyvel'], lvReq: { 1: ['press'], 2: ['chauffor'] } },
+    { id: 'up_sag',   kind: 'up',      m: 'sag',   name: 'Snabbare såg',        at: [3.4, -5],   cost: [1300, 7000, 16000], req: ['hyvel'], lvReq: { 1: ['press'], 2: ['chauffor'] } },
+    { id: 'up_hyvel', kind: 'up',      m: 'hyvel', name: 'Snabbare hyvel',      at: [3.4, 2],    cost: [2000, 8000, 18000], req: ['barare'], lvReq: { 1: ['snick'], 2: ['chauffor'] } },
+    { id: 'press',    kind: 'machine', m: 'press', name: 'Pelletspress',        at: [-8.8, -5],  cost: [2500], req: ['barare'] },
+    { id: 'skog',     kind: 'area',    area: 'skog', name: 'Storskogen',        at: [12.2, -22], cost: [4000], req: ['hugg:2'] },
+    { id: 'up_press', kind: 'up',      m: 'press', name: 'Snabbare press',      at: [-8.8, -5],  cost: [5000, 15000], req: ['press'], lvReq: { 1: ['chauffor'] } },
+    { id: 'snick',    kind: 'machine', m: 'snick', name: 'Snickeri',            at: [-8.8, 3],   cost: [6000], req: ['press'] },
+    { id: 'up_snick', kind: 'up',      m: 'snick', name: 'Snabbare snickeri',   at: [-8.8, 3],   cost: [10000, 30000], req: ['snick'], lvReq: { 1: ['chauffor'] } },
+    { id: 'sjo',      kind: 'area',    area: 'sjo', name: 'Sjön och flottning', at: [-12.2, -12], cost: [11000], req: ['snick'] },
+    { id: 'chauffor', kind: 'hire',    role: 'chauf', name: 'Chaufför',         at: [11.8, 7],   cost: [18000], req: ['barare:3', 'hugg:3', 'snick'] },
   ],
 };
 
-/* ================= Modell (används av spelet och av simuleringen) ================= */
-const ST = {}; ECON.stations.forEach(s => ST[s.id] = s);
-const STATION_IDS = ECON.stations.map(s => s.id);
-const BUF_IDS = ['bark', 'sag', 'hyvel', 'kaj', 'press', 'pkaj', 'snick', 'mkaj'];
+/* ================= BANA: var saker står (meter, z växer mot vägen) ================= */
+const LAY = {
+  start: [3.5, -19.5],
+  intake: [0, -17],
+  mach: { bark: [0, -12], sag: [0, -5], hyvel: [0, 2], press: [-5.5, -5], snick: [-5.5, 3] },
+  machR: { bark: 1.9, sag: 1.9, hyvel: 1.9, press: 1.7, snick: 2.0 },
+  pile: { main: [0, 7.8], sack: [-5.5, -1.2], furn: [-5.5, 7.2] },
+  dock: [5, 12], kassa: [9.6, 10.6], road: 17.6,
+  areas: { main: [-13.5, 13.5, -30.5, 14.2], skog: [13.5, 37.5, -35.5, -8.5], sjo: [-37.5, -13.5, -27.5, 1.5] },
+  lake: [-33, -19, -23, -5],
+};
 
-function freshRun(seeds = 0) {
-  const lv = {}, fm = {}, q = {};
-  STATION_IDS.forEach(id => { lv[id] = ST[id].line === 'brador' ? 1 : 0; fm[id] = false; });
-  BUF_IDS.forEach(id => q[id] = 0);
-  return { money: ECON.startMoney, earnedRun: 0, seeds, lv, fm, q,
-           lines: { brador: true, pellets: false, mobler: false },
-           del: { board: 0, pellet: 0, furn: 0 }, mi: 0 };
-}
-function lvRate(id, L) {
-  if (L <= 0) return 0;
-  return ST[id].base * L * Math.pow(ECON.milestoneMult, Math.floor(L / ECON.milestoneEvery));
-}
-function upCost(id, L, n = 1) {
-  const g = ECON.costGrowth, c = ST[id].cost * Math.pow(g, L - 1);
-  return n === 1 ? c : c * (Math.pow(g, n) - 1) / (g - 1);
-}
-function maxBuy(id, L, money) {
-  const g = ECON.costGrowth, c = ST[id].cost * Math.pow(g, L - 1);
-  if (money < c) return 0;
-  return Math.max(1, Math.floor(Math.log(money * (g - 1) / c + 1) / Math.log(g)));
-}
-function effRate(S, id, rush) {
-  return lvRate(id, S.lv[id]) * (S.fm[id] ? 1 : ECON.noForeman) * (rush && rush[id] > 0 ? ECON.rushMult : 1);
-}
-function incomeMult(S) { return 1 + S.seeds * ECON.prestige.perSeed; }
-// Stationärt flöde (per sekund). Används för kr/min, offline-intäkt och flaskhals.
-function flows(S, rush) {
-  const r = {}; STATION_IDS.forEach(id => r[id] = effRate(S, id, rush));
-  const furnCap = S.lines.mobler ? Math.min(r.snick, r.mkaj) : 0;
-  const down = Math.min(r.hyvel, r.kaj + furnCap);
-  const sawn = Math.min(r.hugg, r.bark, r.sag, down);
-  const F = Math.min(sawn, furnCap), K = sawn - F;
-  const P = S.lines.pellets ? Math.min(sawn * ECON.spill, r.press, r.pkaj) : 0;
-  return { r, sawn, K, F, P };
-}
-function incomePerSec(S, rush) {
-  const f = flows(S, rush);
-  return (f.K * ECON.price.board + f.F * ECON.price.furn + f.P * ECON.price.pellet) * incomeMult(S);
-}
-// Vilken station bromsar varje linje? (lägsta takten)
-function bottlenecks(S) {
-  // Pekar bara ut en station som faktiskt begränsar intäkten.
-  const f = flows(S), r = f.r, out = {};
-  const furnCap = S.lines.mobler ? Math.min(r.snick, r.mkaj) : 0;
-  const main = ['hugg', 'bark', 'sag', 'hyvel', 'kaj'];
-  const need = { hugg: r.hugg, bark: r.bark, sag: r.sag, hyvel: r.hyvel, kaj: r.kaj + furnCap };
-  let b = main[0];
-  main.forEach(id => { if (need[id] < need[b] - 1e-9) b = id; });
-  // Om möbellinjen tar allt virke är det den som bromsar, inte kajen.
-  if (!(b === 'kaj' && S.lines.mobler && r.kaj > 1e-9 && furnCap < f.sawn - 1e-9 && f.K >= r.kaj - 1e-9)) out.brador = b;
-  if (b === 'kaj' && S.lines.mobler && f.K < r.kaj - 1e-9) out.brador = b;
-  if (S.lines.pellets && f.P < f.sawn * ECON.spill - 1e-9) out.pellets = r.press <= r.pkaj ? 'press' : 'pkaj';
-  if (S.lines.mobler && furnCap < f.sawn - 1e-9) out.mobler = r.snick <= r.mkaj ? 'snick' : 'mkaj';
-  return out;
-}
-function seedsFor(earnedRun) {
-  const p = ECON.prestige;
-  return earnedRun < p.minEarned ? 0 : Math.floor(Math.pow(earnedRun / p.seedDiv, p.exp));
-}
-// Uppdrag efter listan genereras: allt högre kr/min och leveranser.
-function getMission(i) {
-  const L = ECON.missions;
-  if (i < L.length) return L[i];
-  const k = i - L.length;
-  if (k % 2 === 0) { const n = 1e7 * Math.pow(10, k / 2 + 1); return { t: 'rate', n, text: 'Nå ' + fmt(n) + ' kr/min', cash: n / 10, mins: 2 }; }
-  const n = 1e5 * Math.pow(4, (k + 1) / 2); return { t: 'deliver', p: 'board', n, text: 'Leverera ' + fmt(n) + ' brädor', cash: 1e6, mins: 2 };
-}
-function missionProgress(S, m) {
-  switch (m.t) {
-    case 'foreman': return Math.min(1, STATION_IDS.filter(id => S.fm[id]).length / m.n);
-    case 'deliver': return Math.min(1, S.del[m.p] / m.n);
-    case 'level': return Math.min(1, S.lv[m.s] / m.n);
-    case 'rate': return Math.min(1, incomePerSec(S) * 60 / m.n);
-    case 'unlock': return S.lines[m.l] ? 1 : 0;
-    case 'allLevel': { const ids = STATION_IDS.filter(id => ST[id].line === m.l); return Math.min(1, Math.min(...ids.map(id => S.lv[id])) / m.n); }
+/* ================= Modell: hela spelet utan grafik (spelet och sim.js kör samma kod) ================= */
+const PAD = {}; ECON.pads.forEach(p => PAD[p.id] = p);
+const MACHS = ['bark', 'sag', 'hyvel', 'press', 'snick'];
+const PRODUCTS = ['barked', 'board', 'planed', 'sack', 'furn', 'log'];
+function rng32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// Träden står alltid på samma ställen
+const TREES = (() => {
+  const r = rng32(1703), T = [];
+  for (let row = 0; row < 2; row++) for (let i = 0; i < 10; i++) T.push({ x: -12.2 + i * 2.7 + (r() - .5) * .8 + (row % 2) * 1.2, z: -24.2 - row * 2.6 + (r() - .5) * .6, area: 'main' });
+  for (let gx = 0; gx < 8; gx++) for (let gz = 0; gz < 8; gz++) { if (r() < .3) continue; T.push({ x: 16.5 + gx * 2.8 + (r() - .5), z: -33.5 + gz * 3 + (r() - .5), area: 'skog' }); }
+  for (let i = 0; i < 40 && T.filter(t => t.area === 'sjo').length < 16; i++) {
+    const x = -36 + r() * 21, z = -26.5 + r() * 27;
+    if (x > LAY.lake[0] - 1.5 && x < LAY.lake[1] + 1.5 && z > LAY.lake[2] - 1.5 && z < LAY.lake[3] + 1.5) continue;
+    if (Math.abs(z - LAY.intake[1]) < 1.6) continue;
+    T.push({ x, z, area: 'sjo' });
   }
-  return 0;
+  return T;
+})();
+
+function newSave(seeds = 0) {
+  return { v: 2, money: ECON.start, earnedRun: 0, seeds, lv: {}, paid: {}, stack: [], px: LAY.start[0], pz: LAY.start[1],
+           q: { intake: 0, sag: 0, hyvel: 0, press: 0, snick: 0 }, pile: { main: {}, sack: {}, furn: {} },
+           kassa: 0, sold: 0, autoRate: 0, playT: 0, divert: 0, orders: 0, firstBuy: 0 };
 }
-function missionReward(S, m) { return Math.max(m.cash, Math.round(incomePerSec(S) * 60 * m.mins)); }
-// Vätskemodell med köer, för det synliga flödet i spelet. dt <= 0.1 s.
-function bufCap(S, id) {
-  const r = effRate(S, id); return Math.max(ECON.minBuffer, r * ECON.bufferSec * ECON.rushMult);
+const lv = (S, id) => S.lv[id] || 0;
+const padMax = p => p.cost.length;
+function padReqOk(S, p) { const r = (p.req || []).concat((p.lvReq && p.lvReq[lv(S, p.id)]) || []); return r.every(x => { const [id, n] = x.split(':'); return lv(S, id) >= (+n || 1); }); }
+function padVisible(S, p) { return lv(S, p.id) < padMax(p) && padReqOk(S, p); }
+function padCost(S, p) { return p.cost[lv(S, p.id)]; }
+function padLeft(S, p) { return padCost(S, p) - (S.paid[p.id] || 0); }
+function visiblePads(S) { return ECON.pads.filter(p => padVisible(S, p)); }
+function nextGoal(S) { let b = null; for (const p of visiblePads(S)) if (!b || padLeft(S, p) < padLeft(S, b)) b = p; return b; }
+function carryCap(S) { return ECON.carry[Math.min(ECON.carry.length - 1, lv(S, 'pack'))]; }
+function machRate(S, m) { return ECON.mach[m].rate * Math.pow(ECON.upMult, lv(S, 'up_' + m)); }
+function valueMult(S) { return 1 + S.seeds * ECON.prestige.per; }
+function finalType(S) { return lv(S, 'hyvel') ? 'planed' : lv(S, 'sag') ? 'board' : 'barked'; }
+function pileN(S, k, skip) { let n = 0; for (const t in S.pile[k]) if (t !== skip) n += S.pile[k][t]; return n; }
+// Under en öppen beställning rör bärarna inte den varan: den är gubbens att bära.
+const reserved = G => G.order && G.order.st === 'open' ? G.order.type : null;
+function pileTake(S, k, skip) { let best = null; for (const t in S.pile[k]) if (t !== skip && S.pile[k][t] > 0 && (!best || ECON.value[t] > ECON.value[best])) best = t; if (best) S.pile[k][best]--; return best; }
+function automated(S) { return MACHS.every(m => lv(S, m)) && lv(S, 'hugg') >= 3 && lv(S, 'barare') >= 3 && lv(S, 'chauffor') >= 1; }
+function kassaCap(G) { return Math.max(ECON.kassa.min, G.autoEMA * ECON.kassa.secs); }
+function kassaFull(G) { return !lv(G.S, 'chauffor') && G.S.kassa >= kassaCap(G); }
+function seedsFor(S) { const P = ECON.prestige; return automated(S) && S.earnedRun >= P.min ? Math.floor(Math.sqrt(S.earnedRun / P.div)) : 0; }
+function areaOpen(S, a) { return a === 'main' || lv(S, a) > 0; }
+function walkable(S, x, z) {
+  const L = LAY.lake; if (x > L[0] && x < L[1] && z > L[2] && z < L[3]) return false;
+  for (const a in LAY.areas) { if (!areaOpen(S, a)) continue; const r = LAY.areas[a]; if (x >= r[0] && x <= r[1] && z >= r[2] && z <= r[3]) return true; }
+  return false;
 }
-function stepFlow(S, rush, dt) {
-  const q = S.q, r = {}, f = {};
-  STATION_IDS.forEach(id => { r[id] = effRate(S, id, rush) * dt; f[id] = 0; });
-  const cap = {}; BUF_IDS.forEach(id => cap[id] = bufCap(S, id));
-  const out = { board: 0, pellet: 0, furn: 0 };
-  let x;
-  x = Math.min(q.kaj, r.kaj); q.kaj -= x; out.board += x; f.kaj = x;
-  if (S.lines.mobler) { x = Math.min(q.mkaj, r.mkaj); q.mkaj -= x; out.furn += x; f.mkaj = x;
-    x = Math.min(q.snick, r.snick, cap.mkaj - q.mkaj); x = Math.max(0, x); q.snick -= x; q.mkaj += x; f.snick = x; }
-  if (S.lines.pellets) { x = Math.min(q.pkaj, r.pkaj); q.pkaj -= x; out.pellet += x; f.pkaj = x;
-    x = Math.max(0, Math.min(q.press, r.press, cap.pkaj - q.pkaj)); q.press -= x; q.pkaj += x; f.press = x; }
-  const spS = S.lines.mobler ? Math.max(0, cap.snick - q.snick) : 0, spK = Math.max(0, cap.kaj - q.kaj);
-  x = Math.max(0, Math.min(q.hyvel, r.hyvel, spS + spK)); q.hyvel -= x; f.hyvel = x;
-  const toS = Math.min(x, spS); q.snick += toS; q.kaj += x - toS; f.toSnick = toS;
-  x = Math.max(0, Math.min(q.sag, r.sag, cap.hyvel - q.hyvel)); q.sag -= x; q.hyvel += x; f.sag = x;
-  if (S.lines.pellets) q.press = Math.min(cap.press, q.press + x * ECON.spill);
-  x = Math.max(0, Math.min(q.bark, r.bark, cap.sag - q.sag)); q.bark -= x; q.sag += x; f.bark = x;
-  x = Math.max(0, Math.min(r.hugg, cap.bark - q.bark)); q.bark += x; f.hugg = x;
-  const m = incomeMult(S);
-  out.money = (out.board * ECON.price.board + out.pellet * ECON.price.pellet + out.furn * ECON.price.furn) * m;
-  out.f = f;
-  return out;
+const sellable = (S, t) => t !== 'log' || !lv(S, 'bark');
+const dist = (x, z, a) => Math.hypot(x - a[0], z - a[1]);
+
+function makeGame(S, seed = Date.now() % 1e9) {
+  const G = { S, t: 0, rng: rng32(seed), fx: [], noFx: false,
+    trees: TREES.map(t => ({ ...t, st: 'grown', t: 0, hits: 0, claim: null, gold: false })),
+    workers: [], ground: [], ev: null, order: null, lakeAcc: 0,
+    nextEv: Math.max(5, ECON.events.first - S.playT), nextOrder: ECON.orders.first,
+    p: { x: S.px, z: S.pz, yaw: Math.PI, moving: false, pad: null, padT: 0, coinT: 0, chopT: 0, chop: null, pickT: 0, dropT: 0, fixT: 0, sellT: 0 },
+    mach: {}, incEMA: 0, autoEMA: S.autoRate || 0, incAcc: 0, autoAcc: 0, emaT: 0, prodAcc: {}, prodEMA: {} };
+  MACHS.forEach(m => G.mach[m] = { prog: 0, busy: 0, jam: false });
+  PRODUCTS.forEach(t => { G.prodAcc[t] = 0; G.prodEMA[t] = 0; });
+  if (!walkable(S, G.p.x, G.p.z)) { G.p.x = LAY.start[0]; G.p.z = LAY.start[1]; }
+  syncWorkers(G);
+  return G;
 }
-const UNITS = ['', 'k', 'M', 'B', 'T', 'aa', 'ab', 'ac', 'ad', 'ae', 'af', 'ag'];
+const fx = (G, o) => { if (!G.noFx) G.fx.push(o); };
+const rr = (G, a, b) => a + G.rng() * (b - a);
+
+function syncWorkers(G) {
+  const S = G.S, want = { hugg: lv(S, 'hugg'), bar: lv(S, 'barare'), chauf: lv(S, 'chauffor') }, from = { hugg: 'hugg', bar: 'barare', chauf: 'chauffor' };
+  for (const role in want) {
+    let have = G.workers.filter(w => w.role === role).length;
+    while (have < want[role]) { const at = PAD[from[role]].at; G.workers.push({ role, i: have, x: at[0], z: at[1], yaw: 0, st: 'seek', t: 0, stack: [], tree: null, pile: null, moving: false, ph: 0 }); have++; }
+  }
+}
+function obstacles(G) {
+  const S = G.S, o = [];
+  for (const m of MACHS) if (lv(S, m)) o.push([LAY.mach[m][0], LAY.mach[m][1], LAY.machR[m]]);
+  if (lv(S, 'bark')) o.push([LAY.intake[0], LAY.intake[1], 1.0]);
+  for (const t of G.trees) if (t.st === 'grown' && areaOpen(S, t.area)) o.push([t.x, t.z, .45]);
+  return o;
+}
+function movePlayer(G, nx, nz) {
+  const p = G.p, S = G.S, obs = obstacles(G);
+  for (let it = 0; it < 2; it++) for (const o of obs) {
+    const dx = nx - o[0], dz = nz - o[1], d = Math.hypot(dx, dz), r = o[2] + .35;
+    if (d < r && d > 1e-6) { nx = o[0] + dx / d * r; nz = o[1] + dz / d * r; }
+  }
+  if (walkable(S, nx, nz)) { p.x = nx; p.z = nz; }
+  else if (walkable(S, nx, p.z)) p.x = nx;
+  else if (walkable(S, p.x, nz)) p.z = nz;
+}
+function nearestTree(G, x, z, maxD, ok) {
+  let b = null, bd = maxD;
+  for (const t of G.trees) { if (!areaOpen(G.S, t.area) || !ok(t)) continue; const d = Math.hypot(t.x - x, t.z - z); if (d < bd) { bd = d; b = t; } }
+  return b;
+}
+function padAt(S, x, z) {
+  for (const p of ECON.pads) if (Math.abs(x - p.at[0]) < 1.15 && Math.abs(z - p.at[1]) < 1.15 && padVisible(S, p)) return p;
+  // står han där maskinen ska byggas räknas det också
+  for (const p of ECON.pads) if (p.kind === 'machine' && padVisible(S, p) && Math.hypot(x - LAY.mach[p.m][0], z - LAY.mach[p.m][1]) < 1.7) return p;
+  return null;
+}
+function incomeRate(G) { return Math.max(G.incEMA, 0.5); }
+
+function completePad(G, pad) {
+  const S = G.S;
+  S.lv[pad.id] = lv(S, pad.id) + 1; S.paid[pad.id] = 0;
+  if (!S.firstBuy) S.firstBuy = S.playT;
+  if (pad.kind === 'hire') syncWorkers(G);
+  fx(G, { k: 'built', id: pad.id });
+}
+function fell(G, t, by) {
+  const S = G.S;
+  t.st = 'falling'; t.t = 0; t.hits = 0;
+  if (t.claim && t.claim !== by) { t.claim.tree = null; t.claim.st = 'seek'; }
+  t.claim = null;
+  if (t.gold) {
+    t.gold = false;
+    const amt = Math.round(Math.max(ECON.events.gold.min, incomeRate(G) * ECON.events.gold.secs) * valueMult(S));
+    S.money += amt; S.earnedRun += amt; fx(G, { k: 'gold', amt, x: t.x, z: t.z });
+  }
+  if (by === 'player' || by === 'storm') {
+    for (let k = 0; k < ECON.logsPerTree[t.area]; k++) {
+      if (G.ground.length >= 140) G.ground.shift();
+      const a = rr(G, 0, 6.28), r = rr(G, .6, 1.3);
+      G.ground.push({ x: t.x + Math.cos(a) * r, z: t.z + Math.abs(Math.sin(a)) * r + .3, type: 'log', t: 0 });
+    }
+  }
+  fx(G, { k: 'fall', x: t.x, z: t.z, by: by === 'player' ? 'p' : by === 'storm' ? 's' : 'w' });
+}
+function priceOf(G, type) { return ECON.value[type] * valueMult(G.S) * (G.ev && G.ev.kind === 'rush' ? ECON.events.rush.mult : 1); }
+function sell(G, type, who, w) {
+  const S = G.S, v = priceOf(G, type);
+  S.earnedRun += v; S.sold++; G.incAcc += v;
+  if (who === 'p') S.money += v;
+  else { G.autoAcc += v; if (lv(S, 'chauffor')) S.money += v; else S.kassa += v; }
+  fx(G, { k: 'sell', type, who, v, w });
+  const o = G.order;
+  if (who === 'p' && o && o.st === 'open' && o.type === type) { o.got++; if (o.got >= o.need) finishOrder(G, true); }
+}
+function finishOrder(G, ok) {
+  const S = G.S, o = G.order; o.st = 'leave'; o.a = 0; o.ok = ok;
+  if (ok) { const b = Math.round(o.need * ECON.value[o.type] * valueMult(S) * ECON.orders.bonus); o.bonus = b; S.money += b; S.earnedRun += b; S.orders++; }
+  fx(G, { k: 'order', st: ok ? 'ok' : 'miss', bonus: o.bonus || 0 });
+}
+function pileAdd(G, k, type) { const S = G.S; if (pileN(S, k) >= ECON.pcap[k]) return false; S.pile[k][type] = (S.pile[k][type] || 0) + 1; G.prodAcc[type]++; return true; }
+function output(G, m) {
+  const S = G.S, q = S.q, C = ECON.qcap;
+  if (m === 'bark') {
+    if (lv(S, 'sag')) { if (q.sag >= C.sag) return false; q.sag++; fx(G, { k: 'proc', m, to: 'sag' }); return true; }
+    if (!pileAdd(G, 'main', 'barked')) return false; fx(G, { k: 'proc', m, to: 'main' }); return true;
+  }
+  if (m === 'sag') {
+    if (lv(S, 'hyvel')) { if (q.hyvel >= C.hyvel) return false; q.hyvel++; fx(G, { k: 'proc', m, to: 'hyvel' }); }
+    else { if (!pileAdd(G, 'main', 'board')) return false; fx(G, { k: 'proc', m, to: 'main' }); }
+    if (lv(S, 'press') && q.press < C.press) { q.press++; fx(G, { k: 'proc', m: 'spill', to: 'press' }); }
+    return true;
+  }
+  if (m === 'hyvel') {
+    const snOk = lv(S, 'snick') && q.snick < C.snick, prefer = snOk && (S.divert++ % 2 === 0);
+    if (prefer) { q.snick++; fx(G, { k: 'proc', m, to: 'snick' }); return true; }
+    if (pileAdd(G, 'main', 'planed')) { fx(G, { k: 'proc', m, to: 'main' }); return true; }
+    if (snOk) { q.snick++; fx(G, { k: 'proc', m, to: 'snick' }); return true; }
+    return false;
+  }
+  if (m === 'press') { if (!pileAdd(G, 'sack', 'sack')) return false; fx(G, { k: 'proc', m, to: 'sack' }); return true; }
+  if (m === 'snick') { if (!pileAdd(G, 'furn', 'furn')) return false; fx(G, { k: 'proc', m, to: 'furn' }); return true; }
+  return false;
+}
+function stepMachines(G, dt) {
+  const S = G.S, q = S.q;
+  for (const m of MACHS) {
+    if (!lv(S, m)) continue;
+    const M = G.mach[m]; M.busy = Math.max(0, M.busy - dt);
+    if (M.jam) continue;
+    const per = ECON.mach[m].per || 1, inQ = m === 'bark' ? 'intake' : m;
+    M.prog = Math.min(M.prog + machRate(S, m) * dt, q[inQ] >= per ? 50 : 1);
+    while (M.prog >= 1 && q[inQ] >= per) {
+      if (!output(G, m)) { M.prog = 1; break; }
+      q[inQ] -= per; M.prog -= 1; M.busy = .7;
+    }
+  }
+}
+function stepTrees(G, dt) {
+  for (const t of G.trees) {
+    if (t.st === 'grown') continue;
+    t.t += dt;
+    if (t.st === 'falling' && t.t > .8) { t.st = 'gone'; t.t = 0; }
+    else if (t.st === 'gone' && t.t > 1.5) { t.st = 'regrow'; t.t = 0; }
+    else if (t.st === 'regrow' && t.t > ECON.regrow) { t.st = 'grown'; t.t = 0; t.hits = 0; }
+  }
+  for (const g of G.ground) g.t += dt;
+  if (G.ground.length && G.ground[0].t > ECON.groundLife) G.ground = G.ground.filter(g => g.t <= ECON.groundLife);
+}
+function interact(G, dt) {
+  const S = G.S, p = G.p, cap = carryCap(S);
+  // 1. Betalruta: swischa
+  let pad = padAt(S, p.x, p.z);
+  const spot = pad && pad.at.join(',');
+  if (p.padLock && spot !== p.padLock) p.padLock = null;   // efter ett köp: spärrat tills han kliver av rutan
+  if (pad && spot === p.padLock) pad = null;
+  if (pad !== p.pad) { p.pad = pad; p.padT = 0; }
+  if (pad) {
+    p.padT += dt;
+    if (p.padT > ECON.padDelay && S.money > 1e-6) {
+      const cost = padCost(S, pad), rem = cost - (S.paid[pad.id] || 0);
+      let a = Math.min(Math.max(ECON.pay.minRate, cost * ECON.pay.frac) * dt, S.money, rem);
+      if (rem - a < .01 && S.money >= rem) a = rem;
+      S.money -= a; S.paid[pad.id] = (S.paid[pad.id] || 0) + a;
+      p.coinT -= dt; if (p.coinT <= 0) { p.coinT = .045; fx(G, { k: 'pay', id: pad.id }); }
+      if (S.paid[pad.id] >= cost - 1e-6) { completePad(G, pad); p.padLock = pad.at.join(','); p.pad = null; }
+      return;
+    }
+  }
+  // 2. Maskinstopp: knacka loss
+  if (G.ev && G.ev.kind === 'jam' && G.mach[G.ev.m].jam && dist(p.x, p.z, LAY.mach[G.ev.m]) < LAY.machR[G.ev.m] + 1.6) {
+    p.fixT += dt; if (Math.floor(p.fixT / .25) !== Math.floor((p.fixT - dt) / .25)) fx(G, { k: 'knock', m: G.ev.m });
+    if (p.fixT >= ECON.events.jam.fix) {
+      G.mach[G.ev.m].jam = false; p.fixT = 0;
+      const amt = Math.round(Math.max(ECON.events.jam.min, incomeRate(G) * ECON.events.jam.secs) * valueMult(S));
+      S.money += amt; S.earnedRun += amt; fx(G, { k: 'fixed', m: G.ev.m, amt });
+    }
+  } else p.fixT = 0;
+  // 3. Hugga
+  const room = cap - S.stack.length;
+  const tr = nearestTree(G, p.x, p.z, 2.1, t => t.st === 'grown');
+  if (tr && (room > 0 || tr.gold)) {
+    if (p.chop !== tr) p.chopT = 0;
+    p.chop = tr; p.chopT += dt * (p.moving ? .6 : 1);   // går han förbi hugger han långsammare
+    const hit = ECON.chopHit[Math.min(ECON.chopHit.length - 1, lv(S, 'yxa'))];
+    if (p.chopT >= hit) {
+      p.chopT -= hit; tr.hits++; fx(G, { k: 'hit', x: tr.x, z: tr.z, gold: tr.gold });
+      if (tr.hits >= (tr.gold ? ECON.events.gold.hits : ECON.treeHits)) { fell(G, tr, 'player'); p.chop = null; p.chopT = 0; }
+    }
+  } else { p.chop = null; p.chopT = 0; }
+  // 4. Plocka upp: stockar på marken och högar
+  p.pickT = Math.max(0, p.pickT - dt);
+  while (p.pickT <= 0 && S.stack.length < cap) {
+    let got = null;
+    for (let i = 0; i < G.ground.length; i++) { const g = G.ground[i]; if (g.t > .25 && Math.hypot(g.x - p.x, g.z - p.z) < 2.0) { got = g.type; fx(G, { k: 'pick', type: g.type, x: g.x, z: g.z }); G.ground.splice(i, 1); break; } }
+    if (!got) for (const k of ['main', 'sack', 'furn']) {
+      if (pileN(S, k) > 0 && dist(p.x, p.z, LAY.pile[k]) < 2.1) { got = pileTake(S, k); fx(G, { k: 'pick', type: got, pile: k }); break; }
+    }
+    if (!got) break;
+    S.stack.push(got); p.pickT += ECON.pickGap;
+  }
+  // 5. Lämna: stockar vid inlastningen, varor vid lastkajen, pengar i kassan
+  p.dropT = Math.max(0, p.dropT - dt);
+  while (p.dropT <= 0 && S.stack.length) {
+    let i = -1, where = null;
+    if (lv(S, 'bark') && dist(p.x, p.z, LAY.intake) < 2.4 && S.q.intake < ECON.qcap.intake) { i = S.stack.lastIndexOf('log'); where = 'intake'; }
+    if (i < 0 && dist(p.x, p.z, LAY.dock) < 2.8) { for (let j = S.stack.length - 1; j >= 0; j--) if (sellable(S, S.stack[j])) { i = j; break; } where = 'dock'; }
+    if (i < 0) break;
+    const t = S.stack.splice(i, 1)[0];
+    if (where === 'intake') { S.q.intake++; fx(G, { k: 'feed', who: 'p' }); } else sell(G, t, 'p');
+    p.dropT += ECON.dropGap;
+  }
+  if (S.kassa >= 1 && dist(p.x, p.z, LAY.kassa) < 2.2) { const a = S.kassa; S.money += a; S.kassa = 0; fx(G, { k: 'kassa', amt: a }); }
+}
+function moveTo(w, tx, tz, sp, dt) {
+  const dx = tx - w.x, dz = tz - w.z, d = Math.hypot(dx, dz), s = sp * dt;
+  if (d <= s) { w.x = tx; w.z = tz; w.moving = false; return true; }
+  w.x += dx / d * s; w.z += dz / d * s; w.yaw = Math.atan2(dx, dz); w.moving = true; return false;
+}
+function stepWorker(G, w, dt) {
+  const S = G.S, W = ECON.worker;
+  if (w.role === 'hugg') {
+    if (w.st === 'seek') {
+      if (w.stack.length >= W.huggCarry) { w.st = 'deliver'; return; }
+      let gl = null, gd = 14;
+      for (const g of G.ground) { const d = Math.hypot(g.x - w.x, g.z - w.z); if (d < gd && !g.claim) { gd = d; gl = g; } }
+      if (gl) { gl.claim = w; w.gl = gl; w.st = 'pickup'; return; }
+      const tr = nearestTree(G, w.x, w.z, 999, t => t.st === 'grown' && !t.claim && !t.gold);
+      if (!tr) { w.moving = false; if (w.stack.length) w.st = 'deliver'; return; }
+      tr.claim = w; w.tree = tr; w.st = 'walk';
+    } else if (w.st === 'pickup') {
+      const i = G.ground.indexOf(w.gl);
+      if (i < 0) { w.gl = null; w.st = 'seek'; return; }
+      if (moveTo(w, w.gl.x, w.gl.z + .4, W.walk, dt)) { G.ground.splice(i, 1); w.stack.push('log'); w.gl = null; w.st = 'seek'; }
+    } else if (w.st === 'walk') {
+      if (!w.tree || w.tree.st !== 'grown') { if (w.tree) w.tree.claim = null; w.tree = null; w.st = 'seek'; return; }
+      if (moveTo(w, w.tree.x + .2, w.tree.z + .9, W.walk, dt)) { w.st = 'chop'; w.t = W.chop; w.yaw = Math.PI; }
+    } else if (w.st === 'chop') {
+      w.moving = false;
+      if (!w.tree || w.tree.st !== 'grown') { w.tree = null; w.st = 'seek'; return; }
+      w.t -= dt; w.ph += dt;
+      if (w.t <= 0) { fell(G, w.tree, w); for (let k = 0; k < ECON.logsPerTree[w.tree.area]; k++) w.stack.push('log'); w.tree = null; w.st = 'seek'; }
+    } else if (w.st === 'deliver') {
+      if (moveTo(w, LAY.intake[0] - 1.6 + w.i * .25, LAY.intake[1] - 1.2 - w.i * .3, W.walk, dt)) {
+        w.t -= dt;
+        if (w.t <= 0 && w.stack.length && S.q.intake < ECON.qcap.intake) { w.stack.pop(); S.q.intake++; w.t = W.gap; fx(G, { k: 'feed', who: 'w' }); }
+        if (!w.stack.length) w.st = 'seek';
+      }
+    }
+  } else if (w.role === 'bar') {
+    if (w.st === 'seek') {
+      if (w.stack.length) { w.st = 'deliver'; return; }
+      let best = null, bn = 0;
+      for (const k of ['main', 'sack', 'furn']) { const n = pileN(S, k, reserved(G)) - G.workers.filter(o => o !== w && o.role === 'bar' && o.st === 'walk' && o.pile === k).length * W.barCarry; if (n > bn) { bn = n; best = k; } }
+      if (!best) { moveTo(w, PAD.barare.at[0] + 1.5 + w.i, PAD.barare.at[1] + 1.5, W.walk, dt); return; }
+      w.pile = best; w.st = 'walk';
+    } else if (w.st === 'walk') {
+      const at = LAY.pile[w.pile];
+      if (moveTo(w, at[0] + 1.3 - w.i * .4, at[1] + 1.2, W.walk, dt)) { w.st = 'load'; w.t = 0; }
+    } else if (w.st === 'load') {
+      w.t -= dt;
+      if (w.t <= 0) { if (w.stack.length < W.barCarry && pileN(S, w.pile, reserved(G)) > 0) { w.stack.push(pileTake(S, w.pile, reserved(G))); w.t = W.gap; } else w.st = w.stack.length ? 'deliver' : 'seek'; }
+    } else if (w.st === 'deliver') {
+      if (moveTo(w, LAY.dock[0] - 1.2 + w.i * .9, LAY.dock[1] - .2, W.walk, dt)) {
+        w.t -= dt;
+        if (w.t <= 0) { if (!w.stack.length) w.st = 'seek'; else if (!kassaFull(G)) { sell(G, w.stack.pop(), 'w', w); w.t = W.gap; } }
+      }
+    }
+  } else if (w.role === 'chauf') { moveTo(w, LAY.dock[0] + 2.6, LAY.dock[1] + 1.6, W.walk, dt); }
+}
+function startEvent(G) {
+  const S = G.S, E = ECON.events;
+  const owned = MACHS.filter(m => lv(S, m));
+  const kinds = ['storm', 'gold'];
+  if (lv(S, 'sag')) kinds.push('rush');
+  if (owned.length) kinds.push('jam');
+  if (!G.evBag || !G.evBag.some(k => kinds.includes(k))) G.evBag = ['storm', 'gold', 'rush', 'jam'];   // alla sorter i tur och ordning
+  const pick = G.evBag.filter(k => kinds.includes(k) && k !== G.lastEv);
+  const kind = pick.length ? pick[G.rng() * pick.length | 0] : kinds[G.rng() * kinds.length | 0];
+  G.evBag = G.evBag.filter(k => k !== kind);
+  const ev = { kind, T: E[kind].T, t: E[kind].T, acc: 0 };
+  if (kind === 'gold') {
+    const c = G.trees.filter(t => t.st === 'grown' && !t.claim && areaOpen(S, t.area));
+    if (!c.length) { G.nextEv = 20; return; }
+    ev.tree = c[G.rng() * c.length | 0]; ev.tree.gold = true;
+  }
+  if (kind === 'jam') { ev.m = owned[G.rng() * owned.length | 0]; G.mach[ev.m].jam = true; }
+  G.ev = ev; G.lastEv = kind; fx(G, { k: 'ev', kind, on: true });
+}
+function endEvent(G, why) {
+  const ev = G.ev; if (!ev) return;
+  if (ev.kind === 'gold' && ev.tree) ev.tree.gold = false;
+  if (ev.kind === 'jam') G.mach[ev.m].jam = false;
+  G.ev = null; G.nextEv = rr(G, ECON.events.gap[0], ECON.events.gap[1]);
+  fx(G, { k: 'ev', kind: ev.kind, on: false, why });
+}
+function stepEvents(G, dt) {
+  const S = G.S, E = ECON.events;
+  if (!G.ev) { G.nextEv -= dt; if (G.nextEv <= 0) startEvent(G); return; }
+  const ev = G.ev; ev.t -= dt;
+  if (ev.kind === 'storm') {
+    ev.acc += dt;
+    while (ev.acc >= E.storm.every) {
+      ev.acc -= E.storm.every;
+      const c = G.trees.filter(t => t.st === 'grown' && !t.gold && areaOpen(S, t.area));
+      if (c.length) fell(G, c[G.rng() * c.length | 0], 'storm');
+    }
+  }
+  if (ev.kind === 'gold' && !ev.tree.gold) { G.ev.tree = null; endEvent(G, 'done'); return; }
+  if (ev.kind === 'jam' && !G.mach[ev.m].jam) { endEvent(G, 'done'); return; }
+  if (ev.t <= 0) endEvent(G, 'time');
+}
+function startOrder(G) {
+  const S = G.S, O = ECON.orders, types = [finalType(S)];
+  if (lv(S, 'press')) types.push('sack');
+  if (lv(S, 'snick')) types.push('furn');
+  const type = types[G.rng() * types.length | 0];
+  // Bara gubbens egna leveranser räknas: ungefär trips vändor med full ryggsäck, men aldrig mer än det som finns och hinner tillverkas.
+  const pk = type === 'sack' ? 'sack' : type === 'furn' ? 'furn' : 'main';
+  const avail = (S.pile[pk][type] || 0) + Math.max(G.prodEMA[type] || 0, O.base[type]) * O.T * O.factor;
+  const need = Math.max(O.min, Math.min(O.max, Math.round(Math.min(carryCap(S) * O.trips, avail))));
+  G.order = { type, need, got: 0, T: O.T, t: O.T, st: 'arrive', a: 0 };
+  fx(G, { k: 'order', st: 'new' });
+}
+function stepOrder(G, dt) {
+  const S = G.S, O = ECON.orders, o = G.order;
+  if (!o) { if (lv(S, 'sag')) { G.nextOrder -= dt; if (G.nextOrder <= 0) startOrder(G); } return; }
+  o.a += dt;
+  if (o.st === 'arrive' && o.a >= 2.5) { o.st = 'open'; o.a = 0; }
+  else if (o.st === 'open') { o.t -= dt; if (o.t <= 0) finishOrder(G, false); }
+  else if (o.st === 'leave' && o.a >= 3) { G.order = null; G.nextOrder = rr(G, O.gap[0], O.gap[1]); }
+}
+function step(G, dt, ix = 0, iz = 0) {
+  const S = G.S, p = G.p;
+  G.t += dt; S.playT += dt;
+  let m = Math.hypot(ix, iz); if (m > 1) { ix /= m; iz /= m; m = 1; }
+  p.moving = m > .08;
+  if (p.moving) { movePlayer(G, p.x + ix * ECON.walk * dt, p.z + iz * ECON.walk * dt); p.yaw = Math.atan2(ix, iz); }
+  interact(G, dt);
+  stepTrees(G, dt); stepMachines(G, dt);
+  for (const w of G.workers) stepWorker(G, w, dt);
+  if (lv(S, 'sjo')) { G.lakeAcc += ECON.lake * dt; while (G.lakeAcc >= 1) { G.lakeAcc -= 1; if (S.q.intake < ECON.qcap.intake) { S.q.intake++; fx(G, { k: 'feed', who: 'lake' }); } } }
+  stepEvents(G, dt); stepOrder(G, dt);
+  G.emaT += dt;
+  if (G.emaT >= 1) {
+    const a = 1 - Math.exp(-G.emaT / 30);
+    G.incEMA += (G.incAcc / G.emaT - G.incEMA) * a; G.autoEMA += (G.autoAcc / G.emaT - G.autoEMA) * a;
+    for (const k of PRODUCTS) { G.prodEMA[k] += (G.prodAcc[k] / G.emaT - G.prodEMA[k]) * a; G.prodAcc[k] = 0; }
+    G.incAcc = 0; G.autoAcc = 0; G.emaT = 0; S.autoRate = G.autoEMA;
+  }
+  S.px = p.x; S.pz = p.z;
+}
+// Intäkt medan spelet var stängt: medhjälparnas takt, max 8 timmar. Hamnar i kassan (eller direkt hos chauffören).
+function applyAway(S, sec) {
+  const s = Math.min(sec, ECON.offlineCapH * 3600), amt = (S.autoRate || 0) * s;
+  if (!(amt >= 1) || sec < 30) return 0;
+  if (lv(S, 'chauffor')) S.money += amt; else S.kassa += amt;
+  S.earnedRun += amt;
+  return amt;
+}
+const UNITS = ['', 'k', 'M', 'B', 'T'];
 function fmt(n) {
   if (!isFinite(n)) return '∞';
   if (n < 0) return '−' + fmt(-n);
-  if (n < 1e6) return n < 10 && n % 1 ? n.toFixed(1).replace('.', ',') : Math.floor(n).toLocaleString('sv-SE');
+  if (n < 1e6) return Math.floor(n).toLocaleString('sv-SE');
   let i = 0; while (n >= 1000 && i < UNITS.length - 1) { n /= 1000; i++; }
-  const s = n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2);
-  return s.replace('.', ',') + ' ' + UNITS[i];
+  return (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2)).replace('.', ',') + ' ' + UNITS[i];
 }
 /*ECON-END*/
 </script>
@@ -450,16 +733,15 @@ const clamp = (v,a,b) => v<a?a:v>b?b:v;
 const lerp = (a,b,t) => a+(b-a)*t;
 
 /* ================= Sparning ================= */
-const SAVE_KEY = 'sagverket.v1';
-let S = freshRun(0);
-let meta = { earnedAll:0, mute:false, guide:0, t:Date.now(), started:false };
-const rush = {}; STATION_IDS.forEach(id => rush[id] = 0);
+const SAVE_KEY = 'sagverket.v2', V1_KEY = 'sagverket.v1';
+let S = newSave(0);
+let meta = { earnedAll:0, mute:false, t:Date.now(), started:false, v1done:false };
 function loadSave(){
   try{
     const raw = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(raw && raw.S && raw.meta){
-      const d = freshRun(raw.S.seeds||0);
-      S = {...d, ...raw.S, lv:{...d.lv, ...raw.S.lv}, fm:{...d.fm, ...raw.S.fm}, q:{...d.q, ...raw.S.q}, lines:{...d.lines, ...raw.S.lines}, del:{...d.del, ...raw.S.del}};
+    if(raw && raw.S && raw.S.v === 2){
+      const d = newSave(raw.S.seeds||0), r = raw.S, pl = r.pile || {};
+      S = {...d, ...r, lv:{...r.lv}, paid:{...r.paid}, q:{...d.q, ...r.q}, pile:{main:{...pl.main}, sack:{...pl.sack}, furn:{...pl.furn}}, stack:Array.isArray(r.stack) ? r.stack.slice(0, 30) : []};
       meta = {...meta, ...raw.meta};
       return true;
     }
@@ -467,12 +749,22 @@ function loadSave(){
   return false;
 }
 function persist(){ meta.t = Date.now(); try{ localStorage.setItem(SAVE_KEY, JSON.stringify({S, meta})); }catch(e){} }
+// Startbonus efter framstegen i v1 (läses en gång, v1-sparningen lämnas orörd)
+function v1Bonus(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(V1_KEY)); if(!raw || !raw.meta) return 0;
+    const e = +raw.meta.earnedAll || 0, seeds = +(raw.S && raw.S.seeds) || 0;
+    if(e < 100 && !seeds) return 0;
+    return Math.round(Math.min(ECON.v1BonusMax, 50 + 40*Math.log10(1 + e/1000) + 40*seeds)/10)*10;   // högst ett par maskiner, så att handarbetet i början blir kvar
+  }catch(e){ return 0; }
+}
 const hadSave = loadSave();
-const awaySec = hadSave ? Math.max(0, (Date.now() - meta.t)/1000) : 0;   // läses innan något hinner spara om tidsstämpeln
+const awaySec = hadSave ? Math.max(0, (Date.now() - meta.t)/1000) : 0;
+let G = makeGame(S);
 
 /* ================= Ljud (WebAudio-syntes) ================= */
 const Snd = {
-  ctx:null, master:null, nb:null, last:{},
+  ctx:null, master:null, nb:null, last:{}, wind:null,
   init(){
     try{
       if(!this.ctx){
@@ -498,21 +790,28 @@ const Snd = {
     g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v,t+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
     s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random()*0.2); s.stop(t+d+0.03);
   },
-  // sågljud: sågklinga som tar i virket
-  saw(v=1){ if(!this.ok('saw',0.5)) return; this.noise(.55,.09*v,2400,0,4,'bandpass',3600); this.tone(190,.55,'sawtooth',.035*v,240); this.tone(380,.5,'sawtooth',.02*v,470); },
-  // kassaklang
-  cash(){ if(!this.ok('cash',0.25)) return; this.noise(.06,.18,5000,0,2); this.tone(1568,.09,'square',.07); this.tone(2093,.32,'square',.07,null,.07); this.tone(2637,.25,'triangle',.05,null,.07); },
-  chop(){ if(!this.ok('chop',0.35)) return; this.tone(rand(260,330),.09,'sine',.12,120); this.noise(.05,.08,1800,0,2); },
-  tap(){ if(!this.ok('tap',0.05)) return; this.tone(rand(520,620),.07,'square',.05,900); },
-  buy(){ if(!this.ok('buy',0.06)) return; this.tone(660,.07,'square',.06); this.tone(990,.12,'square',.06,null,.05); },
-  hire(){ if(!this.ok()) return; [784,988,1175].forEach((f,i)=>this.tone(f,.12,'triangle',.12,null,i*.08)); },
-  tier(){ if(!this.ok()) return; [523,659,784,1047,1319].forEach((f,i)=>this.tone(f,.2,'square',.07,null,i*.07)); },
-  done(){ if(!this.ok()) return; [659,880,1175].forEach((f,i)=>this.tone(f,.16,'square',.07,null,i*.09)); this.cash(); },
-  thud(){ if(!this.ok('thud',0.3)) return; this.tone(90,.3,'sine',.25,45); this.noise(.2,.08,400); },
+  saw(v=1){ if(!this.ok('saw',0.7)) return; this.noise(.5,.06*v,2400,0,4,'bandpass',3600); this.tone(190,.5,'sawtooth',.025*v,240); },
+  cash(){ if(!this.ok('cash',0.18)) return; this.noise(.06,.16,5000,0,2); this.tone(1568,.09,'square',.06); this.tone(2093,.3,'square',.06,null,.07); this.tone(2637,.22,'triangle',.05,null,.07); },
+  coin(k=0){ if(!this.ok('coin',0.05)) return; const f = 900 + k*700; this.tone(f,.06,'square',.045,f*1.3); },
+  chop(){ if(!this.ok('chop',0.12)) return; this.tone(rand(260,330),.09,'sine',.16,120); this.noise(.05,.1,1800,0,2); },
+  pop(k=0){ if(!this.ok('pop',0.04)) return; this.tone(420 + k*35,.06,'triangle',.08,700 + k*40); },
+  drop(){ if(!this.ok('drop',0.05)) return; this.tone(rand(150,190),.08,'sine',.14,90); this.noise(.04,.05,900,0,2); },
+  thud(v=1){ if(!this.ok('thud',0.25)) return; this.tone(90,.3,'sine',.22*v,45); this.noise(.22,.07*v,400); },
+  build(){ if(!this.ok()) return; this.tone(110,.35,'sine',.3,55); this.noise(.3,.12,600,0,1,'lowpass'); [523,659,784,1047,1319].forEach((f,i)=>this.tone(f,.2,'square',.06,null,.08+i*.07)); },
+  hire(){ if(!this.ok()) return; [784,988,1175,1568].forEach((f,i)=>this.tone(f,.14,'triangle',.12,null,i*.08)); },
+  horn(){ if(!this.ok('horn',1)) return; this.tone(311,.35,'sawtooth',.07); this.tone(392,.35,'sawtooth',.06); this.tone(311,.3,'sawtooth',.07,null,.42); this.tone(392,.3,'sawtooth',.06,null,.42); },
+  fanfare(){ if(!this.ok()) return; [523,659,784,659,784,1047].forEach((f,i)=>this.tone(f,.18,'square',.07,null,i*.1)); this.cash(); },
+  sparkle(){ if(!this.ok('sparkle',.8)) return; for(let i=0;i<7;i++) this.tone(1800+i*260,.12,'triangle',.05,null,i*.05); },
+  alarm(){ if(!this.ok('alarm',1.5)) return; for(let i=0;i<4;i++) this.tone(i%2?620:820,.16,'square',.07,null,i*.18); },
+  knock(){ if(!this.ok('knock',0.12)) return; this.tone(rand(700,900),.05,'square',.08,300); this.noise(.04,.1,3000,0,3); },
+  rush(){ if(!this.ok()) return; [659,784,988,1319,988,1319].forEach((f,i)=>this.tone(f,.12,'square',.06,null,i*.08)); },
   click(){ if(!this.ok('click',0.03)) return; this.tone(880,.04,'square',.04,700); },
+  windOn(){ if(!this.ok() || this.wind) return; try{ const c=this.ctx, s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain(); s.buffer=this.nb; s.loop=true; f.type='bandpass'; f.frequency.value=500; f.Q.value=.7; g.gain.value=0.0001; g.gain.exponentialRampToValueAtTime(.12, c.currentTime+1.5); s.connect(f); f.connect(g); g.connect(this.master); s.start(); this.wind={s,f,g}; }catch(e){} },
+  windOff(){ if(!this.wind) return; try{ const c=this.ctx; this.wind.g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime+1.2); this.wind.s.stop(c.currentTime+1.3); }catch(e){} this.wind=null; },
 };
 function setMute(m){
   meta.mute = m; persist(); Snd.init();
+  if(m) Snd.windOff();
   document.querySelectorAll('.sndon').forEach(p => p.style.display = m ? 'none' : '');
   document.querySelectorAll('.sndoff').forEach(p => p.style.display = m ? '' : 'none');
   $('menuSnd').textContent = m ? 'Ljud: av' : 'Ljud: på';
@@ -528,17 +827,16 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 const scene = new THREE.Scene();
-const FOG = 0xa9d6ee;
-scene.background = new THREE.Color(FOG);
-scene.fog = new THREE.Fog(FOG, 70, 140);
-const camera = new THREE.PerspectiveCamera(38, 1, 1, 300);
-scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x5d7d3a, 1.3));
+const SKY = new THREE.Color(0xa9d6ee), STORM_SKY = new THREE.Color(0x6f7f8e);
+scene.background = SKY.clone();
+scene.fog = new THREE.Fog(0xa9d6ee, 55, 120);
+const camera = new THREE.PerspectiveCamera(40, 1, 1, 300);
+const hemi = new THREE.HemisphereLight(0xe8f4ff, 0x5d7d3a, 1.3); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff0d6, 2.3);
-sun.position.set(-18, 34, 14); sun.target.position.set(0, 0, -2);
 sun.castShadow = true;
 const isSmall = Math.min(innerWidth, innerHeight) < 600;
 sun.shadow.mapSize.set(isSmall?1024:2048, isSmall?1024:2048);
-Object.assign(sun.shadow.camera, {left:-30, right:30, top:30, bottom:-30, near:1, far:110});
+Object.assign(sun.shadow.camera, {left:-26, right:26, top:26, bottom:-26, near:1, far:110});
 sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
 
@@ -570,89 +868,106 @@ const Box = (w,h,d) => new THREE.BoxGeometry(w,h,d);
 const Cyl = (rt,rb,h,s=10) => new THREE.CylinderGeometry(rt,rb,h,s);
 const Cone = (r,h,s=8) => new THREE.ConeGeometry(r,h,s);
 const vcMat = new THREE.MeshLambertMaterial({vertexColors:true});
-function mesh(geo, shadow=true){ const m = new THREE.Mesh(geo, vcMat); m.castShadow = shadow; m.receiveShadow = true; return m; }
+function mesh(geo, shadow=true, mat=vcMat){ const m = new THREE.Mesh(geo, mat); m.castShadow = shadow; m.receiveShadow = true; return m; }
 function canvasTex(w,h,draw,rep){
   const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const g = cv.getContext('2d'); draw(g,w,h);
   const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
   if(rep){ t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep[0],rep[1]); }
   return t;
 }
+const inRect = (x,z,r,m=0) => x > r[0]-m && x < r[1]+m && z > r[2]-m && z < r[3]+m;
 
 /* ================= Värld ================= */
 const GRAY = 0x9aa4ae, DARK = 0x58616b, CONC = 0xdcdfe2, WOOD = 0x8a5a32;
-const TIER_COL = [0xffc93c, 0xff8a3d, 0x2ec4b6, 0xe5484d, 0x9b6bff, 0x3fa8ff, 0xffe066];
-const ROAD_Z = 19;
-const POS = {hugg:[0,-19], bark:[0,-11], sag:[0,-3], hyvel:[0,5], kaj:[0,13.4], press:[8,-3], pkaj:[8,13.4], snick:[-8,5], mkaj:[-8,13.4]};
+const TIER_COL = [0xffc93c, 0xff8a3d, 0x2ec4b6, 0xe5484d, 0x9b6bff];
 const world = new THREE.Group(); scene.add(world);
+const A = LAY.areas;
 const grassTex = canvasTex(256,256,(g,w,h)=>{
   g.fillStyle='#5fb54e'; g.fillRect(0,0,w,h);
   for(let i=0;i<1500;i++){ const s=rand(2,7); g.fillStyle=`hsla(${rand(88,120)},${rand(40,62)}%,${rand(34,54)}%,${rand(.25,.6)})`; g.fillRect(rand(0,w),rand(0,h),s*.5,s); }
   for(let i=0;i<30;i++){ g.fillStyle=Math.random()<.5?'rgba(255,255,255,.7)':'rgba(255,220,90,.75)'; g.beginPath(); g.arc(rand(0,w),rand(0,h),1.6,0,7); g.fill(); }
 },[50,50]);
 const yardTex = canvasTex(256,256,(g,w,h)=>{
-  g.fillStyle='#8f969d'; g.fillRect(0,0,w,h);
-  for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?70:255},${rand(.03,.09)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); }
-  g.strokeStyle='rgba(80,86,94,.25)'; g.lineWidth=2; g.strokeRect(1,1,w-2,h-2);
-},[8,10]);
+  g.fillStyle='#9a9f93'; g.fillRect(0,0,w,h);
+  for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?50:255},${rand(.03,.08)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); }
+},[7,11]);
 const roadTex = canvasTex(64,256,(g,w,h)=>{
   g.fillStyle='#4f555c'; g.fillRect(0,0,w,h);
   for(let i=0;i<500;i++){ g.fillStyle=`rgba(255,255,255,${rand(.02,.07)})`; g.fillRect(rand(0,w),rand(0,h),2,2); }
   g.fillStyle='#f3f0e2'; g.fillRect(w/2-2,10,4,h/2-20);
   g.fillStyle='#e9e5d3'; g.fillRect(2,0,3,h); g.fillRect(w-5,0,3,h);
 },[1,24]);
+const waterTex = canvasTex(128,128,(g,w,h)=>{
+  g.fillStyle='#3d93cf'; g.fillRect(0,0,w,h);
+  g.strokeStyle='rgba(255,255,255,.28)'; g.lineWidth=2;
+  for(let i=0;i<14;i++){ const x=rand(0,w), y=rand(0,h), l=rand(8,22); g.beginPath(); g.moveTo(x,y); g.quadraticCurveTo(x+l/2,y-3,x+l,y); g.stroke(); }
+},[6,6]);
 const beltTexBase = canvasTex(64,64,(g,w,h)=>{
   g.fillStyle='#2f6fd6'; g.fillRect(0,0,w,h);
   g.fillStyle='#3f86f0'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,8); }
   g.fillStyle='rgba(255,255,255,.18)'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,2); }
 },[1,1]);
-let trees = null, treeG = null;
+function plane(w,d,mat,x,y,z){ const m = new THREE.Mesh(new THREE.PlaneGeometry(w,d), mat); m.rotation.x = -Math.PI/2; m.position.set(x,y,z); m.receiveShadow = true; world.add(m); return m; }
+plane(400,400,new THREE.MeshLambertMaterial({map:grassTex}),0,0,0);
+plane(A.main[1]-A.main[0], A.main[3]+19.5, new THREE.MeshLambertMaterial({map:yardTex}), 0, .02, (A.main[3]-19.5)/2);
+plane(4.6,240,new THREE.MeshLambertMaterial({map:roadTex}),0,.03,LAY.road).rotation.z = Math.PI/2;
+const waterMat = new THREE.MeshLambertMaterial({map:waterTex, color:0xbfe6ff});
+const L = LAY.lake;
+plane(L[1]-L[0]+1.2, L[3]-L[2]+1.2, new THREE.MeshLambertMaterial({color:0xd9c58f}), (L[0]+L[1])/2, .025, (L[2]+L[3])/2);
+plane(L[1]-L[0], L[3]-L[2], waterMat, (L[0]+L[1])/2, .05, (L[2]+L[3])/2);
+// flottningsrännan från sjön till inlastningen
+const CH_Z = -15.2, CH_X0 = L[1], CH_X1 = -1.6;
+const chanG = new THREE.Group(); world.add(chanG);
+{ const m = new THREE.Mesh(new THREE.PlaneGeometry(CH_X1-CH_X0, 1.1), waterMat); m.rotation.x = -Math.PI/2; m.position.set((CH_X0+CH_X1)/2, .06, CH_Z); chanG.add(m);
+  const P2 = []; for(const sz of [-1,1]) P2.push(part(Box(CH_X1-CH_X0,.25,.18), WOOD, (CH_X0+CH_X1)/2, .12, CH_Z+sz*.64));
+  chanG.add(mesh(merge(P2), false)); }
+// staket: ett segment per kant, grindarna mot nya områden tas bort när de köps
+const fences = {};
+function fenceSeg(key, x0,z0,x1,z1, gate=false){
+  const P2 = [], len = Math.hypot(x1-x0, z1-z0), n = Math.max(1, Math.round(len/1.5)), dx=(x1-x0)/len, dz=(z1-z0)/len, yaw = Math.atan2(dx,dz);
+  const col = gate ? 0xe5484d : 0xf2efe6, rail = gate ? 0xffffff : 0xffc93c;
+  for(let i=0;i<=n;i++){ const t=i/n; P2.push(part(Box(.14,.95,.14), col, lerp(x0,x1,t),.47,lerp(z0,z1,t))); }
+  for(const y of [.42,.78]) P2.push(part(Box(.08,.1,len), gate && y>.5 ? 0xe5484d : rail, (x0+x1)/2, y, (z0+z1)/2, 0, yaw, 0));
+  if(gate) for(let i=0;i<n;i++){ const t=(i+.5)/n; P2.push(part(Box(.06,.5,.7), i%2?0xe5484d:0xffffff, lerp(x0,x1,t),.6,lerp(z0,z1,t), 0,yaw,0)); }
+  const m = mesh(merge(P2)); world.add(m); fences[key] = m; return m;
+}
+fenceSeg('mn', A.main[0],A.main[2], A.main[1],A.main[2]);
+fenceSeg('ms1', A.main[0],A.main[3]+.3, 1.4,A.main[3]+.3); fenceSeg('ms2', 9,A.main[3]+.3, A.main[1],A.main[3]+.3);
+fenceSeg('me1', A.main[1],A.skog[3], A.main[1],A.main[3]+.3); fenceSeg('gate-skog', A.main[1],A.main[2], A.main[1],A.skog[3], true);
+fenceSeg('mw1', A.main[0],A.main[2], A.main[0],A.sjo[2]); fenceSeg('gate-sjo', A.main[0],A.sjo[2], A.main[0],A.sjo[3], true); fenceSeg('mw2', A.main[0],A.sjo[3], A.main[0],A.main[3]+.3);
+fenceSeg('sk1', A.skog[0],A.skog[2], A.skog[1],A.skog[2]); fenceSeg('sk2', A.skog[1],A.skog[2], A.skog[1],A.skog[3]); fenceSeg('sk3', A.skog[0],A.skog[3], A.skog[1],A.skog[3]); fenceSeg('sk4', A.skog[0],A.skog[2], A.skog[0],A.main[2]);
+fenceSeg('sj1', A.sjo[0],A.sjo[2], A.sjo[1],A.sjo[2]); fenceSeg('sj2', A.sjo[0],A.sjo[2], A.sjo[0],A.sjo[3]); fenceSeg('sj3', A.sjo[0],A.sjo[3], A.sjo[1],A.sjo[3]);
+// skog runt omkring (pynt, kan inte fällas)
+const treeG = merge([
+  part(Cyl(.16,.24,1.1,6),0x7a5230,0,.55,0),
+  part(Cone(1.25,1.9,7),0x2e8a44,0,1.8,0),
+  part(Cone(.98,1.6,7),0x3aa452,0,2.7,0),
+  part(Cone(.62,1.25,7),0x52bd60,0,3.5,0),
+]);
 {
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshLambertMaterial({map:grassTex}));
-  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; world.add(ground);
-  const yard = new THREE.Mesh(new THREE.PlaneGeometry(30,40), new THREE.MeshLambertMaterial({map:yardTex}));
-  yard.rotation.x = -Math.PI/2; yard.position.set(0,.02,-2); yard.receiveShadow = true; world.add(yard);
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(4.6,240), new THREE.MeshLambertMaterial({map:roadTex}));
-  road.rotation.x = -Math.PI/2; road.rotation.z = Math.PI/2; road.position.set(0,.03,ROAD_Z); road.receiveShadow = true; world.add(road);
-  // staket runt gården
-  const fp = [];
-  const post = (x,z) => fp.push(part(Box(.14,.9,.14), 0xf2efe6, x,.45,z));
-  for(let x=-15;x<=15;x+=1.5){ if(Math.abs(x)>3.5) post(x,-22); }
-  for(let z=-22;z<=16.5;z+=1.5){ post(-15,z); post(15,z); }
-  for(const sx of [-1,1]) fp.push(part(Box(11.5,.1,.08), 0xffc93c, sx*9.25,.75,-22), part(Box(11.5,.1,.08), 0xffc93c, sx*9.25,.4,-22));
-  for(const sx of [-15,15]) fp.push(part(Box(.08,.1,38.5), 0xffc93c, sx,.75,-2.75), part(Box(.08,.1,38.5), 0xffc93c, sx,.4,-2.75));
-  const fence = mesh(merge(fp)); world.add(fence);
-  // skog runt gläntan
-  treeG = merge([
-    part(Cyl(.16,.24,1.1,6),0x7a5230,0,.55,0),
-    part(Cone(1.25,1.9,7),0x2e8a44,0,1.8,0),
-    part(Cone(.98,1.6,7),0x3aa452,0,2.7,0),
-    part(Cone(.62,1.25,7),0x52bd60,0,3.5,0),
-  ]);
   const T = [];
-  for(let i=0;i<2600 && T.length<520;i++){
-    const x = rand(-70,70), z = rand(-80,45);
-    if(Math.abs(x)<17 && z>-30 && z<23) continue;   // gläntan
-    if(Math.abs(z-ROAD_Z)<3.4) continue;             // vägen
+  for(let i=0;i<4000 && T.length<560;i++){
+    const x = rand(-75,75), z = rand(-85,48);
+    if(inRect(x,z,A.main,2) || inRect(x,z,A.skog,2) || inRect(x,z,A.sjo,2)) continue;
+    if(Math.abs(z-LAY.road)<3.6) continue;
     T.push([x,z,rand(.85,1.6),rand(0,6.28)]);
   }
-  trees = new THREE.InstancedMesh(treeG, vcMat, T.length);
-  T.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*rand(.9,1.2),t[2])); trees.setMatrixAt(i,_m4); });
-  trees.castShadow = true; trees.receiveShadow = true; world.add(trees);
+  const im = new THREE.InstancedMesh(treeG, vcMat, T.length);
+  T.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*rand(.9,1.2),t[2])); im.setMatrixAt(i,_m4); });
+  im.castShadow = true; im.receiveShadow = true; world.add(im);
   const rockG = merge([part(new THREE.DodecahedronGeometry(.6,0),0x9a9a9a)]);
   const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),0x3d9d48,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),0x4fb257,.5,.3,.2)]);
-  for(const [geo,count] of [[rockG,26],[bushG,40]]){
-    const im = new THREE.InstancedMesh(geo, vcMat, count);
-    for(let i=0;i<count;i++){ let x,z; do{ x=rand(-26,26); z=rand(-34,30); }while(Math.abs(x)<15.6 && z>-19 && z<17 || Math.abs(z-ROAD_Z)<3); _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.3))); im.setMatrixAt(i,_m4); }
-    im.castShadow = true; world.add(im);
+  for(const [geo,count] of [[rockG,30],[bushG,46]]){
+    const im2 = new THREE.InstancedMesh(geo, vcMat, count); let k = 0;
+    for(let i=0;i<400 && k<count;i++){ const x=rand(-40,40), z=rand(-40,26); if(inRect(x,z,A.main,.5) || inRect(x,z,A.skog,-.5) && Math.random()<.7 || inRect(x,z,LAY.lake,1) || Math.abs(z-LAY.road)<3) continue; _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.3))); im2.setMatrixAt(k++,_m4); }
+    im2.count = k; im2.castShadow = true; world.add(im2);
   }
 }
 
 /* ---------- partiklar ---------- */
-const MAXP = 500;
-const pGeo = new THREE.BoxGeometry(.12,.12,.12);
-const pMat = new THREE.MeshLambertMaterial({color:0xffffff});
-const pIM = new THREE.InstancedMesh(pGeo, pMat, MAXP); pIM.count = 0; pIM.frustumCulled = false; world.add(pIM);
-const P = { n:0, x:new Float32Array(MAXP), y:new Float32Array(MAXP), z:new Float32Array(MAXP), vx:new Float32Array(MAXP), vy:new Float32Array(MAXP), vz:new Float32Array(MAXP), life:new Float32Array(MAXP), max:new Float32Array(MAXP), s:new Float32Array(MAXP), g:new Float32Array(MAXP), c:[] };
+const MAXP = 600;
+const pIM = new THREE.InstancedMesh(new THREE.BoxGeometry(.12,.12,.12), new THREE.MeshLambertMaterial({color:0xffffff}), MAXP); pIM.count = 0; pIM.frustumCulled = false; world.add(pIM);
+const P = { n:0, x:new Float32Array(MAXP), y:new Float32Array(MAXP), z:new Float32Array(MAXP), vx:new Float32Array(MAXP), vy:new Float32Array(MAXP), vz:new Float32Array(MAXP), life:new Float32Array(MAXP), max:new Float32Array(MAXP), s:new Float32Array(MAXP), g:new Float32Array(MAXP) };
 const _col = new THREE.Color();
 function burst(x,y,z,color,n,spd=3,size=1,life=.7,up=3,grav=9){
   for(let k=0;k<n;k++){
@@ -674,29 +989,118 @@ function updateParticles(dt){
   }
   pIM.count = P.n; pIM.instanceMatrix.needsUpdate = true; if(pIM.instanceColor) pIM.instanceColor.needsUpdate = true;
 }
+// regn under stormen
+const RAIN = 160;
+const rainIM = new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.7,.03), new THREE.MeshBasicMaterial({color:0xcfe3f5, transparent:true, opacity:.55}), RAIN); rainIM.count = 0; rainIM.frustumCulled = false; world.add(rainIM);
+const rain = Array.from({length:RAIN}, () => ({x:rand(-18,18), y:rand(0,16), z:rand(-18,18)}));
 
-/* ================= Stationer ================= */
-// Varje station byggs om när den når en ny nivågräns (var 25:e nivå): större, ny färg, fler klingor.
-function tierOf(L){ return Math.min(TIER_COL.length-1, Math.floor(L/ECON.milestoneEvery)); }
+/* ================= Saker: stockar, brädor, säckar, möbler, mynt ================= */
+const ITEM = {
+  log:   {h:.4,  geo:merge([part(Cyl(.2,.2,1.1,8),0x6b4426,0,0,0,0,0,Math.PI/2), part(Cyl(.17,.17,1.12,8),0xd9b27c,0,0,0,0,0,Math.PI/2)])},
+  barked:{h:.36, geo:merge([part(Cyl(.18,.18,1.1,8),0xd8b57a,0,0,0,0,0,Math.PI/2), part(Cyl(.15,.15,1.12,8),0xf0d6a2,0,0,0,0,0,Math.PI/2)])},
+  board: {h:.2,  geo:merge([part(Box(1.05,.09,.26),0xc89a5e,0,0,0), part(Box(1.05,.09,.26),0xb98b52,0,.1,0)])},
+  planed:{h:.27, geo:merge([part(Box(1.05,.08,.26),0xf2d7a2,0,0,0), part(Box(1.05,.08,.26),0xe9c98c,0,.09,0), part(Box(1.05,.08,.26),0xf2d7a2,0,.18,0)])},
+  chip:  {h:.12, geo:merge([part(Box(.18,.1,.18),0xe8c98a,-.15,0,0,0,.4,0), part(Box(.16,.1,.16),0xd9b06a,.12,0,.05,0,.9,0), part(Box(.14,.1,.14),0xf0d6a2,0,.08,-.05,0,.2,0)])},
+  sack:  {h:.3,  geo:merge([part(Box(.6,.3,.44),0xf2efe6,0,0,0), part(Box(.62,.1,.46),0x4f9e3a,0,.02,0)])},
+  furn:  {h:.72, geo:merge([part(Box(.55,.08,.55),0xb8763e,0,.32,0), part(Box(.55,.55,.08),0xb8763e,0,.6,-.24), ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([a,b])=>part(Box(.07,.32,.07),0x8a5a32,a*.22,.16,b*.22))])},
+};
+const NAME = { log:'stockar', barked:'barkade stockar', board:'brädor', planed:'hyvlade brädor', sack:'pelletssäckar', furn:'möbler' };
+const NAME1 = { log:'Stock', barked:'Barkad stock', board:'Bräda', planed:'Hyvlad bräda', sack:'Pelletssäck', furn:'Möbel' };
+const itemIM = {};
+for(const k in ITEM){ const im = new THREE.InstancedMesh(ITEM[k].geo, vcMat, k==='log' ? 700 : 420); im.count = 0; im.castShadow = true; im.frustumCulled = false; world.add(im); itemIM[k] = im; ITEM[k].n = 0; ITEM[k].max = k==='log' ? 700 : 420; }
+function setItem(kind, x, y, z, yaw=0, s=1, rx=0){
+  const it = ITEM[kind]; if(!it || it.n >= it.max) return;
+  _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(rx,yaw,0)), _s.set(s,s,s)); itemIM[kind].setMatrixAt(it.n++, _m4);
+}
+const coinGeo = merge([part(Cyl(.2,.2,.06,14),0xffc93c,0,0,0,Math.PI/2,0,0), part(Cyl(.13,.13,.07,12),0xffe58a,0,0,0,Math.PI/2,0,0)]);
+const coinIM = new THREE.InstancedMesh(coinGeo, new THREE.MeshLambertMaterial({vertexColors:true, emissive:0x553300}), 400); coinIM.count = 0; coinIM.frustumCulled = false; world.add(coinIM);
+
+/* ================= Gubbar ================= */
+function makeFigure(o){
+  const g = new THREE.Group(), inner = new THREE.Group(); g.add(inner);
+  const sk = 0xf1c79a;
+  const body = mesh(merge([
+    part(Box(.5,.56,.32), o.shirt, 0,.86,0), part(Box(.52,.08,.34), o.belt||0x4a2e18, 0,.6,0),
+    ...(o.vest ? [part(Box(.52,.4,.34), o.vest, 0,.9,0), part(Box(.54,.05,.35), 0xf2f2f2, 0,.83,0)] : []),
+    part(new THREE.SphereGeometry(.19,10,8), sk, 0,1.33,0),
+    part(Cyl(.22,.23,.13,10), o.hat, 0,1.47,0), part(Cyl(.13,.19,.12,10), o.hat, 0,1.56,0),
+    ...(o.hatBrim ? [part(Box(.3,.04,.18), o.hat, 0,1.43,.2)] : []),
+    part(Box(.05,.05,.02), 0x222222, -.07,1.36,.18), part(Box(.05,.05,.02), 0x222222, .07,1.36,.18),
+  ]));
+  inner.add(body);
+  const legGeo = merge([part(Box(.18,.56,.2), o.pants, 0,-.28,0), part(Box(.2,.1,.28), 0x3a2a1c, 0,-.56,.04)]);
+  const armGeo = merge([part(Box(.14,.5,.16), o.shirt, 0,-.25,0), part(new THREE.SphereGeometry(.08,6,5), sk, 0,-.52,0)]);
+  const legL = new THREE.Group(), legR = new THREE.Group(), armL = new THREE.Group(), armR = new THREE.Group();
+  legL.position.set(-.12,.6,0); legR.position.set(.12,.6,0); armL.position.set(-.33,1.08,0); armR.position.set(.33,1.08,0);
+  legL.add(mesh(legGeo)); legR.add(mesh(legGeo)); armL.add(mesh(armGeo)); armR.add(mesh(armGeo));
+  inner.add(legL, legR, armL, armR);
+  let axe = null;
+  if(o.axe){ axe = mesh(merge([part(Cyl(.03,.03,.8,5),0x8a5a32,0,0,0), part(Box(.06,.22,.3),0xb0b8c0,0,.32,.13)])); axe.position.set(0,-.5,.15); axe.rotation.x = Math.PI/2; armR.add(axe); }
+  g.scale.setScalar(o.scale || 1);
+  world.add(g);
+  return {g, inner, legL, legR, armL, armR, axe, ph:0, chopPh:0};
+}
+function animFigure(f, x, z, yaw, moving, sp, dt, carrying, chopping, time){
+  f.g.position.set(x, 0, z);
+  let dy = yaw - f.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.g.rotation.y += dy * Math.min(1, dt*14);
+  if(moving) f.ph += dt * sp * 2.3; else f.ph *= Math.pow(.02, dt);
+  const sw = moving ? Math.sin(f.ph) * .75 : 0;
+  f.legL.rotation.x = sw; f.legR.rotation.x = -sw;
+  f.inner.position.y = moving ? Math.abs(Math.sin(f.ph)) * .07 : 0;
+  if(chopping){ f.chopPh += dt; const a = Math.sin(f.chopPh*12); f.armR.rotation.x = -2.2 + Math.max(0,a)*1.9; f.armL.rotation.x = -.4; if(f.axe) f.axe.visible = true; }
+  else if(carrying){ f.armL.rotation.x = f.armR.rotation.x = -2.6; f.armL.rotation.z = .2; f.armR.rotation.z = -.2; if(f.axe) f.axe.visible = false; }
+  else { f.armL.rotation.x = -sw*.8; f.armR.rotation.x = sw*.8; f.armL.rotation.z = f.armR.rotation.z = 0; if(f.axe) f.axe.visible = true; }
+}
+const player = makeFigure({shirt:0x2f6fd6, pants:0x23447a, hat:0xffc93c, hatBrim:true, vest:0xff8a3d, axe:true, scale:1.18});
+const ringMesh = new THREE.Mesh(new THREE.RingGeometry(.62,.8,28), new THREE.MeshBasicMaterial({color:0xffe066, transparent:true, opacity:.75}));
+ringMesh.rotation.x = -Math.PI/2; ringMesh.position.y = .05; world.add(ringMesh);
+const workerFigs = [];
+const ROLE_LOOK = {
+  hugg: {shirt:0xc0392b, pants:0x2f4a7a, hat:0xffc93c, axe:true},
+  bar:  {shirt:0x3f9c3a, pants:0x5a4632, hat:0xf2efe6, hatBrim:true},
+  chauf:{shirt:0x34373b, pants:0x23272b, hat:0x2257b3, hatBrim:true, vest:0xffe066},
+};
+function syncWorkerFigs(){
+  while(workerFigs.length > G.workers.length){ const f = workerFigs.pop(); world.remove(f.g); }
+  while(workerFigs.length < G.workers.length){ const w = G.workers[workerFigs.length]; const f = makeFigure(ROLE_LOOK[w.role]); f.role = w.role; f.g.position.set(w.x,0,w.z); workerFigs.push(f); burst(w.x,1,w.z,[0xffc93c,0xffffff,0x8fe06f],24,3,1,1,5); }
+}
+
+/* ================= Träd att fälla ================= */
+const NT = TREES.length;
+const ctIM = new THREE.InstancedMesh(treeG, vcMat, NT); ctIM.castShadow = true; ctIM.receiveShadow = true; world.add(ctIM);
+const stumpIM = new THREE.InstancedMesh(merge([part(Cyl(.24,.28,.28,8),0x7a5230,0,.14,0), part(Cyl(.2,.2,.02,8),0xe2bf86,0,.29,0)]), vcMat, NT);
+const TREE_S = TREES.map(t => (t.area==='skog' ? 1.3 : 1) * (0.92 + ((t.x*7.3+t.z*3.1)%1+1)%1*.25));
+const TREE_R = TREES.map(t => ((t.x*13.1+t.z*5.7)%6.28+6.28)%6.28);
+TREES.forEach((t,i)=>{ _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(0,TREE_R[i],0)), _s.set(TREE_S[i],TREE_S[i],TREE_S[i])); stumpIM.setMatrixAt(i,_m4); }); world.add(stumpIM);
+const wob = new Float32Array(NT), fallDir = new Float32Array(NT);
+const goldMat = new THREE.MeshLambertMaterial({color:0xffd23f, emissive:0x8a5a00});
+const goldTree = new THREE.Mesh(treeG, goldMat); goldTree.castShadow = true; goldTree.visible = false; world.add(goldTree);
+const treeIdx = new Map(); G.trees.forEach((t,i)=>treeIdx.set(t,i));
+function updateTrees(dt, time){
+  const storm = G.ev && G.ev.kind==='storm';
+  for(let i=0;i<NT;i++){
+    const t = G.trees[i], s0 = TREE_S[i];
+    let rx = 0, rz = 0, s = s0;
+    wob[i] = Math.max(0, wob[i]-dt);
+    if(t.st==='grown'){ if(storm) rz = Math.sin(time*2.3 + i)*.08; if(wob[i]>0) rz += Math.sin(wob[i]*50)*.05; if(t.gold){ s = .0001; } }
+    else if(t.st==='falling'){ const k = Math.min(1,t.t/.8); rx = Math.cos(fallDir[i])*k*k*Math.PI/2; rz = Math.sin(fallDir[i])*k*k*Math.PI/2; }
+    else if(t.st==='gone') s = .0001;
+    else if(t.st==='regrow') s = s0*Math.max(.0001, Math.min(1, t.t/ECON.regrow));
+    _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(rx,TREE_R[i]*.0,rz)), _s.set(s,s,s)); ctIM.setMatrixAt(i,_m4);
+  }
+  ctIM.instanceMatrix.needsUpdate = true;
+  const gt = G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold ? G.ev.tree : null;
+  goldTree.visible = !!gt;
+  if(gt){ const i = treeIdx.get(gt), s = TREE_S[i]*1.12, w = wob[i]>0 ? Math.sin(wob[i]*50)*.05 : 0; goldTree.position.set(gt.x,0,gt.z); goldTree.scale.set(s,s*(1+Math.sin(time*3)*.03),s); goldTree.rotation.z = w; if(Math.random() < dt*10) burst(gt.x+rand(-1,1), rand(1,4), gt.z+rand(-1,1), [0xfff2b0,0xffe066,0xffffff], 1, .4, .8, .9, .6, -.5); }
+}
+
+/* ================= Maskiner ================= */
 function pad(P2, w=4.4, d=4.2){ P2.push(part(Box(w,.24,d), CONC, 0,.12,0)); for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.6,.05,.18), 0xffc93c, sx*(w/2-.4),.26,sz*(d/2-.12))); }
 function buildStation(id, tier){
   const g = new THREE.Group(), acc = TIER_COL[tier], spin = [], bob = [], P2 = [];
   const out = { g, spin, bob, emit:new THREE.Vector3(0,1.5,0), top:2.8 };
   const add = (geo, shadow=true) => { const m = mesh(geo, shadow); g.add(m); return m; };
-  if(id==='hugg'){
-    pad(P2, 6.2, 4.6);
-    // huggarstuga i falu rödfärg
-    P2.push(part(Box(2.4,1.6,1.9), 0x9e2b25, -1.5,1.04,-.7), part(Box(.5,.95,.06), 0xf2efe6, -1.5,.72,.26), part(Box(.62,.44,.06), 0xf2efe6, -2.3,1.2,.26), part(Box(.5,.32,.07), 0xffe7a0, -2.3,1.2,.27));
-    P2.push(part(Box(2.7,.12,1.3), 0x3a3a3a, -1.5,2.1,-.25, .62,0,0), part(Box(2.7,.12,1.3), 0x3a3a3a, -1.5,2.1,-1.15, -.62,0,0));
-    for(const sx of [-1,1]) P2.push(part(Box(.08,1.6,.08), 0xf2efe6, -1.5+sx*1.2,1.04,.26));
-    // stockhög
-    const rows = 3 + Math.min(3,tier);
-    for(let r=0;r<rows;r++) for(let k=0;k<rows-r;k++) P2.push(part(Cyl(.24,.24,2.2,8), 0x6b4426, 1.4+(k-(rows-r-1)/2)*.5, .5+r*.43, -.6, 0,0,Math.PI/2));
-    for(let r=0;r<rows;r++) for(let k=0;k<rows-r;k++) P2.push(part(Cyl(.2,.2,.04,8), 0xe2bf86, 1.4+(k-(rows-r-1)/2)*.5+1.11, .5+r*.43, -.6, 0,0,Math.PI/2));
-    // kran med tierfärg
-    P2.push(part(Box(.3,2.6,.3), acc, 2.6,1.5,1.2), part(Box(2.6,.24,.24), acc, 1.5,2.8,1.2), part(Cyl(.03,.03,1.1,4), 0x333333, .5,2.2,1.2));
-    out.emit.set(1.4,1.4,-.6); out.top = 3.3;
-  } else if(id==='bark'){
+  if(id==='bark'){
     pad(P2);
     P2.push(part(Box(3,1.1,2.8), GRAY, 0,.79,0), part(Box(3.1,.14,2.9), acc, 0,1.4,0));
     P2.push(part(Box(.25,1.6,.25), DARK, -1.35,1.9,0), part(Box(.25,1.6,.25), DARK, 1.35,1.9,0));
@@ -709,7 +1113,6 @@ function buildStation(id, tier){
   } else if(id==='sag'){
     pad(P2);
     P2.push(part(Box(3.2,.9,3.0), DARK, 0,.69,0), part(Box(3.3,.12,3.1), acc, 0,1.18,0));
-    // portal
     for(const sx of [-1,1]) P2.push(part(Box(.32,2.6,.32), acc, sx*1.5,2.4,.2), part(Box(.7,.18,.7), 0x3a3a3a, sx*1.5,1.28,.2));
     P2.push(part(Box(3.4,.38,.42), acc, 0,3.7,.2), part(Box(.9,.6,.6), GRAY, 0,3.45,.2));
     const n = 1 + Math.min(3,tier);
@@ -722,26 +1125,14 @@ function buildStation(id, tier){
   } else if(id==='hyvel'){
     pad(P2);
     P2.push(part(Box(2.8,1.2,3.2), GRAY, 0,.84,0), part(Box(2.9,.5,1.4), acc, 0,1.7,-.5), part(Box(2.9,.08,3.3), DARK, 0,1.46,0));
-    // spånrör
     P2.push(part(Cyl(.22,.22,2.2,8), acc, 1.1,2.5,-.5), part(Cyl(.22,.22,1.4,8), acc, 1.1,3.6,-1.2, Math.PI/2,0,0), part(Cyl(.35,.25,.5,8), DARK, 1.1,3.6,-1.95, Math.PI/2,0,0));
     const nr = 2 + Math.min(3,tier);
     for(let k=0;k<nr;k++){ const r = add(merge([part(Cyl(.2,.2,2.6,10), 0xd7dde3, 0,0,0, 0,0,Math.PI/2), part(Box(2.62,.06,.42), DARK, 0,0,0)])); r.position.set(0,1.62,.5+k*.38-(nr-1)*.19+.3); spin.push({m:r, ax:'x', sp:-9}); }
     out.emit.set(1.1,4.0,-2.1); out.top = 4.2;
-  } else if(id==='kaj' || id==='pkaj' || id==='mkaj'){
-    P2.push(part(Box(5.2,.7,3.6), CONC, 0,.35,.4), part(Box(5.2,.08,.3), 0xffc93c, 0,.72,2.05));
-    for(let k=0;k<6;k++) P2.push(part(Box(.4,.09,.32), 0x2b2b2b, -2.1+k*.85,.73,2.05));
-    // portalkran
-    for(const sx of [-1,1]) P2.push(part(Box(.26,3.2,.26), acc, sx*2.3,2.3,-.6), part(Box(.26,3.2,.26), acc, sx*2.3,2.3,1.8));
-    P2.push(part(Box(4.9,.28,.28), acc, 0,3.9,-.6), part(Box(4.9,.28,.28), acc, 0,3.9,1.8), part(Box(.6,.4,2.8), GRAY, 0,3.75,.6));
-    if(id==='kaj') for(let k=0;k<3+Math.min(3,tier);k++) P2.push(part(Box(1.6,.1,.5), 0xf0d39a, -1.2,.76+k*.11,.6), part(Box(1.6,.1,.5), 0xf0d39a, 1.2,.76+k*.11,.2));
-    if(id==='pkaj') for(let k=0;k<2+Math.min(3,tier);k++){ P2.push(part(Box(1.2,.12,1), WOOD, -1.3,.76,.6)); P2.push(part(Box(.5,.3,.4), 0xf2efe6, -1.6,1+k*.3,.4), part(Box(.5,.3,.4), 0xf2efe6, -1.0,1+k*.3,.8)); }
-    if(id==='mkaj'){ P2.push(part(Box(5.4,.14,1.4), acc, 0,3.0,-1.3, -.25,0,0)); for(let k=0;k<4;k++) P2.push(part(Box(.12,2.4,.12), 0xf2efe6, -2.5+k*1.66,1.9,-1.7)); }
-    const hook = add(merge([part(Cyl(.03,.03,1.4,4), 0x333333, 0,-.7,0), part(Box(.5,.2,.5), 0xffc93c, 0,-1.45,0)])); hook.position.set(0,3.6,.6); bob.push({m:hook, base:3.6, amp:.5, sp:1.4});
-    out.emit.set(0,1.2,2.2); out.top = 4.4;
   } else if(id==='press'){
     pad(P2);
     P2.push(part(Cyl(1.1,1.1,3.2,14), 0xd7dde3, -.8,1.84,-.6), part(Cone(1.1,.8,14), acc, -.8,3.84,-.6), part(Cyl(1.14,1.14,.16,14), acc, -.8,1.0,-.6));
-    if(tier>=2) P2.push(part(Cyl(.8,.8,2.4,12), 0xd7dde3, 1.2,1.44,-1.1), part(Cone(.8,.6,12), acc, 1.2,2.94,-1.1));
+    if(tier>=1) P2.push(part(Cyl(.8,.8,2.4,12), 0xd7dde3, 1.2,1.44,-1.1), part(Cone(.8,.6,12), acc, 1.2,2.94,-1.1));
     P2.push(part(Box(1.6,1.3,1.6), GRAY, .9,.89,.6), part(Box(1.7,.18,1.7), acc, .9,2.4,.6), part(Box(.2,1,.2), DARK, .3,1.9,.1), part(Box(.2,1,.2), DARK, 1.5,1.9,1.1));
     const pis = add(merge([part(Box(1.0,.5,1.0), acc, 0,0,0), part(Cyl(.12,.12,1,6), 0xd7dde3, 0,.6,0)])); pis.position.set(.9,1.9,.6); bob.push({m:pis, base:1.9, amp:.25, sp:5});
     out.emit.set(.9,1.7,1.4); out.top = 4.5;
@@ -754,68 +1145,55 @@ function buildStation(id, tier){
     P2.push(part(Box(.4,1.2,.4), 0x7c3a2b, 1.0,3.3,-.8), part(Box(1.6,.5,.1), acc, 0,2.3,1.27));
     out.emit.set(1.0,4.0,-.8); out.top = 4.3; out.smoke = true;
   }
-  const base = add(merge(P2)); base.castShadow = true;
+  add(merge(P2));
   return out;
 }
+const MNAME = { bark:'Barkmaskinen', sag:'Sågen', hyvel:'Hyveln', press:'Pelletspressen', snick:'Snickeriet' };
 const stations = {};
-const hitMeshes = [];
-const hitMat = new THREE.MeshBasicMaterial({visible:false});
-function lockedGroup(id){
-  const g = new THREE.Group(), P2 = [];
-  P2.push(part(Box(4.4,.18,4.2), 0xb7bcc2, 0,.09,0));
-  for(let k=0;k<8;k++){ const a=k/8*Math.PI*2; P2.push(part(Box(.5,.06,.16), 0xffc93c, Math.cos(a)*1.8,.2,Math.sin(a)*1.8, 0,-a,0)); }
-  P2.push(part(Box(.16,1.6,.16), WOOD, 0,.8,0), part(Box(1.8,.9,.12), 0xe6c48a, 0,1.6,.1));
-  const m = mesh(merge(P2)); g.add(m); return g;
-}
-for(const id of STATION_IDS){
-  const [x,z] = POS[id];
+const ghostMat = new THREE.MeshLambertMaterial({color:0xfff2c0, transparent:true, opacity:.13, depthWrite:false});
+for(const m of MACHS){
+  const [x,z] = LAY.mach[m];
   const root = new THREE.Group(); root.position.set(x,0,z); world.add(root);
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(5,4.5,4.6), hitMat); hit.position.set(0,2,0); hit.userData.id = id; root.add(hit); hitMeshes.push(hit);
-  stations[id] = { root, built:null, tier:-1, locked:null, pop:0, shake:0, act:0, smokeT:0 };
+  const ghost = new THREE.Group();
+  const gb = new THREE.Mesh(new THREE.BoxGeometry(3,1.6,3), ghostMat); gb.position.y = .8; ghost.add(gb);
+  const P2 = []; for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.9,.06,.2), 0xffc93c, sx*1.6,.05,sz*1.6), part(Box(.2,.06,.9), 0xffc93c, sx*1.6,.05,sz*1.6));
+  ghost.add(mesh(merge(P2), false)); ghost.visible = false; root.add(ghost);
+  stations[m] = { root, ghost, built:null, tier:-1, pop:0, shake:0, act:0, smokeT:0 };
 }
-function refreshStation(id, celebrate=false){
-  const st = stations[id], L = S.lv[id], unlocked = S.lines[ST[id].line];
-  if(!unlocked){
-    if(st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; }
-    if(!st.locked){ st.locked = lockedGroup(id); st.root.add(st.locked); }
-    return;
-  }
-  if(st.locked){ st.root.remove(st.locked); st.locked = null; }
-  const t = tierOf(L);
-  if(t !== st.tier){
-    if(st.built){ st.root.remove(st.built.g); st.built.g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
-    st.built = buildStation(id, t); st.root.add(st.built.g); st.tier = t;
-    if(celebrate){ st.pop = 1; const e = st.root.position; burst(e.x, 3, e.z, TIER_COL, 60, 5, 1.2, 1.4, 7); Snd.tier(); toast('Ny maskin!', ST[id].name + ' går dubbelt så fort'); }
-  }
-  const s = 1 + .06*t + .0025*(L % ECON.milestoneEvery);
-  st.built.g.scale.setScalar(s);
+// inlastning (stockbord), högar, lastkaj och kassa
+const intakeG = new THREE.Group(); intakeG.position.set(LAY.intake[0],0,LAY.intake[1]); world.add(intakeG);
+intakeG.add(mesh(merge([
+  part(Box(2.6,.3,2.2), WOOD, 0,.15,0), part(Box(2.8,.12,2.4), 0xffc93c, 0,.32,0),
+  ...[-1,1].map(s=>part(Box(.14,.9,2.2), 0x6b4426, s*1.25,.7,0)),
+  part(Box(1.6,.06,1.2), 0x6b4426, 0,.36,1.6, -.35,0,0),
+])));
+intakeG.visible = false;
+const pileBase = {};
+for(const k of ['main','sack','furn']){
+  const g = mesh(merge([part(Box(2.3,.14,2.3), WOOD, 0,.07,0), ...[-1,0,1].map(s=>part(Box(2.3,.1,.3), 0x6b4426, 0,.16,s*.9))]));
+  g.position.set(LAY.pile[k][0],0,LAY.pile[k][1]); g.visible = false; world.add(g); pileBase[k] = g;
 }
+{
+  const [dx,dz] = LAY.dock;
+  const dock = mesh(merge([part(Box(5.6,.5,3.6), CONC, 0,.25,.2), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,-1.5), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,1.9),
+    ...[-2,-1,0,1,2].map(i=>part(Box(.5,.08,.4), 0x2b2b2b, i*1.1,.53,1.9))]));
+  dock.position.set(dx,0,dz); world.add(dock);
+}
+const kassaG = new THREE.Group(); kassaG.position.set(LAY.kassa[0],0,LAY.kassa[1]); world.add(kassaG);
+kassaG.add(mesh(merge([part(Box(1.5,.9,1),0x9e2b25,0,.45,0), part(Box(1.6,.08,1.1),0xf2efe6,0,.92,0), part(Box(.6,.35,.5),0x3a3f45,-.3,1.12,0), part(Box(.4,.05,.3),0x9be27f,-.3,1.31,.05)])));
+kassaG.visible = false;
 
-/* ================= Transportband och virke ================= */
+/* ================= Transportband ================= */
+const BELT_Y = .62, BELT_V = 2.2;
 const BELTS = [
-  {a:[0,-16.6], b:[0,-13.2], kind:'log',   q:'bark'},
-  {a:[0,-8.8],  b:[0,-5.2],  kind:'logp',  q:'sag'},
-  {a:[0,-.9],   b:[0,2.8],   kind:'board', q:'hyvel'},
-  {a:[0,7.1],   b:[0,11.4],  kind:'plank', q:'kaj'},
-  {a:[1.7,-3],  b:[6.3,-3],  kind:'chip',  q:'press', line:'pellets'},
-  {a:[8,-.8],   b:[8,11.4],  kind:'sack',  q:'pkaj',  line:'pellets'},
-  {a:[-1.6,5],  b:[-6.4,5],  kind:'plank', q:'snick', line:'mobler'},
-  {a:[-8,7.1],  b:[-8,11.4], kind:'furn',  q:'mkaj',  line:'mobler'},
+  {id:'main',  a:[0,-15.9], b:[0,6.7],  need:'bark'},
+  {id:'spill', a:[-1.6,-5], b:[-3.9,-5], need:'press'},
+  {id:'sackb', a:[-5.5,-3.3], b:[-5.5,-2.3], need:'press'},
+  {id:'snb',   a:[-1.6,2.3], b:[-3.5,2.8], need:'snick'},
+  {id:'furnb', a:[-5.5,5.0], b:[-5.5,6.1], need:'snick'},
 ];
-const BELT_Y = .62, BELT_V = 1.9;
-const ITEM = {
-  log:  {sp:.5,  h:.22, geo:merge([part(Cyl(.22,.22,1.1,8),0x6b4426,0,0,0,0,0,Math.PI/2), part(Cyl(.19,.19,1.12,8),0xd9b27c,0,0,0,0,0,Math.PI/2)])},
-  logp: {sp:.5,  h:.2,  geo:merge([part(Cyl(.2,.2,1.1,8),0xd8b57a,0,0,0,0,0,Math.PI/2), part(Cyl(.17,.17,1.12,8),0xf0d6a2,0,0,0,0,0,Math.PI/2)])},
-  board:{sp:.36, h:.1,  geo:merge([part(Box(1.05,.09,.26),0xc89a5e,0,0,0), part(Box(1.05,.09,.26),0xb98b52,0,.1,0)])},
-  plank:{sp:.36, h:.1,  geo:merge([part(Box(1.05,.08,.26),0xf2d7a2,0,0,0), part(Box(1.05,.08,.26),0xe9c98c,0,.09,0), part(Box(1.05,.08,.26),0xf2d7a2,0,.18,0)])},
-  chip: {sp:.3,  h:.06, geo:merge([part(Box(.18,.1,.18),0xe8c98a,-.15,0,0,0,.4,0), part(Box(.16,.1,.16),0xd9b06a,.12,0,.05,0,.9,0), part(Box(.14,.1,.14),0xf0d6a2,0,.08,-.05,0,.2,0)])},
-  sack: {sp:.55, h:.16, geo:merge([part(Box(.6,.3,.44),0xf2efe6,0,0,0), part(Box(.62,.1,.46),0x4f9e3a,0,.02,0)])},
-  furn: {sp:.8,  h:.05, geo:merge([part(Box(.55,.08,.55),0xb8763e,0,.32,0), part(Box(.55,.55,.08),0xb8763e,0,.6,-.24), ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([a,b])=>part(Box(.07,.32,.07),0x8a5a32,a*.22,.16,b*.22))])},
-};
-const itemIM = {};
-for(const k in ITEM){ const im = new THREE.InstancedMesh(ITEM[k].geo, vcMat, 220); im.count = 0; im.castShadow = true; im.frustumCulled = false; world.add(im); itemIM[k] = im; ITEM[k].n = 0; }
 for(const b of BELTS){
-  const ax = b.b[0]-b.a[0], az = b.b[1]-b.a[1]; b.len = Math.hypot(ax,az); b.dx = ax/b.len; b.dz = az/b.len; b.yaw = Math.atan2(b.dx, b.dz);
+  const ax = b.b[0]-b.a[0], az = b.b[1]-b.a[1]; b.len = Math.hypot(ax,az); b.yaw = Math.atan2(ax/b.len, az/b.len);
   const g = new THREE.Group(); g.position.set(b.a[0],0,b.a[1]); g.rotation.y = b.yaw;
   const P2 = [part(Box(1.5,.5,b.len+.3), DARK, 0,.3,b.len/2)];
   for(const sx of [-1,1]) P2.push(part(Box(.12,.2,b.len+.3), 0xffc93c, sx*.72,.62,b.len/2));
@@ -824,537 +1202,555 @@ for(const b of BELTS){
   const tex = beltTexBase.clone(); tex.needsUpdate = true; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, b.len/1.1);
   const top = new THREE.Mesh(new THREE.PlaneGeometry(1.25, b.len+.2), new THREE.MeshLambertMaterial({map:tex}));
   top.rotation.x = -Math.PI/2; top.position.set(0,.56,b.len/2); top.receiveShadow = true; g.add(top);
-  b.tex = tex; b.g = g; world.add(g);
-  b.slots = Math.max(2, Math.floor((b.len-.3)/ITEM[b.kind].sp));
-  b.mov = []; b.acc = 0; b.flow = 0; b.qv = 0;
+  b.tex = tex; b.g = g; g.visible = false; world.add(g);
 }
-// flygande stockar från skogen till stockhögen
-const flyLogs = [];
-
-/* ================= Skogshuggare och träd som fälls ================= */
-const CT = [];
-for(let i=0;i<16;i++){ const row = i%2; CT.push({x:-10.5+i*1.4+rand(-.3,.3), z:-24.4-row*1.9+rand(-.4,.4), st:'grown', t:0, s:rand(.9,1.2), ry:rand(0,6), claimed:false}); }
-const ctIM = new THREE.InstancedMesh(treeG, vcMat, CT.length); ctIM.castShadow = true; world.add(ctIM);
-const stumpIM = new THREE.InstancedMesh(merge([part(Cyl(.24,.28,.28,8),0x7a5230,0,.14,0), part(Cyl(.2,.2,.02,8),0xe2bf86,0,.29,0)]), vcMat, CT.length);
-CT.forEach((t,i)=>{ _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(0,t.ry,0)), _one); stumpIM.setMatrixAt(i,_m4); }); world.add(stumpIM);
-function jackGeo(){
-  return merge([
-    part(Box(.16,.5,.18),0x2f4a7a,-.11,.25,0), part(Box(.16,.5,.18),0x2f4a7a,.11,.25,0),
-    part(Box(.48,.55,.3),0xc0392b,0,.78,0), part(Box(.5,.08,.32),0x7a1f17,0,.62,0), part(Box(.5,.06,.32),0x7a1f17,0,.85,0),
-    part(new THREE.SphereGeometry(.17,10,8),0xf1c79a,0,1.2,0), part(Cyl(.2,.22,.12,10),0xffc93c,0,1.34,0), part(Cyl(.12,.17,.1,10),0xffc93c,0,1.42,0),
-    part(Box(.12,.45,.14),0xc0392b,-.3,.82,0),
-  ]);
+// saker som åker på banden (bara utseende: modellen har redan flyttat dem)
+const moving = [];
+const ROUTE = {
+  'bark>sag':[[0,-12],[0,-5]], 'bark>main':[[0,-12],[0,6.6]], 'sag>hyvel':[[0,-5],[0,2]], 'sag>main':[[0,-5],[0,6.6]],
+  'hyvel>main':[[0,2],[0,6.6]], 'hyvel>snick':[[0,2],[-1.4,2.2],[-5.5,3]], 'spill>press':[[0,-5],[-5.5,-5]],
+  'press>sack':[[-5.5,-5],[-5.5,-2.2]], 'snick>furn':[[-5.5,3],[-5.5,6.2]], 'in':[[0,-16],[0,-12]],
+};
+const ROUTE_TYPE = { 'bark':'barked', 'sag':'board', 'hyvel':'planed', 'spill':'chip', 'press':'sack', 'snick':'furn' };
+function addMover(route, type){ const pts = ROUTE[route]; if(!pts || moving.length > 240) return; let len = 0; for(let i=1;i<pts.length;i++) len += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); moving.push({pts, len, s:0, type}); }
+const floaters = [];   // stockar i flottningsrännan
+function updateBelts(dt){
+  for(const b of BELTS){ b.g.visible = lv(S, b.need) > 0; if(b.g.visible && (b.id!=='main' || G.mach.bark.busy > 0 || moving.length)) b.tex.offset.y -= BELT_V/1.1*dt; }
+  for(let i=moving.length-1;i>=0;i--){
+    const mv = moving[i]; mv.s += BELT_V*dt; if(mv.s >= mv.len){ moving.splice(i,1); continue; }
+    let s = mv.s, k = 1; while(k < mv.pts.length-1){ const l = Math.hypot(mv.pts[k][0]-mv.pts[k-1][0], mv.pts[k][1]-mv.pts[k-1][1]); if(s <= l) break; s -= l; k++; }
+    const a = mv.pts[k-1], b2 = mv.pts[k], l = Math.hypot(b2[0]-a[0], b2[1]-a[1]) || 1, t = s/l;
+    setItem(mv.type, lerp(a[0],b2[0],t), BELT_Y + ITEM[mv.type].h*.6, lerp(a[1],b2[1],t), Math.atan2(b2[0]-a[0], b2[1]-a[1]) + Math.PI/2);
+  }
+  chanG.visible = lv(S,'sjo') > 0;
+  for(let i=floaters.length-1;i>=0;i--){ const f = floaters[i]; f.x += 2.6*dt; if(f.x >= CH_X1+.6){ floaters.splice(i,1); continue; } setItem('log', f.x, .12 + Math.sin(f.x*2)*.03, CH_Z + Math.sin(f.x)*.1, Math.PI/2 + Math.sin(f.x*.7)*.15); }
 }
-const armGeo = merge([part(Box(.12,.45,.14),0xc0392b,0,-.22,0), part(Cyl(.03,.03,.7,5),0x8a5a32,0,-.45,.25,Math.PI/2.4,0,0), part(Box(.06,.2,.24),0xb0b8c0,0,-.62,.52)]);
-const jacks = [];
-const jGeo = jackGeo();
-function jackCount(){ return Math.min(8, 1 + Math.floor((S.lv.hugg+4)/6)); }
-function makeJack(){
-  const g = new THREE.Group(); const b = mesh(jGeo); g.add(b);
-  const arm = mesh(armGeo); arm.position.set(.3,1.04,0); g.add(arm);
-  const home = [rand(-2.6,2.6), rand(-17.6,-16.6)];
-  g.position.set(home[0],0,home[1]); world.add(g);
-  return {g, arm, st:'idle', t:rand(0,1.5), tree:null, home, x:home[0], z:home[1], tx:0, tz:0};
-}
-function syncJacks(){ const n = jackCount(); while(jacks.length < n) jacks.push(makeJack()); }
 
 /* ================= Lastbilar ================= */
-const trucks = {};
-function makeTruck(kind, color){
+function makeTruck(color, cargoColor){
   const g = new THREE.Group();
-  const body = mesh(merge([
+  g.add(mesh(merge([
     part(Box(1.6,1.4,1.7), color, 2.1,1.15,0), part(Box(1.62,.5,1.5), 0xbfe3ff, 2.35,1.45,0), part(Box(.1,.3,1.3), 0xf2efe6, 2.92,.75,0),
     part(Box(4.0,.25,1.8), DARK, -.6,.55,0), part(Box(3.8,.1,1.7), 0x8a5a32, -.6,.72,0),
     ...[[2.1,1],[2.1,-1],[-1.6,1],[-1.6,-1],[-.6,1],[-.6,-1]].map(([x,z])=>part(Cyl(.38,.38,.3,12),0x2b2b2b,x,.38,z*.8,Math.PI/2,0,0)),
-  ]));
-  g.add(body);
-  const cargoGeo = kind==='kaj' ? merge([part(Box(3.6,.6,1.5),0xf0d39a,0,.3,0)]) : kind==='pkaj' ? merge([part(Box(3.6,.6,1.5),0xf2efe6,0,.3,0), part(Box(3.62,.1,1.52),0x4f9e3a,0,.35,0)]) : merge([part(Box(3.6,1.0,1.5),0xb8763e,0,.5,0), part(Box(3.62,.08,1.52),0x6b4426,0,.7,0)]);
-  const cargo = mesh(cargoGeo); cargo.position.set(-.6,.77,0); g.add(cargo);
-  g.position.set(-60,0,ROAD_Z-.9); world.add(g);
-  return {g, cargo, st:'away', t:rand(0,2), money:0, x:-60};
+  ])));
+  const cargo = mesh(merge([part(Box(3.6,1,1.5),cargoColor,0,.5,0), part(Box(3.62,.08,1.52),0x6b4426,0,.7,0)])); cargo.position.set(-.6,.77,0); g.add(cargo);
+  g.position.set(-60,0,LAY.road-.9); world.add(g);
+  return {g, cargo, x:-60, st:'arrive', t:0, n:0};
+}
+const dockTruck = makeTruck(0x2f6fd6, 0xf0d39a);
+const orderTruck = makeTruck(0xe5484d, 0xf2d7a2);
+const TRUCK_CAP = 24;
+function updateTrucks(dt){
+  const dx = LAY.dock[0] - .4, tr = dockTruck; tr.t += dt;
+  if(tr.st==='arrive'){ const k = Math.min(1, tr.t/2.2), e = 1-Math.pow(1-k,3); tr.x = lerp(-60, dx, e); if(k>=1){ tr.st='load'; tr.t=0; } }
+  else if(tr.st==='load'){ if(tr.n >= TRUCK_CAP){ tr.st='leave'; tr.t=0; tr.n = 0; } }
+  else if(tr.st==='leave'){ const k = Math.min(1, tr.t/2.2); tr.x = lerp(dx, 70, k*k); if(k>=1){ tr.st='arrive'; tr.t=0; } }
+  tr.g.position.x = tr.x;
+  const f = tr.st==='leave' ? 1 : tr.st==='load' ? tr.n/TRUCK_CAP : 0;
+  tr.cargo.scale.set(1, Math.max(.001, f), 1); tr.cargo.visible = f > .02;
+  // beställningsbil
+  const o = G.order, ot = orderTruck, ox = LAY.dock[0] + 6.6;
+  if(!o){ ot.g.visible = false; ot.x = -60; }
+  else {
+    ot.g.visible = true;
+    if(o.st==='arrive'){ const k = Math.min(1, o.a/2.5), e = 1-Math.pow(1-k,3); ot.x = lerp(-60, ox, e); }
+    else if(o.st==='open') ot.x = ox;
+    else { const k = Math.min(1, o.a/3); ot.x = lerp(ox, 75, k*k); if(o.ok && Math.random() < dt*30) burst(ot.x-1, 2+rand(0,1), LAY.road-.9, [0xffe066,0xffffff,0xffc93c], 2, 3, 1, .8, 4); }
+    ot.g.position.x = ot.x;
+    const f2 = o.st==='leave' && o.ok ? 1 : Math.min(1, o.got/o.need);
+    ot.cargo.scale.set(1, Math.max(.001, f2), 1); ot.cargo.visible = f2 > .02;
+  }
 }
 
-/* ================= Etiketter ovanför stationerna ================= */
-const labels = {};
-for(const id of STATION_IDS){
-  const el = document.createElement('div'); el.className = 'lab';
-  el.innerHTML = `<span class="tag bn">Flaskhals</span><span class="tag rs">Skyndar på</span><span class="tag tap">Tryck för fart</span><span class="pill"><span class="nm"></span><span class="up">▲</span></span>`;
-  $('labels').appendChild(el); labels[id] = {el, nm:el.querySelector('.nm'), last:''};
+/* ================= Betalrutor ================= */
+const ICON = { machine:'⚙️', pack:'🎒', axe:'🪓', hire:'👷', area:'🌲', up:'⏫' };
+const ICON_ID = { chauffor:'🚚', sjo:'🛶', press:'⚙️', snick:'🪑' };
+const pads = {};
+const padBaseG = new THREE.PlaneGeometry(2.3,2.3);
+for(const p of ECON.pads){
+  const g = new THREE.Group(); g.position.set(p.at[0], 0, p.at[1]); world.add(g);
+  const base = new THREE.Mesh(padBaseG, new THREE.MeshBasicMaterial({color:0x14241d, transparent:true, opacity:.72, depthWrite:false})); base.rotation.x = -Math.PI/2; base.position.y = .04; g.add(base);
+  const fill = new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3), new THREE.MeshBasicMaterial({color:0x5fbf4a, transparent:true, opacity:.85, depthWrite:false})); fill.rotation.x = -Math.PI/2; fill.position.y = .05; g.add(fill);
+  const BP = []; for(let i=0;i<4;i++){ const a = i*Math.PI/2; for(let k=-2;k<=2;k++) BP.push(part(Box(.32,.06,.12), 0xffc93c, Math.cos(a)*1.15 + -Math.sin(a)*k*.46, .06, Math.sin(a)*1.15 + Math.cos(a)*k*.46, 0, -a + Math.PI/2, 0)); }
+  const border = mesh(merge(BP), false); g.add(border);
+  const icon = new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.4), new THREE.MeshBasicMaterial({transparent:true, depthWrite:false, map:canvasTex(128,128,(c,w,h)=>{ c.font='84px serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(ICON_ID[p.id] || ICON[p.kind] || '⭐', w/2, h/2+6); })}));
+  icon.rotation.x = -Math.PI/2; icon.position.y = .07; g.add(icon);
+  g.visible = false;
+  pads[p.id] = { g, fill, border, icon, pop:0, shown:false };
+}
+function updatePads(dt, time){
+  for(const p of ECON.pads){
+    const v = padVisible(S, p), P2 = pads[p.id];
+    if(v && !P2.shown){ P2.shown = true; P2.pop = 1; }
+    if(!v && P2.shown){ P2.shown = false; }
+    P2.g.visible = v;
+    if(!v) continue;
+    const cost = padCost(S,p), f = clamp((S.paid[p.id]||0)/cost, 0, 1);
+    P2.fill.scale.set(1, Math.max(.001,f), 1); P2.fill.position.z = (1-f)*1.15; P2.fill.visible = f > .001;
+    const can = S.money >= padLeft(S,p), on = G.p.pad === p;
+    let sc = 1; if(P2.pop > 0){ P2.pop = Math.max(0, P2.pop - dt*2.5); sc = 1 + Math.sin(P2.pop*Math.PI)*.4 - P2.pop*.3; }
+    if(can && !on) sc *= 1 + Math.sin(time*6)*.05;
+    if(on) sc *= 1.06;
+    P2.g.scale.set(sc,1,sc);
+    P2.icon.position.y = .07 + (can ? Math.abs(Math.sin(time*4))*.12 : 0);
+  }
 }
 
-/* ================= Kamera ================= */
-const cam = { tx:0, tz:-1, d:42, az:.42, el:.96, td:42, ttx:0, ttz:-1, orbit:0 };
+/* ================= Kamera och styrning ================= */
+const cam = { x:LAY.start[0], z:LAY.start[1], d:30, td:30, az:.32, el:.92, zoom:1, shake:0, orbit:0 };
 function fitCamera(){
   const w = innerWidth, h = innerHeight; renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
-  const base = clamp(11/(Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.aspect), camera.aspect > 1 ? 30 : 34, 70);
-  cam.minD = 16; cam.maxD = 90; cam.base = base;
+  const half = camera.aspect < 1 ? 8.6 : 12.5;   // halv synlig bredd i meter
+  cam.base = clamp(half/(Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*camera.aspect), 22, 48);
+  cam.td = cam.base*cam.zoom;
 }
-function updateCamera(dt){
-  cam.tx = lerp(cam.tx, cam.ttx, 1-Math.exp(-10*dt)); cam.tz = lerp(cam.tz, cam.ttz, 1-Math.exp(-10*dt)); cam.d = lerp(cam.d, cam.td, 1-Math.exp(-8*dt));
+function updateCamera(dt, time){
+  const p = G.p, look = mode==='menu' ? 0 : 1;
+  const tx = lerp(-1, p.x, look), tz = lerp(-4, p.z, look) - (camera.aspect < 1 ? 1.5 : .5);
+  cam.x = lerp(cam.x, tx, 1-Math.exp(-6*dt)); cam.z = lerp(cam.z, tz, 1-Math.exp(-6*dt)); cam.d = lerp(cam.d, cam.td, 1-Math.exp(-5*dt));
   const az = cam.az + cam.orbit;
-  camera.position.set(cam.tx + Math.sin(az)*Math.cos(cam.el)*cam.d, Math.sin(cam.el)*cam.d, cam.tz + Math.cos(az)*Math.cos(cam.el)*cam.d);
-  camera.lookAt(cam.tx, 0, cam.tz);
+  let sx = 0, sy = 0; if(cam.shake > 0){ cam.shake = Math.max(0, cam.shake - dt); sx = Math.sin(time*70)*cam.shake*.5; sy = Math.cos(time*55)*cam.shake*.4; }
+  camera.position.set(cam.x + Math.sin(az)*Math.cos(cam.el)*cam.d + sx, Math.sin(cam.el)*cam.d + sy, cam.z + Math.cos(az)*Math.cos(cam.el)*cam.d);
+  camera.lookAt(cam.x + sx*.5, 0, cam.z);
+  sun.position.set(cam.x - 18, 34, cam.z + 14); sun.target.position.set(cam.x, 0, cam.z);
 }
-const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _ground = new THREE.Plane(new THREE.Vector3(0,1,0),0), _hit = new THREE.Vector3(), _hit2 = new THREE.Vector3();
-function groundAt(cx, cy, out){ _ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera); return _ray.ray.intersectPlane(_ground, out); }
-function panBy(x0,y0,x1,y1){
-  if(!groundAt(x0,y0,_hit) || !groundAt(x1,y1,_hit2)) return;
-  cam.ttx = clamp(cam.ttx - (_hit2.x-_hit.x), -18, 18); cam.ttz = clamp(cam.ttz - (_hit2.z-_hit.z), -26, 28);
-  cam.tx = cam.ttx; cam.tz = cam.ttz;
-}
-const pointers = new Map(); let gesture = null;
+// styrspak: dra var som helst. Tangenter: WASD och pilar.
+const joy = { id:null, ox:0, oy:0, x:0, y:0 };
+const keys = new Set();
+const pointers = new Map(); let pinch = null;
 canvas.addEventListener('pointerdown', e => {
   Snd.init();
   try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
-  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, t:performance.now()});
-  if(pointers.size===2){ const [a,b] = [...pointers.values()]; gesture = {pinch:Math.hypot(a.x-b.x,a.y-b.y), d:cam.td}; }
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if(pointers.size === 2){ joy.id = null; joy.x = joy.y = 0; $('joy').hidden = true; const [a,b] = [...pointers.values()]; pinch = {d:Math.hypot(a.x-b.x,a.y-b.y), z:cam.zoom}; return; }
+  if(mode !== 'play') return;
+  joy.id = e.pointerId; joy.ox = e.clientX; joy.oy = e.clientY; joy.x = joy.y = 0;
+  const j = $('joy'); j.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; $('knob').style.transform = ''; j.hidden = false;
 });
 canvas.addEventListener('pointermove', e => {
-  const p = pointers.get(e.pointerId); if(!p) return;
-  if(pointers.size===1){ panBy(p.x,p.y,e.clientX,e.clientY); }
-  p.x = e.clientX; p.y = e.clientY;
-  if(pointers.size===2 && gesture){ const [a,b] = [...pointers.values()]; const dist = Math.hypot(a.x-b.x,a.y-b.y); cam.td = clamp(gesture.d * gesture.pinch/Math.max(20,dist), cam.minD, cam.maxD); }
+  const pt = pointers.get(e.pointerId); if(!pt) return; pt.x = e.clientX; pt.y = e.clientY;
+  if(pinch && pointers.size === 2){ const [a,b] = [...pointers.values()]; cam.zoom = clamp(pinch.z * pinch.d/Math.max(20, Math.hypot(a.x-b.x,a.y-b.y)), .6, 1.6); cam.td = cam.base*cam.zoom; return; }
+  if(e.pointerId !== joy.id) return;
+  let dx = e.clientX - joy.ox, dy = e.clientY - joy.oy; const d = Math.hypot(dx,dy), R = 52;
+  if(d > R){ joy.ox += dx*(1-R/d); joy.oy += dy*(1-R/d); dx = e.clientX - joy.ox; dy = e.clientY - joy.oy; $('joy').style.transform = `translate(${joy.ox}px,${joy.oy}px)`; }
+  joy.x = dx/R; joy.y = dy/R; const m = Math.hypot(joy.x, joy.y); if(m < .15){ joy.x = joy.y = 0; }
+  $('knob').style.transform = `translate(${dx}px,${dy}px)`;
 });
-function endPointer(e){
-  const p = pointers.get(e.pointerId); if(!p) return;
-  pointers.delete(e.pointerId);
-  if(pointers.size<2) gesture = null;
-  const moved = Math.hypot(e.clientX-p.sx, e.clientY-p.sy);
-  if(e.type==='pointerup' && moved < 10 && performance.now()-p.t < 600 && pointers.size===0) tapAt(e.clientX, e.clientY);
-}
+function endPointer(e){ pointers.delete(e.pointerId); if(pointers.size < 2) pinch = null; if(e.pointerId === joy.id){ joy.id = null; joy.x = joy.y = 0; $('joy').hidden = true; } }
 canvas.addEventListener('pointerup', endPointer); canvas.addEventListener('pointercancel', endPointer);
-canvas.addEventListener('wheel', e => { e.preventDefault(); cam.td = clamp(cam.td * Math.exp(e.deltaY*0.001), cam.minD, cam.maxD); }, {passive:false});
+canvas.addEventListener('wheel', e => { e.preventDefault(); cam.zoom = clamp(cam.zoom * Math.exp(e.deltaY*0.001), .6, 1.6); cam.td = cam.base*cam.zoom; }, {passive:false});
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-function tapAt(cx, cy){
-  if(mode!=='play') return;
-  _ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera);
-  const hits = _ray.intersectObjects(hitMeshes, false);
-  if(hits.length){ const id = hits[0].object.userData.id; tapStation(id); }
-  else selectStation(null);
+const KEYMAP = { w:'u', arrowup:'u', s:'d', arrowdown:'d', a:'l', arrowleft:'l', d:'r', arrowright:'r' };
+window.addEventListener('keydown', e => { const k = KEYMAP[e.key.toLowerCase()]; if(k){ keys.add(k); e.preventDefault(); Snd.init(); } if(e.key==='Escape' && mode==='menu2'){ closeScreens(); } });
+window.addEventListener('keyup', e => { const k = KEYMAP[e.key.toLowerCase()]; if(k) keys.delete(k); });
+window.addEventListener('blur', () => keys.clear());
+let testInput = null;
+function inputVec(){
+  if(testInput) return testInput;
+  let jx = joy.x, jy = joy.y;
+  if(keys.size){ jx = (keys.has('r')?1:0) - (keys.has('l')?1:0); jy = (keys.has('d')?1:0) - (keys.has('u')?1:0); }
+  if(!jx && !jy) return [0,0];
+  const az = cam.az + cam.orbit, ix = jx*Math.cos(az) + jy*Math.sin(az), iz = -jx*Math.sin(az) + jy*Math.cos(az);
+  return [ix, iz];
 }
-
-/* ================= Spelets tillstånd ================= */
-let mode = 'menu';
-let sel = null, multMode = 1;
-const flowSm = {}; STATION_IDS.forEach(id => flowSm[id] = 0); flowSm.toSnick = 0;
-let bnCache = {}, incomeCache = 0;
-function recalc(){ bnCache = bottlenecks(S); incomeCache = incomePerSec(S); }
-function lineOf(id){ return ST[id].line; }
-function tapStation(id){
-  const st = stations[id];
-  if(S.lines[lineOf(id)]){
-    rush[id] = Math.min(ECON.rushMax, rush[id] + ECON.rushPerTap);
-    st.shake = .25; Snd.tap(); if(id==='sag') Snd.saw(1.4);
-    const p = st.root.position; burst(p.x, 2.2, p.z, [0xffc93c,0xffe58a,0xffffff], 8, 3, .9, .5, 5);
-  } else Snd.click();
-  selectStation(id);
-  if(meta.guide===0 && id==='sag') guideNext();
-}
-function selectStation(id){
-  sel = id;
-  $('sheet').classList.toggle('off', !id);
-  $('hintbar').hidden = !!id;
-  if(id){ renderPanel(true); focusStation(id); }
-}
-function focusStation(id){
-  // flytta kameran så att maskinen syns ovanför panelen
-  const [x,z] = POS[id], wide = innerWidth >= 900, land = innerHeight <= 520 && innerWidth >= 560;
-  cam.ttx = clamp(x + (wide ? -cam.d*.12 : land ? cam.d*.18 : 0), -18, 18);
-  cam.ttz = clamp(z + (wide || land ? 0 : cam.d*.07), -26, 28);
-}
-const FM_NAMES = {hugg:'Berit', bark:'Gunnar', sag:'Saga', hyvel:'Olle', kaj:'Majken', press:'Sune', pkaj:'Ingrid', snick:'Bosse', mkaj:'Elsa'};
-const LINE_TXT = {
-  brador:'Brädlinjen', pellets:'Pelletslinjen', mobler:'Möbellinjen',
-};
-const LOCK_TXT = {
-  pellets:`Spånet från sågen pressas till pellets i säckar. Varje säck ger ${ECON.price.pellet} kr, och sågen fortsätter att göra brädor som vanligt.`,
-  mobler:`Snickeriet gör möbler av hyvlade brädor. En möbel ger ${ECON.price.furn} kr i stället för ${ECON.price.board} kr för brädan.`,
-};
-function buyInfo(id){
-  const L = S.lv[id];
-  let n = multMode === 'max' ? Math.max(1, maxBuy(id, L, S.money)) : multMode;
-  return {n, cost: upCost(id, L, n)};
-}
-function rateTxt(id, L, fm){ const r = lvRate(id, L) * (fm ? 1 : ECON.noForeman); return fmt(r) + ' ' + ST[id].unit + '/s'; }
-function renderPanel(){
-  const id = sel; if(!id) return;
-  const line = lineOf(id), unlocked = S.lines[line];
-  $('pLine').textContent = unlocked ? LINE_TXT[line] : 'Ny produktionslinje';
-  $('pName').textContent = unlocked ? ST[id].name : LINE_TXT[line];
-  $('pMain').hidden = !unlocked; $('pLock').hidden = unlocked;
-  $('pLevel').hidden = !unlocked;
-  if(!unlocked){
-    $('pLockT').textContent = LOCK_TXT[line];
-    $('pUnlockC').textContent = fmt(ECON.lines[line].cost);
-    $('pUnlock').disabled = S.money < ECON.lines[line].cost;
-    return;
-  }
-  const L = S.lv[id], fm = S.fm[id], b = buyInfo(id);
-  $('pLevel').textContent = 'Nv ' + L;
-  $('pRate').textContent = rateTxt(id, L, fm);
-  $('pNext').textContent = rateTxt(id, L + b.n, fm);
-  const me = ECON.milestoneEvery, into = L % me, next = L - into + me;
-  $('pMileT').textContent = `Nivå ${next}: dubbel fart och ny maskin (${into}/${me})`;
-  $('pMile').style.width = (into/me*100) + '%';
-  $('pBuyT').textContent = 'Uppgradera +' + b.n;
-  $('pBuyC').textContent = fmt(b.cost);
-  $('pBuy').disabled = S.money < b.cost;
-  const isBn = Object.values(bnCache).includes(id);
-  let note, ok = false;
-  if(!fm) note = `Utan förman går maskinen på ${Math.round(ECON.noForeman*100)} % fart. Tryck på maskinen för att skynda på.`;
-  else if(isBn) note = 'Flaskhals: den här maskinen är långsammast i linjen. Uppgradera den först.';
-  else { note = 'Går bra. Uppgradera flaskhalsen (röd etikett) för mer pengar.'; ok = true; }
-  $('pNote').textContent = note; $('pNote').classList.toggle('ok', ok);
-  $('pFm').hidden = fm; $('pFmDone').hidden = !fm;
-  if(!fm){ $('pFmT').textContent = `Anställ ${FM_NAMES[id]} som förman`; $('pFmC').textContent = fmt(ST[id].foreman); $('pFm').disabled = S.money < ST[id].foreman; }
-  else $('pFmDone').textContent = `Förman: ${FM_NAMES[id]}. Maskinen går på full fart.`;
-}
-function setMult(m){ multMode = m; $('m1').setAttribute('aria-pressed', m===1); $('m10').setAttribute('aria-pressed', m===10); $('mMax').setAttribute('aria-pressed', m==='max'); Snd.click(); renderPanel(); }
-$('m1').onclick = () => setMult(1); $('m10').onclick = () => setMult(10); $('mMax').onclick = () => setMult('max');
-$('pClose').onclick = () => { Snd.click(); selectStation(null); };
-$('pBuy').onclick = () => {
-  const id = sel; if(!id) return; const b = buyInfo(id); if(S.money < b.cost) return;
-  S.money -= b.cost; const before = tierOf(S.lv[id]); S.lv[id] += b.n; recalc();
-  Snd.buy(); stations[id].pop = Math.max(stations[id].pop, .5);
-  const p = stations[id].root.position; burst(p.x, 2.5, p.z, [0x8fe06f,0xffffff], 14, 3, 1, .6, 5);
-  refreshStation(id, tierOf(S.lv[id]) !== before);
-  if(id==='hugg') syncJacks();
-  renderPanel(); hudNow(); if(meta.guide===1) guideNext();
-};
-$('pFm').onclick = () => {
-  const id = sel; if(!id || S.fm[id] || S.money < ST[id].foreman) return;
-  S.money -= ST[id].foreman; S.fm[id] = true; recalc();
-  Snd.hire(); toast(FM_NAMES[id] + ' är förman', ST[id].name + ' sköter sig själv');
-  const p = stations[id].root.position; burst(p.x, 3, p.z, [0xffc93c,0xffffff,0x8fe06f], 30, 4, 1, 1, 6);
-  renderPanel(); hudNow();
-};
-$('pUnlock').onclick = () => {
-  const id = sel; if(!id) return; const line = lineOf(id), c = ECON.lines[line].cost;
-  if(S.lines[line] || S.money < c) return;
-  S.money -= c; S.lines[line] = true; STATION_IDS.filter(s => lineOf(s)===line).forEach(s => { S.lv[s] = 1; refreshStation(s); });
-  recalc(); syncLines(); Snd.tier(); toast(ECON.lines[line].name + ' upplåst!', 'En ny produktionslinje');
-  for(const s of STATION_IDS.filter(s => lineOf(s)===line)){ const p = stations[s].root.position; burst(p.x, 2, p.z, TIER_COL, 40, 5, 1.2, 1.2, 7); }
-  renderPanel(); hudNow(); persist();
-};
-function syncLines(){
-  for(const b of BELTS){ b.g.visible = !b.line || S.lines[b.line]; }
-  for(const [id, color] of [['kaj',0x3f86f0],['pkaj',0x4f9e3a],['mkaj',0xe5484d]]){
-    if(S.lines[lineOf(id)] && !trucks[id]) trucks[id] = makeTruck(id, color);
-    if(trucks[id]) trucks[id].g.visible = S.lines[lineOf(id)];
-  }
-}
-
-/* ================= HUD ================= */
-const ui = { money:$('money'), rate:$('rate').querySelector('b') };
-let lastMoneyTxt = '', moneyHold = 0;
-function hudNow(){
-  const m = fmt(Math.max(0, S.money - moneyHold)) + ' kr'; if(m !== lastMoneyTxt){ ui.money.textContent = m; lastMoneyTxt = m; }
-  ui.rate.textContent = fmt(incomeCache*60);
-  const avail = seedsFor(S.earnedRun) > 0; $('prestBtn').hidden = !avail; $('prestBtn').classList.toggle('pulse', avail);
-  // uppdrag
-  const mi = getMission(S.mi), pr = missionProgress(S, mi), done = pr >= 1;
-  $('mission').classList.toggle('done', done);
-  $('mLbl').textContent = done ? 'Uppdrag klart · tryck för att hämta' : 'Uppdrag';
-  $('mText').textContent = mi.text;
-  $('mRew').textContent = '+' + fmt(missionReward(S, mi)) + ' kr';
-  $('mBar').style.width = (pr*100).toFixed(1) + '%';
-  if(sel) renderPanel();
-}
-$('mission').onclick = () => {
-  const mi = getMission(S.mi); if(missionProgress(S, mi) < 1) return;
-  const r = missionReward(S, mi); S.money += r; S.mi++; Snd.done();
-  floatScreen('+' + fmt(r) + ' kr', $('mission'));
-  toast('Uppdrag klart!', '+' + fmt(r) + ' kr'); hudNow(); persist();
-  if(meta.guide===3) guideNext();
-};
-function toast(big, small=''){ const t = $('toast'); t.innerHTML = big + (small ? `<small>${small}</small>` : ''); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); }
-const floats = [];
-function floatText(txt, x,y,z, big=false){ const el = document.createElement('div'); el.className = 'ft' + (big?' big':''); el.textContent = txt; $('floats').appendChild(el); floats.push({el, x,y,z, t:0, life:1.6}); }
-function floatScreen(txt, anchor){ const r = anchor.getBoundingClientRect(); const el = document.createElement('div'); el.className = 'ft big'; el.textContent = txt; $('floats').appendChild(el); floats.push({el, sx:r.left+r.width/2, sy:r.bottom, t:0, life:1.4}); }
 const _pv = new THREE.Vector3();
 function project(x,y,z){ _pv.set(x,y,z).project(camera); return [(_pv.x*.5+.5)*innerWidth, (-_pv.y*.5+.5)*innerHeight, _pv.z]; }
+
+/* ================= Flygande mynt och saker ================= */
+const flights = [];  // {kind:'coin'|item, from:[x,y,z], to:()=>[x,y,z] | [x,y,z], t, dur, arc, land}
+function fly(kind, from, to, dur=.4, arc=1.6, land=null, delay=0){ if(flights.length > 380) return; flights.push({kind, from, to, t:-delay, dur, arc, land}); }
+function playerChest(){ return [G.p.x, 1.4*1.18, G.p.z]; }
+function stackTop(){ const p = G.p, b = stackBase(p.x, p.z, player.g.rotation.y); let h = 0; for(const t of S.stack) h += ITEM[t].h*.85; return [b[0], b[1]+h, b[2]]; }
+function stackBase(x, z, yaw){ return [x - Math.sin(yaw)*.42, .85, z - Math.cos(yaw)*.42]; }
+let incoming = 0;
+function updateFlights(dt){
+  let nc = 0;
+  for(let i=flights.length-1;i>=0;i--){
+    const f = flights[i]; f.t += dt; if(f.t < 0) continue;
+    const k = Math.min(1, f.t/f.dur), to = typeof f.to === 'function' ? f.to() : f.to;
+    const x = lerp(f.from[0], to[0], k), y = lerp(f.from[1], to[1], k) + Math.sin(k*Math.PI)*f.arc, z = lerp(f.from[2], to[2], k);
+    if(f.kind === 'coin'){ if(nc < 400){ _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(0, f.t*12, 0)), _one); coinIM.setMatrixAt(nc++, _m4); } }
+    else setItem(f.kind, x, y, z, player.g.rotation.y + Math.PI/2 + k*3, .85);
+    if(k >= 1){ flights.splice(i,1); if(f.land) f.land(); }
+  }
+  coinIM.count = nc; coinIM.instanceMatrix.needsUpdate = true;
+}
+
+/* ================= Rita stackar, högar, mark-stockar ================= */
+function drawStack(stack, x, z, yaw, hide=0, moving=false, time=0){
+  const b = stackBase(x, z, yaw); let h = 0; const n = stack.length - hide;
+  for(let i=0;i<n;i++){ const t = stack[i], it = ITEM[t]; const sway = moving ? Math.sin(time*9 + i*.4)*i*.012 : 0; setItem(t, b[0] + Math.cos(yaw)*sway, b[1] + h + it.h*.42, b[2] - Math.sin(yaw)*sway, yaw + Math.PI/2, .85); h += it.h*.85; }
+}
+const PILE_LAYOUT = { // per lager: [kolumner x, rader z, steg x, steg z]
+  log:[1,5,0,.44], barked:[1,5,0,.4], board:[2,4,1.08,.3], planed:[2,4,1.08,.3], sack:[3,4,.64,.48], furn:[3,3,.62,.62],
+};
+function drawPile(cx, cz, counts, order){
+  let i = 0, h = .2, layerH = 0, perLayerIdx = 0;
+  for(const t of order){
+    const n = Math.min(counts[t]||0, 120), L2 = PILE_LAYOUT[t], per = L2[0]*L2[1];
+    for(let k=0;k<n;k++){
+      if(perLayerIdx >= per){ perLayerIdx = 0; h += layerH; layerH = 0; }
+      const c = perLayerIdx % L2[0], r = Math.floor(perLayerIdx / L2[0]);
+      setItem(t, cx + (c-(L2[0]-1)/2)*L2[2], h + ITEM[t].h*.5, cz + (r-(L2[1]-1)/2)*L2[3], t==='log'||t==='barked' ? 0 : 0);
+      layerH = Math.max(layerH, ITEM[t].h); perLayerIdx++; i++;
+    }
+  }
+}
+function drawWorld(dt, time){
+  for(const k in ITEM) ITEM[k].n = 0;
+  // stackar
+  drawStack(S.stack, G.p.x, G.p.z, player.g.rotation.y, incoming, G.p.moving, time);
+  G.workers.forEach((w,i) => { const f = workerFigs[i]; if(f && w.stack.length) drawStack(w.stack, w.x, w.z, f.g.rotation.y, 0, w.moving, time); });
+  // stockar på marken
+  for(const g of G.ground){ const k = Math.min(1, g.t/.25); setItem('log', g.x, .2 + (1-k)*1.2, g.z, (g.x*3+g.z)%3.14, 1); }
+  // inlastning, högar
+  if(lv(S,'bark')) drawPile(LAY.intake[0], LAY.intake[1]-.1, {log:Math.min(S.q.intake, 40)}, ['log']);
+  drawPile(LAY.pile.main[0], LAY.pile.main[1], S.pile.main, ['barked','board','planed']);
+  drawPile(LAY.pile.sack[0], LAY.pile.sack[1], S.pile.sack, ['sack']);
+  drawPile(LAY.pile.furn[0], LAY.pile.furn[1], S.pile.furn, ['furn']);
+  updateBelts(dt);
+  updateFlights(dt);
+  for(const k in ITEM){ itemIM[k].count = ITEM[k].n; itemIM[k].instanceMatrix.needsUpdate = true; }
+}
+
+/* ================= Synka världen mot modellen ================= */
+function syncWorld(celebrate=null){
+  for(const m of MACHS){
+    const st = stations[m], owned = lv(S,m) > 0, tier = Math.min(TIER_COL.length-1, lv(S,'up_'+m));
+    st.ghost.visible = !owned && padVisible(S, PAD[m]);
+    if(owned && st.tier !== tier){
+      if(st.built){ st.root.remove(st.built.g); st.built.g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
+      st.built = buildStation(m, tier); st.root.add(st.built.g); st.tier = tier;
+      st.built.g.scale.setScalar(1 + .06*tier);
+      if(celebrate === m || celebrate === 'up_'+m){ st.pop = 1; }
+    }
+    if(!owned && st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; }
+  }
+  intakeG.visible = lv(S,'bark') > 0;
+  pileBase.main.visible = lv(S,'bark') > 0; pileBase.sack.visible = lv(S,'press') > 0; pileBase.furn.visible = lv(S,'snick') > 0;
+  kassaG.visible = lv(S,'barare') > 0;
+  fences['gate-skog'].visible = !lv(S,'skog'); fences['gate-sjo'].visible = !lv(S,'sjo');
+  syncWorkerFigs();
+}
+function updateMachines(dt, time){
+  for(const m of MACHS){
+    const st = stations[m]; if(!st.built) continue;
+    const M = G.mach[m], active = M.jam ? 0 : M.busy > 0 ? 1 : 0;
+    st.act = lerp(st.act, active, 1-Math.exp(-4*dt));
+    for(const s of st.built.spin) s.m.rotation[s.ax] += s.sp*(.05 + st.act)*dt;
+    for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.2+st.act)))*b.amp*st.act;
+    let sc = 1; if(st.pop > 0){ st.pop = Math.max(0, st.pop - dt*1.8); const k = 1-st.pop; sc = k < .5 ? k*2*1.15 : 1.15 - (k-.5)*.3; }
+    let sh = 0; if(M.jam) sh = Math.sin(time*40)*.04; if(st.shake > 0){ st.shake = Math.max(0, st.shake-dt); sh += Math.sin(time*60)*.08*st.shake/.25; }
+    st.root.scale.setScalar(Math.max(.001, sc)); st.root.position.x = LAY.mach[m][0] + sh;
+    const e = st.built.emit, p = st.root.position;
+    if(m==='sag' && st.act > .1 && Math.random() < dt*14*st.act) burst(p.x+e.x+rand(-.6,.6), e.y, p.z+e.z, [0xf3d9a4,0xe8c98a,0xffffff], 2, 2.6, .7, .6, 3.5);
+    if(m==='hyvel' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
+    if(m==='bark' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x+rand(-.5,.5), e.y, p.z+e.z, [0x6b4426,0x4a2e18], 1, 1.5, .8, .6, 2);
+    if(m==='press' && st.act > .1 && Math.random() < dt*3*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xd9b06a,0xc4964f], 2, 1.2, .6, .6, 2);
+    if(st.built.smoke && Math.random() < dt*2.5) burst(p.x+e.x, e.y, p.z+e.z, [0xdfe3e6,0xc9ced3], 1, .3, 2.6, 2.2, .8, -0.2);
+    if(M.jam && Math.random() < dt*14) burst(p.x+rand(-1,1), 2.6, p.z+rand(-1,1), [0x3a3a3a,0x5a5a5a,0x777777], 1, .5, 2.6, 2, 1.5, -.6);
+  }
+}
+
+/* ================= Händelser från modellen: ljud och effekter ================= */
+let saleSum = 0, saleT = 0, coinPulse = 0;
+const DONE_TXT = {
+  bark:['Barkmaskinen är byggd!','Lämna stockarna vid inlastningen. Barkade stockar är värda mer.'],
+  sag:['Sågen är byggd!','Nu blir stockarna brädor.'],
+  hyvel:['Hyveln är byggd!','Hyvlade brädor ger mest.'],
+  press:['Pelletspressen är byggd!','Spånet från sågen blir pelletssäckar.'],
+  snick:['Snickeriet är byggt!','Hälften av brädorna blir möbler.'],
+  pack:['Större ryggsäck!', n => `Nu bär du ${n} saker.`],
+  yxa:['Vassare yxa!','Träden faller fortare.'],
+  hugg:['Huggare anställd!','Fäller träd och bär till inlastningen.'],
+  barare:['Bärare anställd!','Bär virket till lastkajen. Pengarna hamnar i kassan.'],
+  chauffor:['Chaufför anställd!','Pengarna går direkt in. Sågverket sköter sig självt!'],
+  skog:['Storskogen är öppen!','Stora träd som ger tre stockar var.'],
+  sjo:['Sjön är öppen!','Stockar flyter in till inlastningen av sig själva.'],
+};
+function handleFx(){
+  const p = G.p;
+  for(const f of G.fx){
+    switch(f.k){
+      case 'pay': { const pd = PAD[f.id]; fly('coin', playerChest(), [pd.at[0], .2, pd.at[1]], .32, 1.2); const c = padCost(S,pd); Snd.coin(c ? (S.paid[f.id]||0)/c : 0); coinPulse = .15; break; }
+      case 'built': {
+        const pd = PAD[f.id], id = f.id, T = DONE_TXT[id] || (pd.kind==='up' ? [pd.name + '!', `${MNAME[pd.m]} går fortare. Nivå ${lv(S,id)+1}.`] : [pd.name + '!', '']);
+        syncWorld(id);
+        if(pd.kind==='hire') Snd.hire(); else Snd.build();
+        cam.shake = .35; burst(pd.at[0], 1, pd.at[1], TIER_COL.concat([0xffffff]), 50, 6, 1.2, 1.3, 8);
+        if(pd.m){ const q = LAY.mach[pd.m]; burst(q[0], 2.5, q[1], TIER_COL, 40, 5, 1.2, 1.2, 7); }
+        toast(T[0], typeof T[1] === 'function' ? T[1](carryCap(S)) : T[1]);
+        if(id==='chauffor') setTimeout(()=>{ if(seedsFor(S)===0) toast('Helt automatiserat!', 'Nu kan du luta dig tillbaka eller jaga beställningar'); }, 2600);
+        persist();
+        break;
+      }
+      case 'hit': { const i = G.trees.findIndex(t => t.x===f.x && t.z===f.z); if(i>=0) wob[i] = .25; burst(f.x, 1, f.z+.4, f.gold ? [0xffe066,0xfff2b0] : [0xe2bf86,0xc89a5e], 4, 2, .7, .4, 3); Snd.chop(); break; }
+      case 'fall': { const i = G.trees.findIndex(t => t.x===f.x && t.z===f.z); if(i>=0){ const dx = f.x - p.x, dz = f.z - p.z; fallDir[i] = f.by==='p' ? Math.atan2(dx, -dz) : rand(0,6.28); }
+        const near = Math.hypot(f.x-p.x, f.z-p.z) < 14; if(near) Snd.thud(f.by==='p' ? 1 : .5); burst(f.x, .5, f.z, [0x3aa452,0x52bd60,0x7a5230], 8, 2.5, 1, .8, 3); break; }
+      case 'pick': { const from = f.pile ? [LAY.pile[f.pile][0], 1, LAY.pile[f.pile][1]] : [f.x, .3, f.z]; incoming++; fly(f.type, from, stackTop, .22, .8, () => { incoming = Math.max(0, incoming-1); }); Snd.pop(S.stack.length); break; }
+      case 'feed': if(f.who==='p'){ fly('log', stackTop(), [LAY.intake[0]+rand(-.6,.6), .9, LAY.intake[1]], .25, .8); Snd.drop(); } else if(f.who==='lake') floaters.push({x:CH_X0 + .5}); break;
+      case 'proc': { const type = ROUTE_TYPE[f.m]; if(f.m==='bark') addMover('in','log'); addMover(f.m + '>' + f.to, type); if(f.m==='sag' && Math.hypot(LAY.mach.sag[0]-p.x, LAY.mach.sag[1]-p.z) < 16) Snd.saw(.7); break; }
+      case 'sell': {
+        dockTruck.n = Math.min(TRUCK_CAP, dockTruck.n + 1);
+        const truckPos = [LAY.dock[0]-1, 1.3, LAY.road-.9];
+        if(f.who==='p'){ fly(f.type, stackTop(), truckPos, .3, 1.2); fly('coin', truckPos, playerChest, .45, 1.6, null, .2); saleSum += f.v; Snd.cash(); }
+        else if(lv(S,'chauffor')){ if(Math.random() < .5) fly('coin', truckPos, [truckPos[0], 6, truckPos[2]], .6, .5); }
+        else fly('coin', [LAY.dock[0]-1, 1, LAY.dock[1]], [LAY.kassa[0], 1.2, LAY.kassa[1]], .5, 1.2);
+        break;
+      }
+      case 'kassa': { const n = clamp(Math.round(f.amt/8), 3, 24); for(let i=0;i<n;i++) fly('coin', [LAY.kassa[0]+rand(-.4,.4), 1.2, LAY.kassa[1]], playerChest, .45, 1.8, null, i*.03); Snd.fanfare(); floatText('+' + fmt(f.amt) + ' kr', LAY.kassa[0], 2.6, LAY.kassa[1], true); break; }
+      case 'gold': { for(let i=0;i<30;i++) fly('coin', [f.x+rand(-1,1), rand(1,4), f.z+rand(-1,1)], playerChest, .6, 2.5, null, i*.025); burst(f.x, 2, f.z, [0xffe066,0xfff2b0,0xffffff], 60, 6, 1.3, 1.4, 8); Snd.fanfare(); Snd.sparkle(); toast('Guldträd!', '+' + fmt(f.amt) + ' kr'); cam.shake = .3; break; }
+      case 'knock': { const q = LAY.mach[f.m]; burst(q[0]+rand(-.8,.8), 1.6, q[1]+rand(-.8,.8), [0xffe066,0xffffff], 5, 3, .7, .4, 4); Snd.knock(); stations[f.m].shake = .25; break; }
+      case 'fixed': { toast('Lagad!', `${MNAME[f.m]} går igen · +${fmt(f.amt)} kr`); Snd.hire(); const q = LAY.mach[f.m]; burst(q[0], 2.5, q[1], [0x8fe06f,0xffffff], 30, 4, 1, 1, 6); for(let i=0;i<10;i++) fly('coin', [q[0], 2.5, q[1]], playerChest, .5, 2, null, i*.04); break; }
+      case 'ev': {
+        if(f.on){
+          if(f.kind==='storm'){ toast('Storm!', 'Träden blåser omkull. Samla stockarna!'); Snd.windOn(); }
+          if(f.kind==='rush'){ toast('Rusningstimme!', 'Dubbelt pris i 60 sekunder'); Snd.rush(); }
+          if(f.kind==='gold'){ toast('Ett guldträd!', 'Hugg det innan det försvinner'); Snd.sparkle(); }
+          if(f.kind==='jam'){ toast('Maskinstopp!', MNAME[G.ev.m] + ' ryker. Spring dit och knacka loss den'); Snd.alarm(); }
+          $('evb').classList.remove('pop'); void $('evb').offsetWidth; $('evb').classList.add('pop');
+        } else if(f.kind==='storm') Snd.windOff();
+        break;
+      }
+      case 'order': {
+        if(f.st==='new') Snd.horn();
+        if(f.st==='ok'){ Snd.fanfare(); toast('Beställningen klar!', '+' + fmt(f.bonus) + ' kr i bonus'); const ox = LAY.dock[0]+6.6; for(let i=0;i<20;i++) fly('coin', [ox, 2, LAY.road-.9], playerChest, .6, 2.4, null, i*.03); orderFlash = 3; }
+        if(f.st==='miss'){ orderFlash = 3; toast('Lastbilen åkte', 'Nästa beställning kommer snart'); }
+        $('order').classList.remove('pop'); void $('order').offsetWidth; $('order').classList.add('pop');
+        break;
+      }
+    }
+  }
+  G.fx.length = 0;
+}
+let orderFlash = 0;
+
+/* ================= HUD, etiketter, tips ================= */
+function toast(big, small=''){ const t = $('toast'); t.innerHTML = big + (small ? `<small>${small}</small>` : ''); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show'); }
+const floats = [];
+function floatText(txt, x,y,z, big=false){ const el = document.createElement('div'); el.className = 'ft' + (big?' big':''); el.textContent = txt; $('floats').appendChild(el); floats.push({el, x,y,z, t:0, life:1.5}); }
 function updateFloats(dt){
   for(let i=floats.length-1;i>=0;i--){
     const f = floats[i]; f.t += dt;
     if(f.t >= f.life){ f.el.remove(); floats.splice(i,1); continue; }
-    let sx, sy; if(f.sx!==undefined){ sx=f.sx; sy=f.sy; } else { [sx,sy] = project(f.x,f.y,f.z); }
-    const k = f.t/f.life; f.el.style.transform = `translate(${sx}px,${sy - 40*k}px) translate(-50%,-50%) scale(${k<.15?k/.15:1})`; f.el.style.opacity = k>.7 ? (1-k)/.3 : 1;
+    const [sx,sy] = project(f.x,f.y,f.z), k = f.t/f.life;
+    f.el.style.transform = `translate(${sx}px,${sy - 46*k}px) translate(-50%,-50%) scale(${k<.15?k/.15:1})`; f.el.style.opacity = k>.7 ? (1-k)/.3 : 1;
   }
 }
+const LBL = new Map();
+function label(key, x,y,z, html, cls){
+  let L2 = LBL.get(key);
+  if(!L2){ const el = document.createElement('div'); el.className = 'lab'; $('labels').appendChild(el); L2 = {el, html:'', cls:'', used:false}; LBL.set(key, L2); }
+  L2.used = true;
+  const [sx,sy,sz] = project(x,y,z);
+  const vis = sz < 1 && sx > -80 && sx < innerWidth+80 && sy > hudBottom + 22 && sy < innerHeight+60;
+  L2.el.style.display = vis ? '' : 'none'; if(!vis) return;
+  const c = 'lab' + (cls ? ' ' + cls : '');
+  if(L2.html !== html || L2.cls !== c){ L2.el.innerHTML = html; L2.html = html; L2.el.className = c; L2.cls = c; L2.w = L2.el.offsetWidth; }
+  const hw = (L2.w || 60)/2 + 6, cx = clamp(sx, hw, innerWidth - hw);
+  L2.el.style.transform = `translate(${cx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
+}
+const coinI = '<i class="coin"></i>';
+let hudBottom = 0, hudT = 0;
 function updateLabels(){
-  for(const id of STATION_IDS){
-    const L = labels[id], st = stations[id], p = st.root.position, unlocked = S.lines[lineOf(id)];
-    const top = unlocked && st.built ? st.built.top * st.built.g.scale.y : 2.6;
-    const [sx, sy, sz] = project(p.x, top + .4, p.z);
-    const vis = sz < 1 && sx > -60 && sx < innerWidth+60 && sy > -40 && sy < innerHeight+40 && mode==='play';
-    L.el.style.display = vis ? '' : 'none'; if(!vis) continue;
-    L.el.style.transform = `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
-    let txt, cls = 'lab';
-    if(!unlocked){ const line = lineOf(id); cls += ' lock'; if(id==='press'||id==='snick'){ txt = `🔒 ${ECON.lines[line].name} · ${fmt(ECON.lines[line].cost)} kr`; if(S.money >= ECON.lines[line].cost) cls += ' can'; } else txt = 'Låst'; }
-    else {
-      txt = 'Nv ' + S.lv[id];
-      if(S.money >= upCost(id, S.lv[id])) cls += ' can';
-      const isBn = Object.values(bnCache).includes(id);
-      if(isBn) cls += ' slow';
-      if(rush[id] > 0) cls += ' rush';
-      else if(!S.fm[id] && isBn) cls += ' idle';
+  hudT -= 1; if(hudT <= 0){ hudT = 20; const r = document.querySelector('.top').getBoundingClientRect(); hudBottom = $('hud').hidden ? 0 : r.bottom; }
+  for(const L2 of LBL.values()) L2.used = false;
+  if(mode === 'play' || mode === 'away'){
+    const ng = nextGoal(S);
+    for(const p of ECON.pads){
+      if(!padVisible(S,p)) continue;
+      if(p !== ng && Math.hypot(p.at[0]-G.p.x, p.at[1]-G.p.z) > 15 && S.money < padLeft(S,p)) continue;
+      const left = padLeft(S,p), on = G.p.pad === p, can = S.money >= left;
+      const n = padMax(p) > 1 ? ` <span style="opacity:.75">${lv(S,p.id)+1}/${padMax(p)}</span>` : '';
+      label('pad:'+p.id, p.at[0], 1.0, p.at[1], `<span class="pill">${p.name}${n} ${coinI}<span class="num">${fmt(Math.ceil(left))}</span></span>`, on ? 'pay' : can ? 'can' : '');
     }
-    const key = cls + '|' + txt;
-    if(key !== L.last){ L.last = key; L.el.className = cls; L.nm.textContent = txt; L.w = L.el.offsetWidth; }
-    const hw = (L.w||60)/2 + 4, cx = clamp(sx, hw, innerWidth - hw);
-    if(cx !== sx) L.el.style.transform = `translate(${cx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
+    if(lv(S,'bark')) label('intake', LAY.intake[0], 2.3, LAY.intake[1], `<span class="sub">Inlastning ${S.q.intake}/${ECON.qcap.intake}</span>`, 'info');
+    for(const k of ['main','sack','furn']){ const n = pileN(S,k); if(n > 0) label('pile:'+k, LAY.pile[k][0], 1.6 + Math.min(4, n/12), LAY.pile[k][1], `<span class="pill">${n}</span>`, 'info'); }
+    label('dock', LAY.dock[0], 2.2, LAY.dock[1], `<span class="sub">Lastkaj${G.ev && G.ev.kind==='rush' ? ' · dubbelt pris' : ''}</span>`, G.ev && G.ev.kind==='rush' ? 'gold' : 'info');
+    if(lv(S,'barare') && !lv(S,'chauffor')) label('kassa', LAY.kassa[0], 2.1, LAY.kassa[1], `<span class="pill">${kassaFull(G) ? 'Full kassa!' : 'Kassa'} ${coinI}<span class="num">${fmt(S.kassa)}</span></span>`, kassaFull(G) ? 'warn' : S.kassa >= 1 ? 'can' : 'info');
+    if(G.order && G.order.st==='open') label('order', LAY.dock[0]+6.2, 3.6, LAY.road-.9, `<span class="pill">${G.order.got}/${G.order.need} · ${Math.ceil(G.order.t)} s</span>`, 'pay');
+    if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam){ const q = LAY.mach[G.ev.m]; label('jam', q[0], 4.6, q[1], `<span class="pill">Stopp! Knacka loss</span>`, 'warn'); }
+    if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) label('gold', G.ev.tree.x, 5.4, G.ev.tree.z, `<span class="pill">Guldträd ${G.ev.tree.hits}/${ECON.events.gold.hits}</span>`, 'gold');
+    if(S.stack.length >= carryCap(S)) label('full', G.p.x, 2.2 + S.stack.length*.3*.85, G.p.z, `<span class="pill">FULLT</span>`, 'full');
   }
+  for(const L2 of LBL.values()) if(!L2.used && L2.el.style.display !== 'none') L2.el.style.display = 'none';
+}
+// tips längst ner och pil mot målet
+// Samma mål för målraden och tipset: närmaste ruta du har råd med, annars den billigaste.
+function goalPad(){ let aff = null, ad = 1e9; for(const pd of visiblePads(S)){ if(S.money >= padLeft(S,pd)){ const d = Math.hypot(pd.at[0]-G.p.x, pd.at[1]-G.p.z); if(d < ad){ ad = d; aff = pd; } } } return aff || nextGoal(S); }
+function nearestTreeTo(x, z){ let b = null, bd = 1e9; for(const t of G.trees){ if(t.st!=='grown' || !areaOpen(S,t.area)) continue; const d = Math.hypot(t.x-x, t.z-z); if(d < bd){ bd = d; b = t; } } return b; }
+function hintNow(){
+  const p = G.p, cap = carryCap(S), st = S.stack, n = st.length, room = cap - n, bark = lv(S,'bark');
+  const nLog = st.filter(t => t==='log').length, nSell = st.filter(t => sellable(S,t)).length;
+  if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam){ const q = LAY.mach[G.ev.m]; return {t:`<b>Maskinstopp!</b> Spring till ${MNAME[G.ev.m].toLowerCase()} och knacka loss den`, x:q[0], z:q[1], cls:'warn'}; }
+  if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) return {t:'<b>Guldträd!</b> Hugg det innan det försvinner', x:G.ev.tree.x, z:G.ev.tree.z, cls:'gold'};
+  if(G.ev && G.ev.kind==='storm' && G.ground.length && room > 0){ let b = G.ground[0], bd = 1e9; for(const g of G.ground){ const d = Math.hypot(g.x-p.x, g.z-p.z); if(d < bd){ bd = d; b = g; } } return {t:'<b>Storm!</b> Samla stockarna på marken', x:b.x, z:b.z}; }
+  if(p.pad){ const left = padLeft(S,p.pad); return {t: S.money > 0 ? `Stå kvar så swischas pengarna till <b>${p.pad.name.toLowerCase()}</b>` : `Du behöver ${fmt(Math.ceil(left))} kr till. Gå och tjäna mer`}; }
+  const gp = goalPad(), aff = gp && S.money >= padLeft(S,gp) ? gp : null;
+  const kfull = kassaFull(G);
+  if(kfull) return {t:'<b>Kassan är full!</b> Bärarna väntar. Hämta pengarna', x:LAY.kassa[0], z:LAY.kassa[1], cls:'warn'};
+  const o = G.order && G.order.st==='open' ? G.order : null;
+  if(o && st.includes(o.type)) return {t:`Bär ${NAME[o.type]} till <b>lastbilen</b> · ${o.got}/${o.need}`, x:LAY.dock[0]+3, z:LAY.dock[1]};
+  if(o && room > 0){ const pk = o.type==='sack' ? 'sack' : o.type==='furn' ? 'furn' : 'main'; if((S.pile[pk][o.type]||0) > 0) return {t:`Hämta ${NAME[o.type]} till lastbilens beställning`, x:LAY.pile[pk][0], z:LAY.pile[pk][1]}; }
+  if(aff && !(G.order && G.order.st==='open' && nSell)) return {t:`Ställ dig på rutan: <b>${aff.name}</b>`, x:aff.at[0], z:aff.at[1]};
+  if(!bark){
+    if(n && (room === 0 || n >= 4)) return {t:'Bär stockarna till <b>lastkajen</b> och sälj dem', x:LAY.dock[0], z:LAY.dock[1]};
+    const t = nearestTreeTo(p.x, p.z); return {t: n ? 'Hugg några till, sedan till lastkajen' : 'Gå fram till ett träd så hugger gubben', x:t && t.x, z:t && t.z};
+  }
+  if(nSell && (room === 0 || !nLog)) return {t:`Sälj vid <b>lastkajen</b>${G.order && G.order.st==='open' ? ' · lastbilen väntar' : ''}`, x:LAY.dock[0], z:LAY.dock[1]};
+  if(nLog && (room === 0 || G.ground.length === 0 && n >= Math.min(cap, 5))) return {t:'Lämna stockarna vid <b>inlastningen</b>', x:LAY.intake[0], z:LAY.intake[1]};
+  const piles = pileN(S,'main') + pileN(S,'sack') + pileN(S,'furn');
+  if(room > 0 && piles >= 3 && (!lv(S,'barare') || piles > 20 || G.order && G.order.st==='open')){ let k = 'main'; for(const k2 of ['sack','furn']) if(pileN(S,k2) > pileN(S,k)) k = k2; return {t:'Hämta virket vid högen och sälj det', x:LAY.pile[k][0], z:LAY.pile[k][1]}; }
+  if(S.kassa >= 1 && !lv(S,'chauffor')) return {t:'Hämta pengarna i <b>kassan</b>', x:LAY.kassa[0], z:LAY.kassa[1]};
+  if(nLog && room === 0) return {t:'Lämna stockarna vid <b>inlastningen</b>', x:LAY.intake[0], z:LAY.intake[1]};
+  if(room > 0 && S.q.intake < ECON.qcap.intake - 4){ const t = nearestTreeTo(p.x, p.z); return {t: automated(S) ? 'Allt går av sig självt. Hugg gärna lite extra' : 'Hugg träd och bär stockar', x:t && t.x, z:t && t.z}; }
+  const ng = goalPad(); if(ng) return {t:`Spara till <b>${ng.name.toLowerCase()}</b>`, x:ng.at[0], z:ng.at[1]};
+  return {t:'Sågverket sköter sig självt'};
+}
+const arrow = new THREE.Mesh(merge([part(Cone(.55,.9,12),0xffffff,0,0,0,Math.PI,0,0), part(Cyl(.2,.2,.8,10),0xffffff,0,.8,0)]), new THREE.MeshLambertMaterial({color:0xffc93c, emissive:0x664400})); world.add(arrow);
+let hintCache = null, hintT = 0, lastHint = '';
+function updateHint(dt, time){
+  hintT -= dt; if(hintT <= 0 || !hintCache){ hintT = .2; hintCache = hintNow(); }
+  const h = hintCache, el = $('hint');
+  if(h.t !== lastHint){ el.innerHTML = h.t; lastHint = h.t; }
+  el.hidden = mode !== 'play';
+  const edge = $('edge');
+  const has = h.x !== undefined && h.x !== null && mode==='play' && Math.hypot(h.x-G.p.x, h.z-G.p.z) > 3.2;
+  arrow.visible = false; edge.hidden = true;
+  if(!has) return;
+  const [sx,sy,sz] = project(h.x, 3.2, h.z);
+  const m = 46, on = sz < 1 && sx > m && sx < innerWidth-m && sy > hudBottom + 30 && sy < innerHeight-70;
+  if(on){ arrow.visible = true; arrow.position.set(h.x, 3.4 + Math.abs(Math.sin(time*4))*.6, h.z); arrow.material.color.setHex(h.cls==='warn' ? 0xe5484d : h.cls==='gold' ? 0xfff2b0 : 0xffc93c); }
+  else {
+    const [px,py] = project(G.p.x, 1, G.p.z);
+    let dx = sx - px, dy = sy - py; if(sz >= 1){ dx = -dx; dy = -dy; }
+    const ang = Math.atan2(dy, dx), cx = innerWidth/2, cy = innerHeight/2;
+    const rx = innerWidth/2 - 34, ry = Math.max(40, (innerHeight - hudBottom - 70)/2 - 20), t = Math.min(rx/Math.abs(Math.cos(ang)||1e-6), ry/Math.abs(Math.sin(ang)||1e-6));
+    edge.hidden = false; edge.className = h.cls || ''; edge.style.transform = `translate(${cx + Math.cos(ang)*t}px,${(hudBottom + innerHeight - 70)/2 + Math.sin(ang)*t}px) rotate(${ang}rad)`;
+  }
+}
+const ui = { money:$('money'), rate:$('rate').querySelector('b'), last:{} };
+function setTxt(id, v){ if(ui.last[id] !== v){ ui.last[id] = v; $(id).textContent = v; } }
+function updateHud(dt){
+  setTxt('money', fmt(Math.floor(S.money)));
+  const r = fmt(G.autoEMA*60); if(ui.last.rate !== r){ ui.last.rate = r; ui.rate.textContent = r; } $('rate').hidden = !(lv(S,'barare') || lv(S,'chauffor'));
+  if(coinPulse > 0){ coinPulse -= dt; $('cash').classList.add('bump'); } else $('cash').classList.remove('bump');
+  const cap = carryCap(S); setTxt('carryN', `${S.stack.length}/${cap}`); $('carry').classList.toggle('full', S.stack.length >= cap);
+  const ng = goalPad();
+  if(ng){ const left = padLeft(S,ng), can = S.money >= left; setTxt('gName', (can ? 'Råd med: ' : 'Nästa: ') + ng.name); setTxt('gCost', fmt(Math.ceil(left)) + ' kr'); $('gBar').style.width = Math.min(100, S.money/Math.max(1,left)*100).toFixed(1) + '%'; $('goal').classList.toggle('can', can); $('goal').hidden = false; }
+  else if(seedsFor(S) > 0){ setTxt('gName', 'Ny skog är redo (menyn)'); setTxt('gCost', ''); $('gBar').style.width = '100%'; $('goal').classList.add('can'); }
+  else { setTxt('gName', automated(S) ? 'Mot Ny skog' : 'Allt är köpt'); const P2 = ECON.prestige; setTxt('gCost', fmt(S.earnedRun) + ' / ' + fmt(P2.min)); $('gBar').style.width = Math.min(100, S.earnedRun/P2.min*100).toFixed(1) + '%'; $('goal').classList.remove('can'); }
+  // händelse
+  const ev = G.ev, evb = $('evb');
+  if(ev){
+    evb.hidden = false; evb.className = 'card' + (ev.kind==='storm' ? ' storm' : ev.kind==='jam' ? ' jam' : '') + (evb.classList.contains('pop') ? ' pop' : '');
+    const T = { storm:'Storm! Samla stockarna', rush:'Rusningstimme · dubbelt pris', gold:'Guldträd i skogen!', jam:'Maskinstopp: ' + (ev.m ? MNAME[ev.m] : '') };
+    setTxt('evT', T[ev.kind]); setTxt('evS', Math.ceil(ev.t) + ' s'); $('evBar').style.width = (ev.t/ev.T*100).toFixed(1) + '%';
+  } else evb.hidden = true;
+  // beställning
+  const o = G.order, oc = $('order');
+  if(orderFlash > 0) orderFlash -= dt;
+  if(o && (o.st !== 'leave' || orderFlash > 0)){
+    oc.hidden = false;
+    const base = 'card' + (oc.classList.contains('pop') ? ' pop' : '');
+    if(o.st==='leave'){ oc.className = base + (o.ok ? ' ok' : ' miss'); setTxt('oT', o.ok ? 'Beställningen klar!' : 'Lastbilen åkte. Nästa kommer snart'); setTxt('oS', o.ok ? '+' + fmt(o.bonus) + ' kr' : ''); $('oBar').style.width = o.ok ? '100%' : '0%'; }
+    else { oc.className = base; setTxt('oT', o.st==='arrive' ? 'En lastbil kommer…' : `Bär själv: ${o.need} ${NAME[o.type]}`); setTxt('oS', o.st==='open' ? `${o.got}/${o.need} · ${Math.ceil(o.t)} s` : ''); $('oBar').style.width = (o.st==='open' ? o.t/o.T*100 : 100).toFixed(1) + '%'; }
+  } else oc.hidden = true;
+  if(saleSum > 0){ saleT -= dt; if(saleT <= 0){ floatText('+' + fmt(saleSum) + ' kr', LAY.dock[0], 2.4, LAY.dock[1]); saleSum = 0; saleT = .5; } }
 }
 
-/* ================= Guide (första gången) ================= */
-const GUIDE = [
-  {t:'st:sag', txt:'Tryck på sågen. Varje tryck får den att gå fortare en stund.'},
-  {t:'#pBuy', txt:'Uppgradera sågen så hinner den med fler stockar.'},
-  {t:'bn', txt:'Röd etikett betyder flaskhals. Där står virket i kö. Uppgradera den maskinen.', ok:true},
-  {t:'#mission', txt:'Klara uppdrag för extra pengar. Anställ förmän så sköter maskinerna sig själva.', ok:true},
-];
-let guideFocused = -1;
-function guideNext(){ meta.guide++; persist(); updateGuide(); }
-$('gOk').onclick = () => { Snd.click(); guideNext(); };
-function updateGuide(){
-  const gd = $('guide');
-  if(mode!=='play' || meta.guide >= GUIDE.length){ gd.hidden = true; return; }
-  const step = GUIDE[meta.guide];
-  if(meta.guide===1 && !sel){ selectStation('sag'); }
-  $('gText').textContent = step.txt; $('gOk').hidden = !step.ok;
-  let x, y, down = true;
-  if(step.t.startsWith('st:') || step.t==='bn'){
-    const id = step.t==='bn' ? (bnCache.brador || 'sag') : step.t.slice(3);
-    if(step.t==='bn' && guideFocused !== meta.guide){ guideFocused = meta.guide; if(sel) selectStation(null); cam.ttx = POS[id][0]; cam.ttz = POS[id][1] - 3; }
-    const st = stations[id], p = st.root.position, top = st.built ? st.built.top*st.built.g.scale.y : 3;
-    [x, y] = project(p.x, top + 1.6, p.z); y -= 30;
-  } else {
-    const r = $(step.t.slice(1)).getBoundingClientRect();
-    x = r.left + r.width/2;
-    if(r.top > innerHeight/2){ y = r.top - 6; } else { y = r.bottom + 6; down = false; }
-  }
-  gd.hidden = false; gd.classList.toggle('down', down); gd.classList.toggle('up', !down);
-  const h = gd.offsetHeight, w = gd.offsetWidth;
-  x = clamp(x, w/2 + 8, innerWidth - w/2 - 8);
-  const topSafe = 150;
-  if(down && y - h < topSafe){ down = false; y = Math.max(y + 30, topSafe); gd.classList.add('up'); gd.classList.remove('down'); }
-  gd.style.transform = `translate(${x}px,${down ? y - h : y}px) translate(-50%,0)`;
-}
-
-/* ================= Simulering per bildruta ================= */
-let hudT = 0, saveT = 0, sawT = 0, chopT = 0, missionWasDone = false;
-const dockOf = {kaj:'board', pkaj:'pellet', mkaj:'furn'};
-function econStep(dt){
-  for(const id of STATION_IDS) if(rush[id] > 0) rush[id] = Math.max(0, rush[id]-dt);
-  const n = Math.max(1, Math.ceil(dt/0.05)), h = dt/n;
-  const fsum = {}; STATION_IDS.forEach(id => fsum[id] = 0); fsum.toSnick = 0;
-  for(let k=0;k<n;k++){
-    const o = stepFlow(S, rush, h);
-    S.money += o.money; S.earnedRun += o.money; meta.earnedAll += o.money;
-    S.del.board += o.board; S.del.pellet += o.pellet; S.del.furn += o.furn;
-    const m = incomeMult(S);
-    if(trucks.kaj) trucks.kaj.money += o.board*ECON.price.board*m;
-    if(trucks.pkaj) trucks.pkaj.money += o.pellet*ECON.price.pellet*m;
-    if(trucks.mkaj) trucks.mkaj.money += o.furn*ECON.price.furn*m;
-    for(const id in o.f) fsum[id] += o.f[id];
-  }
-  const a = 1 - Math.exp(-3*dt);
-  for(const id in fsum) flowSm[id] = lerp(flowSm[id], fsum[id]/dt, a);
-}
-function beltFlow(b){
-  switch(b.q){
-    case 'bark': return flowSm.hugg; case 'sag': return flowSm.bark; case 'hyvel': return flowSm.sag;
-    case 'kaj': return flowSm.hyvel - flowSm.toSnick; case 'press': return S.lines.pellets ? flowSm.sag*ECON.spill : 0;
-    case 'pkaj': return flowSm.press; case 'snick': return flowSm.toSnick; case 'mkaj': return flowSm.snick;
-  }
-  return 0;
-}
-function setItem(kind, x, y, z, yaw, s=1){
-  const it = ITEM[kind]; if(it.n >= 220) return;
-  _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(0,yaw,0)), _s.set(s,s,s)); itemIM[kind].setMatrixAt(it.n++, _m4);
-}
-function updateBelts(dt){
-  for(const k in ITEM) ITEM[k].n = 0;
-  for(const b of BELTS){
-    if(!b.g.visible) continue;
-    const it = ITEM[b.kind], flow = beltFlow(b);
-    const cap = bufCap(S, b.q), qn = clamp(S.q[b.q]/cap, 0, 1);
-    b.qv = lerp(b.qv, qn * b.slots * 2, 1-Math.exp(-6*dt));
-    const qc = Math.round(b.qv), row1 = Math.min(b.slots, qc), row2 = Math.max(0, qc - b.slots);
-    const tail = b.len - row1*it.sp - .1;
-    if(flow > .02){ b.tex.offset.y -= BELT_V/1.1*dt; }
-    // nya bitar på bandet
-    const vis = Math.min(flow, 3.2);
-    b.acc += vis*dt;
-    if(b.acc >= 1){ b.acc -= Math.floor(b.acc); if(!b.mov.length || b.mov[b.mov.length-1] > it.sp*1.05) b.mov.push(0); }
-    for(let i=b.mov.length-1;i>=0;i--){ b.mov[i] += BELT_V*dt; if(b.mov[i] >= tail){ b.mov.splice(i,1); } }
-    const y0 = BELT_Y + it.h;
-    for(const s of b.mov) setItem(b.kind, b.a[0]+b.dx*s, y0, b.a[1]+b.dz*s, b.yaw);
-    for(let k=0;k<row1;k++){ const s = b.len - (k+.5)*it.sp; setItem(b.kind, b.a[0]+b.dx*s, y0, b.a[1]+b.dz*s, b.yaw); }
-    const lift = b.kind==='log'||b.kind==='logp' ? .38 : b.kind==='sack' ? .3 : b.kind==='furn' ? .7 : .2;
-    for(let k=0;k<row2;k++){ const s = b.len - (k+1)*it.sp; setItem(b.kind, b.a[0]+b.dx*s, y0+lift, b.a[1]+b.dz*s, b.yaw); }
-  }
-  // flygande stockar
-  for(let i=flyLogs.length-1;i>=0;i--){
-    const f = flyLogs[i]; f.t += dt/1.1; if(f.t >= 1){ flyLogs.splice(i,1); continue; }
-    const x = lerp(f.x0, 1.4, f.t), z = lerp(f.z0, -19.6, f.t), y = .4 + Math.sin(f.t*Math.PI)*3.5;
-    setItem('log', x, y, z, f.t*6);
-  }
-  for(const k in ITEM){ itemIM[k].count = ITEM[k].n; itemIM[k].instanceMatrix.needsUpdate = true; }
-}
-function updateMachines(dt, time){
-  for(const id of STATION_IDS){
-    const st = stations[id]; if(!st.built) continue;
-    const r = effRate(S, id), active = id==='hugg' ? 1 : clamp((flowSm[id]||0) / Math.max(1e-6, r*.5), 0, 1);
-    st.act = lerp(st.act, active, 1-Math.exp(-4*dt));
-    const sp = (.15 + st.act) * (rush[id]>0 ? 2 : 1);
-    for(const s of st.built.spin) s.m.rotation[s.ax] += s.sp*sp*dt;
-    for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.3+st.act)))*b.amp;
-    let sc = 1; if(st.pop > 0){ st.pop = Math.max(0, st.pop - dt*2); sc = 1 + Math.sin(st.pop*Math.PI)*.18; }
-    let sh = 0; if(st.shake > 0){ st.shake = Math.max(0, st.shake-dt); sh = Math.sin(time*60)*.06*st.shake/.25; }
-    st.root.scale.setScalar(sc); st.root.position.x = POS[id][0] + sh;
-    // partiklar
-    const e = st.built.emit, p = st.root.position;
-    if(id==='sag' && st.act > .1 && Math.random() < dt*(14*st.act + (rush.sag>0?20:0))) burst(p.x+e.x+rand(-.6,.6), e.y, p.z+e.z, [0xf3d9a4,0xe8c98a,0xffffff], 2, 2.6, .7, .6, 3.5);
-    if(id==='hyvel' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
-    if(id==='bark' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x+rand(-.5,.5), e.y, p.z+e.z, [0x6b4426,0x4a2e18], 1, 1.5, .8, .6, 2);
-    if(id==='press' && st.act > .1 && Math.random() < dt*3*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xd9b06a,0xc4964f], 2, 1.2, .6, .6, 2);
-    if(st.built.smoke && Math.random() < dt*2.5) burst(p.x+e.x, e.y, p.z+e.z, [0xdfe3e6,0xc9ced3], 1, .3, 2.6, 2.2, .8, -0.2);
-  }
-  if(stations.sag.act > .2 && mode==='play'){ sawT -= dt; if(sawT <= 0){ Snd.saw(.8); sawT = rand(1.8,3.2) / (rush.sag>0 ? 2.5 : 1); } }
-}
-function updateForest(dt){
-  for(const t of CT){
-    t.t += dt;
-    if(t.st==='falling' && t.t > .9){ t.st='gone'; t.t=0; Snd.thud(); burst(t.x, .4, t.z-1.5, [0x3aa452,0x52bd60,0x7a5230], 10, 2.5, 1, .8, 3); flyLogs.push({x0:t.x, z0:t.z, t:0}); }
-    else if(t.st==='gone' && t.t > 2.5){ t.st='regrow'; t.t=0; }
-    else if(t.st==='regrow' && t.t > 9){ t.st='grown'; t.t=0; t.claimed=false; }
-  }
-  CT.forEach((t,i)=>{
-    let rx = 0, s = t.s;
-    if(t.st==='falling'){ const k = Math.min(1,t.t/.9); rx = -k*k*Math.PI/2; }
-    else if(t.st==='gone'){ s = 0.0001; }
-    else if(t.st==='regrow'){ s = t.s*Math.min(1, t.t/9); }
-    _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(rx,t.ry*0,0)), _s.set(s,s,s)); ctIM.setMatrixAt(i,_m4);
-  });
-  ctIM.instanceMatrix.needsUpdate = true;
-  const speed = clamp(Math.sqrt(effRate(S,'hugg')/1.5), .7, 2.5);
-  for(const j of jacks){
-    j.t -= dt;
-    if(j.st==='idle' && j.t <= 0){
-      const free = CT.filter(t => t.st==='grown' && !t.claimed);
-      if(free.length){ const t = free[Math.random()*free.length|0]; t.claimed = true; j.tree = t; j.tx = t.x + .2; j.tz = t.z + .75; j.st = 'walk'; }
-      else j.t = 1;
-    } else if(j.st==='walk' || j.st==='back'){
-      const dx = j.tx-j.x, dz = j.tz-j.z, d = Math.hypot(dx,dz), step = 2.4*speed*dt;
-      if(d <= step){ j.x = j.tx; j.z = j.tz; if(j.st==='walk'){ j.st='chop'; j.t = 2.2/speed; } else { j.st='idle'; j.t = rand(.2,1)/speed; } }
-      else { j.x += dx/d*step; j.z += dz/d*step; j.g.rotation.y = Math.atan2(dx,dz); }
-      j.g.position.y = Math.abs(Math.sin(j.x*3+j.z*3))*.08;
-      j.arm.rotation.x = Math.sin((j.x+j.z)*4)*.5;
-    } else if(j.st==='chop'){
-      j.g.rotation.y = Math.PI; j.arm.rotation.x = -1.6 + Math.abs(Math.sin(j.t*7*speed))*1.9;
-      chopT -= dt; if(chopT<=0 && Math.sin(j.t*7*speed) > .9){ Snd.chop(); chopT = .3; burst(j.tree.x, .9, j.tree.z+.3, [0xe2bf86], 2, 1.5, .6, .4, 2); }
-      if(j.t <= 0){ j.tree.st='falling'; j.tree.t=0; j.st='back'; j.tx = j.home[0]; j.tz = j.home[1]; }
-    }
-    j.g.position.x = j.x; j.g.position.z = j.z;
-  }
-}
-function updateTrucks(dt){
-  for(const id in trucks){
-    const tr = trucks[id]; if(!tr.g.visible) continue;
-    const dockX = POS[id][0] - .2; tr.t += dt;
-    const has = (flowSm[id]||0) > .01;
-    if(tr.st==='away'){ tr.x = -60; if(tr.t > 1.2 && has){ tr.st='arrive'; tr.t=0; } }
-    else if(tr.st==='arrive'){ const k = Math.min(1, tr.t/2.6), e = 1-Math.pow(1-k,3); tr.x = lerp(-60, dockX, e); if(k>=1){ tr.st='load'; tr.t=0; } }
-    else if(tr.st==='load'){ if(tr.t > 6.5){ tr.st='leave'; tr.t=0; if(tr.money > 0){ floatText('+' + fmt(tr.money) + ' kr', dockX, 3, ROAD_Z, true); Snd.cash(); tr.money = 0; } } }
-    else if(tr.st==='leave'){ const k = Math.min(1, tr.t/2.4); tr.x = lerp(dockX, 64, k*k); if(k>=1){ tr.st='away'; tr.t=0; } }
-    tr.g.position.x = tr.x;
-    const load = tr.st==='load' ? Math.min(1, tr.t/6) : tr.st==='leave' ? 1 : 0;
-    tr.cargo.scale.set(1, Math.max(.001, load), 1); tr.cargo.visible = load > .02;
-  }
+/* ================= Storm, ljus ================= */
+let stormK = 0;
+function updateWeather(dt, time){
+  const storm = G.ev && G.ev.kind==='storm';
+  stormK = lerp(stormK, storm ? 1 : 0, 1-Math.exp(-1.5*dt));
+  scene.background.copy(SKY).lerp(STORM_SKY, stormK); scene.fog.color.copy(scene.background);
+  sun.intensity = 2.3*(1-.6*stormK); hemi.intensity = 1.3*(1-.35*stormK);
+  rainIM.count = stormK > .05 ? Math.round(RAIN*stormK) : 0;
+  for(let i=0;i<rainIM.count;i++){ const r = rain[i]; r.y -= dt*22; r.x -= dt*4; if(r.y < 0){ r.y = 14 + rand(0,4); r.x = rand(-16,18); r.z = rand(-16,16); } _m4.compose(_v.set(cam.x + r.x, r.y, cam.z + r.z), _q.setFromEuler(_e.set(0,0,.2)), _one); rainIM.setMatrixAt(i,_m4); }
+  rainIM.instanceMatrix.needsUpdate = true;
+  waterTex.offset.x = time*.02; waterTex.offset.y = Math.sin(time*.3)*.02;
+  $('flash').classList.toggle('on', !!(G.ev && G.ev.kind==='rush'));
 }
 
 /* ================= Skärmar ================= */
-const SCREENS = ['start','awayScr','menuScr','prestScr','resetScr'];
+let mode = 'menu';
+const SCREENS = ['start','bonusScr','awayScr','menuScr','prestScr','resetScr'];
 function show(id){ SCREENS.forEach(s => $(s).hidden = s!==id); }
+function closeScreens(){ show(null); mode = 'play'; }
+let pendingAway = 0;
 function startPlay(){
   Snd.init(); setMute(meta.mute);
-  mode = 'play'; show(null); $('hud').hidden = false; meta.started = true; persist();
-  cam.orbit = 0; cam.td = cam.base; cam.ttx = 0; cam.ttz = -1;
-  if(pendingAway){ showAway(pendingAway.sec, pendingAway.amt); pendingAway = null; }
+  show(null); $('hud').hidden = false; meta.started = true; cam.orbit = 0;
+  const b = meta.v1done ? 0 : v1Bonus();
+  if(!meta.v1done){ meta.v1done = true; if(b > 0){ S.money += b; $('bonusAmt').textContent = '+' + fmt(b) + ' kr'; show('bonusScr'); mode = 'menu2'; persist(); return; } }
+  persist();
+  afterStart();
+}
+function afterStart(){
+  if(pendingAway > 0){ showAway(pendingAway); pendingAway = 0; return; }
+  mode = 'play';
 }
 $('playBtn').onclick = startPlay;
-let pendingAway = null;
+$('bonusOk').onclick = () => { Snd.cash(); show(null); floatText('+' + $('bonusAmt').textContent.slice(1), G.p.x, 2.5, G.p.z, true); afterStart(); };
 function fmtDur(sec){ const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60); return h ? `${h} h ${m} min` : m ? `${m} min` : `${Math.round(sec)} s`; }
-function applyAway(sec){
-  // intäkt medan spelet var stängt: stationärt flöde, utan skyndning, max 8 timmar
-  if(!(sec > 20)) return null;
-  const s = Math.min(sec, ECON.offlineCapH*3600), f = flows(S), amt = incomePerSec(S)*s;
-  S.money += amt; S.earnedRun += amt; meta.earnedAll += amt;
-  S.del.board += f.K*s; S.del.furn += f.F*s; S.del.pellet += f.P*s;
-  persist();
-  return {sec, amt};
-}
-function showAway(sec, amt){
-  $('awayTxt').textContent = `Du var borta i ${fmtDur(sec)}${sec > ECON.offlineCapH*3600 ? ' (8 h räknas)' : ''}. Sågverket fortsatte att jobba under tiden.`;
+let awayInfo = null;
+function showAway(amt){
+  $('awayTxt').textContent = `Du var borta i ${fmtDur(awayInfo || 0)}${(awayInfo||0) > ECON.offlineCapH*3600 ? ' (8 h räknas)' : ''}. Medhjälparna jobbade under tiden.`;
   $('awayAmt').textContent = '+' + fmt(amt) + ' kr';
-  moneyHold = amt; hudNow();
+  $('awayWhere').textContent = lv(S,'chauffor') ? 'Chauffören har redan satt in pengarna.' : 'Pengarna ligger i kassan vid lastkajen.';
   show('awayScr'); mode = 'away';
 }
-$('awayOk').onclick = () => { Snd.cash(); show(null); mode = 'play'; floatScreen('+' + fmt(moneyHold) + ' kr', $('cash')); holdDrain = moneyHold / 1.2; hudNow(); };
-let holdDrain = 0;
+$('awayOk').onclick = () => { Snd.cash(); closeScreens(); };
 $('menuBtn').onclick = () => { Snd.click(); openMenu(); };
-function openMenu(){ $('stRun').textContent = fmt(S.earnedRun) + ' kr'; $('stAll').textContent = fmt(meta.earnedAll) + ' kr'; $('stBoards').textContent = fmt(Math.floor(S.del.board)); $('stSeeds').textContent = `${S.seeds} (×${fmtMult(incomeMult(S))})`; show('menuScr'); mode = 'menu2'; }
-$('menuClose').onclick = () => { Snd.click(); show(null); mode = 'play'; };
+function openMenu(){ $('stRun').textContent = fmt(S.earnedRun) + ' kr'; $('stAll').textContent = fmt(meta.earnedAll + S.earnedRun) + ' kr'; $('stSold').textContent = fmt(S.sold); $('stOrd').textContent = fmt(S.orders); $('stSeeds').textContent = `${S.seeds} (×${fmtMult(valueMult(S))})`; show('menuScr'); mode = 'menu2'; }
+$('menuClose').onclick = () => { Snd.click(); closeScreens(); };
 $('menuSnd').onclick = () => { setMute(!meta.mute); Snd.click(); };
 $('sndBtn').onclick = () => { setMute(!meta.mute); Snd.click(); };
 $('menuReset').onclick = () => { Snd.click(); show('resetScr'); };
 $('resetNo').onclick = () => { Snd.click(); openMenu(); };
-$('resetYes').onclick = () => { try{ localStorage.removeItem(SAVE_KEY); }catch(e){} meta = {earnedAll:0, mute:meta.mute, guide:0, t:Date.now(), started:true}; newRun(0); show(null); mode='play'; persist(); };
+$('resetYes').onclick = () => { meta = {earnedAll:0, mute:meta.mute, t:Date.now(), started:true, v1done:true}; newRun(0); closeScreens(); persist(); };
 function fmtMult(m){ return m.toFixed(2).replace('.', ','); }
-let prestFrom = 'hud';
-$('menuPrest').onclick = () => { Snd.click(); prestFrom = 'menu'; openPrest(); };
-$('prestBtn').onclick = () => { Snd.click(); prestFrom = 'hud'; openPrest(); };
+$('menuPrest').onclick = () => { Snd.click(); openPrest(); };
 function openPrest(){
-  const seeds = seedsFor(S.earnedRun), mp = ECON.prestige;
+  const seeds = seedsFor(S), P2 = ECON.prestige;
   $('prRun').textContent = fmt(S.earnedRun) + ' kr';
   $('prSeeds').textContent = '+' + seeds;
-  $('prMult').textContent = `×${fmtMult(incomeMult(S))} → ×${fmtMult(1 + (S.seeds+seeds)*mp.perSeed)}`;
+  $('prMult').textContent = `×${fmtMult(valueMult(S))} → ×${fmtMult(1 + (S.seeds+seeds)*P2.per)}`;
   $('prLock').hidden = seeds > 0;
-  $('prLockT').textContent = `Låses upp när du tjänat ${fmt(mp.minEarned)} kr i den här omgången.`;
-  $('prBar').style.width = Math.min(100, S.earnedRun/mp.minEarned*100) + '%';
+  $('prLockT').textContent = automated(S) ? `Låses upp när du tjänat ${fmt(P2.min)} kr i den här omgången.` : `Låses upp när sågverket är helt automatiserat (chaufför anställd) och du tjänat ${fmt(P2.min)} kr.`;
+  $('prBar').style.width = Math.min(100, S.earnedRun/P2.min*100) + '%';
   $('prGo').disabled = seeds <= 0; $('prGo').dataset.arm = ''; $('prGo').textContent = 'Sälj och plantera';
   show('prestScr'); mode = 'menu2';
 }
 $('prGo').onclick = () => {
-  const seeds = seedsFor(S.earnedRun); if(seeds <= 0) return;
+  const seeds = seedsFor(S); if(seeds <= 0) return;
   if(!$('prGo').dataset.arm){ $('prGo').dataset.arm = '1'; $('prGo').textContent = 'Säker? Tryck igen'; Snd.click(); return; }
-  newRun(S.seeds + seeds); show(null); mode = 'play';
-  Snd.tier(); toast('Ny skog planterad', `Intäkt ×${fmtMult(incomeMult(S))} för alltid`);
+  meta.earnedAll += S.earnedRun;
+  newRun(S.seeds + seeds); closeScreens();
+  Snd.build(); toast('Ny skog planterad', `Allt säljs ×${fmtMult(valueMult(S))} för alltid`);
   persist();
 };
-$('prBack').onclick = () => { Snd.click(); if(prestFrom==='menu') openMenu(); else { show(null); mode = 'play'; } };
+$('prBack').onclick = () => { Snd.click(); openMenu(); };
 function newRun(seeds){
-  S = freshRun(seeds);
-  STATION_IDS.forEach(id => { rush[id] = 0; flowSm[id] = 0; refreshStation(id); });
-  for(const b of BELTS){ b.mov.length = 0; b.qv = 0; }
-  for(const id in trucks){ trucks[id].money = 0; trucks[id].st = 'away'; trucks[id].t = 0; }
-  for(const t of CT){ t.st = 'grown'; t.claimed = false; t.t = 0; }
-  for(const j of jacks){ world.remove(j.g); } jacks.length = 0; syncJacks();
-  selectStation(null); recalc(); syncLines(); hudNow();
+  Snd.windOff();
+  S = newSave(seeds); G = makeGame(S); G.trees.forEach((t,i)=>treeIdx.set(t,i));
+  moving.length = 0; flights.length = 0; floaters.length = 0; incoming = 0; dockTruck.n = 0;
+  for(const f of workerFigs) world.remove(f.g); workerFigs.length = 0;
+  syncWorld();
 }
 document.addEventListener('visibilitychange', () => {
-  if(document.hidden){ persist(); hiddenAt = Date.now(); }
-  else if(hiddenAt){ const away = (Date.now()-hiddenAt)/1000; hiddenAt = 0; const r = applyAway(away); if(r && r.sec > 60 && mode==='play') showAway(r.sec, r.amt); else hudNow(); }
+  if(document.hidden){ persist(); hiddenAt = Date.now(); keys.clear(); }
+  else if(hiddenAt){ const away = (Date.now()-hiddenAt)/1000; hiddenAt = 0; const amt = applyAway(S, away); if(amt > 0 && away > 60 && mode==='play'){ awayInfo = away; showAway(amt); } }
 });
 let hiddenAt = 0;
 window.addEventListener('pagehide', persist);
 window.addEventListener('resize', fitCamera);
-window.addEventListener('keydown', e => { if(e.key==='Escape' && sel) selectStation(null); });
 
 /* ================= Huvudloop ================= */
 const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
-let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0, time = 0;
+let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0, time = 0, saveT = 0, syncT = 0;
 function frame(now){
   requestAnimationFrame(frame);
   let dt = (now - last)/1000; last = now;
@@ -1364,13 +1760,21 @@ function frame(now){
 }
 function tick(dt){
   time += dt;
-  if(mode==='play' || mode==='menu2' || mode==='away' || mode==='menu') econStep(dt);
-  if(mode==='menu'){ cam.orbit += dt*.05; cam.td = cam.base*.85; }
-  updateBelts(dt); updateMachines(dt, time); updateForest(dt); updateTrucks(dt);
-  updateParticles(dt); updateCamera(dt); updateFloats(dt); updateLabels(); updateGuide();
-  if(moneyHold > 0 && mode==='play'){ moneyHold = Math.max(0, moneyHold - Math.max(holdDrain, 1)*dt); hudNow(); }
-  hudT -= dt; if(hudT <= 0){ hudT = .15; recalc(); if(mode!=='menu') hudNow();
-    const md = missionProgress(S, getMission(S.mi)) >= 1; if(md && !missionWasDone) Snd.buy(); missionWasDone = md; }
+  if(mode !== 'menu'){
+    const [ix, iz] = mode==='play' ? inputVec() : [0,0];
+    const n = Math.max(1, Math.ceil(dt/(1/30))), h = dt/n;
+    for(let k=0;k<n;k++) step(G, h, ix, iz);
+    handleFx();
+  } else { cam.orbit += dt*.05; }
+  syncT -= dt; if(syncT <= 0){ syncT = .5; syncWorld(); }
+  const p = G.p, carrying = S.stack.length > 0;
+  animFigure(player, p.x, p.z, p.yaw, p.moving, ECON.walk/2.2, dt, carrying, !!p.chop || p.fixT > 0, time);
+  ringMesh.position.set(p.x, .05, p.z); ringMesh.scale.setScalar(1 + Math.sin(time*4)*.06);
+  G.workers.forEach((w,i) => { const f = workerFigs[i]; if(f) animFigure(f, w.x, w.z, w.yaw, w.moving, ECON.worker.walk/2.2, dt, w.stack.length > 0, w.st==='chop', time); });
+  updateTrees(dt, time); updateMachines(dt, time); updatePads(dt, time); updateTrucks(dt);
+  drawWorld(dt, time); updateParticles(dt); updateWeather(dt, time);
+  updateCamera(dt, time); updateFloats(dt); updateLabels(); updateHint(dt, time);
+  if(mode !== 'menu') updateHud(dt);
   saveT -= dt; if(saveT <= 0){ saveT = 5; if(meta.started) persist(); }
   renderer.render(scene, camera);
   fAcc += dt; fN++;
@@ -1379,21 +1783,20 @@ function tick(dt){
 }
 
 /* ================= Start ================= */
-fitCamera();
-cam.td = cam.d = cam.base*.85;
-STATION_IDS.forEach(id => refreshStation(id));
-syncJacks(); recalc(); syncLines(); setMute(meta.mute);
+fitCamera(); cam.d = cam.td;
+syncWorld(); setMute(meta.mute);
 if(hadSave){
-  const r = applyAway(awaySec);
-  if(r && r.sec > 60) pendingAway = r;
+  const amt = applyAway(S, awaySec);
+  if(amt > 0 && awaySec > 60){ pendingAway = amt; awayInfo = awaySec; }
   $('playBtn').textContent = 'Fortsätt';
 }
-show('start'); hudNow();
+show('start');
 // testkrok
-window.__sv = { S:()=>S, meta:()=>meta, camera, cam, scene, renderer, THREE, ECON, recalc, persist, hudNow, tapStation, selectStation, startPlay, newRun, applyAway, stations, BELTS, ITEM, trucks, jacks, fps:()=>window.__fps,
-  give(m){ S.money += m; hudNow(); },
-  step(sec, dt=1/30){ let ms = 0; for(let t=0;t<sec;t+=dt){ const t0 = performance.now(); econStep(dt); updateBelts(dt); updateMachines(dt, time+=dt); updateForest(dt); updateTrucks(dt); updateParticles(dt); ms += performance.now()-t0; } recalc(); hudNow(); return +(ms/(sec/dt)).toFixed(3); },
-  run(sec, dt=1/30){ for(let t=0;t<sec;t+=dt) tick(dt); return {money:S.money, fps:window.__fps}; },
-  incomeMin:()=>incomePerSec(S)*60, showFps(){ showFps=true; fpsEl.hidden=false; } };
+window.__sv = { S:()=>S, G:()=>G, meta:()=>meta, ECON, LAY, camera, cam, renderer, THREE, persist, startPlay, newRun, fps:()=>window.__fps, mode:()=>mode,
+  give(m){ S.money += m; },
+  input(ix, iz){ testInput = ix===null ? null : [ix, iz]; },
+  run(sec, dt=1/30){ for(let t=0;t<sec;t+=dt) tick(dt); return {money:S.money, x:G.p.x, z:G.p.z}; },
+  walkTo(x, z, maxSec=20, dt=1/30){ for(let t=0;t<maxSec;t+=dt){ const dx = x-G.p.x, dz = z-G.p.z, d = Math.hypot(dx,dz); if(d < .3){ testInput = null; return true; } testInput = [dx/d, dz/d]; tick(dt); } testInput = null; return false; },
+  showFps(){ showFps=true; fpsEl.hidden=false; } };
 requestAnimationFrame(t => { last = t; frame(t); });
 </script>
