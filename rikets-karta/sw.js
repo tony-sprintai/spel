@@ -1,6 +1,6 @@
 // Service worker: gör spelet spelbart utan nät efter första besöket.
 // Sidan hämtas från nätet först (så nya versioner kommer fram), allt annat från cachen först.
-const CACHE = 'spel-rikets-karta-20261106-195558';
+const CACHE = 'spel-rikets-karta-20261107-141750';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './ikon-192.png'])).then(() => self.skipWaiting()));
