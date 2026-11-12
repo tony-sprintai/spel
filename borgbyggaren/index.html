@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1b2a1f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Borgbyggaren">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="ikon-180.png">
+<link rel="icon" type="image/png" href="ikon-192.png">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Borgbyggaren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#14101c">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=Lilita+One&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Borgbyggaren – index.html: sida, HUD, inmatning, ljud, sparning och spelloop.
+   Spellogiken ligger i modell.js, allt som ritas i grafik.js. Sidan fungerar både fristående och inbäddad utan dokumentskal. */
+html, body { margin: 0; height: 100%; background: #14101c; overflow: hidden; overscroll-behavior: none; }
+#bb { position: fixed; inset: 0; overflow: hidden; background: #14101c; color: #ffeccd; font: 800 15px/1.25 Nunito, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-user-select: none; user-select: none; touch-action: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; cursor: default;
+  --st: env(safe-area-inset-top, 0px); --sb: env(safe-area-inset-bottom, 0px); --sl: env(safe-area-inset-left, 0px); --sr: env(safe-area-inset-right, 0px); }
+#bb *, #bb *::before, #bb *::after { box-sizing: border-box; }
+#bb canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#bb .dold { display: none !important; }
+#bb button { font: inherit; color: inherit; border: 0; padding: 0; margin: 0; background: none; cursor: pointer; touch-action: manipulation; -webkit-appearance: none; appearance: none; }
+#sond { position: absolute; left: 0; top: 0; width: 0; height: 0; visibility: hidden; padding: var(--st) var(--sr) var(--sb) var(--sl); }
+
+/* ── trä ── */
+.tra { background: linear-gradient(#80532c, #5c3a1c); border: 2px solid #2c1a0b; border-radius: 12px; box-shadow: inset 0 1px 0 rgba(255, 220, 160, .38), inset 0 -2px 0 rgba(0, 0, 0, .22), 0 2px 0 rgba(0, 0, 0, .35); }
+.num { font-family: "Lilita One", Nunito, system-ui, sans-serif; font-weight: 400; letter-spacing: .3px; text-shadow: 0 1.5px 0 rgba(0, 0, 0, .55); }
+
+/* ── HUD ── */
+#hud { position: absolute; inset: 0; pointer-events: none; }
+#hudtopp { position: absolute; left: 0; right: 0; top: 0; padding: calc(var(--st) + 6px) calc(var(--sr) + 8px) 0 calc(var(--sl) + 8px); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+#ovan { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.orad { display: flex; gap: 8px; align-items: center; min-width: 0; }
+#resurser { flex: 1 1 auto; min-width: 0; display: flex; gap: 4px; align-items: center; }
+.pill { display: flex; align-items: center; gap: 3px; height: 34px; padding: 0 7px 0 4px; min-width: 0; flex: 0 1 auto; overflow: hidden; }
+.pill canvas { width: 22px; height: 22px; flex: none; }
+.pill b { font-size: 17px; color: #fff3d6; min-width: 14px; text-align: right; white-space: nowrap; }
+#p-bar { padding-right: 6px; background: linear-gradient(#5f4a34, #46351f); }
+#p-bar b { font-size: 13px; color: #e8d4b0; }
+#p-bar.full b { color: #ffd24a; }
+#k-paus { flex: none; margin-left: auto; width: 40px; height: 36px; pointer-events: auto; display: grid; place-items: center; justify-self: end; }
+#k-paus i { display: block; width: 14px; height: 15px; border-left: 5px solid #ffeccd; border-right: 5px solid #ffeccd; }
+#klocka { flex: none; margin-right: auto; display: flex; align-items: center; gap: 7px; height: 38px; padding: 0 12px 0 4px; justify-self: start; }
+#urtavla { width: 30px; height: 30px; border-radius: 50%; position: relative; flex: none; border: 2px solid #2c1a0b; background: conic-gradient(#f6c744 calc(var(--a, 0) * 360deg), #3a2a18 0); }
+#urtavla::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #ffe27a; box-shadow: 0 0 6px #ffd24a; }
+#klocka.natt #urtavla { background: conic-gradient(#8fb0ff calc(var(--a, 0) * 360deg), #1c2038 0); }
+#klocka.natt #urtavla::after { background: #dfe8ff; box-shadow: inset -5px -2px 0 #6f86c8, 0 0 6px #9db8ff; }
+#klocka.skym #urtavla { background: conic-gradient(#ff8a3c calc(var(--a, 0) * 360deg), #3a2018 0); }
+#klocka.skym #urtavla::after { background: #ff9a4a; box-shadow: 0 0 6px #ff6a2a; }
+#kl-text { display: flex; flex-direction: column; line-height: 1.02; }
+#kl-namn { font-size: 16px; color: #fff3d6; white-space: nowrap; }
+#kl-tid { font-size: 12px; color: #e2c9a0; font-weight: 800; white-space: nowrap; }
+#tron { flex: none; display: flex; align-items: center; gap: 5px; height: 38px; padding: 0 9px 0 5px; justify-self: end; }
+#tron canvas { width: 26px; height: 26px; flex: none; }
+#tron b { font-size: 14px; color: #fff3d6; min-width: 28px; text-align: right; }
+.stapel { height: 13px; border-radius: 7px; background: #24160a; border: 2px solid #1a0f06; overflow: hidden; position: relative; }
+.stapel i { display: block; height: 100%; width: 100%; transform-origin: left center; border-radius: 4px; background: linear-gradient(#7be05a, #3aa838); }
+#tron .stapel { width: 84px; }
+#tron.lag .stapel i { background: linear-gradient(#ff7a5a, #d0342a); }
+#tron.lag { animation: bb-varn 0.7s infinite alternate; }
+@keyframes bb-varn { to { box-shadow: 0 0 0 3px rgba(255, 70, 50, .75), 0 2px 0 rgba(0, 0, 0, .35); } }
+
+#mal { max-width: min(94%, 470px); padding: 6px 13px 7px; border-radius: 14px; background: rgba(28, 20, 14, .82); border: 2px solid #d9a441; text-align: center; box-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+#mal-text { display: block; font-size: 15px; color: #fff3d6; }
+#mal-under { display: block; font-size: 12.5px; color: #e9cf9f; margin-top: 2px; }
+#mal-stapel { height: 7px; border-width: 1px; margin: 5px auto 0; width: 150px; max-width: 100%; }
+#mal-stapel i { background: linear-gradient(#ffe27a, #e0a820); }
+#mal.guide { border-color: #ffe27a; background: rgba(40, 28, 12, .9); animation: bb-guide 1s infinite alternate; }
+#mal.guide #mal-text { font-size: 17px; }
+#mal.fara { border-color: #ff6a4a; }
+@keyframes bb-guide { to { box-shadow: 0 0 0 4px rgba(255, 226, 122, .45), 0 2px 0 rgba(0, 0, 0, .3); } }
+#boss { width: min(86%, 380px); padding: 4px 10px 7px; border-radius: 12px; background: rgba(40, 8, 20, .85); border: 2px solid #ff4a6a; text-align: center; }
+#boss b { display: block; font: 800 19px/1.1 "Grenze Gotisch", Georgia, serif; color: #ffd0d8; letter-spacing: .5px; }
+#boss .stapel { margin-top: 3px; height: 12px; }
+#boss .stapel i { background: linear-gradient(#ff6a8a, #c01840); }
+#toastar { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.toast { padding: 4px 12px; border-radius: 12px; background: rgba(20, 16, 24, .82); font-size: 14px; color: #fff3d6; animation: bb-toast 3.2s forwards; white-space: nowrap; }
+.toast.guld { color: #ffd24a; }
+.toast.rod { color: #ff9a8a; }
+@keyframes bb-toast { 0% { opacity: 0; transform: translateY(-6px); } 8%, 78% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+
+#banner { position: absolute; left: 0; right: 0; top: 30%; text-align: center; padding: 0 16px; animation: bb-banner var(--tid, 3.5s) forwards; }
+#banner b { display: block; font: 800 46px/1 "Grenze Gotisch", Georgia, serif; color: #ffe27a; text-shadow: 0 3px 0 #3a1c06, 0 0 22px rgba(0, 0, 0, .8); letter-spacing: 1px; }
+#banner span { display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 12px; background: rgba(20, 16, 24, .8); font-size: 16px; color: #fff3d6; }
+#banner.varn b { color: #8dffb0; text-shadow: 0 3px 0 #06301a, 0 0 22px rgba(0, 0, 0, .85); }
+#banner.natt b { color: #cfdcff; text-shadow: 0 3px 0 #101838, 0 0 22px rgba(0, 0, 0, .85); }
+#banner.boss b { color: #ff8aa0; text-shadow: 0 3px 0 #3a0614, 0 0 22px rgba(0, 0, 0, .85); }
+@keyframes bb-banner { 0% { opacity: 0; transform: scale(.8); } 9% { opacity: 1; transform: scale(1.04); } 14%, 82% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-10px); } }
+
+.pil { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; will-change: transform; }
+.pil { filter: drop-shadow(0 0 1.5px #2c1a0b) drop-shadow(0 0 1.5px #2c1a0b) drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); }
+.pil::before { content: ""; position: absolute; inset: 0; background: #ffd24a; clip-path: polygon(100% 50%, 30% 8%, 44% 50%, 30% 92%); }
+.pil.fiende::before { background: #ff5a4a; }
+.pil.varn::before { background: #6dff9a; }
+.pil.varn { animation: bb-blink .5s infinite alternate; }
+@keyframes bb-blink { to { opacity: .45; } }
+#markor { position: absolute; left: 0; top: 0; width: 30px; height: 30px; margin: -30px 0 0 -15px; will-change: transform; }
+#markor::before { content: ""; position: absolute; inset: 0; background: #2c1a0b; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+#markor::after { content: ""; position: absolute; inset: 4px 6px 8px; background: #ffd24a; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+
+#k-horn { position: absolute; right: calc(var(--sr) + 14px); bottom: calc(var(--sb) + 22px); width: 76px; height: 76px; border-radius: 50%; pointer-events: auto; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 35%, #a06a38, #5c3a1c 72%); border: 3px solid #2c1a0b; box-shadow: inset 0 2px 0 rgba(255, 220, 160, .4), 0 3px 0 rgba(0, 0, 0, .4); }
+#k-horn::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; background: conic-gradient(#ffd24a calc(var(--h, 0) * 360deg), transparent 0); -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%); mask: radial-gradient(circle, transparent 60%, #000 62%); }
+#k-horn canvas { width: 42px; height: 42px; margin-top: -8px; }
+#k-horn span { position: absolute; left: -12px; right: -12px; bottom: 5px; text-align: center; font-size: 13px; color: #ffe27a; white-space: nowrap; }
+#k-horn.tryck { transform: scale(.94); }
+#k-horn.vink { animation: bb-vink .8s infinite alternate; }
+@keyframes bb-vink { to { box-shadow: inset 0 2px 0 rgba(255, 220, 160, .4), 0 0 0 6px rgba(255, 226, 122, .5); } }
+
+#spak { position: absolute; left: 0; top: 0; width: 124px; height: 124px; margin: -62px 0 0 -62px; border-radius: 50%; background: rgba(255, 240, 210, .13); border: 2px solid rgba(255, 240, 210, .5); }
+#spak i { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; background: rgba(255, 236, 200, .82); border: 2px solid rgba(60, 36, 12, .8); box-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+#finger { position: absolute; left: 50%; bottom: calc(var(--sb) + 17%); width: 150px; height: 60px; margin-left: -75px; }
+#finger i { position: absolute; left: 0; top: 8px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 240, 210, .85); border: 3px solid rgba(60, 36, 12, .75); animation: bb-finger 1.6s ease-in-out infinite; }
+@keyframes bb-finger { 0% { transform: translateX(10px) scale(1.15); opacity: 0; } 15% { transform: translateX(10px) scale(1); opacity: 1; } 75% { transform: translateX(96px); opacity: 1; } 100% { transform: translateX(96px); opacity: 0; } }
+#fps { position: absolute; left: calc(var(--sl) + 8px); bottom: calc(var(--sb) + 8px); font: 600 11px/1.3 ui-monospace, Menlo, monospace; white-space: pre; color: #fff; background: rgba(10, 12, 20, .6); padding: 5px 7px; border-radius: 8px; }
+
+/* ── lager: laddning, start, paus, förlust, seger ── */
+.lager { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; z-index: 5;
+  padding: calc(var(--st) + 16px) calc(var(--sr) + 18px) calc(var(--sb) + 16px) calc(var(--sl) + 18px); background: rgba(12, 9, 16, .62); }
+.titel { font: 800 54px/0.95 "Grenze Gotisch", Georgia, serif; color: #ffd24a; letter-spacing: 1px; text-shadow: 0 3px 0 #5a2c06, 0 6px 0 rgba(0, 0, 0, .45), 0 0 30px rgba(0, 0, 0, .6); margin: 0; }
+.under { font-size: 16px; color: #fff3d6; text-shadow: 0 2px 4px rgba(0, 0, 0, .8); margin: 0; max-width: 330px; }
+.panel { width: min(100%, 330px); padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 10px; align-items: stretch; border-radius: 18px; }
+.panel h2 { font: 800 38px/1 "Grenze Gotisch", Georgia, serif; color: #ffe27a; margin: 0 0 2px; text-shadow: 0 2px 0 #3a1c06; letter-spacing: .5px; }
+.panel p { margin: 0; font-size: 15px; color: #f6e2bd; }
+#bb button.knapp { min-height: 52px; padding: 8px 18px; border-radius: 14px; font: 400 21px/1.1 "Lilita One", Nunito, system-ui, sans-serif; color: #3a2206; letter-spacing: .3px;
+  background: linear-gradient(#ffe27a, #e9a820); border: 2px solid #5a3408; box-shadow: inset 0 2px 0 rgba(255, 255, 255, .55), 0 3px 0 #5a3408; }
+#bb button.knapp:active { transform: translateY(2px); box-shadow: inset 0 2px 0 rgba(255, 255, 255, .55), 0 1px 0 #5a3408; }
+#bb button.knapp.andra { background: linear-gradient(#f3e3c0, #cdb383); font-size: 18px; min-height: 46px; }
+#bb button.knapp.liten { font-size: 16px; min-height: 42px; background: linear-gradient(#8a6038, #644020); color: #ffeccd; border-color: #2c1a0b; box-shadow: inset 0 1px 0 rgba(255, 220, 160, .38), 0 2px 0 #2c1a0b; }
+#bb button.knapp.av { filter: saturate(.3) brightness(.8); }
+.rad { display: flex; gap: 8px; }
+.rad > * { flex: 1 1 0; }
+#ladd { background: #14101c; z-index: 9; }
+#ladd .ram { width: min(78%, 300px); height: 20px; border-radius: 10px; background: #24160a; border: 2px solid #5a3408; overflow: hidden; }
+#ladd .ram i { display: block; height: 100%; width: 0; background: linear-gradient(#ffe27a, #e9a820); transition: width .15s; }
+#ladd-text { font-size: 14px; color: #d9c4a0; min-height: 18px; }
+#start { background: linear-gradient(rgba(12, 9, 16, .72), rgba(12, 9, 16, 0) 34%, rgba(12, 9, 16, 0) 52%, rgba(12, 9, 16, .82) 82%); justify-content: space-between; }
+#start .huvud { margin-top: 4vh; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+#start .val { width: min(100%, 320px); display: flex; flex-direction: column; gap: 10px; margin-bottom: 2vh; }
+#start-info { font-size: 14px; color: #f0dcb4; text-shadow: 0 1px 3px #000; min-height: 18px; }
+#forlust .panel h2 { color: #ff9a8a; }
+
+/* liggande och låga skärmar: allt på en rad */
+@media (min-width: 640px) {
+  #ovan { flex-direction: row; gap: 8px; align-items: center; }
+  .orad { display: contents; }
+  #resurser { flex: 0 1 auto; order: 1; }
+  #klocka { order: 2; margin-right: 0; }
+  #tron { order: 3; }
+  #k-paus { order: 4; }
+  #mal { max-width: min(62%, 470px); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  #hudtopp { gap: 4px; }
+  #banner { top: 34%; }
+  #banner b { font-size: 38px; }
+  .titel { font-size: 44px; }
+  #start { flex-direction: row; align-items: center; justify-content: space-around; background: linear-gradient(90deg, rgba(12, 9, 16, .8), rgba(12, 9, 16, .1) 45%, rgba(12, 9, 16, .1) 55%, rgba(12, 9, 16, .8)); }
+  #start .huvud { margin: 0; max-width: 44%; }
+  #start .val { margin: 0; width: min(40%, 300px); }
+  .panel { padding: 12px 16px 14px; gap: 7px; }
+  .panel h2 { font-size: 30px; }
+  #bb button.knapp { min-height: 42px; font-size: 18px; }
+  #bb button.knapp.andra, #bb button.knapp.liten { min-height: 38px; font-size: 15px; }
+  .lager { gap: 8px; }
+  #k-horn { bottom: calc(var(--sb) + 14px); }
+}
+@media (max-width: 350px) { .pill b { font-size: 16px; } .pill { padding: 0 6px 0 4px; } #tron .stapel { width: 64px; } }
+@media (prefers-reduced-motion: reduce) { #mal.guide, #tron.lag, #k-horn.vink { animation: none; } }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+
+<div id="bb">
+  <canvas id="c"></canvas>
+  <div id="sond"></div>
+
+  <div id="hud" class="dold">
+    <div id="pil-mal" class="pil dold"></div>
+    <div id="pil-v0" class="pil varn dold"></div><div id="pil-v1" class="pil varn dold"></div><div id="pil-v2" class="pil varn dold"></div><div id="pil-v3" class="pil varn dold"></div>
+    <div id="markor" class="dold"></div>
+    <div id="hudtopp">
+      <div id="ovan">
+        <div class="orad"><div id="resurser">
+          <div class="pill tra" id="p-tra"><canvas data-ikon="tra"></canvas><b class="num">0</b></div>
+          <div class="pill tra" id="p-sten"><canvas data-ikon="sten"></canvas><b class="num">0</b></div>
+          <div class="pill tra" id="p-guld"><canvas data-ikon="guld"></canvas><b class="num">0</b></div>
+          <div class="pill tra" id="p-bar" title="Det riddaren bär"><canvas data-ikon="bar"></canvas><b class="num">0/12</b></div>
+        </div>
+        <button id="k-paus" class="tra" aria-label="Paus"><i></i></button></div>
+        <div class="orad"><div id="klocka" class="tra"><div id="urtavla"></div><div id="kl-text"><b id="kl-namn" class="num">Dag 1</b><span id="kl-tid"></span></div></div>
+        <div id="tron" class="tra" title="Tronsalens liv"><canvas data-ikon="tronsal"></canvas><div class="stapel"><i id="tron-fyll"></i></div><b id="tron-tal" class="num">300</b></div></div>
+      </div>
+      <div id="mal"><span id="mal-text"></span><div id="mal-stapel" class="stapel dold"><i></i></div><small id="mal-under"></small></div>
+      <div id="boss" class="dold"><b id="boss-namn"></b><div class="stapel"><i id="boss-fyll"></i></div></div>
+      <div id="toastar"></div>
+    </div>
+    <div id="banner" class="dold"><b></b><span></span></div>
+    <div id="finger" class="dold"><i></i></div>
+    <button id="k-horn" class="dold" aria-label="Blås i hornet: starta natten"><canvas data-ikon="horn"></canvas><span class="num">Håll in</span></button>
+    <div id="spak" class="dold"><i></i></div>
+    <div id="fps" class="dold"></div>
+  </div>
+
+  <div id="start" class="lager dold">
+    <div class="huvud">
+      <h1 class="titel">Borgbyggaren</h1>
+      <p class="under">Bygg din borg på dagen. Försvara den mot de odöda på natten.</p>
+    </div>
+    <div class="val">
+      <div id="start-info"></div>
+      <button class="knapp" id="k-spela">Spela</button>
+      <button class="knapp andra dold" id="k-nytt">Nytt spel</button>
+      <div class="rad"><button class="knapp liten" data-inst="ljud">Ljud: på</button><button class="knapp liten" data-inst="musik">Musik: på</button></div>
+    </div>
+  </div>
+
+  <div id="bekrafta" class="lager dold">
+    <div class="panel tra">
+      <h2>Nytt spel?</h2>
+      <p id="bekrafta-text">Den sparade borgen försvinner.</p>
+      <button class="knapp" id="k-nytt-ja">Ja, börja om</button>
+      <button class="knapp andra" id="k-nytt-nej">Avbryt</button>
+    </div>
+  </div>
+
+  <div id="pausmeny" class="lager dold">
+    <div class="panel tra">
+      <h2>Paus</h2>
+      <p id="paus-info"></p>
+      <button class="knapp" id="k-fortsatt">Fortsätt</button>
+      <div class="rad"><button class="knapp liten" data-inst="ljud">Ljud: på</button><button class="knapp liten" data-inst="musik">Musik: på</button></div>
+      <button class="knapp andra" id="k-tillstart">Till startskärmen</button>
+    </div>
+  </div>
+
+  <div id="forlust" class="lager dold">
+    <div class="panel tra">
+      <h2>Tronsalen föll</h2>
+      <p id="forlust-text"></p>
+      <p>Du får försöka igen med borgen från senaste gryningen, lite extra trä och sten och färre fiender.</p>
+      <button class="knapp" id="k-igen">Försök natten igen</button>
+    </div>
+  </div>
+
+  <div id="seger" class="lager dold">
+    <div class="panel tra">
+      <h2>Seger!</h2>
+      <p>Borgen står efter 20 nätter. De odöda har gett upp. Nästan.</p>
+      <p id="seger-text"></p>
+      <button class="knapp" id="k-andlost">Fortsätt i ändlöst läge</button>
+    </div>
+  </div>
+
+  <div id="ladd" class="lager">
+    <h1 class="titel">Borgbyggaren</h1>
+    <div class="ram"><i id="ladd-fyll"></i></div>
+    <div id="ladd-text">Laddar…</div>
+  </div>
+</div>
+
+<script type="module">
+// ═══════════════════════════ Borgbyggaren – spelet ═══════════════════════════
+const $ = (s) => document.querySelector(s);
+const q = new URLSearchParams(location.search);
+const NYCKEL = 'borgbyggaren.v1', NYCKEL_INST = 'borgbyggaren.v1.installningar';
+const MAXSTEG = 0.05;             // längsta spelsteg per bildruta (s). Går det långsammare än 20 fps saktar spelet in i stället för att hoppa.
+const rot = $('#bb'), canvas = $('#c');
+const fel = [];
+addEventListener('error', (e) => { fel.push(String(e.message || e.error || e)); });
+addEventListener('unhandledrejection', (e) => { fel.push('löfte: ' + String(e.reason && e.reason.message || e.reason)); });
+
+// ─── laddning ───
+const laddFyll = $('#ladd-fyll'), laddText = $('#ladd-text');
+let M, G, THREE;
+try {
+  [M, G, THREE] = await Promise.all([import('./modell.js'), import('./grafik.js'), import('three')]);
+} catch (e) {
+  laddText.textContent = 'Kunde inte ladda spelet. Kontrollera nätet och ladda om sidan.';
+  fel.push('import: ' + (e && e.message));
+  throw e;
+}
+const { KARTA, TUNE } = M;
+const g = G.skapaGrafik(canvas, { autoKvalitet: q.get('auto') !== '0', kvalitet: +(q.get('kval') || 0), mobil: q.has('mobil') ? q.get('mobil') === '1' : undefined });
+
+// ─── tillstånd ───
+let spel = null;
+let lage = 'ladd';                // 'ladd' | 'start' | 'spel' | 'paus' | 'forlust' | 'seger'
+let harSparning = false;
+const inst = { ljud: true, musik: true };
+const input = { dx: 0, dz: 0, horn: false };
+let W = 1, H = 1, kant = { t: 0, r: 0, b: 0, l: 0 }, hudNere = 120, omrita = true;
+
+// ─── sparning (localStorage kan saknas eller vara full: allt går genom try/catch) ───
+function las(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function skriv(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+function radera(k) { try { localStorage.removeItem(k); } catch (e) { /* inget att göra */ } }
+// Efter en förlust sparas inget: den senaste sparningen (gryningen eller senaste bygget) ligger kvar, så att en omladdning ger en ny chans.
+function spara() { if (!spel) return false; try { harSparning = skriv(NYCKEL, JSON.stringify(M.tillSparning(spel))) || harSparning; return true; } catch (e) { return false; } }
+function sparaInst() { skriv(NYCKEL_INST, JSON.stringify(inst)); }
+try { const i = JSON.parse(las(NYCKEL_INST) || 'null'); if (i && typeof i === 'object') { inst.ljud = i.ljud !== false; inst.musik = i.musik !== false; } } catch (e) { /* standardval */ }
+const nyttFro = () => (q.has('fro') ? +q.get('fro') : ((Math.random() * 2e9) | 0)) || 1;
+function laddaSparning() {
+  const raw = las(NYCKEL);
+  if (raw) { const s = M.franSparning(raw); if (s.aterstalld !== 'ny') { harSparning = true; return s; } }
+  harSparning = false;
+  return M.nyttSpel({ fro: nyttFro() });
+}
+
+// ═══════════════════════════ ljud (WebAudio, allt syntetiseras) ═══════════════════════════
+const A = { ctx: null, sfx: null, mus: null, amb: null, brus: null, vind: null, vindFilt: null };
+const senast = {};
+function startaLjud() {
+  if (A.ctx) { if (A.ctx.state !== 'running' && lage !== 'paus' && !document.hidden) A.ctx.resume().catch(() => {}); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  try { A.ctx = new AC(); } catch (e) { return; }
+  const c = A.ctx, komp = c.createDynamicsCompressor(), ut = c.createGain();
+  komp.threshold.value = -14; komp.ratio.value = 5; komp.attack.value = 0.004; komp.release.value = 0.18;
+  ut.gain.value = 0.85; ut.connect(komp); komp.connect(c.destination);
+  A.sfx = c.createGain(); A.mus = c.createGain(); A.amb = c.createGain();
+  A.sfx.connect(ut); A.mus.connect(ut); A.amb.connect(ut);
+  const n = c.sampleRate * 2, buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  A.brus = buf;
+  // vind: brus genom ett bandpassfilter som sveper långsamt
+  const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
+  A.vindFilt = c.createBiquadFilter(); A.vindFilt.type = 'bandpass'; A.vindFilt.frequency.value = 420; A.vindFilt.Q.value = 0.7;
+  A.vind = c.createGain(); A.vind.gain.value = 0;
+  src.connect(A.vindFilt); A.vindFilt.connect(A.vind); A.vind.connect(A.amb); src.start();
+  tillampaInst();
+  if (c.state !== 'running') c.resume().catch(() => {});
+}
+function tillampaInst() {
+  if (A.ctx) { const t = A.ctx.currentTime; A.sfx.gain.setTargetAtTime(inst.ljud ? 1 : 0, t, 0.03); A.amb.gain.setTargetAtTime(inst.ljud ? 1 : 0, t, 0.03); A.mus.gain.setTargetAtTime(inst.musik ? 0.6 : 0, t, 0.05); }
+  document.querySelectorAll('[data-inst]').forEach((b) => { const pa = inst[b.dataset.inst]; b.textContent = (b.dataset.inst === 'ljud' ? 'Ljud: ' : 'Musik: ') + (pa ? 'på' : 'av'); b.classList.toggle('av', !pa); });
+}
+// en ton med glidande tonhöjd och snabb anslagskurva
+function ton(typ, f0, f1, t, langd, vol, ut, attack) {
+  const c = A.ctx, o = c.createOscillator(), gn = c.createGain();
+  o.type = typ; o.frequency.setValueAtTime(f0, t);
+  if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t + langd);
+  gn.gain.setValueAtTime(0.0001, t); gn.gain.linearRampToValueAtTime(vol, t + (attack || 0.006)); gn.gain.exponentialRampToValueAtTime(0.0001, t + langd);
+  o.connect(gn); gn.connect(ut || A.sfx); o.start(t); o.stop(t + langd + 0.03);
+}
+// filtrerat brus med svepande filter
+function brus(t, langd, vol, filt, f0, f1, Q, ut, attack) {
+  const c = A.ctx, s = c.createBufferSource(), fl = c.createBiquadFilter(), gn = c.createGain();
+  s.buffer = A.brus; s.loop = true;
+  fl.type = filt; fl.frequency.setValueAtTime(f0, t); if (f1 !== f0) fl.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + langd); fl.Q.value = Q || 0.8;
+  gn.gain.setValueAtTime(0.0001, t); gn.gain.linearRampToValueAtTime(vol, t + (attack || 0.004)); gn.gain.exponentialRampToValueAtTime(0.0001, t + langd);
+  s.connect(fl); fl.connect(gn); gn.connect(ut || A.sfx); s.start(t, Math.random() * 1.5); s.stop(t + langd + 0.03);
+}
+const rnd = (a, b) => a + Math.random() * (b - a);
+let betalN = 0, betalT = 0;
+const LJUD = {
+  hugg(t, v) { brus(t, 0.07, 0.5 * v, 'bandpass', 1500, 700, 1.2); ton('triangle', rnd(170, 210), 90, t, 0.1, 0.5 * v); },
+  sten(t, v) { brus(t, 0.05, 0.4 * v, 'highpass', 2600, 1800); ton('square', rnd(560, 680), 380, t, 0.06, 0.1 * v); ton('triangle', 240, 120, t, 0.08, 0.3 * v); },
+  tradfall(t, v) { ton('sawtooth', 170, 60, t, 0.26, 0.1 * v); brus(t + 0.2, 0.22, 0.45 * v, 'lowpass', 600, 150); ton('sine', 90, 45, t + 0.2, 0.25, 0.5 * v); },
+  betala(t) { if (t - betalT > 0.5) betalN = 0; betalT = t; const f = 740 * Math.pow(2, (betalN++ % 12) / 12); ton('sine', f, f * 1.5, t, 0.07, 0.13); },
+  lamna(t) { ton('triangle', 300, 200, t, 0.09, 0.22); ton('sine', 660, 880, t + 0.05, 0.1, 0.1); },
+  bygge(t) { ton('sine', 130, 45, t, 0.32, 0.7); brus(t, 0.26, 0.3, 'lowpass', 900, 200); [523, 659, 784, 1047].forEach((f, i) => ton('triangle', f, f, t + 0.06 + i * 0.08, 0.26, 0.2)); },
+  uppgradering(t) { for (const d of [0, 0.2]) { ton('square', 1320, 1300, t + d, 0.3, 0.08); ton('square', 1987, 1960, t + d, 0.25, 0.05); ton('sine', 660, 650, t + d, 0.45, 0.2); } [784, 988, 1175].forEach((f, i) => ton('triangle', f, f, t + 0.42 + i * 0.09, 0.3, 0.16)); },
+  horn(t) {
+    const c = A.ctx, fl = c.createBiquadFilter(), gn = c.createGain();
+    fl.type = 'lowpass'; fl.frequency.setValueAtTime(380, t); fl.frequency.linearRampToValueAtTime(1500, t + 0.5); fl.frequency.linearRampToValueAtTime(700, t + 1.7);
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.linearRampToValueAtTime(0.34, t + 0.12); gn.gain.setValueAtTime(0.34, t + 1.2); gn.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+    for (const [f, det] of [[146.8, 0], [146.8, 5], [220, -4]]) { const o = c.createOscillator(); o.type = 'sawtooth'; o.detune.value = det; o.frequency.setValueAtTime(f * 0.94, t); o.frequency.linearRampToValueAtTime(f, t + 0.16); o.connect(fl); o.start(t); o.stop(t + 1.9); }
+    fl.connect(gn); gn.connect(A.sfx);
+  },
+  svep(t, v) { brus(t, 0.11, 0.15 * v, 'bandpass', 500, 2400, 2); },
+  traff(t, v) { brus(t, 0.05, 0.28 * v, 'bandpass', 1900, 900, 1); ton('square', rnd(260, 330), 120, t, 0.07, 0.1 * v); },
+  aj(t) { ton('sawtooth', 230, 90, t, 0.17, 0.22); brus(t, 0.08, 0.3, 'lowpass', 800, 300); },
+  murtraff(t, v) { ton('triangle', rnd(120, 145), 70, t, 0.12, 0.4 * v); brus(t, 0.06, 0.22 * v, 'bandpass', 500, 300, 1); },
+  ras(t, v) { brus(t, 0.9, 0.6 * v, 'lowpass', 1200, 120); ton('sine', 90, 35, t, 0.6, 0.6 * v); },
+  pil(t, v) { ton('sine', 900, 350, t, 0.09, 0.11 * v); brus(t, 0.05, 0.07 * v, 'highpass', 3000, 5000); },
+  magi(t, v) { ton('sawtooth', 700, 220, t, 0.22, 0.07 * v); ton('sine', 1400, 500, t, 0.2, 0.09 * v); },
+  ben(t, v) { for (let i = 0; i < 3; i++) ton('square', rnd(450, 950), 200, t + i * 0.045, 0.04, 0.08 * v); brus(t, 0.1, 0.12 * v, 'highpass', 2000, 1200); },
+  guld(t) { ton('sine', 1568, 1568, t, 0.09, 0.13); ton('sine', 2093, 2093, t + 0.06, 0.15, 0.13); },
+  bossNy(t) { ton('sawtooth', 55, 52, t, 2.4, 0.3, null, 0.3); ton('sawtooth', 82.4, 78, t, 2.4, 0.18, null, 0.3); ton('sine', 110, 108, t, 2.6, 0.4); brus(t, 1.6, 0.2, 'lowpass', 300, 80); },
+  bossVarning(t, v, tid) { ton('sawtooth', 240, 640, t, tid || 1.8, 0.11, null, (tid || 1.8) * 0.8); ton('square', 120, 320, t, tid || 1.8, 0.05, null, (tid || 1.8) * 0.8); },
+  small(t, v) { brus(t, 0.8, 0.8 * v, 'lowpass', 1800, 100); ton('sine', 110, 30, t, 0.7, 0.8 * v); },
+  bossDod(t) { LJUD.small(t, 1); [392, 523, 659, 784, 1047].forEach((f, i) => ton('triangle', f, f, t + 0.3 + i * 0.11, 0.4, 0.2)); },
+  varning(t) { for (const d of [0, 1.0]) { ton('sine', 196, 195, t + d, 1.9, 0.3); ton('sine', 541, 540, t + d, 1.2, 0.1); ton('sine', 1058, 1056, t + d, 0.6, 0.05); } },
+  natt(t) { ton('sine', 80, 40, t, 0.5, 0.6); [146.8, 174.6, 220].forEach((f) => ton('triangle', f, f, t + 0.05, 1.6, 0.1, null, 0.5)); },
+  gryning(t) { [392, 494, 587, 784, 988].forEach((f, i) => ton('triangle', f, f, t + i * 0.12, 0.55, 0.2)); for (let i = 0; i < 4; i++) LJUD.fagel(t + 0.5 + i * 0.28 + Math.random() * 0.1, 1, A.sfx); },
+  forlust(t) { [294, 277, 247, 196].forEach((f, i) => { ton('sawtooth', f, f * 0.98, t + i * 0.34, 0.55, 0.11); ton('sine', f / 2, f / 2, t + i * 0.34, 0.6, 0.2); }); ton('sine', 73, 60, t + 1.36, 1.6, 0.4); },
+  seger(t) { [[523, 0], [523, 0.16], [523, 0.32], [659, 0.48], [784, 0.8], [1047, 1.12]].forEach(([f, d]) => { ton('triangle', f, f, t + d, d > 1 ? 1.2 : 0.3, 0.2); ton('square', f / 2, f / 2, t + d, d > 1 ? 1.0 : 0.25, 0.05); }); },
+  fall(t) { ton('sawtooth', 330, 80, t, 0.5, 0.2); },
+  ater(t) { ton('sine', 440, 880, t, 0.3, 0.14); ton('sine', 660, 1320, t + 0.1, 0.3, 0.1); },
+  brinn(t, v) { brus(t, 0.5, 0.16 * v, 'highpass', 2500, 6000); },
+  klick(t) { ton('triangle', 660, 880, t, 0.05, 0.12); },
+  uggla(t) { ton('sine', 372, 330, t, 0.3, 0.09, A.amb, 0.06); ton('sine', 352, 300, t + 0.44, 0.55, 0.11, A.amb, 0.08); },
+  fagel(t, v, ut) { const f = rnd(2600, 3600), n = 2 + ((Math.random() * 3) | 0); for (let i = 0; i < n; i++) ton('sine', f, f * rnd(1.15, 1.4), t + i * 0.09, 0.07, 0.035, ut && ut.connect ? ut : A.amb, 0.015); },
+};
+const MININT = { hugg: 0.07, sten: 0.07, betala: 0.045, svep: 0.07, traff: 0.05, murtraff: 0.07, pil: 0.06, magi: 0.09, ben: 0.07, guld: 0.07, brinn: 0.1, small: 0.2, aj: 0.2, ras: 0.3, lamna: 0.2, tradfall: 0.15 };
+function spela(namn, x, z, extra) {
+  if (!A.ctx || !inst.ljud || A.ctx.state !== 'running' || !LJUD[namn]) return;
+  const t = A.ctx.currentTime;
+  if (t - (senast[namn] ?? -9) < (MININT[namn] ?? 0.02)) return;
+  senast[namn] = t;
+  let v = 1;
+  if (typeof x === 'number' && spel) { const k = spel.riddare; v = Math.max(0.12, Math.min(1, 1.15 - Math.hypot(x - k.x, z - k.z) / 40)); }
+  try { LJUD[namn](t + 0.005, v, extra); } catch (e) { /* ett ljud får aldrig stoppa spelet */ }
+}
+// stämning: vind (starkare på natten), uggla på natten, fåglar på dagen
+const stamning = { nasta: 3 };
+function uppdateraStamning(dt) {
+  if (!A.ctx || A.ctx.state !== 'running') return;
+  const natt = spel && (spel.tid.fas === 'natt' || spel.tid.fas === 'skymning') && lage !== 'start', t = A.ctx.currentTime;
+  stamning.nasta -= dt;
+  if (stamning.nasta > 0) return;
+  A.vind.gain.setTargetAtTime(natt ? rnd(0.07, 0.17) : rnd(0.012, 0.035), t, 1.2);
+  A.vindFilt.frequency.setTargetAtTime(natt ? rnd(260, 620) : rnd(380, 800), t, 1.5);
+  if (inst.ljud && lage !== 'forlust') { if (natt) { if (Math.random() < 0.45) LJUD.uggla(t + 0.1); } else if (Math.random() < 0.6) LJUD.fagel(t + 0.1); }
+  stamning.nasta = natt ? rnd(3.5, 7) : rnd(2.5, 6);
+}
+// musik: en liten stegsekvens som schemaläggs en bit i förväg. Dag = lutaktig dur, natt = mörk moll, boss = trummor.
+const DUR = [293.66, 329.63, 369.99, 440, 493.88, 587.33, 659.25, 739.99], MOLL = [146.83, 174.61, 196, 220, 233.08, 261.63, 293.66, 349.23];
+const MEL_DAG = [[0, -1, 2, 3, 4, -1, 3, 2], [1, -1, 3, 4, 5, -1, 4, 3], [0, 2, 3, -1, 4, 3, 2, -1], [1, 3, 2, 1, 0, -1, -1, -1], [3, -1, 4, 5, 6, -1, 5, 4], [5, 4, 3, -1, 4, 3, 2, -1], [0, -1, 2, 3, 5, -1, 4, 3], [2, 1, 0, -1, 0, -1, -1, -1]];
+const MEL_NATT = [[0, -1, -1, 2, 3, -1, -1, -1], [4, -1, 3, -1, 2, -1, -1, -1], [0, -1, 2, -1, 3, -1, 4, -1], [3, -1, 2, -1, 0, -1, -1, -1], [6, -1, -1, 5, 4, -1, -1, -1], [3, -1, 4, -1, 2, -1, -1, -1], [0, -1, -1, -1, 2, -1, 1, -1], [0, -1, -1, -1, -1, -1, -1, -1]];
+const BAS_DAG = [73.42, 98, 73.42, 110, 123.47, 98, 73.42, 110], BAS_NATT = [73.42, 58.27, 49, 55, 73.42, 58.27, 65.41, 55];
+const mus = { nasta: 0, steg: 0, lage: 'tyst' };
+function musikLage() {
+  if (!spel || lage === 'paus' || lage === 'forlust' || lage === 'ladd') return 'tyst';
+  if (lage === 'start') return 'dag';
+  const f = spel.tid.fas;
+  if (f === 'natt' && spel.fiender.some((e) => e.typ === 'boss' && e.hp > 0)) return 'boss';
+  return f === 'natt' || f === 'skymning' ? 'natt' : 'dag';
+}
+function musikTick() {
+  if (!A.ctx || A.ctx.state !== 'running' || !inst.musik) return;
+  const nu = A.ctx.currentTime, l = musikLage();
+  if (l !== mus.lage) { mus.lage = l; mus.steg = 0; mus.nasta = nu + 0.25; }
+  if (l === 'tyst') return;
+  if (mus.nasta < nu) mus.nasta = nu + 0.05;
+  const sl = l === 'dag' ? 0.25 : l === 'natt' ? 0.34 : 0.21;
+  while (mus.nasta < nu + 0.4) {
+    const s = mus.steg % 8, takt = Math.floor(mus.steg / 8) % 8, t = mus.nasta, U = A.mus;
+    if (l === 'dag') {
+      const n = MEL_DAG[takt][s];
+      if (n >= 0) { ton('triangle', DUR[n], DUR[n], t, 0.42, 0.11, U, 0.008); ton('sine', DUR[n] / 2, DUR[n] / 2, t, 0.3, 0.05, U, 0.01); }
+      if (s === 0 || s === 4) ton('triangle', BAS_DAG[takt], BAS_DAG[takt], t, 0.5, 0.15, U, 0.01);
+      if (s === 2 || s === 6) brus(t, 0.04, 0.03, 'highpass', 6000, 6000, 0.7, U);
+    } else {
+      const n = MEL_NATT[takt][s], b = BAS_NATT[takt];
+      if (n >= 0) { ton('triangle', MOLL[n], MOLL[n], t, 0.95, 0.09, U, 0.03); ton('sine', MOLL[n] * 2, MOLL[n] * 2, t, 0.6, 0.025, U, 0.03); }
+      if (s === 0) { ton('sawtooth', b, b, t, sl * 7.5, 0.05, U, 0.4); ton('sine', b, b, t, sl * 7.5, 0.14, U, 0.3); }
+      if (l === 'boss') { if (s % 2 === 0) ton('sine', 95, 40, t, 0.2, 0.34, U); if (s === 3 || s === 7) brus(t, 0.08, 0.07, 'bandpass', 900, 500, 1, U); ton('sawtooth', s === 5 ? b * 1.19 : b, b, t, 0.16, 0.05, U); }
+      else if (s === 0 || s === 1) ton('sine', 72, 42, t, 0.22, s === 0 ? 0.26 : 0.14, U);
+    }
+    mus.steg++; mus.nasta += sl;
+  }
+}
+setInterval(musikTick, 110);
+for (const typ of ['pointerdown', 'touchend', 'keydown']) addEventListener(typ, startaLjud, { capture: true, passive: true });
+
+// ═══════════════════════════ HUD ═══════════════════════════
+const el = {};
+for (const id of ['hud', 'hudtopp', 'p-tra', 'p-sten', 'p-guld', 'p-bar', 'klocka', 'urtavla', 'kl-namn', 'kl-tid', 'tron', 'tron-fyll', 'tron-tal', 'mal', 'mal-text', 'mal-under', 'mal-stapel', 'boss', 'boss-namn', 'boss-fyll',
+  'toastar', 'banner', 'finger', 'k-horn', 'spak', 'fps', 'pil-mal', 'pil-v0', 'pil-v1', 'pil-v2', 'pil-v3', 'markor', 'start', 'start-info', 'k-spela', 'k-nytt', 'bekrafta', 'bekrafta-text', 'pausmeny', 'paus-info', 'forlust', 'forlust-text', 'seger', 'seger-text', 'ladd', 'sond']) el[id] = document.getElementById(id);
+document.querySelectorAll('canvas[data-ikon]').forEach((cv) => { cv.width = cv.height = 72; G.ritaIkon(cv.getContext('2d'), cv.dataset.ikon, 36, 36, 68); });
+const cache = {};
+function text(id, v, nod) { if (cache[id] !== v) { cache[id] = v; (nod || el[id]).textContent = v; } }
+function klass(id, namn, pa) { const k = id + '.' + namn; if (cache[k] !== pa) { cache[k] = pa; el[id].classList.toggle(namn, pa); } }
+function visa(id, pa) { klass(id, 'dold', !pa); }
+const talNod = { 'p-tra': el['p-tra'].querySelector('b'), 'p-sten': el['p-sten'].querySelector('b'), 'p-guld': el['p-guld'].querySelector('b'), 'p-bar': el['p-bar'].querySelector('b') };
+function tal(id, v, txt) {
+  const fore = cache['n' + id];
+  if (fore === v) return;
+  cache['n' + id] = v; text(id, txt ?? String(v), talNod[id]);
+  if (fore !== undefined && v > fore && el[id].animate) el[id].animate([{ transform: 'scale(1.14)' }, { transform: 'scale(1)' }], { duration: 200 });
+}
+const mmss = (s) => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const NAMN = { palissad: 'Palissad', stenmur: 'Stenmur', mur: 'Mur', port: 'Port', torn: 'Bågskyttetorn', kasern: 'Kasern', vedkoja: 'Vedhuggarkoja', stenkoja: 'Stenhuggarkoja', smedja: 'Smedja', fyrfat: 'Fyrfat', tronsal: 'Tronsal', svard: 'Svärdet', rustning: 'Rustningen', bar: 'Bärförmågan' };
+
+function toast(t, k) {
+  const d = document.createElement('div'); d.className = 'toast' + (k ? ' ' + k : ''); d.textContent = t;
+  el.toastar.appendChild(d);
+  while (el.toastar.children.length > 3) el.toastar.firstChild.remove();
+  setTimeout(() => d.remove(), 3300);
+}
+let bannerT = null;
+function banner(titel, under, k, sek = 3.5) {
+  const b = el.banner;
+  b.className = k || ''; b.style.setProperty('--tid', sek + 's');
+  b.firstElementChild.textContent = titel; b.lastElementChild.textContent = under || ''; b.lastElementChild.style.display = under ? '' : 'none';
+  b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+  clearTimeout(bannerT); bannerT = setTimeout(() => b.classList.add('dold'), sek * 1000);
+}
+
+// världspunkt → skärm
+let _v = null;
+function tillSkarm(x, y, z) { _v = _v || new THREE.Vector3(); _v.set(x, y, z).project(g.kamera); return { x: (_v.x * 0.5 + 0.5) * W, y: (-_v.y * 0.5 + 0.5) * H, bakom: _v.z > 1 }; }
+// Ställer en pil i skärmkanten mot (x, z) om punkten inte syns. Ger true om punkten syns.
+function kantpil(pil, x, z, y = 1) {
+  const p = tillSkarm(x, y, z), l = kant.l + 30, r = W - kant.r - 30, t = hudNere + 30, b = H - kant.b - (W < H ? 112 : 40);
+  if (!p.bakom && p.x > l - 14 && p.x < r + 14 && p.y > t - 20 && p.y < b + 30) { pil.classList.add('dold'); return p; }
+  const k = spel.riddare, s0 = tillSkarm(k.x, 1, k.z);
+  const cx = Math.min(r, Math.max(l, s0.x)), cy = Math.min(b, Math.max(t, s0.y));
+  let dx = p.x - cx, dy = p.y - cy;
+  if (p.bakom || !isFinite(dx) || !isFinite(dy)) { dx = x - k.x; dy = z - k.z; }
+  const ln = Math.hypot(dx, dy) || 1; dx /= ln; dy /= ln;
+  let m = 1e9;
+  if (dx > 1e-4) m = Math.min(m, (r - cx) / dx); else if (dx < -1e-4) m = Math.min(m, (l - cx) / dx);
+  if (dy > 1e-4) m = Math.min(m, (b - cy) / dy); else if (dy < -1e-4) m = Math.min(m, (t - cy) / dy);
+  pil.style.transform = `translate(${(cx + dx * m).toFixed(1)}px,${(cy + dy * m).toFixed(1)}px) rotate(${Math.atan2(dy, dx).toFixed(3)}rad)`;
+  pil.classList.remove('dold');
+  return null;
+}
+const PEKSKARM = (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches) || 'ontouchstart' in window;
+const MARKERA = { trad: 3.6, sten: 2.2, ruta: 4.3, forrad: 3.4, laga: 3.6, hem: 6 };
+let hudKyl = 0, varnPilar = 0, hornHall = 0, hornNere = false, tid = 0;
+function hornFar() { return lage === 'spel' && spel.tid.fas === 'dag' && (spel.guide.steg === '' || spel.guide.steg === 'horn'); }
+function uppdateraHud(dt) {
+  tid += dt;
+  const t = spel.tid, k = spel.riddare, L = spel.lager, m = spel.mal, gd = spel.guide;
+  for (const r of ['tra', 'sten', 'guld']) { const v = Math.floor(L[r]); tal('p-' + r, v, v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1).replace('.', ',') + 'k' : String(v)); }
+  tal('p-bar', k.last, k.last + '/' + k.barMax); klass('p-bar', 'full', k.last >= k.barMax);
+  // klocka
+  const natt = t.fas === 'natt', skym = t.fas === 'skymning' || t.fas === 'gryning';
+  text('kl-namn', t.fas === 'dag' ? 'Dag ' + t.natt : natt ? 'Natt ' + t.natt : t.fas === 'skymning' ? 'Skymning' : 'Gryning');
+  text('kl-tid', t.fas === 'dag' ? 'natt om ' + mmss(t.kvar) : natt ? 'gryning om ' + mmss(t.kvar) : t.fas === 'skymning' ? 'de kommer!' : 'natten är över');
+  klass('klocka', 'natt', natt); klass('klocka', 'skym', skym);
+  const a = Math.round((1 - t.andel) * 100) / 100;
+  if (cache.a !== a) { cache.a = a; el.urtavla.style.setProperty('--a', a); }
+  // tronsalen
+  const tr = spel.byggen[0], ta = tr.maxHp > 0 ? Math.max(0, tr.hp / tr.maxHp) : 0, tp = Math.round(ta * 100);
+  if (cache.tron !== tp) { cache.tron = tp; el['tron-fyll'].style.transform = `scaleX(${ta.toFixed(3)})`; }
+  text('tron-tal', String(Math.max(0, Math.ceil(tr.hp)))); klass('tron', 'lag', ta < 0.35 && lage === 'spel');
+  // boss
+  let boss = null, lever = 0;
+  for (const e of spel.fiender) if (e.hp > 0) { lever++; if (e.typ === 'boss') boss = e; }
+  visa('boss', !!boss);
+  if (boss) { text('boss-namn', boss.namn || 'Boss'); const ba = Math.round(boss.hp / boss.maxHp * 200) / 200; if (cache.boss !== ba) { cache.boss = ba; el['boss-fyll'].style.transform = `scaleX(${ba})`; } }
+  // målrad
+  text('mal-text', gd.steg === 'ga' && !PEKSKARM ? 'Gå med WASD eller piltangenterna.' : (m.text || ''));
+  klass('mal', 'guide', !!gd.steg && gd.steg !== 'horn'); klass('mal', 'fara', natt || t.fas === 'skymning');
+  let under = '', andel = -1;
+  if (natt) { const kvar = lever + Math.max(0, spel.vag.lista.length - spel.vag.nasta); under = kvar > 0 ? kvar + ' odöda kvar' : ''; }
+  else if (t.fas === 'dag') {
+    if (gd.steg === 'horn') under = 'Blås i hornet när du är redo för natten.';
+    else if (!gd.steg && (m.slag === 'trad' || m.slag === 'sten' || m.slag === 'forrad' || m.slag === 'laga' || m.slag === 'hem' || (m.slag === 'ruta' && /smedjan/.test(m.text)))) {
+      // sparmål: visa hur långt det är kvar till nästa bygge, så att långa sparperioder känns som framsteg
+      let ru = null; for (const r of spel.rutor) if (r.slag === 'bygge' && (!ru || r.ordning < ru.ordning)) ru = r;
+      if (ru) {
+        const bT = ru.pris.tra - ru.betalt.tra, bS = ru.pris.sten - ru.betalt.sten, hT = Math.min(bT, L.tra + k.bar.tra), hS = Math.min(bS, L.sten + k.bar.sten);
+        const delar = []; if (bT > 0) delar.push('trä ' + Math.floor(hT) + '/' + bT); if (bS > 0) delar.push('sten ' + Math.floor(hS) + '/' + bS);
+        under = 'Nästa: ' + (NAMN[ru.byggTyp] || ru.byggTyp).toLowerCase() + (ru.niva > 1 ? ' nivå ' + ru.niva : '') + ' · ' + delar.join(' · ');
+        andel = (bT + bS) > 0 ? (hT + hS) / (bT + bS) : -1;
+      }
+    }
+  }
+  text('mal-under', under); visa('mal-under', !!under);
+  visa('mal-stapel', andel >= 0);
+  if (andel >= 0) { const ap = Math.round(andel * 100); if (cache.malA !== ap) { cache.malA = ap; el['mal-stapel'].firstElementChild.style.transform = `scaleX(${andel.toFixed(2)})`; } }
+  visa('finger', gd.steg === 'ga' && !spak.aktiv && lage === 'spel');
+  // horn
+  const hf = hornFar();
+  visa('k-horn', hf);
+  if (hf) {
+    const guld = Math.round((t.langd - t.t) * TUNE.horn.guldPerSek * (1 + TUNE.horn.perNatt * t.natt));
+    text('k-horn', guld > 0 ? '+' + guld + ' guld' : 'Blås', el['k-horn'].lastElementChild);
+    klass('k-horn', 'vink', gd.steg === 'horn' && !hornNere);
+    if (hornNere) { hornHall += dt; if (hornHall >= 0.5) { input.horn = true; hornNere = false; hornHall = 0; } }
+    const hv = Math.min(1, hornHall / 0.5).toFixed(2); if (cache.hv !== hv) { cache.hv = hv; el['k-horn'].style.setProperty('--h', hv); }
+  } else { hornNere = false; hornHall = 0; }
+  // pilar och markör
+  hudKyl -= dt; if (hudKyl <= 0) { hudKyl = 0.5; hudNere = el.hudtopp.getBoundingClientRect().bottom - rot.getBoundingClientRect().top; }
+  let syns = null;
+  if (lage === 'spel' && m.slag !== 'ingen' && m.slag !== 'forlust' && m.slag !== 'riktning') {
+    const fiende = m.slag === 'fiende';
+    klass('pil-mal', 'fiende', fiende);
+    syns = kantpil(el['pil-mal'], m.x, m.z);
+    if (fiende || k.dod > 0) syns = null;
+  } else el['pil-mal'].classList.add('dold');
+  if (syns && MARKERA[m.slag] && Math.hypot(m.x - k.x, m.z - k.z) > 1.6) {
+    const p = tillSkarm(m.x, MARKERA[m.slag], m.z);
+    el.markor.style.transform = `translate(${p.x.toFixed(1)}px,${(p.y + Math.sin(tid * 5) * 5).toFixed(1)}px)`;
+    visa('markor', p.y > hudNere + 24);
+  } else visa('markor', false);
+  // anfallsriktning: gröna pilar i skymningen och de första sekunderna av natten
+  const rk = (t.fas === 'skymning' || (natt && t.t < 6)) && lage === 'spel' ? spel.vag.riktningar : [];
+  for (let i = 0; i < 4; i++) { const pe = el['pil-v' + i]; if (i < rk.length) { const gf = KARTA.gravfalt[rk[i]]; kantpil(pe, gf.x, gf.z); } else if (i < varnPilar) pe.classList.add('dold'); }
+  varnPilar = rk.length;
+  if (fpsPa) { fpsKyl -= dt; if (fpsKyl <= 0) { fpsKyl = 0.4; const mt = g.matning(); el.fps.textContent = `${mt.fps.toFixed(0)} fps  ${mt.bildtid.toFixed(1)} ms\nritanrop ${mt.ritanrop}  tri ${(mt.trianglar / 1000).toFixed(0)}k\nfigurer ${mt.figurer} (anim ${mt.animerade})  partiklar ${mt.partiklar}\nkvalitet: ${mt.kvalitetNamn}`; } }
+}
+let fpsPa = false, fpsKyl = 0;
+function kollaFps() { fpsPa = /fps/.test(location.hash); el.fps.classList.toggle('dold', !fpsPa); }
+addEventListener('hashchange', kollaFps); kollaFps();
+
+// ═══════════════════════════ händelser → ljud, besked, sparning ═══════════════════════════
+let segerVanta = -1;
+function hanteraHandelser(tyst) {
+  const hs = spel.handelser;
+  let skaSpara = false;
+  for (let i = 0; i < hs.length; i++) {
+    const h = hs[i];
+    switch (h.typ) {
+      case 'spara': skaSpara = true; break;
+      case 'bygge_klart': skaSpara = true; if (!tyst) { spela('bygge'); toast((NAMN[h.byggTyp] || 'Bygget') + (h.niva > 1 ? ' nivå ' + h.niva : '') + ' klar!', 'guld'); } break;
+      case 'uppgradering': skaSpara = true; if (!tyst) { spela('uppgradering'); toast((NAMN[h.vad] || 'Utrustningen') + ' nivå ' + h.niva + '!', 'guld'); } break;
+      case 'forlust': skaSpara = true; visaForlust(); if (!tyst) spela('forlust'); break;
+      case 'gor_om': skaSpara = true; if (!tyst) toast('Natt ' + h.natt + ', försök ' + (h.forsok + 1) + '. Du fick extra trä och sten.'); break;
+      case 'seger': segerVanta = 2.2; break;
+      case 'fas':
+        if (tyst) break;
+        if (h.fas === 'natt') { banner('Natt ' + h.natt, spel.vag.boss ? 'Bossnatt!' : 'Försvara tronsalen!', spel.vag.boss ? 'boss' : 'natt', 2.6); spela('natt'); }
+        else if (h.fas === 'dag' && h.natt > 1) banner('Dag ' + h.natt, 'Bygg, laga och samla före skymningen.', '', 2.4);
+        break;
+      case 'varning': {
+        if (tyst) break;
+        const namn = h.riktningar.map((r) => KARTA.riktningNamn[r]);
+        const var_ = namn.length > 1 ? namn.slice(0, -1).join(', ') + ' och ' + namn[namn.length - 1] : namn[0];
+        const bn = TUNE.fiender.boss.namn, bossNamn = h.boss ? bn[(Math.round(h.natt / 5) - 1) % bn.length] : '';
+        banner(h.boss ? 'Bossnatt!' : 'Skymning', (h.boss ? bossNamn + ' och de odöda' : 'De odöda') + ' kommer från ' + var_ + '!', h.boss ? 'boss' : 'varn', 5.5);
+        spela('varning');
+        break;
+      }
+      case 'gryning': if (!tyst) { banner('Gryning!', 'Natt ' + h.natt + ' klarad · +' + h.guld + ' guld' + (h.brann ? ' · ' + h.brann + ' odöda brann upp' : ''), '', 4.6); spela('gryning'); } break;
+      case 'horn': if (!tyst) { spela('horn'); if (h.guld > 0) toast('+' + h.guld + ' guld för tidig natt', 'guld'); } break;
+      case 'riddare_fall': if (!tyst) { spela('fall'); toast('Riddaren föll! Han reser sig vid tronsalen.', 'rod'); } break;
+      case 'riddare_ater': if (!tyst) spela('ater'); break;
+      case 'boss_ny': if (!tyst) { spela('bossNy'); banner(h.namn, 'Besegra bossen!', 'boss', 3.4); } break;
+      case 'boss_dod': if (!tyst) { spela('bossDod'); toast(h.namn + ' är besegrad!', 'guld'); } break;
+      case 'bygge_raserat': if (!tyst) { spela('ras', h.x, h.z); toast((NAMN[h.byggTyp] || 'Ett bygge') + ' föll!', 'rod'); } break;
+      default: if (!tyst) ljudFor(h);
+    }
+  }
+  if (skaSpara) spara();
+}
+function ljudFor(h) {
+  switch (h.typ) {
+    case 'hugg': spela(h.slag === 'sten' ? 'sten' : 'hugg', h.x, h.z); break;
+    case 'natur_slut': spela(h.slag === 'sten' ? 'ras' : 'tradfall', h.x, h.z); break;
+    case 'betalning': spela('betala'); break;
+    case 'lamna': spela('lamna'); break;
+    case 'laga': spela('hugg', h.x, h.z); break;
+    case 'bygge_lagat': spela('bygge'); break;
+    case 'slag': spela('svep', h.x, h.z); break;
+    case 'traff': spela(h.mal === 'riddare' ? 'aj' : 'traff', h.x, h.z); break;
+    case 'bygge_traff': spela('murtraff', h.x, h.z); break;
+    case 'skott': spela(h.fran === 'torn' ? 'pil' : 'magi', h.x, h.z); break;
+    case 'fiende_dod': spela('ben', h.x, h.z); break;
+    case 'fiende_brinner': spela('brinn', h.x, h.z); break;
+    case 'soldat_dod': spela('aj', h.x, h.z); break;
+    case 'plock': spela('guld'); break;
+    case 'boss_varning': spela('bossVarning', h.x, h.z, h.tid); break;
+    case 'boss_special': spela('small', h.x, h.z); break;
+  }
+}
+
+// ═══════════════════════════ lägen ═══════════════════════════
+function sattLage(nytt) {
+  lage = nytt;
+  el.hud.classList.toggle('dold', nytt === 'ladd' || nytt === 'start');
+  el.start.classList.toggle('dold', nytt !== 'start');
+  el.pausmeny.classList.toggle('dold', nytt !== 'paus');
+  el.forlust.classList.toggle('dold', nytt !== 'forlust');
+  el.seger.classList.toggle('dold', nytt !== 'seger');
+  el.bekrafta.classList.add('dold');
+  if (nytt !== 'spel') { slappSpak(); tangenter.clear(); hornNere = false; }
+  if (A.ctx) { if (nytt === 'paus') A.ctx.suspend().catch(() => {}); else if (!document.hidden) A.ctx.resume().catch(() => {}); }
+  omrita = true;
+}
+function visaStart() {
+  const n = spel.tid.natt;
+  el['k-spela'].textContent = harSparning ? 'Fortsätt' : 'Spela';
+  el['k-nytt'].classList.toggle('dold', !harSparning);
+  el['start-info'].textContent = harSparning ? (spel.tid.fas === 'dag' ? 'Dag ' : 'Natt ') + n + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : '') + (spel.seger ? ' · ändlöst läge' : '') : 'Överlev 20 nätter.';
+  el['bekrafta-text'].textContent = 'Den sparade borgen (' + (spel.tid.fas === 'dag' ? 'dag ' : 'natt ') + n + ') försvinner.';
+  sattLage('start');
+}
+function startaSpel() {
+  g.snapp();
+  for (const k of Object.keys(cache)) delete cache[k];
+  spel.handelser.length = 0;
+  sattLage(spel.lage === 'forlust' ? 'forlust' : 'spel');
+  if (spel.lage === 'forlust') visaForlust();
+  if (spel.aterstalld === 'gryning' || spel.aterstalld === 'mjuk') { toast('Sparningen var skadad. Du fortsätter från det som gick att rädda.'); spel.aterstalld = ''; }
+}
+function nyttSpel() { radera(NYCKEL); harSparning = false; spel = M.nyttSpel({ fro: nyttFro() }); startaSpel(); }
+function visaForlust() {
+  el['forlust-text'].textContent = 'De odöda tog borgen natt ' + spel.tid.natt + '.';
+  sattLage('forlust');
+}
+function gorOm() { if (spel.lage !== 'forlust') return; M.gorOm(spel); g.snapp(); sattLage('spel'); spara(); }
+function visaSeger() {
+  const s = spel.stat;
+  el['seger-text'].textContent = 'Speltid ' + Math.round(s.speltid / 60) + ' min · ' + s.dodade + ' odöda besegrade · ' + s.forluster + (s.forluster === 1 ? ' förlorad natt' : ' förlorade nätter');
+  sattLage('seger'); spela('seger');
+}
+function paus(pa) {
+  if (pa && lage === 'spel') { el['paus-info'].textContent = (spel.tid.fas === 'natt' || spel.tid.fas === 'skymning' ? 'Natt ' : 'Dag ') + spel.tid.natt + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : ''); spara(); sattLage('paus'); }
+  else if (!pa && lage === 'paus') sattLage('spel');
+}
+const knapp = (id, f) => document.getElementById(id).addEventListener('click', () => { startaLjud(); spela('klick'); f(); });
+knapp('k-spela', startaSpel);
+knapp('k-nytt', () => el.bekrafta.classList.remove('dold'));
+knapp('k-nytt-ja', nyttSpel);
+knapp('k-nytt-nej', () => el.bekrafta.classList.add('dold'));
+knapp('k-paus', () => paus(true));
+knapp('k-fortsatt', () => paus(false));
+knapp('k-tillstart', () => { spara(); visaStart(); });
+knapp('k-igen', gorOm);
+knapp('k-andlost', () => { spara(); sattLage('spel'); toast('Ändlöst läge: hur länge håller borgen?', 'guld'); });
+document.querySelectorAll('[data-inst]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.inst; inst[k] = !inst[k]; startaLjud(); tillampaInst(); sparaInst(); spela('klick'); }));
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (lage === 'spel') paus(true); else if (spel && lage !== 'ladd' && lage !== 'start') spara(); if (A.ctx) A.ctx.suspend().catch(() => {}); }
+  else if (A.ctx && lage !== 'paus') A.ctx.resume().catch(() => {});
+});
+addEventListener('pagehide', () => { if (spel && lage !== 'ladd' && lage !== 'start') spara(); });
+
+// ═══════════════════════════ inmatning ═══════════════════════════
+const spak = { id: null, x0: 0, y0: 0, dx: 0, dy: 0, aktiv: false };
+const SPAK_R = 56;
+const tangenter = new Set();
+function slappSpak() { spak.id = null; spak.aktiv = false; spak.dx = spak.dy = 0; el.spak.classList.add('dold'); }
+function spakFlytt(e) {
+  const r = rot.getBoundingClientRect();
+  let dx = e.clientX - r.left - spak.x0, dy = e.clientY - r.top - spak.y0;
+  const l = Math.hypot(dx, dy);
+  if (l > SPAK_R) { dx *= SPAK_R / l; dy *= SPAK_R / l; }
+  el.spak.firstElementChild.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
+  const m = Math.min(1, l / SPAK_R);
+  if (m < 0.14) { spak.dx = spak.dy = 0; } else { spak.dx = dx / SPAK_R; spak.dy = dy / SPAK_R; }
+}
+rot.addEventListener('pointerdown', (e) => {
+  if (lage !== 'spel' || spak.id !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  if (e.target.closest && e.target.closest('button, .lager')) return;
+  const r = rot.getBoundingClientRect();
+  spak.id = e.pointerId; spak.aktiv = true; spak.x0 = e.clientX - r.left; spak.y0 = e.clientY - r.top; spak.dx = spak.dy = 0;
+  el.spak.style.transform = `translate(${spak.x0.toFixed(1)}px,${spak.y0.toFixed(1)}px)`; el.spak.firstElementChild.style.transform = '';
+  el.spak.classList.remove('dold');
+  try { rot.setPointerCapture(e.pointerId); } catch (fel2) { /* syntetiska pekare kan inte fångas */ }
+  e.preventDefault();
+});
+rot.addEventListener('pointermove', (e) => { if (e.pointerId === spak.id) spakFlytt(e); });
+for (const typ of ['pointerup', 'pointercancel', 'lostpointercapture']) rot.addEventListener(typ, (e) => { if (e.pointerId === spak.id) slappSpak(); });
+rot.addEventListener('contextmenu', (e) => e.preventDefault());
+for (const typ of ['gesturestart', 'dblclick']) rot.addEventListener(typ, (e) => e.preventDefault());
+rot.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+// hornet: håll in en halv sekund (så att ett felklick inte startar natten)
+const hornKnapp = el['k-horn'];
+hornKnapp.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); if (!hornFar()) return; hornNere = true; hornHall = 0; hornKnapp.classList.add('tryck'); });
+for (const typ of ['pointerup', 'pointercancel', 'pointerleave']) hornKnapp.addEventListener(typ, () => { if (hornNere && hornHall < 0.5 && hornHall > 0 && typ === 'pointerup') toast('Håll in knappen för att blåsa i hornet.'); hornNere = false; hornHall = 0; hornKnapp.classList.remove('tryck'); });
+const RIKT = { KeyW: [0, -1], ArrowUp: [0, -1], KeyS: [0, 1], ArrowDown: [0, 1], KeyA: [-1, 0], ArrowLeft: [-1, 0], KeyD: [1, 0], ArrowRight: [1, 0] };
+addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (RIKT[e.code]) { tangenter.add(e.code); if (lage === 'spel') e.preventDefault(); return; }
+  if (e.repeat) return;
+  if (e.code === 'KeyP' || e.code === 'Escape') { if (lage === 'spel') paus(true); else if (lage === 'paus') paus(false); }
+  else if (e.code === 'KeyH' || e.code === 'Space') { if (hornFar()) { input.horn = true; e.preventDefault(); } }
+  else if (e.code === 'KeyM') { inst.ljud = !inst.ljud; tillampaInst(); sparaInst(); }
+  else if (e.code === 'Enter') { if (lage === 'forlust') gorOm(); else if (lage === 'start' && el.bekrafta.classList.contains('dold')) startaSpel(); else if (lage === 'paus') paus(false); }
+});
+addEventListener('keyup', (e) => tangenter.delete(e.code));
+addEventListener('blur', () => { tangenter.clear(); slappSpak(); });
+function lasInput() {
+  let dx = spak.dx, dz = spak.dy;
+  if (!spak.aktiv) { dx = 0; dz = 0; for (const k of tangenter) { dx += RIKT[k][0]; dz += RIKT[k][1]; } const l = Math.hypot(dx, dz); if (l > 1) { dx /= l; dz /= l; } }
+  input.dx = dx; input.dz = dz;
+}
+
+// ═══════════════════════════ storlek ═══════════════════════════
+function storlek() {
+  W = Math.max(1, rot.clientWidth); H = Math.max(1, rot.clientHeight);
+  g.storlek(W, H);
+  const cs = getComputedStyle(el.sond);
+  kant = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
+  hudKyl = 0; omrita = true;
+}
+if (typeof ResizeObserver !== 'undefined') new ResizeObserver(storlek).observe(rot);
+addEventListener('resize', storlek); addEventListener('orientationchange', () => setTimeout(storlek, 250));
+
+// ═══════════════════════════ spelloop ═══════════════════════════
+const startVy = {};
+function byggStartVy() { for (const k in spel) startVy[k] = spel[k]; startVy.spelare = { x: 0, z: W < H ? 7 : 3 }; startVy.handelser = []; return startVy; }
+function ritaSpel(dt) { g.synka(spel, dt); spel.handelser.length = 0; g.rendera(); uppdateraHud(dt); }
+let forra = performance.now();
+function bild(nu) {
+  requestAnimationFrame(bild);
+  const rdt = Math.min(0.1, Math.max(0, (nu - forra) / 1000)); forra = nu;
+  if (lage === 'spel') {
+    lasInput();
+    M.steg(spel, Math.min(rdt, MAXSTEG), input); input.horn = false;
+    hanteraHandelser(false);
+    if (segerVanta > 0) { segerVanta -= rdt; if (segerVanta <= 0 && lage === 'spel') visaSeger(); }
+    ritaSpel(rdt);
+    uppdateraStamning(rdt);
+  } else if (lage === 'start') { g.synka(byggStartVy(), rdt); g.rendera(); uppdateraStamning(rdt); }
+  else if (lage === 'forlust' || lage === 'seger') { ritaSpel(rdt); }
+  else if (lage === 'paus' && omrita) { omrita = false; ritaSpel(0); }
+}
+
+// ═══════════════════════════ testkrok ═══════════════════════════
+// Webbläsarpanelen ritar bara cirka en bildruta i sekunden när den är dold. Med kroken går spelet att spola och styra ändå.
+let autoPa = false, autoRik = false;
+function autopilot() {
+  const k = spel.riddare, m = spel.mal, t = spel.tid;
+  if (autoRik) { spel.lager.tra = Math.max(spel.lager.tra, 400); spel.lager.sten = Math.max(spel.lager.sten, 400); spel.lager.guld = Math.max(spel.lager.guld, 200); }
+  let mx = m ? m.x : 0, mz = m ? m.z : 0, nara = 0.4;
+  if (t.fas === 'natt' && m && m.slag === 'fiende' && Math.hypot(m.x, m.z) > 21) { const l = Math.hypot(m.x, m.z); mx = m.x / l * 12; mz = m.z / l * 12; }
+  if (t.fas === 'dag' && (!m || m.slag === 'ingen')) { mx = KARTA.start.x; mz = KARTA.start.z; }
+  if (t.fas === 'dag' && k.last >= k.barMax && m && m.slag !== 'ruta') { mx = KARTA.forrad.x; mz = KARTA.forrad.z; nara = 1.5; }
+  const dx = mx - k.x, dz = mz - k.z, d = Math.hypot(dx, dz);
+  input.dx = d > nara ? dx / d : 0; input.dz = d > nara ? dz / d : 0;
+  // fastnat mot en mur? gå i sidled en stund (autopiloten kan inte hitta vägar, men den tar sig runt ett segment)
+  const ap = autopilot;
+  if (d > 2.6 && (input.dx || input.dz)) { ap.n = (ap.n || 0) + 1; if (ap.n >= 12) { if (Math.hypot(k.x - ap.x, k.z - ap.z) < 0.6) { ap.sida = 26; ap.hall = ap.hall || 1; } ap.n = 0; ap.x = k.x; ap.z = k.z; } } else ap.n = 0;
+  if (ap.sida > 0) { ap.sida--; const r = Math.hypot(k.x, k.z) || 1, tx = k.z / r * ap.hall, tz = -k.x / r * ap.hall; input.dx = tx; input.dz = tz; }
+}
+const bb = window.__bb = {
+  M, G, input, fel, inst,
+  get spel() { return spel; }, get g() { return g; }, get lage() { return lage; }, get ljud() { return A; },
+  // starta('nytt') börjar om, starta() fortsätter (som knapparna på startskärmen)
+  starta(hur) { if (hur === 'nytt') nyttSpel(); else startaSpel(); return bb.tillstand(); },
+  // spola sek sekunder speltid. opts.auto = true låter autopiloten styra, opts.rik ger den gott om resurser.
+  steg(sek = 1, opts = {}) {
+    const auto = opts.auto ?? autoPa; if (opts.rik !== undefined) autoRik = !!opts.rik;
+    for (let t = 0; t < sek - 1e-9 && lage === 'spel'; t += MAXSTEG) {
+      spel.handelser.length = 0;
+      if (auto) autopilot(); else lasInput();
+      if (opts.horn) { input.horn = true; opts.horn = false; }
+      M.steg(spel, MAXSTEG, input); input.horn = false;
+      hanteraHandelser(opts.ljud !== true);
+      if (segerVanta > 0) { segerVanta -= MAXSTEG; if (segerVanta <= 0 && lage === 'spel') visaSeger(); }
+    }
+    if (auto) { input.dx = input.dz = 0; }
+    bb.bild();
+    return bb.tillstand();
+  },
+  // rita en bildruta nu (n stycken om grafiken ska hinna animera klart)
+  bild(n = 1, dt = 1 / 60) { for (let i = 0; i < n; i++) { if (lage === 'start') { g.synka(byggStartVy(), dt); g.rendera(); } else ritaSpel(dt); } return g.matning(); },
+  // kör spelet "på riktigt" i n bildrutor utan requestAnimationFrame (steg + ljud + grafik varje bildruta)
+  kor(n = 60, dt = 1 / 60, opts = {}) { for (let i = 0; i < n && lage === 'spel'; i++) { if (opts.auto ?? autoPa) autopilot(); else lasInput(); M.steg(spel, dt, input); input.horn = false; hanteraHandelser(false); ritaSpel(dt); } return bb.tillstand(); },
+  // spela fram till dagen före natt n med autopilot (rik = gott om resurser, så att borgen hinner byggas)
+  hoppa(natt, opts = {}) {
+    const rik = opts.rik !== false; let vakt = 0;
+    if (lage !== 'spel') sattLage('spel');
+    autoRik = rik;
+    while ((spel.tid.natt < natt || spel.tid.fas !== 'dag') && vakt++ < 600000) {
+      if (spel.lage === 'forlust') M.gorOm(spel);
+      autopilot(); input.horn = spel.tid.fas === 'dag' && spel.tid.t > (opts.dag ?? 40);
+      M.steg(spel, MAXSTEG, input); spel.handelser.length = 0;
+    }
+    autoRik = false; input.horn = false; input.dx = input.dz = 0; segerVanta = -1;
+    sattLage(spel.lage === 'forlust' ? 'forlust' : 'spel'); spara(); bb.bild();
+    return bb.tillstand();
+  },
+  sattNatt(n) { spel.tid.natt = n; return bb.tillstand(); },
+  // hoppa till slutet av fasen (t.ex. fas() på dagen ger skymning direkt)
+  fas() { spel.tid.t = spel.tid.langd - 0.01; return bb.steg(0.1); },
+  ge(tra = 0, sten = 0, guld = 0) { spel.lager.tra += tra; spel.lager.sten += sten; spel.lager.guld += guld; return spel.lager; },
+  flytta(x, z) { spel.riddare.x = x; spel.riddare.z = z; return bb.steg(0.05); },
+  horn() { input.horn = true; },
+  auto(pa = true, rik = false) { autoPa = !!pa; autoRik = !!rik; if (!pa) input.dx = input.dz = 0; },
+  paus, gorOm, spara, startskarm: () => { spara(); visaStart(); },
+  sparning() { const r = las(NYCKEL); if (!r) return null; try { const d = JSON.parse(r); return { tecken: r.length, natt: d.tid && d.tid.natt, fas: d.tid && d.tid.fas, lager: d.lager, byggda: d.byggen ? d.byggen.filter((b) => b.niva > 0).length : 0 }; } catch (e) { return { trasig: true }; } },
+  skarm(x, z, y = 1) { return tillSkarm(x, y, z); },
+  // spelar varje ljud en gång (tyst om volym = 0) och ger de fel som kastades
+  ljudtest(volym = 0) { startaLjud(); if (!A.ctx) return { fel: ['ingen AudioContext'] }; const f = [], t = A.ctx.currentTime + 0.05, v0 = A.sfx.gain.value; if (!volym) { A.sfx.gain.value = 0; A.amb.gain.value = 0; } let i = 0; for (const n of Object.keys(LJUD)) { try { LJUD[n](t + (volym ? i++ * 0.5 : 0), 1, 1.8); } catch (e) { f.push(n + ': ' + e.message); } } if (!volym) setTimeout(() => tillampaInst(), 3000); try { musikTick(); } catch (e) { f.push('musik: ' + e.message); } return { fel: f, antal: Object.keys(LJUD).length, lage: A.ctx.state, musik: mus.lage, steg: mus.steg }; },
+  // rikta kameran mot en plats (pausa först, annars tar spelloopen över igen)
+  titta(x, z, n = 2) { const vy = Object.assign({}, spel, { spelare: { x, z }, handelser: [] }); g.snapp(); for (let i = 0; i < n; i++) g.synka(vy, 1 / 60); g.rendera(); g.snapp(); omrita = false; },
+  tillstand() {
+    const k = spel.riddare, t = spel.tid, tr = spel.byggen[0];
+    return { lage, spelLage: spel.lage, fas: t.fas, natt: t.natt, kvar: +t.kvar.toFixed(1), lager: { tra: Math.floor(spel.lager.tra), sten: Math.floor(spel.lager.sten), guld: Math.floor(spel.lager.guld) },
+      riddare: { x: +k.x.toFixed(1), z: +k.z.toFixed(1), hp: Math.round(k.hp), last: k.last, anim: k.anim, dod: k.dod }, tron: Math.round(tr.hp) + '/' + tr.maxHp, mal: spel.mal.text, malSlag: spel.mal.slag, guide: spel.guide.steg,
+      fiender: spel.fiender.filter((e) => e.hp > 0).length, byggda: spel.byggen.filter((b) => b.niva > 0).length, raserade: spel.byggen.filter((b) => b.raserad).length, projektiler: spel.projektiler.length, drop: spel.drop.length,
+      vanner: spel.vanner.length, seger: spel.seger, basta: spel.basta, forsok: spel.forsok, fel: fel.length };
+  },
+};
+
+// ═══════════════════════════ start ═══════════════════════════
+try {
+  await g.ladda((andel) => { laddFyll.style.width = Math.round(andel * 100) + '%'; laddText.textContent = 'Laddar borgen… ' + Math.round(andel * 100) + ' %'; });
+} catch (e) {
+  laddText.textContent = 'Kunde inte ladda modellerna. Ladda om sidan.'; fel.push('ladda: ' + (e && e.message)); throw e;
+}
+spel = laddaSparning();
+storlek();
+tillampaInst();
+visaStart();
+el.ladd.classList.add('dold');
+requestAnimationFrame(bild);
+if (q.has('start')) startaSpel();
+</script>

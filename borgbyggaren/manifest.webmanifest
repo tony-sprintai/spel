@@ -1,0 +1,24 @@
+{
+  "name": "Borgbyggaren",
+  "short_name": "Borgbyggaren",
+  "lang": "sv",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#1b2a1f",
+  "theme_color": "#1b2a1f",
+  "icons": [
+    {
+      "src": "ikon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
