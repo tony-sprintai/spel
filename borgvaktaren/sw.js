@@ -1,6 +1,7 @@
 // Service worker: gör spelet spelbart utan nät efter första besöket.
-// Sidan hämtas från nätet först (så nya versioner kommer fram), allt annat från cachen först.
-const CACHE = 'spel-borgvaktaren-20261106-195558';
+// Sidan och spelets egna skriptfiler hämtas från nätet först (så nya versioner kommer fram
+// och hör ihop), allt annat från cachen först.
+const CACHE = 'spel-borgvaktaren-20261121-173418';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './ikon-192.png'])).then(() => self.skipWaiting()));
@@ -15,7 +16,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  if (req.mode === 'navigate') {
+  const egetSkript = new URL(req.url).origin === self.location.origin && /\.m?js$/.test(new URL(req.url).pathname);
+  if (req.mode === 'navigate' || egetSkript) {
     e.respondWith(fetch(req).then((res) => {
       const copy = res.clone();
       caches.open(CACHE).then((c) => c.put(req, copy));

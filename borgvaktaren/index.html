@@ -12,6 +12,9 @@
 <link rel="apple-touch-icon" href="ikon-180.png">
 <link rel="icon" type="image/png" href="ikon-192.png">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<link rel="icon" href="data:,">
 <title>Borgväktaren</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,6 +172,52 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 .buy[disabled]{background:rgba(255,255,255,.12);box-shadow:none;color:var(--muted);pointer-events:none;}
 .tiny{font-size:12px;color:var(--muted);text-align:center;margin:0;}
 @media (prefers-reduced-motion:reduce){#hint,#waveBtn.pulse,.pop,.opt{animation:none}}
+/* ---------- v2: nästa våg, fiendekort, karta med riken, statistik ---------- */
+#preview{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 60px);display:flex;justify-content:center;pointer-events:none;padding:0 60px;}
+#preview .box{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;background:rgba(10,14,30,.72);border-radius:14px;padding:4px 8px;font-family:var(--f-ui);font-size:14px;box-shadow:0 2px 0 rgba(0,0,0,.25);}
+#preview .lbl{color:var(--muted);font-size:13px;}
+.chip{display:inline-flex;align-items:center;gap:2px;font-variant-numeric:tabular-nums;}
+.eic{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;background:var(--c,#555);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);flex:none;}
+.eic svg{width:16px;height:16px;fill:#fff;}
+.eic.big{width:84px;height:84px;margin:0 auto;box-shadow:0 0 0 4px rgba(255,255,255,.25),inset 0 -5px 0 rgba(0,0,0,.25);}
+.eic.big svg{width:54px;height:54px;}
+.ecard{text-align:center;display:flex;flex-direction:column;gap:8px;}
+.ecard .tag{font-family:var(--f-ui);color:var(--gold);font-size:16px;letter-spacing:.5px;}
+.ecard p{margin:0;font-weight:800;font-size:16px;color:#e6ecff;text-wrap:balance;}
+.ecard .facts{display:flex;justify-content:center;gap:10px;font-size:13px;color:var(--muted);font-weight:800;flex-wrap:wrap;}
+.tabs{display:flex;gap:6px;background:rgba(0,0,0,.3);padding:4px;border-radius:16px;}
+.tabs button{flex:1;font-family:var(--f-ui);font-size:17px;padding:8px 6px;border-radius:12px;color:var(--muted);}
+.tabs button.on{background:var(--navy-2);color:var(--paper);box-shadow:0 2px 0 rgba(0,0,0,.35);}
+.tabs button[disabled]{opacity:.45;}
+.mapwrap.snow{background:radial-gradient(ellipse at 50% 40%,#f4f8fb,#d6e4ee 75%,#b4c6d4);box-shadow:inset 0 0 0 3px #7d93a6,inset 0 0 30px rgba(40,70,110,.35);}
+.modes{display:flex;gap:8px;}
+.modes .btn{flex:1;font-size:16px;padding:9px 6px;flex-direction:column;gap:0;line-height:1.1;}
+.modes .btn small{font-family:var(--f-body);font-size:11.5px;font-weight:800;opacity:.85;}
+.btn.red{background:linear-gradient(#ff8a6b,#c0392b);color:#fff;box-shadow:0 5px 0 #7a1d16,0 8px 14px rgba(0,0,0,.3);text-shadow:0 2px 0 rgba(0,0,0,.3);}
+.btn.purple{background:linear-gradient(#a98bff,#6a3fc0);color:#fff;box-shadow:0 5px 0 #3f2380,0 8px 14px rgba(0,0,0,.3);text-shadow:0 2px 0 rgba(0,0,0,.3);}
+.stats{display:flex;flex-direction:column;gap:5px;background:rgba(0,0,0,.25);border-radius:14px;padding:9px 11px;}
+.stats .srow{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;}
+.stats .srow span:first-child{flex:0 0 92px;color:var(--muted);}
+.stats .bar{flex:1;height:9px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;}
+.stats .bar i{display:block;height:100%;background:linear-gradient(90deg,#f6c445,#ff8a6b);border-radius:5px;}
+.stats .srow b{flex:0 0 46px;text-align:right;font-variant-numeric:tabular-nums;}
+.stats .sum{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:#cfe0ff;font-weight:800;border-top:1px solid rgba(255,255,255,.12);padding-top:6px;margin-top:2px;flex-wrap:wrap;}
+.ft.crit{color:#fff2a6;font-size:20px;}
+.ft.info{color:#cfe0ff;font-size:18px;}
+.opt.br{background:radial-gradient(circle at 40% 30%,#b58cff,#5b2fb0 70%);}
+.opt.br.pick{background:radial-gradient(circle at 40% 30%,#d9c2ff,#7d4fe0 70%);}
+.opt.rally{background:radial-gradient(circle at 40% 30%,#5fc4ff,#1f6db8 70%);}
+.opt.lock{filter:grayscale(1) brightness(.6);}
+.tip{transform:translate(-50%,calc(-100% - 116px));}
+.tip.below{transform:translate(-50%,136px);}
+.card{padding:6px 9px;}
+.card .ic{width:36px;height:36px;}
+#upgScr .panel{max-width:420px;}
+@media (min-width:700px){ #upgScr .cards{display:grid;grid-template-columns:1fr 1fr;} }
+@media (orientation:landscape) and (max-height:500px){
+  .mapwrap{max-height:46vh;}
+  #preview{top:calc(env(safe-area-inset-top,0px) + 56px);}
+}
 </style>
 
 <div id="app">
@@ -182,6 +231,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <div class="pill" id="wavePill" aria-label="Våg"><svg viewBox="0 0 24 24"><path d="M5 2h2v20H5zM8 3h11l-3 4.5L19 12H8z"/></svg><span id="waveN">0/8</span></div>
       <button class="iconbtn sndbtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/><path d="M4 9h4l5-4v14l-5-4H4z"/></svg></button>
     </div>
+    <div id="preview" hidden><div class="box" id="previewBox"></div></div>
     <div id="hint" hidden></div>
     <div class="bottom">
       <button class="iconbtn" id="speedBtn" aria-label="Dubbel fart">×1</button>
@@ -207,6 +257,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <div class="row">
         <button class="btn ghost" id="mapBtn">Karta</button>
         <button class="btn ghost" id="upgBtn1">Förbättra</button>
+        <button class="btn ghost musbtn" style="flex:0 0 56px" aria-label="Musik av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><path d="M9 4v11.5A3.5 3.5 0 1 0 11 18V8l8-2v7.5A3.5 3.5 0 1 0 21 16V2z"/><path class="musoff" d="M3 3l18 18" stroke="#ff8a7a" stroke-width="2.6"/></svg></button>
         <button class="btn ghost sndbtn" style="flex:0 0 56px" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
       </div>
     </div>
@@ -214,9 +265,13 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 
   <div class="screen scrim" id="mapScr" hidden>
     <div class="panel">
-      <h2>Riket</h2>
-      <div class="mapwrap"><svg id="mapSvg" viewBox="0 0 300 430"></svg></div>
+      <div class="tabs" id="realmTabs"></div>
+      <div class="mapwrap" id="mapWrap"><svg id="mapSvg" viewBox="0 0 300 430"></svg></div>
       <div class="mapcard"><div class="info"><h3 id="mcName">Bana 1</h3><p id="mcSub"></p></div><button class="btn green" id="mcPlay">Spela</button></div>
+      <div class="modes" id="mcModes">
+        <button class="btn red" id="mcHero">Hjältemod<small id="mcHeroSub"></small></button>
+        <button class="btn purple" id="mcEndless">Ändlöst<small id="mcEndSub"></small></button>
+      </div>
       <button class="btn ghost" id="mapBack">Tillbaka</button>
     </div>
   </div>
@@ -230,7 +285,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
         <button class="btn ghost" id="upgBack" style="flex:0 0 auto">Tillbaka</button>
         <button class="btn green" id="upgPlay">Spela</button>
       </div>
-      <p class="tiny">Stjärnor får du när du vinner banor, fler ju mindre skada borgen tar. <button id="upgReset" style="text-decoration:underline;color:var(--paper)">Ångra alla köp</button></p>
+      <p class="tiny">Stjärnor får du när du vinner banor, fler ju mindre skada borgen tar. Hjältemod ger tre stjärnor till per bana. <button id="upgReset" style="text-decoration:underline;color:var(--paper)">Ångra alla köp</button></p>
     </div>
   </div>
 
@@ -239,7 +294,21 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <h2>Paus</h2>
       <button class="btn green" id="resumeBtn">Fortsätt</button>
       <button class="btn ghost" id="restartBtn">Börja om banan</button>
+      <button class="btn ghost musbtn" id="musicBtn">Musik: på</button>
       <button class="btn ghost" id="quitBtn">Till kartan</button>
+    </div>
+  </div>
+
+  <div class="screen scrim" id="cardScr" hidden>
+    <div class="panel">
+      <div class="ecard">
+        <div class="tag" id="cardTag">Ny fiende</div>
+        <div class="eic big" id="cardIc"></div>
+        <h2 id="cardName"></h2>
+        <p id="cardDesc"></p>
+        <div class="facts" id="cardFacts"></div>
+      </div>
+      <button class="btn green" id="cardOk">Uppfattat</button>
     </div>
   </div>
 
@@ -248,6 +317,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <h2 id="resTitle">Seger!</h2>
       <div class="stars" id="resStars"><i></i><i></i><i></i></div>
       <div class="reslines"><div id="resSub"></div><div id="resSub2"></div></div>
+      <div class="stats" id="resStats"></div>
       <button class="btn green" id="resNext">Nästa bana</button>
       <div class="row">
         <button class="btn ghost" id="resUpg">Förbättra</button>
@@ -263,90 +333,33 @@ setTimeout(function(){ if(!window.__bv){ var d=document.createElement('div'); d.
 </script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import * as M from './modell.js';
+const { G, LV, S, FX, TT, TYPES, ET, LEVELS, NL, REALMS, UPG, UPG_KEYS, STEP, ROAD_W, CASTLE_Z, pathAt, _pa, minPathDist, price, upgVal, rainStats, starsTotal, starsFree, rng, clamp, TAU } = M;
 
 /* ================= Grund ================= */
 const $ = id => document.getElementById(id);
 const rand = (a,b) => a + Math.random()*(b-a);
-const clamp = (v,a,b) => v<a?a:v>b?b:v;
-const TAU = Math.PI*2;
-function rng(seed){ let s = seed>>>0; return () => { s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s>>>15, 1|s); t = t + Math.imul(t ^ t>>>7, 61|t) ^ t; return ((t ^ t>>>14)>>>0)/4294967296; }; }
-const NL = 8, STEP = .1, ROAD_W = 2.3, CASTLE_Z = 13.7;
-
-/* ================= Data ================= */
-const TT = {
-  archer:  {name:'Bågskyttetorn', desc:'Snabba pilar, lång räckvidd. Sköldar tar halv skada.', up:'Snabbare och fler pilar', cost:[70,80,130], range:[3.9,4.2,4.6], rate:[.85,.62,.46], dmg:[7,9,12], shots:[1,2,3],
-    icon:'<path d="M5 3c9 1 15 7 16 16l-2 .2C18 11.7 12.3 6 4.8 5z"/><path d="M3.2 19.4 15.6 7l-2.3-.6 1-1 4.3 1.1 1.1 4.3-1 1-.6-2.3L5.6 21.8z"/>'},
-  catapult:{name:'Kastapult', desc:'Tunga stenar som träffar en hel grupp.', up:'Större explosion', cost:[110,130,190], range:[4.4,4.7,5.1], rate:[2.7,2.5,2.3], dmg:[22,36,55], splash:[1.15,1.6,2.1],
-    icon:'<circle cx="16.5" cy="6.5" r="4"/><path d="M2 19h20v3H2zM4 18.5 13.8 9l1.9 1.9-9.6 9.5z"/>'},
-  barracks:{name:'Riddarkasern', desc:'Riddare stoppar fienden på vägen och slåss.', up:'Fler och starkare riddare', cost:[90,100,150], range:[2.6,2.8,3.0], n:[3,4,5], hp:[42,62,92], dmg:[4,6,9], respawn:[8,7,6],
-    icon:'<path d="M12 2C7 2 4 6 4 11v6l3 3h3v-7h4v7h3l3-3v-6c0-5-3-9-8-9zm-1 3h2v6h-2z"/>'},
-  mage:    {name:'Magitorn', desc:'Saktar ner fienden och bränner den.', up:'Längre effekt och mer skada', cost:[100,110,170], range:[3.6,3.9,4.3], rate:[1.3,1.2,1.05], dmg:[5,8,12], slow:[.45,.5,.55], dur:[1.6,2.6,3.8], burn:[5,8,12],
-    icon:'<path d="M12 1.5l2.6 6 6.4.9-4.9 4.3 1.4 6.3L12 15.8 6.5 19l1.4-6.3L3 8.4l6.4-.9z"/>'},
-};
-const TYPES = ['archer','catapult','barracks','mage'];
-const ET = {
-  foot:  {name:'Fotsoldat',   hp:34,  spd:1.15, gold:6,   gate:1,  atk:5,  h:1.2, col:0xe0473c},
-  runner:{name:'Löpare',      hp:18,  spd:2.1,  gold:5,   gate:1,  atk:3,  h:1.05,col:0xf08a2c},
-  shield:{name:'Sköldbärare', hp:72,  spd:.9,   gold:10,  gate:1,  atk:6,  h:1.3, col:0x9aa3b2, pierce:.5},
-  ram:   {name:'Murbräcka',   hp:150, spd:.62,  gold:18,  gate:4,  atk:8,  h:1.5, col:0x8a5a32},
-  boss:  {name:'Krigsherren', hp:520, spd:.5,   gold:150, gate:10, atk:28, h:3.0, col:0x9e2620, hold:3},
-};
-const LEVELS = [
-  {name:'Ängsvägen',     W:8,  seed:11, lakes:2, paths:[[[-3,-18],[-3,-9],[4,-5],[4,0],[-3,3.5],[-3,8],[0,10.5],[0,12.6]]]},
-  {name:'Bäckravinen',   W:9,  seed:23, lakes:3, paths:[[[5,-18],[5,-10],[-4.5,-7],[-4.5,-2],[4.5,1],[4.5,5.5],[0,8],[0,12.6]]]},
-  {name:'Klippkröken',   W:9,  seed:37, lakes:1, paths:[[[0,-18],[0,-11.5],[-5.5,-9],[-5.5,-1],[0,1.5],[5.5,-1],[5.5,6],[0,8.5],[0,12.6]]]},
-  {name:'Tvillingpasset',W:10, seed:41, lakes:2, paths:[[[-5,-18],[-5,-8],[-1.5,-3],[0,3],[0,12.6]], [[5,-18],[5,-11],[2,-6],[1.5,-2],[0,3],[0,12.6]]]},
-  {name:'Snäckan',       W:10, seed:53, lakes:1, paths:[[[6.5,-18],[6.5,-11],[-5.5,-11],[-5.5,-4],[4.5,-4],[4.5,2.5],[-4.5,2.5],[-4.5,7.5],[0,9],[0,12.6]]]},
-  {name:'Vadstället',    W:11, seed:67, lakes:3, paths:[[[-2,-18],[-2,-12],[-6.5,-9],[-6.5,-3],[-1,0],[0,5],[0,12.6]], [[6.5,-18],[6.5,-6],[2,-4],[2,1],[0,5],[0,12.6]]]},
-  {name:'Ormen',         W:11, seed:71, lakes:0, paths:[[[-6,-18],[-6,-12],[6,-12],[6,-7.5],[-6,-7.5],[-6,-3],[6,-3],[6,1.5],[-5.5,1.5],[-5.5,6],[0,7.5],[0,12.6]]]},
-  {name:'Kungens fall',  W:12, seed:89, lakes:2, paths:[[[-6,-18],[-6,-9],[4.5,-4.5],[4.5,1],[0,5],[0,12.6]], [[6,-18],[6,-9],[-4.5,-4.5],[-4.5,1],[0,5],[0,12.6]]]},
-];
-function makeWaves(L){
-  const lv = LEVELS[L], W = lv.W, np = lv.paths.length, out = [];
-  for(let i=0;i<W;i++){
-    const g = [], last = i===W-1; let pi = i%np;
-    const P = () => { const r = pi; pi = (pi+1)%np; return r; };
-    const hm = (1 + L*.28) * (1 + i*.12) * (np>1 ? .82 : 1);
-    g.push({t:'foot', n:Math.round(4 + i*1.2 + L*.9), gap:1.05, path:P(), at:0});
-    if(i>=2 && (i%3!==0 || L>=2)) g.push({t:'runner', n:Math.round(3 + i*.7 + L*.6), gap:.5, path:P(), at:3.5});
-    if(L>=1 && i>=(L===1?3:2)) g.push({t:'shield', n:Math.round(1 + i*.45 + L*.5), gap:1.5, path:P(), at:6});
-    if(L>=2 && i>=(L===2?4:3)) g.push({t:'ram', n:Math.max(1, Math.round(i*.22 + L*.3)), gap:3.2, path:P(), at:9});
-    if(last){ g.push({t:'boss', n:1, gap:1, path:0, at:12}); if(np>1 && L>=5) g.push({t:'boss', n:1, gap:1, path:1, at:22}); }
-    out.push({g, hm});
-  }
-  return out;
-}
+Object.assign(G, {tut:2, crenelsDown:0, collapse:0, shake:0, speed:1});
 
 /* ================= Sparning ================= */
-const SAVE_KEY = 'borgvaktaren.v1';
-const freshSave = () => ({unlocked:1, stars:Array(NL).fill(0), upg:{gold:0,disc:0,wall:0,rain:0,train:0}, mute:false, tut:0});
-function loadSave(){
-  try{
-    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(s && s.upg){ const d = freshSave(); return {...d, ...s, upg:{...d.upg, ...s.upg}, stars:(s.stars||[]).concat(Array(NL).fill(0)).slice(0,NL)}; }
-  }catch(e){}
-  return freshSave();
-}
-let save = loadSave();
-function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+// Ny nyckel borgvaktaren.v2. Finns den inte läses borgvaktaren.v1 och flyttas över. v1-nyckeln skrivs aldrig.
+S.save = M.loadSaveFrom(k => { try{ return localStorage.getItem(k); }catch(e){ return null; } });
+function persist(){ try{ localStorage.setItem(M.SAVE_KEY, JSON.stringify(S.save)); }catch(e){} }
+if(S.save.migrated){ delete S.save.migrated; persist(); }
 
-const UPG = {
-  gold: {name:'Krigskassa',    desc:'Mer guld i början av varje bana', max:3, cost:[1,2,3], val:l=>l*50, fmt:v=>'+'+v+' guld',
-         icon:'<circle cx="9" cy="9" r="6"/><circle cx="15" cy="15" r="6" opacity=".75"/>'},
-  disc: {name:'Byggmästare',   desc:'Billigare torn och uppgraderingar', max:3, cost:[1,2,3], val:l=>l*6, fmt:v=>'−'+v+' %',
-         icon:'<path d="M3 20 13.5 9.5l1 1L4 21zM12 4l8 8-3 3-8-8z"/>'},
-  wall: {name:'Tjocka murar',  desc:'Borgen tål fler fiender', max:3, cost:[1,2,2], val:l=>20+l*4, fmt:v=>v+' liv',
-         icon:'<path d="M3 21V9l3 2V6l3 2V3h6v5l3-2v5l3-2v12z"/>'},
-  rain: {name:'Regn av pilar', desc:'Mer skada, större yta, kortare väntan', max:3, cost:[1,2,3], val:l=>l, fmt:v=>`${70+v*35} skada · ${32-v*5} s`,
-         icon:'<path d="M5 2h2v10l2-2v3l-3 3-3-3v-3l2 2zM11 5h2v10l2-2v3l-3 3-3-3v-3l2 2zM17 2h2v10l2-2v3l-3 3-3-3v-3l2 2z"/>'},
-  train:{name:'Riddarskolan',  desc:'Riddarna tål mer och slår hårdare', max:3, cost:[1,2,3], val:l=>l*20, fmt:v=>'+'+v+' %',
-         icon:'<path d="M12 1 3 4.5v6.2C3 16.4 6.8 21.6 12 23c5.2-1.4 9-6.6 9-12.3V4.5z"/>'},
+/* fiendeikoner (används i nästa våg och på fiendekorten) */
+const EICON = {
+  foot:'<path d="M12 2.5a5.5 5.5 0 0 0-5.5 5.5v3.5h11V8A5.5 5.5 0 0 0 12 2.5zM7 12.5h10v2.5H7zM8 16h8l-1 5.5H9z"/>',
+  runner:'<circle cx="14.5" cy="4.5" r="2.3"/><path d="M9 8.5l4.5-1.2 3 3 3.3.9-.6 2-4.2-1.1-1.3 3 3 3.4-1.4 1.6-4-3.6-2 4.5H7l3.2-7.6-2.4 1-1.6-1.8z"/>',
+  shield:'<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/>',
+  ram:'<path d="M2 9.5h13l5-2.5v9l-5-2.5H2z"/><circle cx="5" cy="17.5" r="2.3"/><circle cx="12" cy="17.5" r="2.3"/>',
+  boss:'<path d="M3 19 2 7.5l5 4 5-7 5 7 5-4L21 19z"/>',
+  gargoyle:'<circle cx="12" cy="9.5" r="2.8"/><path d="M1 7.5c3.5 0 6.5 1.4 8.4 4.4L8.6 17C6.7 14 4.4 12.2 1 12zM23 7.5c-3.5 0-6.5 1.4-8.4 4.4l.8 5.1c1.9-3 4.2-4.8 7.6-5z"/>',
+  shaman:'<path d="M5 2h2.2v20H5zM13.5 8h3V5h2.2v3h3v2.2h-3v3h-2.2v-3h-3z"/>',
+  sapper:'<circle cx="10" cy="14.5" r="7"/><path d="M14 7.5l3-3.2 2.2 1.2-3 3.2z"/><path d="M19.6 2.2l1.2 1.8-1.8 1-1-1.8z" fill="#ffd24a"/>',
+  troll:'<path d="M5 9.5a7 7 0 0 1 14 0v4l2.2 6.5H2.8L5 13.5z"/><path d="M8 2.5l2 3.5M16 2.5l-2 3.5" stroke="#fff" stroke-width="2"/>',
 };
-const starsTotal = () => save.stars.reduce((a,b)=>a+b,0);
-const starsSpent = () => Object.keys(UPG).reduce((s,k)=>s + UPG[k].cost.slice(0,save.upg[k]).reduce((a,b)=>a+b,0), 0);
-const starsFree = () => starsTotal() - starsSpent();
-const price = (type,l) => Math.round(TT[type].cost[l] * (1 - UPG.disc.val(save.upg.disc)/100));
-const rainStats = () => { const l = save.upg.rain; return {dmg:70+l*35, r:2.2+l*.3, cd:32-l*5}; };
+const eic = (t, big) => `<span class="eic${big?' big':''}" style="--c:${ET[t].css}"><svg viewBox="0 0 24 24">${EICON[t]||''}</svg></span>`;
 
 /* ================= Ljud (WebAudio-syntes) ================= */
 const Snd = {
@@ -359,11 +372,11 @@ const Snd = {
         const n = this.ctx.sampleRate*.5|0; this.nb = this.ctx.createBuffer(1,n,this.ctx.sampleRate);
         const d = this.nb.getChannelData(0); for(let i=0;i<n;i++) d[i] = Math.random()*2-1;
       }
-      this.master.gain.value = save.mute ? 0 : .5;
+      this.master.gain.value = S.save.mute ? 0 : .5;
       if(this.ctx.state === 'suspended') this.ctx.resume();
     }catch(e){}
   },
-  ok(key, gap){ if(!this.ctx || save.mute || G.mode==='attract') return false; const t = this.ctx.currentTime; if(key && this.last[key] && t-this.last[key]<gap) return false; if(key) this.last[key] = t; return true; },
+  ok(key, gap){ if(!this.ctx || S.save.mute || G.mode==='attract') return false; const t = this.ctx.currentTime; if(key && this.last[key] && t-this.last[key]<gap) return false; if(key) this.last[key] = t; return true; },
   tone(f,d,type='square',v=.2,f2=null,delay=0){
     const c=this.ctx, t=c.currentTime+delay, o=c.createOscillator(), g=c.createGain();
     o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d);
@@ -392,12 +405,69 @@ const Snd = {
   win(){ if(!this.ok()) return; [523,659,784,1047,1319].forEach((f,i)=>this.tone(f,.26,'square',.11,null,i*.11)); },
   lose(){ if(!this.ok()) return; [392,330,262,196].forEach((f,i)=>this.tone(f,.32,'triangle',.18,null,i*.17)); },
   star(i){ if(!this.ok()) return; this.tone(784*Math.pow(1.26,i),.18,'square',.09); },
+  cannon(){ if(!this.ok('cannon',.12)) return; this.noise(.3,.45,180); this.tone(90,.3,'sine',.45,40); this.noise(.06,.2,2400,0,1); },
+  frost(){ if(!this.ok('frost',.08)) return; this.tone(1800,.18,'sine',.06,2600); this.tone(2400,.12,'triangle',.04,1600,.04); },
+  bolt(){ if(!this.ok('bolt',.1)) return; this.noise(.18,.3,3000,0,.8); this.tone(220,.12,'sawtooth',.08,90); },
+  pop(){ if(!this.ok('pop',.05)) return; this.noise(.12,.18,700,0,1.4); },
+  heal(){ if(!this.ok('heal',.4)) return; [660,880,990].forEach((f,i)=>this.tone(f,.12,'sine',.03,null,i*.05)); },
+  card(){ if(!this.ok('card',.3)) return; [392,523,659].forEach((f,i)=>this.tone(f,.18,'triangle',.08,null,i*.08)); },
+  rally(){ if(!this.ok('rally',.1)) return; this.tone(523,.08,'square',.05); this.tone(784,.12,'square',.05,null,.07); },
 };
 function setMute(m){
-  save.mute = m; persist(); Snd.init();
+  S.save.mute = m; persist(); Snd.init();
   document.querySelectorAll('.sndon').forEach(p => p.style.display = m ? 'none' : '');
   document.querySelectorAll('.sndoff').forEach(p => p.style.display = m ? '' : 'none');
 }
+/* ---------- Musik: en liten medeltida slinga i d-moll, syntetiserad. Trummor när en våg pågår. ---------- */
+const Music = {
+  gain:null, timer:null, next:0, step:0,
+  CH:[[50,53,57],[48,52,55],[46,50,53],[45,49,52]],
+  mtof(n){ return 440*Math.pow(2,(n-69)/12); },
+  start(){
+    if(!Snd.ctx || this.timer) return;
+    try{
+      this.gain = Snd.ctx.createGain(); this.gain.gain.value = 0; this.gain.connect(Snd.master);
+      this.next = Snd.ctx.currentTime + .15;
+      this.timer = setInterval(()=>this.tick(), 90);
+      this.apply();
+    }catch(e){}
+  },
+  apply(){
+    if(this.gain) this.gain.gain.setTargetAtTime(S.save.music ? 1 : 0, Snd.ctx.currentTime, .25);
+    document.querySelectorAll('.musoff').forEach(p => p.style.display = S.save.music ? 'none' : '');
+    const b = $('musicBtn'); if(b) b.textContent = 'Musik: ' + (S.save.music ? 'på' : 'av');
+  },
+  osc(f, t, d, type, v){
+    const c = Snd.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t+.02); g.gain.exponentialRampToValueAtTime(.0001, t+d);
+    o.connect(g); g.connect(this.gain); o.start(t); o.stop(t+d+.05);
+  },
+  drum(t, f, d, v){
+    const c = Snd.ctx, s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = Snd.nb; fl.type = 'bandpass'; fl.frequency.value = f; fl.Q.value = 1.2;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t+d);
+    s.connect(fl); fl.connect(g); g.connect(this.gain); s.start(t, Math.random()*.3); s.stop(t+d+.05);
+  },
+  tick(){
+    const c = Snd.ctx; if(!c || c.state!=='running') return;
+    const e8 = 60/104/2;
+    if(this.next < c.currentTime) this.next = c.currentTime + .05;
+    while(this.next < c.currentTime + .3){ this.note(this.step, this.next); this.step++; this.next += e8; }
+  },
+  note(s, t){
+    if(!S.save.music || S.save.mute) return;
+    const bar = (s>>3) % 4, e = s % 8, ch = this.CH[bar];
+    const battle = G.mode==='play' && !G.waveReady && !G.over;
+    if(e===0) this.osc(this.mtof(ch[0]-12), t, 1.7, 'triangle', .09);
+    if(e===4) this.osc(this.mtof(ch[0]-5), t, .8, 'triangle', .05);
+    const pat = [0,1,2,1,0,2,1,2], hi = (s>>5)%2 ? 12 : 0;
+    if(battle || e%2===0) this.osc(this.mtof(ch[pat[e]]+12+(e===6?hi:0)), t, .26, 'triangle', .035);
+    if((s%64)===56 || (s%64)===60) this.osc(this.mtof(ch[2]+24), t, .5, 'sine', .025);
+    if(battle){ if(e===0 || e===3 || e===4) this.drum(t, 160, .22, .2); if(e%2===1) this.drum(t, 5200, .05, .04); }
+  },
+};
+function setMusic(on){ S.save.music = on; persist(); Snd.init(); Music.start(); Music.apply(); }
 
 /* ================= Renderare och scen ================= */
 const canvas = $('c');
@@ -483,10 +553,10 @@ const PX = 9.2, PZ0 = -24, PZ1 = 16.4;
 const world = new THREE.Group(); scene.add(world);
 {
   const top = new THREE.Mesh(new THREE.PlaneGeometry(PX*2, PZ1-PZ0), new THREE.MeshLambertMaterial({map:grassTex}));
-  top.rotation.x = -Math.PI/2; top.position.set(0,0,(PZ0+PZ1)/2); top.receiveShadow = true; world.add(top);
+  top.rotation.x = -Math.PI/2; top.position.set(0,0,(PZ0+PZ1)/2); top.receiveShadow = true; world.add(top); world.userData.top = top;
   const sideM = new THREE.MeshLambertMaterial({map:cliffTex});
   const side = new THREE.Mesh(new THREE.BoxGeometry(PX*2, 8, PZ1-PZ0), sideM);
-  side.position.set(0,-4.02,(PZ0+PZ1)/2); world.add(side);
+  side.position.set(0,-4.02,(PZ0+PZ1)/2); world.add(side); world.userData.side = side;
   // klippkant
   const rockG = merge([part(new THREE.DodecahedronGeometry(.7,0),0x9a988c)]);
   const edge = [];
@@ -608,7 +678,48 @@ GEO.boss = merge([
   part(Cyl(.035,.035,1.2,5), 0x5e3c20, .55,.8,-.15, -.3,0,0),
   part(Box(.08,.42,.34), 0xc9ced6, .55,1.32,-.38, -.3,0,0),
 ]);
-const ENEMY_MAX = {foot:260, runner:220, shield:160, ram:60, boss:4};
+GEO.gargoyle = merge([
+  part(Box(.32,.3,.5), 0x5e5a72, 0,0,0),
+  part(Box(.26,.24,.26), 0x6f6a86, 0,.12,-.32),
+  part(Box(.07,.07,.04), 0xff5a3c, -.07,.15,-.46), part(Box(.07,.07,.04), 0xff5a3c, .07,.15,-.46),
+  part(Cone(.05,.2,4), 0xd8d0c0, -.09,.32,-.3), part(Cone(.05,.2,4), 0xd8d0c0, .09,.32,-.3),
+  part(Cone(.07,.5,4), 0x4a4660, 0,-.02,.46, Math.PI/2,0,0),
+  part(Box(.08,.22,.08), 0x4a4660, -.12,-.2,.05), part(Box(.08,.22,.08), 0x4a4660, .12,-.2,.05),
+]);
+const wingGeo = merge([part(Box(.7,.04,.38), 0x7d78a0, .38,0,0), part(Box(.36,.04,.2), 0x6f6a86, .78,0,.12, 0,.3,0), part(Cone(.04,.2,4), 0xd8d0c0, .95,0,-.05, 0,0,-Math.PI/2)]);
+const wingGeoL = merge([part(Box(.7,.04,.38), 0x7d78a0, -.38,0,0), part(Box(.36,.04,.2), 0x6f6a86, -.78,0,.12, 0,-.3,0), part(Cone(.04,.2,4), 0xd8d0c0, -.95,0,-.05, 0,0,Math.PI/2)]);
+GEO.shaman = merge([
+  part(Cyl(.18,.32,.72,8), 0x3f9c5a, 0,.36,0),
+  part(Box(.36,.07,.3), 0x2b5a35, 0,.56,0),
+  part(Cyl(.15,.16,.24,8), 0xe6b48c, 0,.84,0),
+  part(Cone(.24,.42,8), 0x2f6b40, 0,1.12,.02),
+  part(Box(.2,.05,.04), 0x161a22, 0,.86,-.15),
+  part(Cyl(.03,.03,1.35,5), 0x6b4626, .3,.66,-.06),
+  part(new THREE.IcosahedronGeometry(.11,0), 0x9dff9a, .3,1.38,-.06),
+]);
+GEO.sapper = merge([
+  part(Box(.3,.3,.22), 0x3a2a1e, 0,.15,0),
+  part(Box(.42,.38,.28), 0x8a6a3c, 0,.5,0),
+  part(Box(.44,.07,.3), 0x3a2a1e, 0,.35,0),
+  part(Cyl(.15,.16,.24,8), 0xe6b48c, 0,.82,0),
+  part(Cyl(.2,.2,.1,8), 0x5a4a32, 0,.97,0),
+  part(Cyl(.17,.17,.4,10), 0x2e2a2a, 0,.6,.26),
+  part(Box(.36,.05,.06), 0xc0392b, 0,.66,.42),
+  part(Cyl(.02,.02,.22,4), 0xffd24a, 0,.9,.28),
+  part(Box(.05,.5,.05), 0x8a8f99, .26,.5,-.12, -.5,0,0),
+]);
+GEO.troll = merge([
+  part(Box(.5,.42,.36), 0x5d6b4c, 0,.21,0),
+  part(Box(.82,.72,.56), 0x7c8c6a, 0,.76,0),
+  part(Box(.84,.12,.58), 0x5a3a22, 0,.46,0),
+  part(Box(.24,.62,.24), 0x7c8c6a, -.54,.7,-.02), part(Box(.24,.62,.24), 0x7c8c6a, .54,.7,-.02),
+  part(Box(.42,.38,.38), 0x8c9c78, 0,1.3,-.06),
+  part(Box(.3,.06,.04), 0xffd24a, 0,1.36,-.26),
+  part(Cone(.05,.18,5), 0xeee6d0, -.13,1.16,-.27, -Math.PI/2,0,0), part(Cone(.05,.18,5), 0xeee6d0, .13,1.16,-.27, -Math.PI/2,0,0),
+  part(Box(.5,.1,.1), 0xdfe8ef, 0,1.52,-.02),
+  part(Cyl(.08,.15,1.25,6), 0x6b4626, .66,.85,-.32, -.45,0,0),
+]);
+const ENEMY_MAX = {foot:260, runner:220, shield:160, ram:60, boss:4, gargoyle:160, shaman:60, sapper:80, troll:4};
 const EIM = {};
 for(const k of Object.keys(ENEMY_MAX)){
   const m = new THREE.InstancedMesh(GEO[k], vcMat, ENEMY_MAX[k]);
@@ -616,9 +727,29 @@ for(const k of Object.keys(ENEMY_MAX)){
   m.setColorAt(0, new THREE.Color(1,1,1)); m.instanceColor.setUsage(THREE.DynamicDrawUsage);
   world.add(m); EIM[k] = m;
 }
+const wingIM = [wingGeo, wingGeoL].map(wg=>{ const m = new THREE.InstancedMesh(wg, vcMat, ENEMY_MAX.gargoyle); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.count = 0; m.frustumCulled = false; m.castShadow = true; world.add(m); return m; });
+const riderGeo = merge([
+  part(Box(.36,.36,.9), 0x8a5a32, 0,.56,0),
+  ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sz])=>part(Box(.1,.42,.1), 0x5e3c20, sx*.12,.2,sz*.32)),
+  part(Box(.18,.42,.2), 0x8a5a32, 0,.86,-.46, .5,0,0),
+  part(Box(.18,.18,.36), 0x8a5a32, 0,1.06,-.62),
+  part(Box(.42,.06,.52), 0x2f6be0, 0,.77,0),
+  part(Box(.34,.36,.24), 0x2f6be0, 0,1.0,.05),
+  part(Cyl(.15,.16,.24,8), 0xe6ecf3, 0,1.32,.05),
+  part(Box(.06,.2,.32), 0x5aa0ff, 0,1.5,.08),
+  part(Box(.05,.05,1.0), 0xdfe6ee, .24,1.06,-.36),
+]);
+const guardGeo = merge([
+  knightGeo({leg:0x39404f, body:0xc9ced6, trim:0xf6c445, metal:0xe6ecf3, shield:0xd8a522, plume:0xf6c445}, 'blue'),
+  part(Box(.12,.86,.62), 0xd8a522, -.36,.55,-.08),
+  part(Box(.14,.2,.2), 0x2f6be0, -.43,.6,-.08),
+]);
 const KMAX = 140;
-const knightIM = new THREE.InstancedMesh(blueGeo, vcMat, KMAX);
-knightIM.instanceMatrix.setUsage(THREE.DynamicDrawUsage); knightIM.count = 0; knightIM.frustumCulled = false; knightIM.castShadow = true; world.add(knightIM);
+const KIM = {};
+for(const [k,geo] of [['knight',blueGeo],['rider',riderGeo],['guard',guardGeo]]){
+  const m = new THREE.InstancedMesh(geo, vcMat, KMAX);
+  m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.count = 0; m.frustumCulled = false; m.castShadow = true; world.add(m); KIM[k] = m;
+}
 function setM(arr,i,x,y,z,yaw,s){
   const c=Math.cos(yaw)*s, sn=Math.sin(yaw)*s, o=i*16;
   arr[o]=c; arr[o+1]=0; arr[o+2]=-sn; arr[o+3]=0;
@@ -627,17 +758,30 @@ function setM(arr,i,x,y,z,yaw,s){
   arr[o+12]=x; arr[o+13]=y; arr[o+14]=z; arr[o+15]=1;
 }
 
-/* ---------- projektiler ---------- */
 const arrowGeo = merge([
   part(Cyl(.03,.03,.75,4), 0x8a5a32, 0,0,0, Math.PI/2,0,0),
   part(Cone(.07,.18,4), 0xc9ced6, 0,0,.45, Math.PI/2,0,0),
   part(Box(.14,.02,.14), 0xffffff, 0,0,-.32, 0,0,0),
 ]);
+const fireArrowGeo = merge([
+  part(Cyl(.035,.035,.75,4), 0x6a3a1a, 0,0,0, Math.PI/2,0,0),
+  part(Cone(.11,.3,5), 0xff8a2c, 0,0,.42, Math.PI/2,0,0),
+  part(Cone(.07,.22,5), 0xffe08a, 0,0,.5, Math.PI/2,0,0),
+]);
 const rockGeo = merge([part(new THREE.DodecahedronGeometry(.3,0), 0x8a877a)]);
+const boulderGeo = merge([part(new THREE.DodecahedronGeometry(.62,0), 0x7d7a6e)]);
+const bombGeo = merge([part(new THREE.IcosahedronGeometry(.16,0), 0x2e2a2a), part(Box(.34,.06,.06), 0xc0392b, 0,0,0)]);
+const ballGeo = merge([part(new THREE.SphereGeometry(.2,10,8), 0x22252b)]);
 const boltGeo = new THREE.IcosahedronGeometry(.17,1);
 function projIM(geo, mat, max){ const m = new THREE.InstancedMesh(geo, mat, max); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.count = 0; m.frustumCulled = false; world.add(m); return m; }
-const PIM = {arrow:projIM(arrowGeo, vcMat, 260), rock:projIM(rockGeo, vcMat, 40), bolt:projIM(boltGeo, new THREE.MeshBasicMaterial({color:0xd9a8ff}), 80)};
-PIM.rain = PIM.arrow; PIM.rock.castShadow = true;
+const PIM = {arrow:projIM(arrowGeo, vcMat, 320), fire:projIM(fireArrowGeo, new THREE.MeshBasicMaterial({vertexColors:true}), 160), rock:projIM(rockGeo, vcMat, 40),
+  boulder:projIM(boulderGeo, vcMat, 20), bomb:projIM(bombGeo, vcMat, 90), ball:projIM(ballGeo, vcMat, 40),
+  bolt:projIM(boltGeo, new THREE.MeshBasicMaterial({color:0xd9a8ff}), 80), frost:projIM(boltGeo, new THREE.MeshBasicMaterial({color:0xaef0ff}), 40)};
+PIM.rock.castShadow = PIM.boulder.castShadow = true;
+const PKIND = {arrow:'arrow', rain:'arrow', long:'arrow', fire:'fire', rock:'rock', boulder:'boulder', bomb:'bomb', ball:'ball', bolt:'bolt', frost:'frost'};
+// blixtar ritas som tunna lysande stavar
+const zapIM = projIM(new THREE.BoxGeometry(.07,.07,1), new THREE.MeshBasicMaterial({color:0xfff6a0}), 160);
+const zapIM2 = projIM(new THREE.BoxGeometry(.18,.18,1), new THREE.MeshBasicMaterial({color:0x8fd0ff, transparent:true, opacity:.45, depthWrite:false}), 160);
 
 /* ---------- HP-staplar ---------- */
 const BMAX = 420;
@@ -721,32 +865,6 @@ function flyCoin(x,y,z){
   a.onfinish = () => { c.busy = false; c.el.style.opacity = 0; pop($('goldPill'),'g'); Snd.coin(); };
 }
 
-/* ================= Banbygge ================= */
-function buildPath(pts){
-  const curve = new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],0,p[1])), false, 'centripetal', .5);
-  curve.arcLengthDivisions = 600;
-  const len = curve.getLength(), n = Math.ceil(len/STEP)+1;
-  const x = new Float32Array(n), z = new Float32Array(n), tx = new Float32Array(n), tz = new Float32Array(n);
-  for(let i=0;i<n;i++){
-    const u = Math.min(1, i*STEP/len);
-    curve.getPointAt(u,_v); x[i]=_v.x; z[i]=_v.z;
-    curve.getTangentAt(u,_v2); const l = Math.hypot(_v2.x,_v2.z)||1; tx[i]=_v2.x/l; tz[i]=_v2.z/l;
-  }
-  return {x,z,tx,tz,n,len:(n-1)*STEP};
-}
-const _pa = {x:0,z:0,tx:0,tz:1};
-function pathAt(p, d, off, out=_pa){
-  let f = d/STEP; if(f<0) f=0; if(f>p.n-1.001) f=p.n-1.001;
-  const i = f|0, k = f-i;
-  const x = p.x[i]+(p.x[i+1]-p.x[i])*k, z = p.z[i]+(p.z[i+1]-p.z[i])*k, tx = p.tx[i], tz = p.tz[i];
-  out.x = x - tz*off; out.z = z + tx*off; out.tx = tx; out.tz = tz;
-  return out;
-}
-function minPathDist(paths, x, z, stepI=3){
-  let m = 1e9;
-  for(const p of paths) for(let i=0;i<p.n;i+=stepI){ const dx=p.x[i]-x, dz=p.z[i]-z, d=dx*dx+dz*dz; if(d<m) m=d; }
-  return Math.sqrt(m);
-}
 function ribbon(p, w, y){
   const segs = Math.ceil(p.len/.25), pos = [], uv = [], idx = [];
   for(let i=0;i<=segs;i++){
@@ -786,34 +904,89 @@ function makeSpotTex(pr){
     g.lineWidth=8; g.strokeStyle='#3a2508'; g.strokeText(pr, 82, 66); g.fillStyle='#fff'; g.fillText(pr, 82, 66);
   });
 }
+/* ---------- tema per rike: äng eller snö ---------- */
+const snowTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#e9f1f6'; g.fillRect(0,0,w,h);
+  for(let i=0;i<1200;i++){ const s=rand(2,8); g.fillStyle=`hsla(${rand(195,215)},${rand(20,40)}%,${rand(84,98)}%,${rand(.3,.7)})`; g.fillRect(rand(0,w),rand(0,h),s,s*.6); }
+  for(let i=0;i<40;i++){ g.fillStyle='rgba(120,150,110,.35)'; g.fillRect(rand(0,w),rand(0,h),rand(2,5),rand(3,7)); }
+},[7,15]);
+const snowRoadTex = canvasTex(128,256,(g,w,h)=>{
+  g.fillStyle='#b9a98a'; g.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){ g.fillStyle=`hsla(${rand(28,40)},${rand(10,25)}%,${rand(55,78)}%,${rand(.3,.7)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); }
+  for(let i=0;i<60;i++){ g.fillStyle='rgba(255,255,255,.7)'; g.fillRect(rand(0,w),rand(0,h),rand(2,6),rand(1,3)); }
+  const gr = g.createLinearGradient(0,0,w,0); gr.addColorStop(0,'rgba(255,255,255,.6)'); gr.addColorStop(.14,'rgba(255,255,255,0)'); gr.addColorStop(.86,'rgba(255,255,255,0)'); gr.addColorStop(1,'rgba(255,255,255,.6)');
+  g.fillStyle = gr; g.fillRect(0,0,w,h);
+});
+snowRoadTex.wrapS = snowRoadTex.wrapT = THREE.RepeatWrapping;
+const snowCliffTex = canvasTex(256,128,(g,w,h)=>{
+  g.fillStyle='#7f8794'; g.fillRect(0,0,w,h);
+  for(let i=0;i<60;i++){ g.fillStyle=`hsl(${rand(200,220)},${rand(5,14)}%,${rand(42,64)}%)`; g.fillRect(rand(0,w),rand(0,h),rand(14,40),rand(6,16)); }
+  g.fillStyle='#eef4f8'; g.fillRect(0,0,w,12);
+  for(let x=0;x<w;x+=6){ g.fillRect(x, 10, 4, rand(2,12)); }
+},[8,1]);
+let theme = 'meadow';
+function setTheme(t){
+  if(t===theme) return; theme = t;
+  const snow = t==='snow';
+  world.userData.top.material.map = snow ? snowTex : grassTex; world.userData.top.material.needsUpdate = true;
+  world.userData.side.material.map = snow ? snowCliffTex : cliffTex; world.userData.side.material.needsUpdate = true;
+  const sky = snow ? 0xa9cfe6 : SKY; scene.background.setHex(sky); scene.fog.color.setHex(sky);
+  document.documentElement.style.background = document.body.style.background = '#'+sky.toString(16).padStart(6,'0');
+  roadMat.map = snow ? snowRoadTex : sandTex; roadMat.needsUpdate = true;
+  roadEdgeMat.color.setHex(snow ? 0xdfe8ef : 0x9c8a5a);
+  lakeMat.color.setHex(snow ? 0xbfe4f2 : 0x48a8e0); lakeMat.emissive.setHex(snow ? 0x406a80 : 0x10406a);
+  lakeRimMat.color.setHex(snow ? 0xf2f6fa : 0xd9c58f);
+}
+const snowPineG = merge([part(Cyl(.14,.2,.9,6),0x7a5230,0,.45,0), part(Cone(1.0,1.5,7),0x2f7a4a,0,1.45,0), part(Cone(.82,.5,7),0xf4f8fb,0,1.95,0), part(Cone(.78,1.25,7),0x3a8a56,0,2.15,0), part(Cone(.5,.95,7),0xf4f8fb,0,2.75,0)]);
+const snowRockG = merge([part(new THREE.DodecahedronGeometry(.55,0),0x8d939c), part(new THREE.DodecahedronGeometry(.42,0),0xf2f6fa,.05,.25,0), part(new THREE.DodecahedronGeometry(.35,0),0xa3a9b2,.5,-.05,.2)]);
+const snowBushG = merge([part(new THREE.IcosahedronGeometry(.5,0),0xe8f0f6,0,.28,0), part(new THREE.IcosahedronGeometry(.36,0),0xd6e2ea,.38,.22,.15)]);
+const passRockG = merge([part(new THREE.DodecahedronGeometry(.8,0),0x9a988c), part(new THREE.DodecahedronGeometry(.5,0),0xaaa79b,.5,.3,.2)]);
+const passSnowG = merge([part(new THREE.DodecahedronGeometry(.8,0),0x8d939c), part(new THREE.DodecahedronGeometry(.6,0),0xf2f6fa,0,.45,0)]);
+[snowPineG, snowRockG, snowBushG, passRockG, passSnowG].forEach(g=>SHARED.add(g));
+const riverMat = new THREE.MeshLambertMaterial({color:0x3f9fd8, emissive:0x10406a, emissiveIntensity:.4, side:THREE.DoubleSide});
+const bankMat = new THREE.MeshLambertMaterial({color:0x8a8f99, side:THREE.DoubleSide});
+const woodMat = vcMat;
+const rallyGeo = merge([part(Cyl(.03,.03,.9,5), 0x5e3c20, 0,.45,0), part(Box(.36,.22,.02), 0x2f6be0, .18,.78,0), part(Cyl(.12,.12,.04,8), 0xf6c445, 0,.02,0)]);
+const rallyPrev = new THREE.Mesh(rallyGeo, vcMat); rallyPrev.scale.setScalar(1.5); rallyPrev.visible = false; world.add(rallyPrev);
 
 let lvlGroup = null, towerGroup = new THREE.Group(); world.add(towerGroup);
-const LV = {paths:[], spots:[], entries:[], lakes:[]};
-function disposeGroup(g){ g.traverse(o=>{ if(o.geometry && !SHARED.has(o.geometry) && o.geometry!==plateGeo) o.geometry.dispose(); }); }
+function disposeGroup(g){ g.traverse(o=>{ if(o.geometry && !SHARED.has(o.geometry) && o.geometry!==plateGeo && o.geometry!==rallyGeo) o.geometry.dispose(); }); }
 function buildLevel(L){
   if(lvlGroup){ world.remove(lvlGroup); disposeGroup(lvlGroup); }
   lvlGroup = new THREE.Group(); world.add(lvlGroup);
-  const lv = LEVELS[L], R = rng(lv.seed);
-  const paths = lv.paths.map(buildPath);
-  LV.paths = paths;
-  paths.forEach((p,i)=>{
-    const e = new THREE.Mesh(ribbon(p, ROAD_W+.4, .015+i*.012), roadEdgeMat); e.receiveShadow = true; lvlGroup.add(e);
-    const r = new THREE.Mesh(ribbon(p, ROAD_W, .03+i*.012), roadMat); r.receiveShadow = true; lvlGroup.add(r);
-  });
-  // byggplatser
-  const spots = [];
-  const okSpot = (x,z) => Math.abs(x)<=7.2 && z>=-12.4 && z<=10.4 && !(z>8.8 && Math.abs(x)<5.2) && minPathDist(paths,x,z,2)>=1.95 && spots.every(s=>(s.x-x)**2+(s.z-z)**2>=2.3*2.3);
-  let side = 1;
-  for(const p of paths){
-    for(let d=2.2; d<p.len-2.5; d+=1.5){
-      pathAt(p,d,0); const px=_pa.x, pz=_pa.z, nx=-_pa.tz, nz=_pa.tx;
-      let placed = false;
-      for(const s of [side,-side]){ for(const off of [2.2,2.6,3.0]){ const x=px+nx*off*s, z=pz+nz*off*s; if(okSpot(x,z)){ spots.push({x,z,d}); side=-s; placed=true; break; } } if(placed) break; }
-    }
+  const lv = LEVELS[L], snow = REALMS[lv.realm].theme==='snow';
+  setTheme(REALMS[lv.realm].theme);
+  const R = rng(lv.seed*31+7);
+  const paths = LV.paths;
+  // älvar och broar
+  for(const rv of LV.rivers){
+    const rp = M.buildPath(rv);
+    const bank = new THREE.Mesh(ribbon(rp, M.RIVER_W+.7, .008), bankMat); bank.receiveShadow = true; lvlGroup.add(bank);
+    const w = new THREE.Mesh(ribbon(rp, M.RIVER_W, .02), riverMat); lvlGroup.add(w);
   }
-  const cap = paths.length>1 ? 14 : 12;
-  const chosen = spots.length<=cap ? spots : Array.from({length:cap},(_,i)=>spots[Math.round(i*(spots.length-1)/(cap-1))]);
-  LV.spots = chosen.map((s,i)=>({...s, i, tower:null, mesh:null}));
+  paths.forEach((p,i)=>{
+    const e = new THREE.Mesh(ribbon(p, ROAD_W+.4, .03+i*.012), roadEdgeMat); e.receiveShadow = true; lvlGroup.add(e);
+    const r = new THREE.Mesh(ribbon(p, ROAD_W, .045+i*.012), roadMat); r.receiveShadow = true; lvlGroup.add(r);
+  });
+  if(LV.bridges.length){
+    const P = [];
+    for(const b of LV.bridges){
+      const p = paths[b.path];
+      for(let d=b.a; d<=b.b; d+=.3){ pathAt(p,d,0); const yaw = Math.atan2(_pa.tx,_pa.tz); P.push(part(Box(ROAD_W+.5,.08,.24), (Math.round(d/.3)%2)?0x9a6a3a:0x8a5a32, _pa.x,.13,_pa.z, 0,yaw,0)); }
+      for(let d=b.a; d<=b.b+.01; d+=.9){ pathAt(p,Math.min(d,b.b),0); const yaw = Math.atan2(_pa.tx,_pa.tz); for(const s of [-1,1]){ const ox = -_pa.tz*s*(ROAD_W/2+.2), oz = _pa.tx*s*(ROAD_W/2+.2); P.push(part(Box(.12,.5,.12), 0x5e3c20, _pa.x+ox,.38,_pa.z+oz, 0,yaw,0)); } }
+      for(const s of [-1,1]){ for(let d=b.a; d<b.b; d+=.45){ pathAt(p,d+.22,0); const yaw = Math.atan2(_pa.tx,_pa.tz); const ox = -_pa.tz*s*(ROAD_W/2+.2), oz = _pa.tx*s*(ROAD_W/2+.2); P.push(part(Box(.08,.08,.5), 0x6b4626, _pa.x+ox,.6,_pa.z+oz, 0,yaw,0)); } }
+    }
+    const m = new THREE.Mesh(merge(P), woodMat); m.castShadow = true; m.receiveShadow = true; lvlGroup.add(m);
+  }
+  // smala pass: klippor tätt längs vägen
+  if(LV.passPts.length){
+    const list = [];
+    LV.passPts.forEach((q,i)=>{ for(const s of [-1,1]){ const off = 1.75 + R()*.5; list.push([q[0]-q[3]*off*s, q[1]+q[2]*off*s, .8+R()*.7, R()*6]); } });
+    const im = new THREE.InstancedMesh(snow ? passSnowG : passRockG, vcMat, list.length);
+    list.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*(1+R()*.5),t[2])); im.setMatrixAt(i,_m4); });
+    im.castShadow = true; im.receiveShadow = true; lvlGroup.add(im);
+  }
+  // byggplatser
   spotTex = makeSpotTex(String(price('archer',0)));
   const lblMat = new THREE.MeshBasicMaterial({map:spotTex, transparent:true, depthWrite:false});
   const lblGeo = new THREE.PlaneGeometry(1.6,1.6);
@@ -824,20 +997,16 @@ function buildLevel(L){
     lvlGroup.add(grp); s.mesh = grp;
   }
   // sjöar
-  LV.lakes = [];
-  for(let k=0, tries=0; k<lv.lakes && tries<300; tries++){
-    const r = .9+R()*1.2, x = (R()*2-1)*7.5, z = -12+R()*21;
-    if(minPathDist(paths,x,z,3) < r+1.6) continue;
-    if(LV.spots.some(s=>Math.hypot(s.x-x,s.z-z) < r+1.2)) continue;
-    if(LV.lakes.some(l=>Math.hypot(l.x-x,l.z-z) < r+l.r+1)) continue;
-    if(z>9 && Math.abs(x)<6) continue;
-    LV.lakes.push({x,z,r}); k++;
+  for(const l of LV.lakes){
+    const {x,z,r} = l;
     const rim = new THREE.Mesh(new THREE.CircleGeometry(r+.3,20), lakeRimMat); rim.rotation.x=-Math.PI/2; rim.position.set(x,.012,z); rim.scale.set(1,1.15,1); lvlGroup.add(rim);
     const w = new THREE.Mesh(new THREE.CircleGeometry(r,20), lakeMat); w.rotation.x=-Math.PI/2; w.position.set(x,.025,z); w.scale.set(1,1.15,1); w.receiveShadow = true; lvlGroup.add(w);
-    for(let j=0;j<3;j++){ const lily = new THREE.Mesh(new THREE.CircleGeometry(.16,7), new THREE.MeshLambertMaterial({color:0x5fbf4a})); lily.rotation.x=-Math.PI/2; lily.position.set(x+(R()-.5)*r, .035, z+(R()-.5)*r); lvlGroup.add(lily); }
+    if(!snow) for(let j=0;j<3;j++){ const lily = new THREE.Mesh(new THREE.CircleGeometry(.16,7), new THREE.MeshLambertMaterial({color:0x5fbf4a})); lily.rotation.x=-Math.PI/2; lily.position.set(x+(l.lily[j*2]-.5)*r, .035, z+(l.lily[j*2+1]-.5)*r); lvlGroup.add(lily); }
   }
   // träd, stenar, buskar
-  const free = (x,z,pd,tall) => minPathDist(paths,x,z,4) > pd && !LV.spots.some(s=>Math.abs(s.x-x)<(tall?1.9:1.4) && z-s.z > -(tall?1.6:1.3) && z-s.z < (tall?3.2:1.6)) && !LV.lakes.some(l=>Math.hypot(l.x-x,l.z-z)<l.r+.6) && !(z>10.2 && Math.abs(x)<5.8);
+  const riverD = (x,z) => LV.rivers.length ? Math.min(...LV.rivers.map(rv=>M.polyDist(rv,x,z))) : 1e9;
+  const passD = (x,z) => { let m = 1e9; for(const q of LV.passPts){ const d = (q[0]-x)**2+(q[1]-z)**2; if(d<m) m=d; } return Math.sqrt(m); };
+  const free = (x,z,pd,tall) => minPathDist(paths,x,z,4) > pd && !LV.spots.some(s=>Math.abs(s.x-x)<(tall?1.9:1.4) && z-s.z > -(tall?1.6:1.3) && z-s.z < (tall?3.2:1.6)) && !LV.lakes.some(l=>Math.hypot(l.x-x,l.z-z)<l.r+.6) && !(z>10.2 && Math.abs(x)<5.8) && riverD(x,z) > M.RIVER_W/2+.6 && passD(x,z) > 1.2;
   const trees = [[],[]], rocks = [], bushes = [];
   for(let i=0;i<900 && trees[0].length+trees[1].length<150;i++){
     const x = (R()*2-1)*(PX-.5), z = PZ0+.6 + R()*(PZ1-PZ0-1.2);
@@ -846,75 +1015,110 @@ function buildLevel(L){
     if(!free(x,z,1.75,true)) continue;
     trees[R()<.6?0:1].push([x,z,.75+R()*.6,R()*6]);
   }
-  for(let i=0;i<300 && rocks.length<22;i++){ const x=(R()*2-1)*(PX-.4), z=-14+R()*28; if(free(x,z,1.6)) rocks.push([x,z,.6+R()*.8,R()*6]); }
-  for(let i=0;i<300 && bushes.length<28;i++){ const x=(R()*2-1)*(PX-.4), z=-14+R()*28; if(free(x,z,1.5)) bushes.push([x,z,.7+R()*.6,R()*6]); }
-  for(const [geo,list] of [[pineG,trees[0]],[roundG,trees[1]],[rockG2,rocks],[bushG,bushes]]){
+  for(let i=0;i<300 && rocks.length<(snow?30:22);i++){ const x=(R()*2-1)*(PX-.4), z=-14+R()*28; if(free(x,z,1.6)) rocks.push([x,z,.6+R()*.8,R()*6]); }
+  for(let i=0;i<300 && bushes.length<(snow?18:28);i++){ const x=(R()*2-1)*(PX-.4), z=-14+R()*28; if(free(x,z,1.5)) bushes.push([x,z,.7+R()*.6,R()*6]); }
+  const sets = snow ? [[snowPineG,trees[0].concat(trees[1])],[snowRockG,rocks],[snowBushG,bushes]] : [[pineG,trees[0]],[roundG,trees[1]],[rockG2,rocks],[bushG,bushes]];
+  for(const [geo,list] of sets){
     if(!list.length) continue;
     const im = new THREE.InstancedMesh(geo, vcMat, list.length);
     list.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*(.9+R()*.3),t[2])); im.setMatrixAt(i,_m4); });
     im.castShadow = true; im.receiveShadow = true; lvlGroup.add(im);
   }
   // ingångsmarkörer
-  LV.entries = paths.map((p,i)=>{
-    let d = 0; while(d<p.len && pathAt(p,d,0).z < -12.6) d += .2;
-    pathAt(p,d,0);
+  LV.entryMeshes = LV.entries.map(([x,z])=>{
     const m = new THREE.Mesh(merge([part(Cone(.45,.8,4),0xe0473c,0,0,0,Math.PI,0,0), part(Box(.9,.12,.12),0xffffff,0,.55,0)]), vcMat);
-    m.position.set(_pa.x, 1.6, _pa.z); lvlGroup.add(m); return m;
+    m.position.set(x, 1.6, z); lvlGroup.add(m); return m;
   });
 }
 
 /* ================= Torn ================= */
 const STONE=0xc9c2b2, STONE_DK=0xa39c8c, WOOD=0x8a5a32, WOOD_DK=0x5e3c20, BLUE=0x2f6be0, GOLD=0xf6c445;
 const towerGeoCache = {};
-function towerBody(type, l){
-  const key = type+l; if(towerGeoCache[key]) return towerGeoCache[key];
+function towerBody(type, l, br){
+  const key = type+l+(br||''); if(towerGeoCache[key]) return towerGeoCache[key];
   const P = []; let top = 1;
   P.push(part(Cyl(.8,.88,.3,8), STONE_DK, 0,.15,0));
   if(type==='archer'){
-    const h = [1.5,1.85,2.2][l];
+    const h = l===3 ? (br==='A' ? 2.75 : 2.3) : [1.5,1.85,2.2][l];
     if(l===0){
       for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P.push(part(Box(.15,h,.15), WOOD, sx*.38,.3+h/2,sz*.38));
       for(const sz of [-1,1]) P.push(part(Box(.86,.1,.1), WOOD_DK, 0,.3+h*.5,sz*.38, 0,0,.6));
       for(const sx of [-1,1]) P.push(part(Box(.1,.1,.86), WOOD_DK, sx*.38,.3+h*.5,0, .6,0,0));
     } else {
-      P.push(part(Cyl(.48,.6,h,8), l===2?0xdcd6c8:STONE, 0,.3+h/2,0));
+      const col = l===3 ? (br==='A' ? 0xe8e2d2 : 0x9c6a52) : l===2?0xdcd6c8:STONE;
+      P.push(part(Cyl(br==='A'?.42:.48, br==='A'?.58:.62, h, 8), col, 0,.3+h/2,0));
       P.push(part(Box(.12,.36,.05), 0x2a2a35, 0,.3+h*.6,-.5));
-      if(l===2) P.push(part(Cyl(.53,.53,.12,8), GOLD, 0,.3+h*.35,0));
+      if(l>=2) P.push(part(Cyl(.53,.53,.12,8), GOLD, 0,.3+h*.35,0));
+      if(br==='A'){ P.push(part(Cyl(.5,.5,.1,8), 0x2f8f46, 0,.3+h*.7,0)); P.push(part(Box(.12,.36,.05), 0x2a2a35, 0,.3+h*.82,-.44)); }
+      if(br==='B'){ for(let k=0;k<4;k++){ const a = k/4*TAU+Math.PI/4; P.push(part(Box(.14,.3,.14), 0x3a2a1e, Math.cos(a)*.62, .3+h*.45, Math.sin(a)*.62)); } }
     }
     top = .3+h;
     P.push(part(Cyl(.72,.6,.22,8), WOOD_DK, 0,top+.11,0));
     for(let k=0;k<8;k++){ const a=k/8*TAU; P.push(part(Box(.18,.24,.18), l?STONE:WOOD, Math.cos(a)*.62, top+.34, Math.sin(a)*.62, 0,-a,0)); }
     if(l>=1){
       for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P.push(part(Cyl(.04,.04,.9,5), WOOD_DK, sx*.48,top+.65,sz*.48));
-      P.push(part(Cone(.95,.8,8), BLUE, 0,top+1.45,0));
-      if(l===2) P.push(part(new THREE.SphereGeometry(.12,8,6), GOLD, 0,top+1.9,0));
+      const roof = br==='A' ? 0x2f8f46 : br==='B' ? 0xc33b30 : BLUE;
+      P.push(part(Cone(.95, br==='A'?1.15:.8, 8), roof, 0,top+(br==='A'?1.62:1.45),0));
+      if(l>=2) P.push(part(new THREE.SphereGeometry(.12,8,6), GOLD, 0,top+(br==='A'?2.25:1.9),0));
+      if(br==='B') for(let k=0;k<4;k++){ const a = k/4*TAU+Math.PI/4; P.push(part(Cyl(.12,.08,.14,6), 0x3a2a1e, Math.cos(a)*.62, top+.52, Math.sin(a)*.62)); P.push(part(Cone(.1,.26,5), 0xff8a2c, Math.cos(a)*.62, top+.72, Math.sin(a)*.62)); }
+      if(br==='A') P.push(part(Box(.06,.5,.4), 0x2f8f46, .03,top+2.5,.2));
     }
   } else if(type==='catapult'){
     P.push(part(Box(1.3,.24,1.3), WOOD_DK, 0,.42,0));
-    if(l>=1) P.push(part(Cyl(.86,.9,.16,8), l===2?GOLD:STONE, 0,.36,0));
+    if(l>=1) P.push(part(Cyl(.86,.9,.16,8), l>=2?GOLD:STONE, 0,.36,0));
+    if(br==='A'){ P.push(part(Cyl(.95,1.0,.34,8), STONE, 0,.25,0)); for(let k=0;k<3;k++){ const a = k/3*TAU+.4; P.push(part(new THREE.DodecahedronGeometry(.26,0), 0x7d7a6e, Math.cos(a)*.9, .6, Math.sin(a)*.9)); } }
+    if(br==='B'){ for(let k=0;k<4;k++){ const a = k/4*TAU+.3; P.push(part(Cyl(.17,.17,.36,8), 0x2e2a2a, Math.cos(a)*.86, .62, Math.sin(a)*.86)); P.push(part(Cyl(.18,.18,.06,8), 0xc0392b, Math.cos(a)*.86, .68, Math.sin(a)*.86)); } }
     top = .55;
   } else if(type==='barracks'){
-    const s = [1,1.1,1.2][l];
-    P.push(part(Box(1.3*s,.85,1.0*s), STONE, 0,.72,0));
-    P.push(part(Cyl(.72*s,.72*s,1.42*s,3), l===2?0xc33b30:BLUE, 0,1.36,0, 0,0,Math.PI/2, 1,1,.62));
+    const s = l===3 ? 1.25 : [1,1.1,1.2][l];
+    const wall = br==='B' ? 0xa39c8c : br==='A' ? 0xb98a5a : STONE;
+    const roof = br==='A' ? 0x3f9c3a : br==='B' ? 0xd8a522 : l===2?0xc33b30:BLUE;
+    P.push(part(Box(1.3*s,.85,1.0*s), wall, 0,.72,0));
+    P.push(part(Cyl(.72*s,.72*s,1.42*s,3), roof, 0,1.36,0, 0,0,Math.PI/2, 1,1,.62));
     P.push(part(Box(.4,.55,.06), 0x3a2414, 0,.58,-.52*s));
     P.push(part(Box(.5,.08,.1), GOLD, 0,.9,-.53*s));
-    if(l>=1){ P.push(part(Cyl(.3,.33,1.6,8), STONE, .72*s,1.1,.35)); P.push(part(Cone(.42,.6,8), BLUE, .72*s,2.2,.35)); }
-    if(l>=2){ P.push(part(Cyl(.3,.33,1.6,8), STONE, -.72*s,1.1,.35)); P.push(part(Cone(.42,.6,8), BLUE, -.72*s,2.2,.35)); P.push(part(Box(1.5*s,.1,.1), GOLD, 0,1.17,-.53*s)); }
+    if(l>=1){ P.push(part(Cyl(.3,.33,1.6,8), STONE, .72*s,1.1,.35)); P.push(part(Cone(.42,.6,8), roof===0xc33b30?BLUE:roof, .72*s,2.2,.35)); }
+    if(l>=2){ P.push(part(Cyl(.3,.33,1.6,8), STONE, -.72*s,1.1,.35)); P.push(part(Cone(.42,.6,8), roof===0xc33b30?BLUE:roof, -.72*s,2.2,.35)); P.push(part(Box(1.5*s,.1,.1), GOLD, 0,1.17,-.53*s)); }
+    if(br==='A'){ for(let k=-2;k<=2;k++) P.push(part(Box(.08,.4,.08), WOOD, k*.32,.5,-.95)); P.push(part(Box(1.4,.07,.07), WOOD, 0,.6,-.95)); P.push(part(Box(.5,.3,.3), 0xe0c060, .45,.45,-1.25)); }
+    if(br==='B'){ P.push(part(Box(.62,.72,.08), 0xd8a522, 0,1.0,-.62*s)); P.push(part(Box(.22,.3,.04), 0x2f6be0, 0,1.02,-.67*s)); }
     P.push(part(Cyl(.03,.03,1.1,5), WOOD_DK, -.45,2.05,.1));
     top = 2.2;
   } else if(type==='mage'){
-    const h = [1.4,1.75,2.1][l];
-    P.push(part(Cyl(.42,.6,h,6), 0x8f88b0, 0,.3+h/2,0));
-    for(let k=1;k<=l+1;k++) P.push(part(Cyl(.5,.5,.08,6), GOLD, 0,.3+h*k/(l+2.2),0));
+    const h = l===3 ? 2.3 : [1.4,1.75,2.1][l];
+    const col = br==='A' ? 0x9fd0ea : br==='B' ? 0x4f4f72 : 0x8f88b0;
+    P.push(part(Cyl(.42,.6,h,6), col, 0,.3+h/2,0));
+    for(let k=1;k<=Math.min(3,l+1);k++) P.push(part(Cyl(.5,.5,.08,6), br==='A'?0xe8f6ff:GOLD, 0,.3+h*k/(Math.min(3,l+1)+1.2),0));
     top = .3+h;
-    P.push(part(Cyl(.58,.46,.16,6), 0x6e6690, 0,top+.08,0));
-    for(let k=0;k<3;k++){ const a=k/3*TAU; P.push(part(Cyl(.05,.05,.95,5), 0xb7aed6, Math.cos(a)*.42, top+.6, Math.sin(a)*.42)); }
-    P.push(part(Cone(.55,.75,6), l===2?0x8a4ff0:0x6a3fc0, 0,top+1.42,0));
-    if(l>=1) P.push(part(new THREE.SphereGeometry(.09,8,6), GOLD, 0,top+1.86,0));
+    P.push(part(Cyl(.58,.46,.16,6), br==='A'?0x6fa8c8:0x6e6690, 0,top+.08,0));
+    if(br==='B'){ for(let k=0;k<3;k++){ const a=k/3*TAU; P.push(part(Cyl(.04,.04,1.5,5), 0xd08a3a, Math.cos(a)*.42, top+.8, Math.sin(a)*.42)); P.push(part(new THREE.SphereGeometry(.07,6,4), 0xffe08a, Math.cos(a)*.42, top+1.56, Math.sin(a)*.42)); } }
+    else for(let k=0;k<3;k++){ const a=k/3*TAU; P.push(part(Cyl(.05,.05,.95,5), br==='A'?0xe8f6ff:0xb7aed6, Math.cos(a)*.42, top+.6, Math.sin(a)*.42)); }
+    if(br==='A'){ P.push(part(new THREE.OctahedronGeometry(.45,0), 0xbfefff, 0,top+1.5,0, 0,0,0, .8,1.5,.8)); }
+    else if(br==='B'){ P.push(part(Cone(.55,.6,6), 0x2e2a4a, 0,top+1.75,0)); }
+    else P.push(part(Cone(.55,.75,6), l===2?0x8a4ff0:0x6a3fc0, 0,top+1.42,0));
+    if(l>=1 && !br) P.push(part(new THREE.SphereGeometry(.09,8,6), GOLD, 0,top+1.86,0));
+  } else if(type==='cannon'){
+    const h = [1.1,1.25,1.4][l];
+    P.push(part(Cyl(.66,.78,h,10), l===2?0xdcd6c8:STONE, 0,.3+h/2,0));
+    P.push(part(Cyl(.8,.72,.2,10), STONE_DK, 0,.3+h+.1,0));
+    for(let k=0;k<10;k++){ const a=k/10*TAU; if(k%2) P.push(part(Box(.22,.26,.2), STONE, Math.cos(a)*.7, .3+h+.33, Math.sin(a)*.7, 0,-a,0)); }
+    if(l>=1) P.push(part(Cyl(.69,.69,.1,10), GOLD, 0,.3+h*.55,0));
+    P.push(part(Box(.12,.3,.05), 0x2a2a35, 0,.3+h*.5,-.7));
+    top = .3+h+.2;
+  } else if(type==='clock'){
+    const h = [2.1,2.4,2.7][l];
+    P.push(part(Box(.95,h,.95), l===2?0xdcd6c8:STONE, 0,.3+h/2,0));
+    P.push(part(Box(1.05,.12,1.05), STONE_DK, 0,.3+h*.45,0));
+    top = .3+h;
+    for(const sz of [-1,1]){ P.push(part(Cyl(.36,.36,.06,16), GOLD, 0,top-.45,sz*.49, Math.PI/2,0,0)); P.push(part(Cyl(.3,.3,.07,16), 0xfff7e6, 0,top-.45,sz*.5, Math.PI/2,0,0)); }
+    for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P.push(part(Box(.12,.6,.12), STONE, sx*.4,top+.3,sz*.4));
+    P.push(part(Cone(.3,.4,8), GOLD, 0,top+.32,0, Math.PI,0,0));
+    P.push(part(Cone(.8,.9,4), l===2?0x8a4ff0:BLUE, 0,top+1.05,0, 0,Math.PI/4,0));
+    if(l>=1) P.push(part(new THREE.SphereGeometry(.1,8,6), GOLD, 0,top+1.55,0));
   }
   return towerGeoCache[key] = {geo:merge(P), top};
 }
+const cannonGeo = merge([part(Cyl(.16,.2,1.1,10), 0x22252b, 0,0,-.35, Math.PI/2,0,0), part(Cyl(.22,.22,.12,10), 0x3a3d45, 0,0,-.9, Math.PI/2,0,0), part(Box(.5,.3,.5), 0x5e3c20, 0,-.15,.1)]);
+const handGeo = merge([part(Box(.04,.22,.02), 0x2a2a35, 0,.1,0), part(Box(.04,.14,.02), 0x2a2a35, 0,.06,0, 0,0,1.3)]);
 const catArmGeo = merge([part(Box(.12,.12,1.5), WOOD,0,0,.3), part(Box(.34,.12,.34), WOOD_DK,0,.06,1.0), part(Box(.4,.4,.4), 0x3c3c48,0,-.15,-.5)]);
 const catFrameGeo = merge([part(Box(.12,.75,.12), WOOD,-.3,.38,0), part(Box(.12,.75,.12), WOOD,.3,.38,0), part(Box(.8,.1,.1), WOOD_DK,0,.72,.12), ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sz])=>part(Cyl(.2,.2,.12,10),0x4a3220,sx*.6,-.1,sz*.45,0,0,Math.PI/2))]);
 const flagGeo = new THREE.PlaneGeometry(.55,.34,4,1);
@@ -935,330 +1139,111 @@ const rainMesh = new THREE.Group();
   rainMesh.add(fill, ring); rainMesh.visible = false; world.add(rainMesh);
 }
 function showRange(x,z,r){ rangeMesh.position.set(x,0,z); rangeMesh.scale.set(r,1,r); rangeMesh.visible = true; }
-
-function nearestPathPoint(x,z){
-  let best = 1e9, bx = x, bz = z;
-  for(const p of LV.paths) for(let i=0;i<p.n;i+=2){ const dx=p.x[i]-x, dz=p.z[i]-z, d=dx*dx+dz*dz; if(d<best){ best=d; bx=p.x[i]; bz=p.z[i]; } }
-  return [bx,bz];
-}
 function makeTowerMesh(t){
   if(t.grp){ towerGroup.remove(t.grp); }
-  const {geo, top} = towerBody(t.type, t.lvl);
+  const {geo, top} = towerBody(t.type, t.lvl, t.br);
   const g = new THREE.Group(); g.position.set(t.x,0,t.z);
   const body = new THREE.Mesh(geo, vcMat); body.castShadow = true; body.receiveShadow = true; g.add(body);
-  t.top = top; t.head = null; t.arm = null; t.orb = null; t.flag = null;
+  t.top = top; t.heads = []; t.arm = null; t.orb = null; t.flag = null; t.barrel = null; t.hands = null;
   if(t.type==='archer'){
-    const n = t.lvl===2 ? 2 : 1; t.heads = [];
-    for(let k=0;k<n;k++){ const a = new THREE.Mesh(blueGeo, vcMat); a.scale.setScalar(.62); a.position.set(n===1?0:(k?.22:-.22), top+.22, 0); a.castShadow = true; g.add(a); t.heads.push(a); }
+    const n = t.lvl===2 || t.br==='B' ? 2 : 1;
+    for(let k=0;k<n;k++){ const a = new THREE.Mesh(blueGeo, vcMat); a.scale.setScalar(t.br==='A' ? .78 : .62); a.position.set(n===1?0:(k?.22:-.22), top+.22, 0); a.castShadow = true; g.add(a); t.heads.push(a); }
   } else if(t.type==='catapult'){
     const yawG = new THREE.Group(); yawG.position.y = .54; g.add(yawG);
     const fr = new THREE.Mesh(catFrameGeo, vcMat); fr.castShadow = true; yawG.add(fr);
     const arm = new THREE.Group(); arm.position.set(0,.62,0); yawG.add(arm);
     const am = new THREE.Mesh(catArmGeo, vcMat); am.castShadow = true; arm.add(am);
-    const rock = new THREE.Mesh(rockGeo, vcMat); rock.position.set(0,.3,1.0); rock.scale.setScalar(.8); arm.add(rock);
+    const rock = new THREE.Mesh(t.br==='B' ? bombGeo : rockGeo, vcMat); rock.position.set(0,.3,1.0); rock.scale.setScalar(t.br==='A' ? 1.5 : t.br==='B' ? 1.6 : .8); arm.add(rock);
     arm.rotation.x = .55; t.arm = arm; t.yawG = yawG; t.armRock = rock;
-    if(t.lvl>=1){ const s = 1+t.lvl*.08; yawG.scale.setScalar(s); }
+    if(t.lvl>=1){ const s = 1+t.lvl*.08 + (t.br==='A' ? .12 : 0); yawG.scale.setScalar(s); }
   } else if(t.type==='barracks'){
-    const f = new THREE.Mesh(flagGeo, flagMat); f.position.set(-.45+.28,2.45,.1); g.add(f); t.flag = f;
+    const f = new THREE.Mesh(flagGeo, t.br==='B' ? flagGoldMat : t.br==='A' ? flagGreenMat : flagMat); f.position.set(-.45+.28,2.45,.1); g.add(f); t.flag = f;
     const [rx,rz] = t.rally; g.rotation.y = Math.atan2(-(rx-t.x), -(rz-t.z));
+    if(!t.rallyMesh){ t.rallyMesh = new THREE.Mesh(rallyGeo, vcMat); towerGroup.add(t.rallyMesh); }
+    t.rallyMesh.position.set(rx, .02, rz);
   } else if(t.type==='mage'){
-    const o = new THREE.Mesh(boltGeo, orbMat); o.position.set(0, top+.62, 0); o.scale.setScalar(1.2+t.lvl*.2); g.add(o); t.orb = o;
+    const o = new THREE.Mesh(boltGeo, t.br==='A' ? frostOrbMat : t.br==='B' ? zapOrbMat : orbMat); o.position.set(0, top+.62, 0); o.scale.setScalar(1.2+Math.min(t.lvl,2)*.2+(t.br?.3:0)); g.add(o); t.orb = o;
+    if(t.br==='A'){ o.position.y = top+.4; }
+    if(t.br==='B'){ o.position.y = top+1.1; }
+  } else if(t.type==='cannon'){
+    const b = new THREE.Group(); b.position.y = top+.15; const bm = new THREE.Mesh(cannonGeo, vcMat); bm.castShadow = true; bm.scale.setScalar(1+t.lvl*.15); b.add(bm); g.add(b); t.barrel = b;
+  } else if(t.type==='clock'){
+    t.hands = [];
+    for(const sz of [-1,1]){ const h = new THREE.Mesh(handGeo, vcMat); h.position.set(0, top-.45, sz*.54); if(sz<0) h.rotation.y = Math.PI; g.add(h); t.hands.push(h); }
   }
   towerGroup.add(g); t.grp = g; t.pulse = 1;
 }
-function towerStats(t){ return TT[t.type]; }
-function placeTower(spot, type){
-  const cost = price(type,0);
-  if(spot.tower || G.gold < cost) return false;
-  G.gold -= cost;
-  const t = {type, lvl:0, x:spot.x, z:spot.z, spot, spent:cost, cd:.3, grp:null, knights:[], aimYaw:0, fire:0};
-  if(type==='barracks'){ t.rally = nearestPathPoint(spot.x, spot.z); }
-  spot.tower = t; spot.mesh.visible = false;
-  G.towers.push(t); makeTowerMesh(t);
-  if(type==='barracks') syncKnights(t);
-  burst(t.x,.5,t.z,0xc9b48a,18,3.5,.18,.6,4); Snd.build();
-  if(G.tut===0) setTut(G.wave>0 ? 2 : 1);
-  return true;
-}
-function upgradeTower(t){
-  if(t.lvl>=2) return false;
-  const cost = price(t.type, t.lvl+1); if(G.gold < cost) return false;
-  G.gold -= cost; t.spent += cost; t.lvl++;
-  makeTowerMesh(t);
-  if(t.type==='barracks') syncKnights(t);
-  burst(t.x,1.5,t.z,0xffe08a,26,4,.16,.8,6); Snd.build(); Snd.coin();
-  return true;
-}
-function sellTower(t){
-  const back = Math.round(t.spent*.7);
-  G.gold += back;
-  for(const k of t.knights){ release(k); k.gone = true; }
-  G.knights = G.knights.filter(k=>!k.gone);
-  towerGroup.remove(t.grp); t.spot.tower = null; t.spot.mesh.visible = true;
-  G.towers = G.towers.filter(o=>o!==t);
-  burst(t.x,.6,t.z,0xc9b48a,16,3,.18,.6,4); floatText('+'+back, t.x, 1.5, t.z, 'gold'); Snd.sell();
-}
-function knightStats(t){ const s = TT.barracks, m = 1 + UPG.train.val(save.upg.train)/100; return {hp:s.hp[t.lvl]*m, dmg:s.dmg[t.lvl]*m, n:s.n[t.lvl], respawn:s.respawn[t.lvl]}; }
-function syncKnights(t){
-  const ks = knightStats(t), [rx,rz] = t.rally;
-  while(t.knights.length < ks.n){ const k = {t, x:t.x, z:t.z, hp:ks.hp, max:ks.hp, target:null, cd:0, dead:false, respawn:0, ph:Math.random()*6, yaw:0, gone:false}; t.knights.push(k); G.knights.push(k); }
-  t.knights.forEach((k,i)=>{ const a = i/t.knights.length*TAU + .4; k.hx = rx + Math.cos(a)*.55; k.hz = rz + Math.sin(a)*.55; k.max = ks.hp; k.hp = ks.hp; k.dmg = ks.dmg; });
-}
-function release(k){ if(k.target){ k.target.holders = Math.max(0, k.target.holders-1); k.target = null; } }
-
-/* ================= Speltillstånd ================= */
-const G = {mode:'menu', L:0, waves:[], W:0, wave:0, hp:20, hpMax:20, gold:0, spawners:[], waveReady:false, countdown:Infinity, enemies:[], towers:[], knights:[], projs:[], rains:[], T:0, speed:1, over:false, rainCd:0, rainAim:false, shake:0, kills:0, leaked:0, tut:2, crenelsDown:0, collapse:0, attractT:0};
-
-function loadLevel(L, mode){
-  G.L = L; G.mode = mode; G.over = false;
-  buildLevel(L);
-  for(const t of G.towers) towerGroup.remove(t.grp);
-  G.towers = []; G.knights = []; G.enemies = []; G.projs = []; G.rains = []; G.spawners = [];
-  G.waves = makeWaves(L); G.W = G.waves.length; G.wave = 0; G.waveReady = true; G.countdown = Infinity;
-  G.hpMax = G.hp = UPG.wall.val(save.upg.wall);
-  G.gold = 210 + L*50 + (LEVELS[L].paths.length>1 ? 80 : 0) + UPG.gold.val(save.upg.gold);
-  G.rainCd = 0; G.rainAim = false; G.kills = 0; G.leaked = 0; G.T = 0; G.collapse = 0; G.crenelsDown = 0;
-  castle.g.position.y = 0; castle.g.rotation.z = 0; castle.crenels.forEach(c=>c.visible = true);
-  P.n = 0; closeRing(); rainMesh.visible = false;
-  hudAll();
-}
-function startWave(){
-  if(!G.waveReady || G.over || G.wave >= G.W) return;
-  let bonus = 0;
-  if(G.wave>0 && isFinite(G.countdown) && G.mode==='play'){ bonus = Math.round(G.countdown*1.5); if(bonus>0){ G.gold += bonus; pop($('goldPill'),'g'); Snd.coin(); } }
-  const w = G.waves[G.wave]; G.wave++;
-  for(const g of w.g) G.spawners.push({t:g.t, left:g.n, gap:g.gap, path:Math.min(g.path, LV.paths.length-1), timer:g.at, hm:w.hm});
-  G.waveReady = false; G.countdown = Infinity;
-  if(G.mode==='play'){
-    Snd.horn();
-    const last = G.wave===G.W;
-    banner(last ? 'Sista vågen' : `Våg ${G.wave}`, last ? 'Krigsherren kommer!' : (bonus ? `+${bonus} guld för tidig start` : ''));
-    if(G.tut===1) setTut(2);
-  }
-  hudWave();
-}
-function spawnEnemy(type, path, hm){
-  const et = ET[type], p = LV.paths[path];
-  const hpm = type==='boss' ? hm*(1+G.L*.15) : hm;
-  const e = {type, et, p, d:0, off:type==='boss'||type==='ram' ? 0 : rand(-.5,.5), hp:et.hp*hpm, max:et.hp*hpm, spd:et.spd*rand(.95,1.05)*((type==='boss'||type==='ram') ? Math.max(1, p.len/48) : 1), slowT:0, slowF:0, burnT:0, burnD:0, held:false, holders:0, x:0, z:0, tx:0, tz:1, ph:Math.random()*6, alive:true, flash:0, gold:Math.round(et.gold*(1+G.L*.08))};
-  pathAt(p, 0, e.off); e.x=_pa.x; e.z=_pa.z;
-  G.enemies.push(e);
-  if(type==='boss' && G.mode==='play'){ G.shake = Math.max(G.shake,.4); Snd.horn(); }
-}
-
-function hurt(e, dmg, kind){
-  if(!e.alive) return;
-  if(kind==='pierce' && e.et.pierce) dmg *= e.et.pierce;
-  e.hp -= dmg; e.flash = .1;
-  if(e.hp <= 0) kill(e);
-}
-function kill(e){
-  e.alive = false; G.kills++;
-  if(G.mode==='play'){ G.gold += e.gold; flyCoin(e.x, .8, e.z); }
-  const big = e.type==='boss' ? 40 : e.type==='ram' ? 20 : 9;
-  burst(e.x,.7,e.z, e.et.col, big, e.type==='boss'?6:3.4, e.type==='boss'?.3:.15, .6);
-  burst(e.x,.5,e.z, 0xffffff, 3, 2, .1, .3);
-  if(e.type==='boss'){ G.shake = Math.max(G.shake,.6); Snd.boom(); } else Snd.die();
-}
-function hurtCastle(e){
-  e.alive = false; G.leaked += e.et.gate;
-  if(G.mode!=='play'){ burst(e.x,1,e.z,0xffffff,4,3,.12,.4); return; }
-  G.hp = Math.max(0, G.hp - e.et.gate);
-  floatText('−'+e.et.gate, e.x, 2.2, CASTLE_Z-1.5, 'bad');
-  G.shake = Math.max(G.shake, e.et.gate>=4 ? .7 : .3);
-  burst(e.x, 1, CASTLE_Z-1, 0xc9c2b2, 10+e.et.gate*4, 4, .22, .7);
-  Snd.hurt(); flash(); pop($('hpPill'),'h'); hudHp();
-  const want = Math.floor((1 - G.hp/G.hpMax) * castle.crenels.length * .9);
-  while(G.crenelsDown < want){
-    const c = castle.crenels[G.crenelsDown++];
-    if(c && c.visible){ c.visible = false; c.getWorldPosition(_v); burst(_v.x,_v.y,_v.z,0xc9c2b2,8,4,.25,1,5); }
-  }
-  if(G.hp <= 0) lose();
-}
+const flagGoldMat = new THREE.MeshLambertMaterial({color:0xd8a522, side:THREE.DoubleSide});
+const flagGreenMat = new THREE.MeshLambertMaterial({color:0x3f9c3a, side:THREE.DoubleSide});
+const frostOrbMat = new THREE.MeshBasicMaterial({color:0xaef0ff});
+const zapOrbMat = new THREE.MeshBasicMaterial({color:0xfff2a0});
+const clockRing = new THREE.Mesh(new THREE.RingGeometry(.94,1,64), new THREE.MeshBasicMaterial({color:0xf6c445, transparent:true, opacity:.5, depthWrite:false}));
+clockRing.rotation.x = -Math.PI/2; clockRing.position.y = .12; clockRing.visible = false; world.add(clockRing);
+/* ================= Effekter från modellen ================= */
 let flashT = 0;
 function flash(){ const f=$('flash'); f.classList.add('on'); clearTimeout(flashT); flashT = setTimeout(()=>f.classList.remove('on'),90); }
-
-function fireProj(kind, x0,y0,z0, target, tx,tz, dur, h, dmg, extra){
-  G.projs.push({kind, x0,y0,z0, target, tx, ty:target?.6:0, tz, t:0, dur, h, dmg, extra, px:x0, py:y0, pz:z0, dx:0, dy:0, dz:1});
-}
-function predict(e, dt){ const o = {}; pathAt(e.p, e.d + (e.held?0:e.spd*(e.slowT>0?1-e.slowF:1)*dt), e.off, o); return o; }
-
-/* ================= Uppdatering ================= */
-function update(dt){
-  G.T += dt;
-  const play = G.mode==='play' || G.mode==='attract';
-  if(!play) return;
-  // vågor
-  for(const s of G.spawners){
-    s.timer -= dt;
-    while(s.left>0 && s.timer<=0){ spawnEnemy(s.t, s.path, s.hm); s.left--; s.timer += s.gap; }
-  }
-  G.spawners = G.spawners.filter(s=>s.left>0);
-  if(!G.over && !G.waveReady && G.spawners.length===0 && G.wave < G.W){
-    G.waveReady = true; G.countdown = G.mode==='attract' ? 2 : 20; hudWave();
-  }
-  if(G.waveReady && isFinite(G.countdown)){
-    G.countdown -= dt;
-    if(G.countdown <= 0){ G.countdown = Infinity; startWave(); }
-  }
-  if(G.mode==='attract' && G.wave===0 && G.waveReady){ G.attractT += dt; if(G.attractT>1.5){ G.attractT = 0; startWave(); } }
-  if(G.rainCd>0) G.rainCd = Math.max(0, G.rainCd - dt);
-
-  // riddare
-  for(const e of G.enemies) e.held = false;
-  for(const k of G.knights){
-    const t = k.t;
-    if(k.dead){ k.respawn -= dt; if(k.respawn<=0){ k.dead=false; k.hp=k.max; k.x=t.x; k.z=t.z; } continue; }
-    const R = TT.barracks.range[t.lvl], [rx,rz] = t.rally;
-    let e = k.target;
-    if(e && (!e.alive || (e.x-rx)**2+(e.z-rz)**2 > (R+1.2)**2)){ release(k); e = null; }
-    if(!e){
-      let best = null, bd = 1e9;
-      for(const o of G.enemies){
-        if(!o.alive || o.holders >= (o.et.hold||1)) continue;
-        const dr = (o.x-rx)**2 + (o.z-rz)**2; if(dr > R*R) continue;
-        const dk = (o.x-k.x)**2 + (o.z-k.z)**2; if(dk < bd){ bd = dk; best = o; }
-      }
-      if(best){ k.target = best; best.holders++; e = best; }
+const SRC_NAME = {archer:'Bågskyttar', catapult:'Kastapulter', barracks:'Riddare', mage:'Magitorn', cannon:'Kanoner', rain:'Pilregn'};
+Object.assign(FX, {
+  burst, float:floatText, coin:flyCoin,
+  snd(n){ if(Snd[n]) Snd[n](); },
+  shake(v){ G.shake = Math.max(G.shake, v); },
+  tower(t, why){
+    makeTowerMesh(t);
+    t.spot.mesh.visible = false;
+    if(why==='rally'){ Snd.rally(); burst(t.rally[0],.4,t.rally[1],0x5aa0ff,10,2,.12,.4,3); return; }
+    if(why==='build'){ burst(t.x,.5,t.z,0xc9b48a,18,3.5,.18,.6,4); Snd.build(); if(G.tut===0) setTut(G.wave>0 ? 2 : 1); }
+    else { burst(t.x,1.5,t.z, t.lvl===3 ? 0xd9c2ff : 0xffe08a, t.lvl===3 ? 40 : 26, 4, .16, .8, 6); Snd.build(); Snd.coin(); if(t.lvl===3) floatText(TT[t.type].br[t.br].name+'!', t.x, 2.6, t.z, 'gold'); }
+  },
+  towerGone(t, back){
+    towerGroup.remove(t.grp); if(t.rallyMesh){ towerGroup.remove(t.rallyMesh); t.rallyMesh = null; }
+    t.spot.mesh.visible = true;
+    burst(t.x,.6,t.z,0xc9b48a,16,3,.18,.6,4); floatText('+'+back, t.x, 1.5, t.z, 'gold'); Snd.sell();
+  },
+  castleHit(e){
+    floatText('−'+e.et.gate, e.x, 2.2, CASTLE_Z-1.5, 'bad');
+    G.shake = Math.max(G.shake, e.et.gate>=4 ? .7 : .3);
+    burst(e.x, 1, CASTLE_Z-1, 0xc9c2b2, 10+e.et.gate*4, 4, .22, .7);
+    Snd.hurt(); flash(); pop($('hpPill'),'h'); hudHp();
+    const want = Math.floor((1 - G.hp/G.hpMax) * castle.crenels.length * .9);
+    while(G.crenelsDown < want){
+      const c = castle.crenels[G.crenelsDown++];
+      if(c && c.visible){ c.visible = false; c.getWorldPosition(_v); burst(_v.x,_v.y,_v.z,0xc9c2b2,8,4,.25,1,5); }
     }
-    let tx = k.hx, tz = k.hz, close = false;
-    if(e){
-      const dx = e.x-k.x, dz = e.z-k.z, d = Math.hypot(dx,dz), reach = e.type==='boss' ? 1.1 : e.type==='ram' ? .9 : .6;
-      if(d <= reach+.05){ close = true; tx = k.x; tz = k.z; e.held = true; } else { tx = e.x - dx/d*reach; tz = e.z - dz/d*reach; }
-      k.yaw = Math.atan2(-dx,-dz);
-      if(close){
-        k.cd -= dt;
-        if(k.cd <= 0){ k.cd = .75; hurt(e, k.dmg, 'melee'); burst((e.x+k.x)/2,.7,(e.z+k.z)/2, Math.random()<.5?0xffe08a:0xffffff, 4, 2.6, .1, .3); Snd.clash(); }
-        k.hp -= e.et.atk*dt / Math.max(1, e.holders);
-        if(k.hp <= 0){ k.dead = true; k.respawn = knightStats(t).respawn; release(k); burst(k.x,.6,k.z,0x2f6be0,12,3,.15,.6); }
-      }
-    } else if(k.hp < k.max) k.hp = Math.min(k.max, k.hp + 6*dt);
-    if(!close){
-      const dx = tx-k.x, dz = tz-k.z, d = Math.hypot(dx,dz);
-      if(d > .05){ const s = Math.min(d, 2.8*dt); k.x += dx/d*s; k.z += dz/d*s; if(!e) k.yaw = Math.atan2(-dx,-dz); k.ph += dt*12; }
-    }
-  }
-
-  // fiender
-  for(const e of G.enemies){
-    if(!e.alive) continue;
-    if(e.burnT>0){ e.burnT -= dt; hurt(e, e.burnD*dt, 'magic'); if(!e.alive) continue; if(Math.random()<dt*6) burst(e.x,.9,e.z,0xb07bff,1,1,.1,.5,2,-2); }
-    let sp = e.spd;
-    if(e.slowT>0){ e.slowT -= dt; sp *= 1 - e.slowF*(e.type==='boss'?.5:1); }
-    if(!e.held){ e.d += sp*dt; e.ph += sp*dt*7; }
-    if(e.flash>0) e.flash -= dt;
-    pathAt(e.p, e.d, e.off); e.x = _pa.x; e.z = _pa.z; e.tx = _pa.tx; e.tz = _pa.tz;
-    if(e.d >= e.p.len) hurtCastle(e);
-  }
-
-  // torn
-  for(const t of G.towers){
-    if(t.pulse>0){ t.pulse = Math.max(0, t.pulse-dt*3); const s = 1 + Math.sin(t.pulse*Math.PI)*.12; t.grp.scale.set(s, 1+Math.sin(t.pulse*Math.PI)*.18, s); }
-    if(t.type==='barracks'){ if(t.flag) t.flag.rotation.y = Math.sin(G.T*3+t.x)*.4; continue; }
-    if(t.orb){ t.orb.position.y = t.top + .62 + Math.sin(G.T*2.4 + t.x)*.08; t.orb.rotation.y += dt*2; }
-    if(t.arm){ t.fire = Math.max(0, t.fire - dt*2.2); t.arm.rotation.x = .55 - Math.sin(Math.min(1,t.fire)*Math.PI)*1.7; t.armRock.visible = t.cd < t.lastRate - .4 || t.fire<=0; }
-    t.cd -= dt;
-    if(t.cd > 0) continue;
-    const st = TT[t.type], R = st.range[t.lvl], R2 = R*R;
-    // mål: den som kommit längst
-    let best = null, bv = -1;
-    const cand = t.type==='archer' ? [] : null;
-    for(const e of G.enemies){
-      if(!e.alive) continue;
-      const dx = e.x-t.x, dz = e.z-t.z; if(dx*dx+dz*dz > R2) continue;
-      const v = e.d/e.p.len;
-      if(cand) cand.push(e);
-      if(v > bv){ bv = v; best = e; }
-    }
-    if(!best){ t.cd = .1; continue; }
-    const yaw = Math.atan2(-(best.x-t.x), -(best.z-t.z));
-    if(t.type==='archer'){
-      cand.sort((a,b)=>b.d/b.p.len - a.d/a.p.len);
-      const n = st.shots[t.lvl];
-      for(let k=0;k<n;k++){
-        const e = cand[k % cand.length], ox = t.x, oy = t.top+.75, oz = t.z;
-        const dist = Math.hypot(e.x-ox, e.z-oz);
-        fireProj('arrow', ox+rand(-.15,.15), oy, oz+rand(-.15,.15), e, e.x, e.z, Math.max(.22, dist/13), .5+dist*.1, st.dmg[t.lvl], null);
-      }
-      for(const hd of t.heads) hd.rotation.y = yaw;
-      t.cd = st.rate[t.lvl]; Snd.arrow();
-    } else if(t.type==='catapult'){
-      const dur = 1.05, pr = predict(best, dur);
-      fireProj('rock', t.x, 1.7, t.z, null, pr.x, pr.z, dur, 3.4, st.dmg[t.lvl], st.splash[t.lvl]);
-      t.yawG.rotation.y = yaw; t.fire = 1; t.cd = t.lastRate = st.rate[t.lvl]; Snd.thud();
-    } else if(t.type==='mage'){
-      const o = t.orb.position;
-      fireProj('bolt', t.x, o.y, t.z, best, best.x, best.z, .35, .3, st.dmg[t.lvl], {slow:st.slow[t.lvl], dur:st.dur[t.lvl], burn:st.burn[t.lvl]});
-      t.cd = st.rate[t.lvl]; Snd.zap();
-      burst(t.x, o.y, t.z, 0xd8a6ff, 5, 1.5, .1, .35, 1, 0);
-    }
-  }
-
-  // projektiler
-  for(const p of G.projs){
-    p.t += dt/p.dur;
-    if(p.target && p.target.alive){ p.tx = p.target.x; p.tz = p.target.z; }
-    const k = Math.min(1,p.t);
-    const nx = p.x0+(p.tx-p.x0)*k, nz = p.z0+(p.tz-p.z0)*k, ny = p.y0+(p.ty-p.y0)*k + p.h*4*k*(1-k);
-    p.dx = nx-p.px; p.dy = ny-p.py; p.dz = nz-p.pz; p.px = nx; p.py = ny; p.pz = nz;
-    if(p.kind==='bolt' && Math.random()<.5) burst(nx,ny,nz,0xc58bff,1,.4,.09,.3,.3,0);
-    if(p.kind==='rock' && Math.random()<.3) burst(nx,ny,nz,0x8a877a,1,.3,.08,.3,0,0);
-    if(p.t >= 1){
-      p.done = true;
-      if(p.kind==='arrow'){ if(p.target && p.target.alive){ hurt(p.target, p.dmg, 'pierce'); burst(nx,.8,nz,0xffffff,2,1.5,.07,.2); } }
-      else if(p.kind==='bolt'){
-        const e = p.target;
-        if(e && e.alive){ hurt(e, p.dmg, 'magic'); if(e.alive){ e.slowT = Math.max(e.slowT, p.extra.dur); e.slowF = p.extra.slow; e.burnT = Math.max(e.burnT, p.extra.dur); e.burnD = p.extra.burn; } }
-        burst(nx,.8,nz,0xb07bff,8,2.5,.12,.4,2);
-      } else if(p.kind==='rock'){
-        const r2 = p.extra*p.extra;
-        for(const e of G.enemies){ if(!e.alive) continue; const dx=e.x-nx, dz=e.z-nz, d2=dx*dx+dz*dz; if(d2<=r2) hurt(e, p.dmg*(1-.4*Math.sqrt(d2)/p.extra), 'blast'); }
-        burst(nx,.3,nz,0x9c8a5a,18+p.extra*8,3+p.extra*2,.2,.6,5);
-        burst(nx,.5,nz,0xffa040,8+p.extra*4,2+p.extra*1.5,.18,.35,3);
-        G.shake = Math.max(G.shake,.15); Snd.boom();
-      } else if(p.kind==='rain'){ burst(nx,.1,nz,0xc9b48a,2,1.2,.08,.25,1.5); }
-    }
-  }
-  G.projs = G.projs.filter(p=>!p.done);
-
-  // pilregn
-  for(const r of G.rains){
-    r.t += dt;
-    while(r.spawned < 46 && r.t > r.spawned*.018){
-      r.spawned++;
-      const a = Math.random()*TAU, rr = Math.sqrt(Math.random())*r.r, x = r.x+Math.cos(a)*rr, z = r.z+Math.sin(a)*rr;
-      fireProj('rain', x-1.2, 9, z-3.5, null, x, z, .42, 0, 0, null);
-    }
-    while(r.ticks < 3 && r.t > .45 + r.ticks*.28){
-      r.ticks++;
-      for(const e of G.enemies){ if(e.alive && (e.x-r.x)**2+(e.z-r.z)**2 <= r.r*r.r) hurt(e, r.dmg/3, 'rain'); }
-    }
-    if(r.ticks>=3 && r.spawned>=46) r.done = true;
-  }
-  G.rains = G.rains.filter(r=>!r.done);
-
-  G.enemies = G.enemies.filter(e=>e.alive);
-
-  // vinst
-  if(!G.over && G.mode==='play' && G.wave>=G.W && G.spawners.length===0 && G.enemies.length===0) win();
-  if(G.mode==='attract' && G.wave>=G.W && G.spawners.length===0 && G.enemies.length===0){ G.wave = 0; G.waveReady = true; }
-
-  // borgen rasar
-  if(G.collapse>0){
-    G.collapse += dt;
-    castle.g.position.y = -(Math.min(1, G.collapse/1.8)**2) * 3.5;
-    if(Math.random()<.5) burst(rand(-4,4), rand(1,4), CASTLE_Z+rand(-1,1), 0xc9c2b2, 3, 5, .3, 1.1, 6);
-  }
-  for(const f of castle.flags) f.rotation.y = Math.sin(G.T*3 + f.position.x)*.35;
-}
+  },
+  hud(){ hudWave(); },
+  waveStart(bonus, tax, fresh){
+    hudWave();
+    if(G.mode!=='play') return;
+    Snd.horn();
+    const w = G.waves[G.wave-1], boss = w && w.g.some(g=>ET[g.t].boss), last = G.wave===G.W;
+    const sub = boss ? `${ET[w.g.find(g=>ET[g.t].boss).t].name} kommer!` : bonus ? `+${bonus} guld för tidig start` : tax ? `+${tax} guld från skattkammaren` : '';
+    banner(last ? 'Sista vågen' : `Våg ${G.wave}`, sub);
+    if(G.tut===1) setTut(2);
+    if(fresh && fresh.length) showCards(fresh);
+  },
+  persist,
+  heal(e, any){ burst(e.x,.4,e.z,0x7dff8a, any?16:5, 2.4, .12, .5, 1.5, 0); if(any) Snd.heal(); },
+  sapBoom(t, e){ burst(t.x,1,t.z,0xffa040,30,5,.22,.7,5); burst(t.x,1.4,t.z,0x55555f,20,2,.3,1.2,2,-1); G.shake = Math.max(G.shake,.35); Snd.boom(); floatText('Ur spel!', t.x, 2.6, t.z, 'bad'); },
+  win(stars, gained){
+    closeRing(); setRainAim(false); setRallyMode(null); Snd.win();
+    for(let i=0;i<30;i++) setTimeout(()=>burst(rand(-5,5), rand(4,7), CASTLE_Z-2+rand(-2,2), [0xf6c445,0x3b7cf0,0xe0473c,0x7ad66a][i%4], 14, 5, .14, 1.2, 4, 5), i*50);
+    setTimeout(()=>{ G.mode='after'; showResult(true, stars, gained); }, 1500);
+  },
+  lose(){
+    closeRing(); setRainAim(false); setRallyMode(null);
+    G.collapse = .001; Snd.boom(); Snd.lose();
+    setTimeout(()=>{ G.mode='after'; showResult(false, 0, 0); }, 1800);
+  },
+});
 
 /* ================= Rendering av enheter ================= */
-const cnt = {foot:0, runner:0, shield:0, ram:0, boss:0};
-const _right = new THREE.Vector3(), _bq = new THREE.Quaternion();
-function drawAll(){
+const cnt = {}; for(const k in ENEMY_MAX) cnt[k] = 0;
+const kcnt = {knight:0, rider:0, guard:0};
+const _right = new THREE.Vector3(), _bq = new THREE.Quaternion(), _e2 = new THREE.Euler(0,0,0,'YXZ');
+function drawAll(dt=0){
   const T = G.T;
   for(const k in cnt) cnt[k] = 0;
-  let nb = 0;
+  let nb = 0, nw = 0;
   const bgA = barBg.instanceMatrix.array, fgA = barFg.instanceMatrix.array, fgC = barFg.instanceColor.array;
   _bq.copy(camera.quaternion); _right.set(1,0,0).applyQuaternion(_bq);
   const bar = (x,y,z,frac,w,r,g,b) => {
@@ -1269,41 +1254,92 @@ function drawAll(){
   };
   for(const e of G.enemies){
     const im = EIM[e.type], i = cnt[e.type]++; if(i >= ENEMY_MAX[e.type]) continue;
-    const yaw = Math.atan2(-e.tx, -e.tz);
-    const sc = e.type==='boss' ? 2.1 : e.type==='ram' ? 1 : e.type==='runner' ? .95 : 1.05;
-    const bob = e.type==='ram' ? Math.abs(Math.sin(e.ph*.6))*.03 : Math.abs(Math.sin(e.ph))*.1;
-    setM(im.instanceMatrix.array, i, e.x, bob, e.z, yaw + (e.type==='ram'?0:Math.sin(e.ph)*.1), sc);
+    const yaw = Math.atan2(-e.tx, -e.tz), fz = e.freezeT>0;
+    const sc = e.et.boss ? (e.type==='troll' ? 1.8 : 2.1) : e.type==='ram' ? 1 : e.type==='runner' ? .95 : e.fly ? 1.15 : 1.05;
+    let y = fz ? 0 : e.type==='ram' ? Math.abs(Math.sin(e.ph*.6))*.03 : Math.abs(Math.sin(e.ph))*.1;
+    if(e.fly) y = 1.9 + (fz ? 0 : Math.sin(T*3+e.ph)*.15);
+    setM(im.instanceMatrix.array, i, e.x, y, e.z, yaw + ((e.type==='ram'||e.fly||fz)?0:Math.sin(e.ph)*.1), sc);
+    if(e.fly && nw < ENEMY_MAX.gargoyle){
+      const fl = fz ? .2 : Math.sin(T*14+e.ph)*.7;
+      for(let s=0;s<2;s++){ _q.setFromEuler(_e2.set(0, yaw, s ? -fl : fl)); _m4.compose(_v.set(e.x, y+.06*sc, e.z), _q, _s.set(sc,sc,sc)); _m4.toArray(wingIM[s].instanceMatrix.array, nw*16); }
+      nw++;
+    }
     const c = im.instanceColor.array;
     if(e.flash>0){ c[i*3]=2.2; c[i*3+1]=2.2; c[i*3+2]=2.2; }
+    else if(fz){ c[i*3]=.75; c[i*3+1]=1.3; c[i*3+2]=1.8; }
+    else if(e.fireT>0){ c[i*3]=1.5; c[i*3+1]=.95; c[i*3+2]=.6; }
     else if(e.slowT>0){ c[i*3]=.85; c[i*3+1]=.75; c[i*3+2]=1.5; }
     else { c[i*3]=1; c[i*3+1]=1; c[i*3+2]=1; }
-    if(e.hp < e.max){ const f = Math.max(0,e.hp/e.max); bar(e.x, e.et.h+.25, e.z, f, e.type==='boss'?1.6:.8, f>.5?.35:1, f>.5?.85:f>.25?.75:.3, .25); }
+    if(e.hp < e.max){ const f = Math.max(0,e.hp/e.max); bar(e.x, (e.fly ? 2.9 : e.et.h+.25), e.z, f, e.et.boss?1.6:.8, f>.5?.35:1, f>.5?.85:f>.25?.75:.3, .25); }
   }
   for(const k in EIM){ const im = EIM[k]; im.count = Math.min(cnt[k], ENEMY_MAX[k]); im.instanceMatrix.needsUpdate = true; im.instanceColor.needsUpdate = true; }
-  let kn = 0; const ka = knightIM.instanceMatrix.array;
+  for(const w of wingIM){ w.count = nw; w.instanceMatrix.needsUpdate = true; }
+  for(const k in kcnt) kcnt[k] = 0;
   for(const k of G.knights){
-    if(k.dead || kn>=KMAX) continue;
-    setM(ka, kn++, k.x, Math.abs(Math.sin(k.ph))*.08, k.z, k.yaw, 1);
-    if(k.hp < k.max) bar(k.x, 1.45, k.z, Math.max(0,k.hp/k.max), .6, .35, .6, 1);
+    if(k.dead) continue;
+    const kind = KIM[k.kind] ? k.kind : 'knight', i = kcnt[kind]; if(i>=KMAX) continue; kcnt[kind]++;
+    setM(KIM[kind].instanceMatrix.array, i, k.x, Math.abs(Math.sin(k.ph))*(kind==='rider'?.12:.08), k.z, k.yaw, kind==='guard'?1.12:1);
+    if(k.hp < k.max) bar(k.x, kind==='rider'?1.8:1.5, k.z, Math.max(0,k.hp/k.max), .6, .35, .6, 1);
   }
-  knightIM.count = kn; knightIM.instanceMatrix.needsUpdate = true;
+  for(const k in KIM){ KIM[k].count = kcnt[k]; KIM[k].instanceMatrix.needsUpdate = true; }
   barBg.count = barFg.count = nb; barBg.instanceMatrix.needsUpdate = barFg.instanceMatrix.needsUpdate = barFg.instanceColor.needsUpdate = true;
   // projektiler
-  const pc = {arrow:0, rock:0, bolt:0};
+  const pc = {}; for(const k in PIM) pc[k] = 0;
   for(const p of G.projs){
-    const kind = p.kind==='rain' ? 'arrow' : p.kind, im = PIM[kind], i = pc[kind]++;
+    const kind = PKIND[p.kind] || 'arrow', im = PIM[kind], i = pc[kind]++;
     if(i >= im.instanceMatrix.count) continue;
     _v.set(p.px,p.py,p.pz);
-    if(kind==='arrow'){ _v2.set(p.dx,p.dy,p.dz); if(_v2.lengthSq()<1e-8) _v2.set(0,-1,0); _q.setFromUnitVectors(ZAX, _v2.normalize()); _s.set(1,1,1); }
+    if(kind==='arrow' || kind==='fire'){ _v2.set(p.dx,p.dy,p.dz); if(_v2.lengthSq()<1e-8) _v2.set(0,-1,0); _q.setFromUnitVectors(ZAX, _v2.normalize()); const s = p.kind==='long' ? 1.4 : 1; _s.set(s,s,s); }
     else { _q.setFromEuler(_e.set(T*5,T*3,0)); _s.set(1,1,1); }
     _m4.compose(_v,_q,_s); _m4.toArray(im.instanceMatrix.array, i*16);
   }
   for(const k in pc){ PIM[k].count = Math.min(pc[k], PIM[k].instanceMatrix.count); PIM[k].instanceMatrix.needsUpdate = true; }
+  // blixtar
+  let nz = 0; const za = zapIM.instanceMatrix.array, za2 = zapIM2.instanceMatrix.array;
+  const seg = (ax,ay,az,bx,by,bz) => {
+    if(nz >= 160) return;
+    _v2.set(bx-ax, by-ay, bz-az); const len = _v2.length(); if(len < 1e-4) return;
+    _q.setFromUnitVectors(ZAX, _v2.multiplyScalar(1/len));
+    _m4.compose(_v.set((ax+bx)/2,(ay+by)/2,(az+bz)/2), _q, _s.set(1,1,len)); _m4.toArray(za, nz*16); _m4.toArray(za2, nz*16); nz++;
+  };
+  for(const z of G.zaps){
+    let ax = z.x0, ay = z.top, az = z.z0;
+    for(const [x,zz,fly] of z.pts){
+      const by = fly ? 2.1 : .8, mx = (ax+x)/2 + rand(-.35,.35), my = (ay+by)/2 + rand(-.2,.3), mz = (az+zz)/2 + rand(-.35,.35);
+      seg(ax,ay,az,mx,my,mz); seg(mx,my,mz,x,by,zz); ax = x; ay = by; az = zz;
+    }
+  }
+  zapIM.count = zapIM2.count = nz; zapIM.instanceMatrix.needsUpdate = zapIM2.instanceMatrix.needsUpdate = true;
+  // torn
+  for(const t of G.towers){
+    if(!t.grp) continue;
+    if(t.pulse>0){ t.pulse = Math.max(0, t.pulse-dt*3); const s = 1 + Math.sin(t.pulse*Math.PI)*.12; t.grp.scale.set(s, 1+Math.sin(t.pulse*Math.PI)*.18, s); }
+    const stun = t.stun>0;
+    t.grp.rotation.z = stun ? Math.sin(T*20)*.03 : 0;
+    if(t.heads) for(const hd of t.heads) hd.rotation.y = t.aimYaw;
+    if(t.flag) t.flag.rotation.y = Math.sin(T*3+t.x)*.4;
+    if(t.orb){ const b = t.br==='A' ? t.top+.4 : t.br==='B' ? t.top+1.1 : t.top+.62; t.orb.position.y = b + Math.sin(T*2.4 + t.x)*.08; t.orb.rotation.y += dt*2; }
+    if(t.arm){ t.arm.rotation.x = .55 - Math.sin(Math.min(1,t.fire)*Math.PI)*1.7; t.armRock.visible = t.cd < t.lastRate - .4 || t.fire<=0; t.yawG.rotation.y = t.aimYaw; }
+    if(t.barrel){ t.barrel.rotation.y = t.aimYaw; t.barrel.children[0].position.z = Math.sin(Math.min(1,t.fire)*Math.PI)*.25; }
+    if(t.hands){ for(const h of t.hands) h.rotation.z = -T*(stun?0:1.6); }
+    if(G.mode==='play' && !stun){
+      if(t.br==='B' && t.type==='archer' && Math.random()<dt*5){ const a = Math.floor(Math.random()*4)/4*TAU+Math.PI/4; burst(t.x+Math.cos(a)*.62, t.top+.85, t.z+Math.sin(a)*.62, 0xffa040, 1, .3, .1, .4, 1.5, -1); }
+      if(t.haste>1 && Math.random()<dt*1.5) burst(t.x+rand(-.5,.5), t.top+.3, t.z+rand(-.5,.5), 0xf6c445, 1, .4, .09, .5, 1.2, -1);
+      if(t.type==='clock' && Math.random()<dt*.6) burst(t.x, t.top+.3, t.z, 0xfff2a6, 6, 2.2, .07, .5, .4, 0);
+    }
+  }
   // ingångsmarkörer
-  LV.entries.forEach((m,i)=>{ const on = G.waveReady && G.wave<G.W && G.mode==='play' && G.waves[G.wave].g.some(g=>Math.min(g.path,LV.paths.length-1)===i); m.visible = on; m.position.y = 1.5 + Math.sin(T*5)*.25; m.rotation.y += .03; });
+  const info = G.waveReady && G.wave<G.W && G.mode==='play' ? M.nextWaveInfo() : null;
+  (LV.entryMeshes||[]).forEach((m,i)=>{ m.visible = !!info && info.paths.includes(i); m.position.y = 1.5 + Math.sin(T*5)*.25; m.rotation.y += .03; });
   if(rangeMesh.visible) rangeMesh.children[1].material.opacity = .55 + Math.sin(T*6)*.2;
   if(rainMesh.visible) rainMesh.children[1].material.opacity = .7 + Math.sin(T*8)*.25;
+  if(rallyPrev.visible) rallyPrev.rotation.y = Math.sin(T*3)*.3;
   for(const c of world.userData.clouds){ c.position.z += .004; if(c.position.z > 22) c.position.z = -30; }
+  for(const f of castle.flags) f.rotation.y = Math.sin(T*3 + f.position.x)*.35;
+  if(G.collapse>0){
+    castle.g.position.y = -(Math.min(1, G.collapse/1.8)**2) * 3.5;
+    if(Math.random()<.5) burst(rand(-4,4), rand(1,4), CASTLE_Z+rand(-1,1), 0xc9c2b2, 3, 5, .3, 1.1, 6);
+  }
 }
 
 /* ================= Kamera ================= */
@@ -1347,20 +1383,29 @@ const popT = {};
 function pop(el, key){ const t = performance.now(); if(popT[key] && t-popT[key]<140) return; popT[key]=t; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
 function hudHp(){ ui.hp.textContent = G.hp; }
 function hudWave(){
-  ui.wave.textContent = `${G.wave}/${G.W}`;
+  const endless = G.variant==='endless';
+  ui.wave.textContent = endless ? `${G.wave}` : `${G.wave}/${G.W}`;
   const ready = G.waveReady && G.wave < G.W && !G.over;
   ui.waveBtn.disabled = !ready;
   ui.waveBtn.classList.toggle('pulse', ready && G.wave===0);
   if(G.wave >= G.W) { ui.waveTxt.textContent = 'Sista vågen'; ui.waveSub.textContent = ''; }
   else if(!ready) { ui.waveTxt.textContent = `Våg ${G.wave} pågår`; ui.waveSub.textContent = ''; }
   else ui.waveTxt.textContent = G.wave===0 ? 'Starta våg 1' : `Nästa våg (${G.wave+1})`;
+  renderPreview();
+}
+function renderPreview(){
+  const info = (G.mode==='play' || G.mode==='card') && G.waveReady ? M.nextWaveInfo() : null;
+  const el = $('preview');
+  if(!info){ el.hidden = true; return; }
+  el.hidden = false;
+  $('previewBox').innerHTML = `<span class="lbl">Våg ${G.wave+1}:</span>` + info.types.map(o=>`<span class="chip" title="${ET[o.t].name}" aria-label="${o.n} ${ET[o.t].name}">${eic(o.t)}×${o.n}</span>`).join('');
 }
 let lastGold = -1, lastCdTxt = '', lastBonus = -2;
 function hudTick(){
   if(G.gold !== lastGold){ lastGold = G.gold; ui.gold.textContent = G.gold; if(sel) renderRing(); }
   if(G.waveReady && isFinite(G.countdown) && G.wave < G.W){
     const b = Math.round(G.countdown*1.5);
-    if(b !== lastBonus){ lastBonus = b; ui.waveSub.textContent = `+${b} guld · ${Math.ceil(G.countdown)} s`; }
+    if(b !== lastBonus){ lastBonus = b; ui.waveSub.textContent = `+${b} guld nu · start om ${Math.ceil(G.countdown)} s`; }
   } else if(lastBonus !== -1){ lastBonus = -1; if(G.waveReady && G.wave===0) ui.waveSub.textContent = 'När du är redo'; }
   const rs = rainStats(), p = G.rainCd>0 ? G.rainCd/rs.cd*100 : 0;
   ui.rain.style.setProperty('--p', p.toFixed(1)+'%');
@@ -1373,44 +1418,68 @@ function setTut(n){
   G.tut = n;
   const msg = n===0 ? 'Tryck på en byggplats för att bygga ett torn' : n===1 ? 'Tryck på Starta våg när du är redo' : '';
   ui.hint.hidden = !msg; ui.hint.textContent = msg;
-  if(n>=2 && save.tut<1){ save.tut = 1; persist(); }
+  if(n>=2 && S.save.tut<1){ S.save.tut = 1; persist(); }
 }
 
 /* ---------- byggring ---------- */
 let sel = null, pick = null;
 const ringEl = $('ring');
-const OPT_POS = [[-60,-60],[60,-60],[-60,60],[60,60]];
+const OPT4 = [[-60,-60],[60,-60],[-60,60],[60,60]];
+const OPT6 = [[0,-80],[70,-40],[70,40],[0,80],[-70,40],[-70,-40]];
 const ICON_UP = '<path d="M12 3 4 12h5v8h6v-8h5z"/>', ICON_SELL = '<circle cx="12" cy="12" r="8"/><path d="M11 7h2v10h-2z" fill="#7a1d16"/>';
-function openRing(spot){ sel = spot; pick = null; renderRing(); placeRing(); Snd.click(); }
-function closeRing(){ sel = null; pick = null; ringEl.hidden = true; rangeMesh.visible = false; }
+const ICON_FLAG = '<path d="M5 2h2v20H5zM8 3h11l-3 4.5L19 12H8z"/>';
+function openRing(spot){ setRallyMode(null); sel = spot; pick = null; renderRing(); placeRing(); Snd.click(); }
+function closeRing(){ sel = null; pick = null; ringEl.hidden = true; rangeMesh.visible = false; clockRing.visible = false; }
 function placeRing(){
   if(!sel) return;
   let [sx,sy] = toScreen(sel.x, .5, sel.z);
-  sx = clamp(sx, 96, innerWidth-96); sy = clamp(sy, 90+safeTop, innerHeight-150-safeBot);
-  ringEl.style.transform = `translate(${sx}px,${sy}px)`;
+  const k = innerHeight < 520 ? .72 : 1;
+  sx = clamp(sx, 100*k, innerWidth-100*k); sy = clamp(sy, (k<1 ? 66 : 100)+safeTop, innerHeight-(k<1 ? 92 : 160)-safeBot);
+  ringEl.style.transform = `translate(${sx}px,${sy}px) scale(${k})`;
   const tip = ringEl.querySelector('.tip');
-  if(tip){ tip.classList.toggle('below', sy < 250); tip.style.marginLeft = '0px'; const r = tip.getBoundingClientRect(); let dx = 0; if(r.left < 8) dx = 8 - r.left; else if(r.right > innerWidth-8) dx = innerWidth-8 - r.right; tip.style.marginLeft = dx+'px'; }
+  if(tip){ tip.classList.toggle('below', sy < 270*k); tip.style.marginLeft = '0px'; const r = tip.getBoundingClientRect(); let dx = 0; if(r.left < 8) dx = 8 - r.left; else if(r.right > innerWidth-8) dx = innerWidth-8 - r.right; tip.style.marginLeft = dx+'px'; }
 }
+function towerRangeOf(type, st){ return st.range || 0; }
 function renderRing(){
   if(!sel){ closeRing(); return; }
-  ringEl.hidden = false;
+  ringEl.hidden = false; clockRing.visible = false;
   let h = '', tipH = '', tipP = '', go = '';
   const t = sel.tower;
   if(!t){
-    TYPES.forEach((ty,i)=>{
-      const c = price(ty,0), [x,y] = OPT_POS[i];
+    const avail = TYPES.filter(ty=>M.towerUnlocked(ty)), pos = avail.length>4 ? OPT6 : OPT4;
+    avail.forEach((ty,i)=>{
+      const c = price(ty,0), [x,y] = pos[i];
       h += `<button class="opt${G.gold<c?' poor':''}${pick===ty?' pick':''}" data-a="build" data-t="${ty}" style="--x:${x}px;--y:${y}px" aria-label="${TT[ty].name}"><svg viewBox="0 0 24 24">${TT[ty].icon}</svg><b>${c}</b></button>`;
     });
     if(pick){ const T2 = TT[pick], c = price(pick,0); tipH = `${T2.name} · ${c} guld`; tipP = T2.desc; go = G.gold>=c ? 'Tryck igen för att bygga' : `Du behöver ${c-G.gold} guld till`; showRange(sel.x, sel.z, T2.range[0]); }
     else { tipH = 'Bygg ett torn'; tipP = 'Välj ett torn. Tryck igen för att bygga.'; rangeMesh.visible = false; }
   } else {
-    const T2 = TT[t.type], max = t.lvl>=2, c = max ? 0 : price(t.type, t.lvl+1), back = Math.round(t.spent*.7);
-    h += `<button class="opt${max?' max':''}${!max&&G.gold<c?' poor':''}${pick==='up'?' pick':''}" data-a="up" style="--x:0px;--y:-72px" aria-label="Uppgradera"><svg viewBox="0 0 24 24">${ICON_UP}</svg><b>${max?'Max':c}</b></button>`;
-    h += `<button class="opt sell${pick==='sell'?' pick':''}" data-a="sell" style="--x:0px;--y:72px" aria-label="Sälj"><svg viewBox="0 0 24 24">${ICON_SELL}</svg><b>+${back}</b></button>`;
-    tipH = `${T2.name} · nivå ${t.lvl+1}`;
-    if(pick==='up'){ tipP = T2.up + '.'; go = G.gold>=c ? 'Tryck igen för att uppgradera' : `Du behöver ${c-G.gold} guld till`; showRange(t.x, t.z, T2.range[t.lvl+1]); }
-    else if(pick==='sell'){ tipP = `Du får tillbaka ${back} guld (70 %).`; go = 'Tryck igen för att sälja'; showRange(t.x, t.z, T2.range[t.lvl]); }
-    else { tipP = max ? 'Fullt uppgraderat.' : `Nästa nivå: ${T2.up.toLowerCase()}.`; showRange(t.x, t.z, T2.range[t.lvl]); }
+    const T2 = TT[t.type], back = Math.round(t.spent*M.SELL_BACK), mx = M.maxLevel(t);
+    if(t.lvl===2 && T2.br){
+      for(const b of ['A','B']){
+        const B = T2.br[b], c = price(t.type,3,b), [x,y] = b==='A' ? [-62,-58] : [62,-58];
+        h += `<button class="opt br${G.gold<c?' poor':''}${pick==='br'+b?' pick':''}" data-a="br" data-b="${b}" style="--x:${x}px;--y:${y}px" aria-label="${B.name}"><svg viewBox="0 0 24 24">${B.icon}</svg><b>${c}</b></button>`;
+      }
+    } else {
+      const max = t.lvl>=mx, c = max ? 0 : price(t.type, t.lvl+1);
+      h += `<button class="opt${max?' max':''}${!max&&G.gold<c?' poor':''}${pick==='up'?' pick':''}" data-a="up" style="--x:0px;--y:-74px" aria-label="Uppgradera"><svg viewBox="0 0 24 24">${ICON_UP}</svg><b>${max?'Max':c}</b></button>`;
+    }
+    h += `<button class="opt sell${pick==='sell'?' pick':''}" data-a="sell" style="--x:0px;--y:74px" aria-label="Sälj"><svg viewBox="0 0 24 24">${ICON_SELL}</svg><b>+${back}</b></button>`;
+    if(t.type==='barracks') h += `<button class="opt rally" data-a="rally" style="--x:-74px;--y:14px" aria-label="Flytta samlingspunkt"><svg viewBox="0 0 24 24">${ICON_FLAG}</svg><b>Flytta</b></button>`;
+    tipH = t.lvl===3 ? `${T2.name} · ${T2.br[t.br].name}` : `${T2.name} · nivå ${t.lvl+1}`;
+    const cur = t.st;
+    if(pick==='up'){ const c = price(t.type, t.lvl+1); tipP = T2.up + '.'; go = G.gold>=c ? 'Tryck igen för att uppgradera' : `Du behöver ${c-G.gold} guld till`; showRange(t.x, t.z, T2.range[t.lvl+1]); }
+    else if(pick==='brA' || pick==='brB'){ const b = pick[2], B = T2.br[b], c = price(t.type,3,b); tipH = `${B.name} · ${c} guld`; tipP = B.desc; go = G.gold>=c ? 'Tryck igen för att välja den här grenen' : `Du behöver ${c-G.gold} guld till`; showRange(t.x, t.z, B.range); }
+    else if(pick==='sell'){ tipP = `Du får tillbaka ${back} guld (70 %).`; go = 'Tryck igen för att sälja'; showRange(t.x, t.z, cur.range); }
+    else {
+      if(t.lvl===2 && T2.br) tipP = `Välj en gren: ${T2.br.A.name} eller ${T2.br.B.name}.`;
+      else if(t.lvl===3) tipP = T2.br[t.br].desc;
+      else if(t.lvl>=mx) tipP = 'Fullt uppgraderat.';
+      else tipP = `Nästa nivå: ${T2.up.toLowerCase()}.`;
+      if(t.type==='clock') tipP += ` Torn inom ringen skjuter ${Math.round(cur.haste*100)} % snabbare.`;
+      if(t.stun>0) go = `Ur spel i ${Math.ceil(t.stun)} s till`;
+      showRange(t.x, t.z, cur.range);
+    }
   }
   ringEl.innerHTML = h + `<div class="tip"><h4>${tipH}</h4><p>${tipP}</p>${go?`<p class="go">${go}</p>`:''}</div>`;
   placeRing();
@@ -1418,167 +1487,251 @@ function renderRing(){
 ringEl.addEventListener('click', e => {
   const b = e.target.closest('.opt'); if(!b || !sel) return;
   Snd.init();
-  const a = b.dataset.a, key = a==='build' ? b.dataset.t : a;
+  const a = b.dataset.a, key = a==='build' ? b.dataset.t : a==='br' ? 'br'+b.dataset.b : a;
+  if(a==='rally'){ const t = sel.tower; setRallyMode(t); Snd.click(); return; }
   if(pick !== key){ pick = key; Snd.click(); renderRing(); return; }
-  if(a==='build'){ if(placeTower(sel, key)) closeRing(); else { Snd.click(); } }
-  else if(a==='up'){ if(upgradeTower(sel.tower)) closeRing(); }
-  else if(a==='sell'){ sellTower(sel.tower); closeRing(); }
+  if(a==='build'){ if(M.placeTower(sel, key)) closeRing(); else Snd.click(); }
+  else if(a==='up'){ if(M.upgradeTower(sel.tower)) closeRing(); }
+  else if(a==='br'){ if(M.upgradeTower(sel.tower, b.dataset.b)) closeRing(); }
+  else if(a==='sell'){ M.sellTower(sel.tower); closeRing(); }
 });
 
 /* ---------- pilregn ---------- */
 function setRainAim(on){
   G.rainAim = on; ui.rain.classList.toggle('aim', on);
-  if(on){ closeRing(); ui.hint.hidden = false; ui.hint.textContent = 'Dra på kartan och släpp där pilarna ska falla'; const rs = rainStats(); rainMesh.scale.set(rs.r,1,rs.r); }
+  if(on){ closeRing(); setRallyMode(null); ui.hint.hidden = false; ui.hint.textContent = 'Dra på kartan och släpp där pilarna ska falla'; const rs = rainStats(); rainMesh.scale.set(rs.r,1,rs.r); }
   else { rainMesh.visible = false; if(G.tut>=2) ui.hint.hidden = true; else setTut(G.tut); }
 }
 function castRain(x,z){
-  const rs = rainStats();
-  G.rains.push({x, z, r:rs.r, dmg:rs.dmg, t:0, spawned:0, ticks:0});
-  G.rainCd = rs.cd; setRainAim(false); Snd.rain(); G.shake = Math.max(G.shake,.2);
+  if(!M.castRain(x,z)) return;
+  setRainAim(false); Snd.rain(); G.shake = Math.max(G.shake,.2);
+}
+/* ---------- samlingspunkt ---------- */
+let rallyT = null;
+function setRallyMode(t){
+  rallyT = t;
+  if(t){
+    sel = null; pick = null; ringEl.hidden = true;
+    ui.hint.hidden = false; ui.hint.textContent = 'Dra flaggan längs vägen och släpp';
+    showRange(t.x, t.z, M.RALLY_MAX); rallyPrev.position.set(t.rally[0], .02, t.rally[1]); rallyPrev.visible = true;
+    if(t.rallyMesh) t.rallyMesh.visible = false;
+  } else {
+    rallyPrev.visible = false; rangeMesh.visible = false;
+    for(const o of G.towers) if(o.rallyMesh) o.rallyMesh.visible = true;
+    if(!G.rainAim){ if(G.tut>=2) ui.hint.hidden = true; else setTut(G.tut); }
+  }
 }
 
 /* ================= Skärmar ================= */
-const screens = ['start','mapScr','upgScr','pauseScr','resultScr'];
+const screens = ['start','mapScr','upgScr','pauseScr','resultScr','cardScr'];
 function show(id){ screens.forEach(s => $(s).hidden = s!==id); }
 function starsUI(){ document.querySelectorAll('.starN').forEach(e=>e.textContent = starsTotal()); }
-let mapSel = 0;
+let mapSel = 0, mapRealm = 0;
+const lastUnlocked = () => Math.min(S.save.unlocked, NL) - 1;
 
+function loadLevelView(L, mode, variant='normal'){
+  for(const t of G.towers){ if(t.grp) towerGroup.remove(t.grp); if(t.rallyMesh) towerGroup.remove(t.rallyMesh); }
+  M.loadLevel(L, mode, variant, Math.floor(Math.random()*1e6));
+  buildLevel(L);
+  G.collapse = 0; G.crenelsDown = 0; G.shake = 0; G.rainAim = false;
+  castle.g.position.y = 0; castle.g.rotation.z = 0; castle.crenels.forEach(c=>c.visible = true);
+  P.n = 0; closeRing(); rainMesh.visible = false; setRallyMode(null);
+  hudAll();
+}
 function toMenu(){
-  loadLevel(0, 'attract');
+  const L = lastUnlocked() >= 8 && Math.random()<.5 ? 8 : 0;
+  loadLevelView(L, 'attract');
+  G.gold = 99999;
   [[1,'archer',1],[3,'catapult',1],[5,'mage',1],[2,'barracks',1],[7,'archer',2],[4,'archer',0]].forEach(([i,ty,l])=>{
-    const s = LV.spots[i]; if(!s) return; G.gold = 9999; placeTower(s,ty); for(let k=0;k<l;k++) upgradeTower(s.tower);
+    const s = LV.spots[i]; if(!s) return; M.placeTower(s,ty); for(let k=0;k<l;k++) M.upgradeTower(s.tower);
   });
   G.gold = 0; G.speed = 1;
   $('hud').hidden = true; show('start'); starsUI();
-  const n = Math.min(save.unlocked, NL);
-  $('playBtn').textContent = 'Spela bana ' + n;
+  $('playBtn').textContent = 'Spela bana ' + (lastUnlocked()+1);
 }
-function startLevel(L){
-  Snd.init();
+function startLevel(L, variant='normal'){
+  Snd.init(); Music.start();
   const keepSpeed = G.speed;
-  loadLevel(L, 'play'); G.speed = G.mode==='play' && keepSpeed>1 ? keepSpeed : 1;
+  loadLevelView(L, 'play', variant); G.speed = keepSpeed>1 ? keepSpeed : 1;
   show(null); $('hud').hidden = false; hudAll();
-  setTut(L===0 && save.tut<1 ? 0 : 2);
-  const nt = newTypes(L);
-  banner(`Bana ${L+1}`, LEVELS[L].name + (nt.length ? ` · ny fiende: ${nt.join(', ')}` : ''));
+  setTut(L===0 && S.save.tut<1 && variant==='normal' ? 0 : 2);
+  const nt = M.newTypes(L).map(t=>ET[t].name.toLowerCase());
+  const pre = variant==='hero' ? 'Hjältemod · ' : variant==='endless' ? 'Ändlöst · ' : '';
+  const sub = variant==='hero' ? 'Tåligare fiender och halva borgen' : variant==='endless' ? `Bästa hittills: våg ${S.save.best[L]||0}` : LEVELS[L].name + (nt.length ? ` · ny fiende: ${nt.join(', ')}` : '');
+  banner(`${pre}Bana ${L+1}`, sub);
   Snd.horn();
 }
-function starsFor(){ const r = G.hp/G.hpMax; return r>=.95?3:r>=.6?2:1; }
-function win(){
-  if(G.over) return; G.over = true; closeRing(); setRainAim(false);
-  const stars = starsFor(), L = G.L, prev = save.stars[L];
-  save.stars[L] = Math.max(prev, stars);
-  if(L+2 > save.unlocked) save.unlocked = Math.min(NL, L+2);
-  persist();
-  Snd.win();
-  for(let i=0;i<30;i++) setTimeout(()=>burst(rand(-5,5), rand(4,7), CASTLE_Z-2+rand(-2,2), [0xf6c445,0x3b7cf0,0xe0473c,0x7ad66a][i%4], 14, 5, .14, 1.2, 4, 5), i*50);
-  setTimeout(()=>{ G.mode='after'; showResult(true, stars, Math.max(0, save.stars[L]-prev)); }, 1500);
-}
-function lose(){
-  if(G.over) return; G.over = true; closeRing(); setRainAim(false);
-  G.collapse = .001; Snd.boom(); Snd.lose();
-  setTimeout(()=>{ G.mode='after'; showResult(false, 0, 0); }, 1800);
-}
+let resAction = null;
 function showResult(won, stars, gained){
   $('hud').hidden = true; show('resultScr');
-  const last = G.L===NL-1 && won;
-  $('resTitle').textContent = won ? (last ? 'Riket är räddat!' : 'Seger!') : 'Borgen föll';
-  $('resSub').textContent = won ? `${LEVELS[G.L].name} är försvarad. Borgen har ${G.hp} av ${G.hpMax} liv kvar.` : `Du nådde våg ${G.wave} av ${G.W}.`;
-  $('resSub2').textContent = won ? (gained>0 ? `+${gained} ${gained===1?'stjärna':'stjärnor'} att använda i Kungens råd.` : 'Inga nya stjärnor den här gången.') : 'Tips: bygg en riddarkasern där vägen svänger och uppgradera tornen.';
-  $('resNext').textContent = won ? (last ? 'Spela banan igen' : 'Nästa bana') : 'Försök igen';
+  const L = G.L, rl = M.realmOf(L), v = G.variant;
   const st = [...$('resStars').children]; st.forEach(s=>s.classList.remove('on'));
   $('resStars').style.display = won ? '' : 'none';
-  st.slice(0,stars).forEach((s,i)=>setTimeout(()=>{ s.classList.add('on'); Snd.star(i); }, 350 + i*300));
+  if(v==='endless'){
+    $('resTitle').textContent = `Våg ${G.wave}`;
+    $('resSub').textContent = `Borgen föll på våg ${G.wave} i ändlöst läge på ${LEVELS[L].name}.`;
+    $('resSub2').textContent = G.wave >= (S.save.best[L]||0) ? 'Nytt rekord för banan!' : `Ditt rekord: våg ${S.save.best[L]}.`;
+    $('resNext').textContent = 'Försök igen'; resAction = () => startLevel(L, 'endless');
+  } else if(won){
+    const realmEnd = L===rl.last && v==='normal';
+    $('resTitle').textContent = v==='hero' ? 'Hjältedåd!' : realmEnd ? rl.end : 'Seger!';
+    $('resSub').textContent = `${LEVELS[L].name} är försvarad${v==='hero'?' i hjältemod':''}. Borgen har ${G.hp} av ${G.hpMax} liv kvar.`;
+    $('resSub2').textContent = gained>0 ? `+${gained} ${gained===1?'stjärna':'stjärnor'} att använda i Kungens råd.` : 'Inga nya stjärnor den här gången.';
+    if(v==='hero'){ $('resNext').textContent = 'Till kartan'; resAction = () => { toMenu(); openMap(L); }; }
+    else if(L===NL-1){ $('resNext').textContent = 'Spela ändlöst'; resAction = () => startLevel(L, 'endless'); }
+    else if(L===rl.last){ $('resNext').textContent = 'Till ' + REALMS[LEVELS[L+1].realm].name; resAction = () => startLevel(L+1); }
+    else { $('resNext').textContent = 'Nästa bana'; resAction = () => startLevel(L+1); }
+    st.slice(0,stars).forEach((s,i)=>setTimeout(()=>{ s.classList.add('on'); Snd.star(i); }, 350 + i*300));
+  } else {
+    $('resTitle').textContent = 'Borgen föll';
+    $('resSub').textContent = `Du nådde våg ${G.wave} av ${G.W}.`;
+    $('resSub2').textContent = LEVELS[L].realm===1 ? 'Tips: bågskyttar och magitorn når gargoylerna. Ta schamanen först.' : 'Tips: bygg en riddarkasern där vägen svänger och uppgradera tornen.';
+    $('resNext').textContent = 'Försök igen'; resAction = () => startLevel(L, v);
+  }
+  // statistik
+  const d = G.stat.dmg, rows = Object.entries(d).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]), top = rows.length ? rows[0][1] : 1;
+  $('resStats').innerHTML = rows.map(([k,v])=>`<div class="srow"><span>${SRC_NAME[k]||k}</span><span class="bar"><i style="width:${(v/top*100).toFixed(1)}%"></i></span><b>${Math.round(v)}</b></div>`).join('')
+    + `<div class="sum"><span>Guld: +${G.stat.earned} tjänat, ${G.stat.spent} i torn</span><span>${G.stat.kills} fällda · ${G.stat.leakedN} slapp in</span></div>`;
+  $('resStats').hidden = !rows.length && !G.stat.kills;
 }
 function renderUpg(){
   $('starFree').textContent = starsFree();
   const list = $('upgList'); list.innerHTML = '';
-  for(const k of Object.keys(UPG)){
-    const u = UPG[k], l = save.upg[k], maxed = l>=u.max, cost = maxed?0:u.cost[l];
+  for(const k of UPG_KEYS){
+    const u = UPG[k], l = S.save.upg[k], maxed = l>=u.max, cost = maxed?0:u.cost[l];
     const card = document.createElement('div'); card.className = 'card';
     card.innerHTML = `<div class="ic"><svg viewBox="0 0 24 24">${u.icon}</svg></div>
       <div class="info"><h3>${u.name}</h3><p>${u.desc}</p><div class="pips">${Array.from({length:u.max},(_,i)=>`<i class="${i<l?'on':''}"></i>`).join('')}</div>
       <div class="val">${u.fmt(u.val(l))}${maxed?'':' → '+u.fmt(u.val(l+1))}</div></div>
       <button class="buy" ${maxed||starsFree()<cost?'disabled':''} aria-label="Köp ${u.name}">${maxed?'Max':`<i class="star"></i>${cost}`}</button>`;
-    card.querySelector('.buy').addEventListener('click', ()=>{ if(maxed || starsFree()<cost) return; save.upg[k]++; persist(); Snd.coin(); renderUpg(); });
+    card.querySelector('.buy').addEventListener('click', ()=>{ if(maxed || starsFree()<cost) return; S.save.upg[k]++; persist(); Snd.coin(); renderUpg(); });
     list.appendChild(card);
   }
   $('upgPlay').textContent = 'Spela bana ' + (upgNext+1);
 }
 let upgNext = 0, upgFrom = 'start';
 function openUpg(from, next){ upgFrom = from; upgNext = next; renderUpg(); show('upgScr'); }
-const MAPPOS = [[58,392],[168,372],[246,312],[150,262],[56,206],[134,148],[238,104],[150,44]];
-function levelTypes(L){ const s = new Set(); makeWaves(L).forEach(w=>w.g.forEach(g=>s.add(g.t))); return s; }
-function newTypes(L){ const seen = L>0 ? levelTypes(L-1) : new Set(), out = []; for(const t of levelTypes(L)) if(!seen.has(t) && t!=='boss' && t!=='foot') out.push(ET[t].name.toLowerCase()); return out; }
+const MAPPOS = [
+  [[58,392],[168,372],[246,312],[150,262],[56,206],[134,148],[238,104],[150,44]],
+  [[150,396],[56,352],[146,304],[246,262],[166,210],[60,166],[142,112],[240,58]],
+];
 function renderMap(){
+  const R0 = REALMS[mapRealm], pos = MAPPOS[mapRealm], first = R0.first, snow = R0.theme==='snow';
+  $('realmTabs').innerHTML = REALMS.map((r,i)=>{ const open = S.save.unlocked > r.first; return `<button class="${i===mapRealm?'on':''}" data-r="${i}" ${open?'':'disabled'}>${open?'':'🔒 '}${r.name}</button>`; }).join('');
+  $('realmTabs').querySelectorAll('button').forEach(b=>b.addEventListener('click', ()=>{ const r = +b.dataset.r; if(S.save.unlocked <= REALMS[r].first) return; Snd.click(); mapRealm = r; mapSel = Math.min(lastUnlocked(), REALMS[r].last); if(mapSel < REALMS[r].first) mapSel = REALMS[r].first; renderMap(); }));
+  $('mapWrap').classList.toggle('snow', snow);
   const svg = $('mapSvg');
-  let d = `M${MAPPOS[0][0]} ${MAPPOS[0][1]}`;
-  for(let i=1;i<NL;i++){ const [x0,y0] = MAPPOS[i-1], [x1,y1] = MAPPOS[i]; d += ` Q${(x0+x1)/2 + (i%2?30:-30)} ${(y0+y1)/2} ${x1} ${y1}`; }
-  let h = `<path d="${d}" fill="none" stroke="#8a6a32" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round"/>`;
-  // dekor: träd och berg
-  const R = rng(5);
-  for(let i=0;i<26;i++){ const x = 15+R()*270, y = 20+R()*395; if(MAPPOS.some(([a,b])=>Math.hypot(a-x,b-y)<34)) continue; h += `<path d="M${x} ${y-12} l7 13 h-14z" fill="#6f9a4a" opacity=".75"/><rect x="${x-1.2}" y="${y+1}" width="2.4" height="4" fill="#7a5230" opacity=".7"/>`; }
-  h += `<path d="M20 70 l18-28 18 28z M44 72 l14-20 14 20z" fill="#a89a80" opacity=".8"/><path d="M226 400 q20 -18 46 -6 q-10 16 -46 6z" fill="#7fc3e6" opacity=".8"/>`;
-  h += `<g transform="translate(150 22)"><rect x="-16" y="-10" width="32" height="14" fill="#c9c2b2" stroke="#6b5d43"/><path d="M-18 -10 l18 -12 18 12z" fill="#2f6be0"/></g>`;
-  MAPPOS.forEach(([x,y],i)=>{
-    const lock = i >= save.unlocked, done = save.stars[i] > 0;
+  let d = `M${pos[0][0]} ${pos[0][1]}`;
+  for(let i=1;i<pos.length;i++){ const [x0,y0] = pos[i-1], [x1,y1] = pos[i]; d += ` Q${(x0+x1)/2 + (i%2?30:-30)} ${(y0+y1)/2} ${x1} ${y1}`; }
+  let h = `<path d="${d}" fill="none" stroke="${snow?'#6a7d90':'#8a6a32'}" stroke-width="5" stroke-dasharray="2 9" stroke-linecap="round"/>`;
+  const Rr = rng(5+mapRealm*11);
+  for(let i=0;i<26;i++){
+    const x = 15+Rr()*270, y = 20+Rr()*395; if(pos.some(([a,b])=>Math.hypot(a-x,b-y)<34)) continue;
+    h += snow ? `<path d="M${x} ${y-14} l10 16 h-20z" fill="#8d9aa8" opacity=".85"/><path d="M${x} ${y-14} l4 6.5 h-8z" fill="#fff"/>`
+              : `<path d="M${x} ${y-12} l7 13 h-14z" fill="#6f9a4a" opacity=".75"/><rect x="${x-1.2}" y="${y+1}" width="2.4" height="4" fill="#7a5230" opacity=".7"/>`;
+  }
+  if(snow) h += `<path d="M10 300 q40 -10 80 6 q60 20 110 -4 q50 -18 90 2" fill="none" stroke="#7fb3d8" stroke-width="6" opacity=".7"/>`;
+  else h += `<path d="M20 70 l18-28 18 28z M44 72 l14-20 14 20z" fill="#a89a80" opacity=".8"/><path d="M226 400 q20 -18 46 -6 q-10 16 -46 6z" fill="#7fc3e6" opacity=".8"/>`;
+  const [ex,ey] = pos[pos.length-1];
+  h += `<g transform="translate(${ex} ${ey-30})"><rect x="-16" y="-10" width="32" height="14" fill="#c9c2b2" stroke="#6b5d43"/><path d="M-18 -10 l18 -12 18 12z" fill="${snow?'#8a4ff0':'#2f6be0'}"/></g>`;
+  pos.forEach(([x,y],k)=>{
+    const i = first + k, lock = i >= S.save.unlocked, done = S.save.stars[i] > 0, hs = S.save.starsH[i];
     h += `<g class="node${lock?' lock':''}${done?' done':''}${i===mapSel?' sel':''}" data-i="${i}" role="button" aria-label="Bana ${i+1}">
-      <circle class="ring" cx="${x}" cy="${y}" r="27"/><circle class="b" cx="${x}" cy="${y}" r="20"/>
+      <circle class="ring" cx="${x}" cy="${y}" r="27"/><circle class="b" cx="${x}" cy="${y}" r="20" ${hs?'style="stroke:#e0473c"':''}/>
       ${lock?`<path d="M${x-6} ${y-1}h12v9h-12z M${x-4} ${y-1}v-3a4 4 0 0 1 8 0v3" fill="#fff7e6" stroke="#fff7e6" stroke-width="1.6" fill-rule="evenodd"/>`:`<text class="n" x="${x}" y="${y+1}">${i+1}</text>`}
-      ${done?`<text class="s" x="${x}" y="${y+33}">${'★'.repeat(save.stars[i])}${'☆'.repeat(3-save.stars[i])}</text>`:''}</g>`;
+      ${done?`<text class="s" x="${x}" y="${y+33}">${'★'.repeat(S.save.stars[i])}${'☆'.repeat(3-S.save.stars[i])}</text>`:''}
+      ${hs?`<text class="s" x="${x}" y="${y+44}" style="fill:#c0392b">${'★'.repeat(hs)}${'☆'.repeat(3-hs)}</text>`:''}</g>`;
   });
   svg.innerHTML = h;
-  svg.querySelectorAll('.node').forEach(n => n.addEventListener('click', ()=>{ const i = +n.dataset.i; if(i>=save.unlocked) return; Snd.init(); Snd.click(); mapSel = i; renderMap(); }));
-  const lv = LEVELS[mapSel], news = newTypes(mapSel);
-  $('mcName').innerHTML = `${mapSel+1}. ${lv.name}<span class="sts">${[0,1,2].map(k=>`<i class="${k<save.stars[mapSel]?'on':''}"></i>`).join('')}</span>`;
-  $('mcSub').textContent = `${lv.W} vågor${lv.paths.length>1?' · två vägar in':''}${news.length?' · nytt: '+news.join(', '):''}`;
+  svg.querySelectorAll('.node').forEach(n => n.addEventListener('click', ()=>{ const i = +n.dataset.i; if(i>=S.save.unlocked) return; Snd.init(); Snd.click(); mapSel = i; renderMap(); }));
+  const lv = LEVELS[mapSel], news = M.newTypes(mapSel).map(t=>ET[t].name.toLowerCase()), won = S.save.stars[mapSel] > 0;
+  $('mcName').innerHTML = `${mapSel+1}. ${lv.name}<span class="sts">${[0,1,2].map(k=>`<i class="${k<S.save.stars[mapSel]?'on':''}"></i>`).join('')}</span>`;
+  $('mcSub').textContent = `${lv.W} vågor${lv.paths.length>1?' · två vägar in':''}${(lv.rivers||[]).length?' · broar':''}${(lv.passes||[]).length?' · smala pass':''}${news.length?' · nytt: '+news.join(', '):''}`;
+  $('mcHero').disabled = $('mcEndless').disabled = !won;
+  const hs = S.save.starsH[mapSel];
+  $('mcHeroSub').textContent = won ? (hs ? '★'.repeat(hs)+'☆'.repeat(3-hs) : '+3 stjärnor att vinna') : 'Vinn banan först';
+  $('mcEndSub').textContent = won ? (S.save.best[mapSel] ? `Bäst: våg ${S.save.best[mapSel]}` : 'Vågorna tar aldrig slut') : 'Vinn banan först';
 }
-function openMap(){ mapSel = Math.min(save.unlocked-1, NL-1); renderMap(); show('mapScr'); }
-function pause(){ if(G.mode!=='play' || G.over) return; G.mode='pause'; closeRing(); show('pauseScr'); }
+function openMap(L){ mapSel = L===undefined ? lastUnlocked() : L; mapRealm = LEVELS[mapSel].realm; renderMap(); show('mapScr'); }
+function pause(){ if(G.mode!=='play' || G.over) return; G.mode='pause'; closeRing(); setRallyMode(null); show('pauseScr'); }
+/* ---------- fiendekort ---------- */
+let cardQ = [], cardResume = 'play';
+function showCards(types){
+  cardQ.push(...types);
+  if(G.mode!=='card'){ cardResume = G.mode==='pause' ? 'play' : G.mode; G.mode = 'card'; closeRing(); setRainAim(false); setRallyMode(null); nextCard(); }
+}
+function nextCard(){
+  const t = cardQ.shift();
+  if(!t){ show(null); G.mode = cardResume==='card' ? 'play' : cardResume; hudWave(); return; }
+  const et = ET[t], sp = et.spd>=1.5 ? 'Snabb' : et.spd<=.7 ? 'Långsam' : 'Normal fart';
+  $('cardTag').textContent = et.boss ? 'Ny boss' : 'Ny fiende';
+  $('cardIc').outerHTML = `<div class="eic big" id="cardIc" style="--c:${et.css}"><svg viewBox="0 0 24 24">${EICON[t]}</svg></div>`;
+  $('cardName').textContent = et.name; $('cardDesc').textContent = et.desc;
+  $('cardFacts').innerHTML = [`${sp}`, `Tar ${et.gate} liv vid porten`, et.fly ? 'Flyger' : '', et.pierce ? 'Halv pilskada' : '', et.heavy && !et.boss ? 'Kanonen gör dubbel skada' : ''].filter(Boolean).map(s=>`<span>${s}</span>`).join('');
+  show('cardScr'); Snd.card();
+}
 
 /* ---------- knappar ---------- */
-const on = (id, fn) => $(id).addEventListener('click', e => { Snd.init(); Snd.click(); fn(e); });
-on('playBtn', ()=> startLevel(Math.min(save.unlocked-1, NL-1)));
-on('mapBtn', openMap);
-on('upgBtn1', ()=> openUpg('start', Math.min(save.unlocked-1, NL-1)));
+const on = (id, fn) => $(id).addEventListener('click', e => { Snd.init(); Music.start(); Snd.click(); fn(e); });
+on('playBtn', ()=> startLevel(lastUnlocked()));
+on('mapBtn', ()=> openMap());
+on('upgBtn1', ()=> openUpg('start', lastUnlocked()));
 on('mapBack', ()=> show('start'));
 on('mcPlay', ()=> startLevel(mapSel));
+on('mcHero', ()=> { if(S.save.stars[mapSel]>0) startLevel(mapSel, 'hero'); });
+on('mcEndless', ()=> { if(S.save.stars[mapSel]>0) startLevel(mapSel, 'endless'); });
 on('upgBack', ()=> show(upgFrom));
 on('upgPlay', ()=> startLevel(upgNext));
-on('upgReset', ()=>{ for(const k in save.upg) save.upg[k] = 0; persist(); renderUpg(); });
+on('upgReset', ()=>{ for(const k in S.save.upg) S.save.upg[k] = 0; persist(); renderUpg(); });
 on('pauseBtn', pause);
 on('resumeBtn', ()=>{ G.mode='play'; show(null); });
-on('restartBtn', ()=> startLevel(G.L));
-on('quitBtn', ()=>{ toMenu(); openMap(); });
-on('resNext', ()=>{ const won = save.stars[G.L]>0 && G.hp>0; startLevel(won ? Math.min(NL-1, G.L+1) : G.L); });
-on('resUpg', ()=>{ const won = G.hp>0; openUpg('resultScr', won ? Math.min(NL-1, G.L+1) : G.L); });
-on('resMap', ()=>{ toMenu(); openMap(); });
+on('restartBtn', ()=> startLevel(G.L, G.variant));
+on('quitBtn', ()=>{ const L = G.L; toMenu(); openMap(L); });
+on('cardOk', nextCard);
+on('resNext', ()=>{ if(resAction) resAction(); });
+on('resUpg', ()=>{ const next = G.won && G.variant==='normal' ? Math.min(NL-1, G.L+1) : G.L; openUpg('resultScr', next); });
+on('resMap', ()=>{ const L = G.L; toMenu(); openMap(L); });
 on('speedBtn', ()=>{ G.speed = G.speed>1 ? 1 : 2; ui.speed.textContent = '×'+G.speed; ui.speed.classList.toggle('on', G.speed>1); });
-ui.waveBtn.addEventListener('click', ()=>{ Snd.init(); startWave(); });
+ui.waveBtn.addEventListener('click', ()=>{ Snd.init(); Music.start(); M.startWave(); });
 ui.rain.addEventListener('click', ()=>{ Snd.init(); Snd.click(); if(G.mode!=='play' || G.over || G.rainCd>0) return; setRainAim(!G.rainAim); });
-document.querySelectorAll('.sndbtn').forEach(b => b.addEventListener('click', ()=>{ setMute(!save.mute); Snd.click(); }));
+document.querySelectorAll('.sndbtn').forEach(b => b.addEventListener('click', ()=>{ setMute(!S.save.mute); Snd.click(); }));
+document.querySelectorAll('.musbtn').forEach(b => b.addEventListener('click', ()=>{ setMusic(!S.save.music); Snd.click(); }));
 
 /* ---------- styrning ---------- */
 const _ray = new THREE.Raycaster(), _ndc = new THREE.Vector2(), _plane = new THREE.Plane(new THREE.Vector3(0,1,0), 0), _hit = new THREE.Vector3();
 function toGround(cx, cy){ _ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); _ray.setFromCamera(_ndc, camera); return _ray.ray.intersectPlane(_plane, _hit) ? _hit : null; }
 let down = null;
+function rallyPreview(p){ if(!rallyT || !p) return null; const r = M.canRally(rallyT, p.x, p.z); if(r){ rallyPrev.position.set(r[0], .02, r[1]); rallyPrev.visible = true; } return r; }
 canvas.addEventListener('pointerdown', e => {
   if(G.mode!=='play' || G.over) return;
-  Snd.init();
-  down = {id:e.pointerId, x:e.clientX, y:e.clientY};
+  Snd.init(); Music.start();
+  down = {id:e.pointerId, x:e.clientX, y:e.clientY, flag:false};
   try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
-  if(G.rainAim){ const p = toGround(e.clientX, e.clientY); if(p){ rainMesh.position.set(p.x,0,p.z); rainMesh.visible = true; } }
+  const p = toGround(e.clientX, e.clientY);
+  if(G.rainAim){ if(p){ rainMesh.position.set(p.x,0,p.z); rainMesh.visible = true; } return; }
+  if(rallyT){ rallyPreview(p); return; }
+  // ta tag i en flagga direkt och dra den
+  if(p) for(const t of G.towers){ if(t.type==='barracks' && (t.rally[0]-p.x)**2 + (t.rally[1]-p.z)**2 < .85*.85){ closeRing(); setRallyMode(t); down.flag = true; break; } }
 });
 canvas.addEventListener('pointermove', e => {
   if(!down || e.pointerId!==down.id) return;
-  if(G.rainAim){ const p = toGround(e.clientX, e.clientY); if(p){ rainMesh.position.set(p.x,0,p.z); rainMesh.visible = true; } }
+  const p = toGround(e.clientX, e.clientY);
+  if(G.rainAim){ if(p){ rainMesh.position.set(p.x,0,p.z); rainMesh.visible = true; } }
+  else if(rallyT) rallyPreview(p);
 });
 canvas.addEventListener('pointerup', e => {
   if(!down || e.pointerId!==down.id) return;
-  const moved = Math.hypot(e.clientX-down.x, e.clientY-down.y); down = null;
+  const moved = Math.hypot(e.clientX-down.x, e.clientY-down.y), flag = down.flag; down = null;
   if(G.mode!=='play' || G.over) return;
   const p = toGround(e.clientX, e.clientY);
   if(G.rainAim){ if(p) castRain(p.x, p.z); return; }
+  if(rallyT){
+    if(flag && moved <= 14) return; // bara ett tryck på flaggan: vänta på ett drag eller tryck på vägen
+    const t = rallyT, r = p ? M.canRally(t, p.x, p.z) : null;
+    if(r && M.setRally(t, p.x, p.z)){ setRallyMode(null); FX.tower(t, 'rally'); }
+    else { Snd.click(); ui.hint.textContent = 'Välj en plats på vägen nära kasernen'; }
+    return;
+  }
   if(moved > 14 || !p) return;
   let best = null, bd = 1.1*1.1;
   for(const s of LV.spots){ const d = (s.x-p.x)**2 + (s.z-p.z)**2; if(d < bd){ bd = d; best = s; } }
@@ -1586,26 +1739,38 @@ canvas.addEventListener('pointerup', e => {
 });
 canvas.addEventListener('pointercancel', () => { down = null; });
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-window.addEventListener('keydown', e => { if(e.key==='Escape'){ if(G.mode==='pause'){ G.mode='play'; show(null); } else if(G.rainAim) setRainAim(false); else if(sel) closeRing(); else pause(); } });
+window.addEventListener('keydown', e => {
+  if(e.key!=='Escape') return;
+  if(G.mode==='card') nextCard();
+  else if(G.mode==='pause'){ G.mode='play'; show(null); }
+  else if(G.rainAim) setRainAim(false);
+  else if(rallyT) setRallyMode(null);
+  else if(sel) closeRing();
+  else pause();
+});
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden && !window.__noAutoPause) pause(); });
 window.addEventListener('resize', fitCamera);
 
 /* ================= Huvudloop ================= */
 const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
-let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0;
+let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0, acc = 0;
+const DT = .02;
 function simulate(dt){
-  if(G.mode!=='play' && G.mode!=='attract'){ return; }
-  let s = dt * (G.mode==='play' ? G.speed : 1);
-  while(s > 0){ const h = Math.min(s, .025); update(h); s -= h; }
+  if(G.mode!=='play' && G.mode!=='attract'){ acc = 0; return; }
+  acc += dt * (G.mode==='play' ? G.speed : 1);
+  let n = 0;
+  while(acc >= DT && n < 12){ M.update(DT); acc -= DT; n++; if(G.mode!=='play' && G.mode!=='attract'){ acc = 0; break; } }
+  if(n >= 12) acc = 0;
 }
 function frame(now){
   requestAnimationFrame(frame);
   let dt = (now - last)/1000; last = now;
   if(dt > .05) dt = .05;
   simulate(dt);
-  if(G.mode==='after' && G.collapse>0){ G.collapse += dt; castle.g.position.y = -(Math.min(1, G.collapse/1.8)**2) * 3.5; }
-  drawAll();
-  updateParticles(G.mode==='pause' ? 0 : dt);
+  if(G.mode==='after' && G.collapse>0) G.collapse += dt;
+  else if(G.collapse>0 && (G.mode==='play')) G.collapse += dt;
+  drawAll(G.mode==='pause'||G.mode==='card' ? 0 : dt);
+  updateParticles(G.mode==='pause'||G.mode==='card' ? 0 : dt);
   updateFloats(dt);
   updateCamera(dt);
   if(G.mode==='play') hudTick();
@@ -1619,16 +1784,19 @@ function frame(now){
   }
 }
 // testkrokar
-window.__bv = { G, LV, TT, ET, save:()=>save, startLevel, startWave, placeTower, upgradeTower, sellTower, castRain, toMenu, makeWaves,
-  place(i, type){ return placeTower(LV.spots[i], type); },
-  render(n=60){ let ms=0; for(let k=0;k<n;k++){ const t0=performance.now(); simulate(1/60); drawAll(); updateParticles(1/60); updateFloats(1/60); updateCamera(1/60); renderer.render(scene,camera); renderer.getContext().finish(); ms+=performance.now()-t0; } return +(ms/n).toFixed(2); },
-  step(n=60, dt=1/60){ for(let k=0;k<n;k++) simulate(dt); drawAll(); return {mode:G.mode, hp:G.hp, gold:G.gold, wave:G.wave, enemies:G.enemies.length, over:G.over}; },
-  spawn(type, n){ for(let i=0;i<n;i++){ spawnEnemy(type, i%LV.paths.length, 1); G.enemies[G.enemies.length-1].d = rand(0, LV.paths[i%LV.paths.length].len*.8); } },
-  fps:()=>window.__fps, showFps(){ showFps=true; fpsEl.hidden=false; } };
+window.__bv = { G, LV, M, S, TT, ET, startLevel, toMenu, openMap, show, castRain, setRallyMode, persist,
+  place(i, type){ return M.placeTower(LV.spots[i], type); },
+  upgrade(i, br){ const t = LV.spots[i] && LV.spots[i].tower; return t ? M.upgradeTower(t, br) : false; },
+  startWave(){ return M.startWave(); },
+  render(n=60){ let ms=0; for(let k=0;k<n;k++){ const t0=performance.now(); simulate(1/60); drawAll(1/60); updateParticles(1/60); updateFloats(1/60); updateCamera(1/60); renderer.render(scene,camera); renderer.getContext().finish(); ms+=performance.now()-t0; } return +(ms/n).toFixed(2); },
+  step(n=60, dt=.02){ for(let k=0;k<n;k++){ if(G.mode==='play'||G.mode==='attract') M.update(dt); } drawAll(0); return {mode:G.mode, hp:G.hp, gold:G.gold, wave:G.wave, enemies:G.enemies.length, over:G.over, won:G.won}; },
+  spawn(type, n){ for(let i=0;i<n;i++){ const pi = i%LV.paths.length; const e = M.spawnEnemy(type, pi, 1); e.d = Math.random()*LV.paths[pi].len*.8; } },
+  screen:(x,y,z)=>toScreen(x,y,z), fps:()=>window.__fps, showFps(){ showFps=true; fpsEl.hidden=false; } };
 
 fitCamera();
-setMute(save.mute);
+setMute(S.save.mute);
+Music.apply();
 toMenu();
 requestAnimationFrame(t => { last = t; frame(t); });
-if(document.fonts && document.fonts.load){ document.fonts.load('40px "Lilita One"').then(()=>{ if(LV.spots.length){ const t = makeSpotTex(String(price('archer',0))); for(const s of LV.spots){ s.mesh.children[1].material.map = t; s.mesh.children[1].material.needsUpdate = true; } } }).catch(()=>{}); }
+if(document.fonts && document.fonts.load){ document.fonts.load('40px "Lilita One"').then(()=>{ if(LV.spots.length){ const t = makeSpotTex(String(price('archer',0))); for(const s of LV.spots){ if(!s.mesh) continue; s.mesh.children[1].material.map = t; s.mesh.children[1].material.needsUpdate = true; } } }).catch(()=>{}); }
 </script>

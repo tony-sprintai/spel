@@ -186,6 +186,56 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 .cardpic svg{width:42%;height:auto;fill:#fff;filter:drop-shadow(0 4px 0 rgba(0,0,0,.3));}
 .cardtext{margin:0;text-align:center;font-weight:800;font-size:17px;line-height:1.35;color:#e6ecff;text-wrap:pretty;}
 .cardcount{font-size:12px;color:var(--muted);text-align:center;font-weight:800;}
+
+/* v3: världskartan, stjärnmål, tornet */
+.playsub{align-self:center;margin-top:-6px;font-family:var(--f-ui);font-size:14px;letter-spacing:.1em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.5);text-transform:uppercase;}
+.btn.torn{background:linear-gradient(#b48cff,#6b3fc0);color:#fff;box-shadow:0 6px 0 #45267f,0 10px 18px rgba(0,0,0,.3);text-shadow:0 2px 0 rgba(0,0,0,.3);}
+.btn.torn:active{box-shadow:0 2px 0 #45267f;}
+.btn.new{position:relative;}
+.btn.new::after{content:'NYTT';position:absolute;right:-6px;top:-8px;background:var(--red);color:#fff;font-size:12px;padding:2px 7px;border-radius:9px;letter-spacing:.06em;box-shadow:0 2px 0 rgba(0,0,0,.3);}
+.maplist{display:flex;flex-direction:column;gap:10px;}
+.realm{position:relative;text-align:left;border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,var(--a,#5fbf5a),var(--b,#2f7d33));box-shadow:0 4px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;gap:3px;color:#fff;}
+.realm .rn{font-family:var(--f-ui);font-size:24px;text-shadow:0 2px 0 rgba(0,0,0,.35);}
+.realm .rt{font-size:13px;font-weight:800;line-height:1.3;text-shadow:0 1px 2px rgba(0,0,0,.4);}
+.realm .rs{font-family:var(--f-ui);font-size:15px;display:flex;align-items:center;gap:6px;margin-top:2px;}
+.realm .star{width:14px;height:14px;background:var(--gold);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+.realm.torn{--a:#9b6cf0;--b:#3a1f7a;}
+.realm.locked{filter:grayscale(.8) brightness(.7);}
+.realm[disabled]{pointer-events:none;}
+.realm .nytt{position:absolute;right:10px;top:10px;background:var(--red);font-family:var(--f-ui);font-size:13px;padding:2px 8px;border-radius:9px;animation:glow2 .9s ease-in-out infinite alternate;}
+@keyframes glow2{to{transform:scale(1.1)}}
+.tornbox{display:flex;flex-direction:column;gap:10px;text-align:center;}
+.tornbox h3{margin:0;font-family:var(--f-ui);font-weight:400;font-size:26px;}
+.tornbox p{margin:0;font-weight:800;}
+.tornbox small{font-size:14px;opacity:.8;}
+.levels{--a:#3b7cf0;--b:#2a56b8;}
+.lvbtn.cur{background:linear-gradient(var(--a),var(--b));}
+.goalpanel{gap:12px;}
+.goalhead{text-align:center;font-family:var(--f-ui);font-size:15px;letter-spacing:.12em;color:var(--gold);}
+.goalhead:empty{display:none}
+.goals{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.goals li{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:14px;padding:10px 12px;font-weight:800;font-size:16px;line-height:1.25;}
+.goals li.info{justify-content:center;text-align:center;background:none;color:var(--muted);}
+.goals li.bl b{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#6b3fc0;font-family:var(--f-ui);flex:none;}
+.goals .chk{width:24px;height:24px;border-radius:7px;flex:none;box-shadow:inset 0 0 0 3px rgba(255,255,255,.4);position:relative;}
+.goals li.ok .chk{background:var(--leaf);box-shadow:none;}
+.goals li.ok .chk::after{content:'';position:absolute;left:8px;top:3px;width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);}
+.goals li.now .chk{animation:tick .4s cubic-bezier(.3,1.8,.5,1) both;animation-delay:var(--d,0s);}
+@keyframes tick{from{transform:scale(0)}to{transform:scale(1)}}
+.goals li small{font-weight:700;color:var(--muted);font-size:12px;}
+.goals.small li{font-size:14px;padding:7px 10px;text-align:left;color:var(--paper);}
+.resnews{font-family:var(--f-ui);font-size:20px;color:#ffe08a;background:rgba(246,196,69,.16);border-radius:14px;padding:8px 10px;text-shadow:0 2px 0 rgba(0,0,0,.4);animation:pop .5s ease-out 2;}
+.blesslist{display:flex;flex-direction:column;gap:10px;}
+.bless{display:flex;align-items:center;gap:12px;text-align:left;background:linear-gradient(135deg,#8a5be0,#45267f);border-radius:18px;padding:12px;box-shadow:0 4px 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:14px;}
+.bless b{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.18);font-family:var(--f-ui);font-size:24px;flex:none;}
+.bless strong{display:block;font-family:var(--f-ui);font-weight:400;font-size:20px;}
+.bless:active{transform:translateY(3px);}
+#blessRow{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 92px);display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none;max-width:60%;}
+#blessRow .bhead{font-family:var(--f-ui);font-size:11px;letter-spacing:.12em;color:#e6d6ff;text-shadow:0 2px 0 rgba(0,0,0,.6);}
+#autoTag{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 56px);transform:translateX(-50%);font-family:var(--f-ui);font-size:13px;letter-spacing:.08em;background:rgba(224,71,60,.9);padding:3px 10px;border-radius:9px;pointer-events:none;}
+.bchip{display:flex;align-items:center;gap:5px;background:rgba(107,63,192,.92);border-radius:10px;padding:4px 9px 4px 4px;font-family:var(--f-ui);font-size:14px;letter-spacing:.03em;box-shadow:0 2px 0 rgba(0,0,0,.3);}
+.bchip b{display:grid;place-items:center;width:18px;height:18px;border-radius:6px;background:rgba(255,255,255,.22);font-weight:400;}
+@media (max-height:500px){ .titleblock{margin-top:1vh} .titleblock h1{font-size:44px} .startmenu{gap:8px} .startmenu .btn.green{font-size:24px;padding:12px} }
 @media (prefers-reduced-motion:reduce){#hint{animation:none}.pop{animation:none}.pw.ready{animation:none;box-shadow:0 0 14px 5px var(--c)}}
 </style>
 
@@ -202,10 +252,12 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
     <div id="lvlTag">BANA 1</div>
     <div id="bossbar" hidden><div class="bname" id="bossName">JÄTTEN</div><div class="bar" id="bbar"><div class="fill" id="bossFill"></div><div class="lbl"><span id="bossHp">0</span></div></div></div>
     <div id="combo">KOMBO <b>×2</b></div>
+    <div id="blessRow" hidden></div>
+    <div id="autoTag" hidden>SKJUTER HELA TIDEN (F)</div>
     <div id="hint">Håll inne och dra för att skjuta</div>
     <div class="side">
       <div class="powers" id="powers">
-        <span class="plbl" id="plbl">KRAFT</span>
+        <span class="plbl" id="plbl">KRAFTER</span>
         <button class="pw" id="pw-storm" style="--c:#6fb0ff" aria-label="Stormanfall"><svg viewBox="0 0 24 24"><path d="M13.5 2 4.5 14h6.2L9.5 22l9-12.2h-6.2z"/></svg><span class="cd"></span></button>
         <button class="pw" id="pw-fire" style="--c:#ff8a3c" aria-label="Brinnande pilar"><svg viewBox="0 0 24 24"><path d="M12.5 1.5c1 4.2 6.5 6.4 6.5 12.3a7 7 0 0 1-14 0c0-3.2 2-5.3 3.2-6.4.1 2.2 1.1 3.4 2.3 3.6-.4-3.3-.2-6.4 2-9.5z"/></svg><span class="cd"></span></button>
         <button class="pw" id="pw-ice" style="--c:#8fe6ff" aria-label="Is"><svg viewBox="0 0 24 24"><g stroke="#fff" stroke-width="2.3" stroke-linecap="round" fill="none"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="M9 3.6l3 2.2 3-2.2M9 20.4l3-2.2 3 2.2M2.6 10.5l3.4-1.3-.5-3.6M21.4 13.5 18 14.8l.5 3.6M2.6 13.5 6 14.8l-.5 3.6M21.4 10.5 18 9.2l.5-3.6"/></g></svg><span class="cd"></span></button>
@@ -233,9 +285,10 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
     </div>
     <div class="startmenu">
       <div class="coinpill"><i class="coin"></i><span class="coinN">0</span></div>
-      <button class="btn green" id="playBtn">Spela</button>
+      <button class="btn green playbtn" id="playBtn">Spela</button><span class="playsub" id="playSub"></span>
+      <button class="btn torn" id="tornBtn" hidden>Tornet</button>
       <div class="row">
-        <button class="btn ghost" id="levelsBtn">Banor</button>
+        <button class="btn ghost" id="mapBtn">Kartan</button>
         <button class="btn ghost" id="shopBtn1">Smedjan</button>
         <button class="btn ghost sndbtn" style="flex:0 0 52px;padding:11px 0" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
         <button class="btn ghost musbtn" style="flex:0 0 52px;padding:11px 0" aria-label="Musik av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><g class="muon"><path d="M9 17V5.5l11-2.5v12" stroke="#fff7e6" stroke-width="2.2" fill="none"/><circle cx="6.5" cy="17.5" r="2.7"/><circle cx="17.5" cy="15" r="2.7"/></g><path class="muoff" d="M3 3l18 18" stroke="#ff8a7a" stroke-width="2.6" fill="none"/></svg></button>
@@ -243,10 +296,20 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
     </div>
   </div>
 
-  <!-- Banor -->
+  <!-- Världskartan -->
+  <div class="screen scrim" id="mapScr" hidden>
+    <div class="panel">
+      <h2 id="mapTitle">Världskartan</h2>
+      <div class="coinpill"><i class="coin"></i><span class="coinN">0</span></div>
+      <div class="maplist" id="mapList"></div>
+      <button class="btn ghost" id="mapBack">Tillbaka</button>
+    </div>
+  </div>
+
+  <!-- Banor i ett rike -->
   <div class="screen scrim" id="levelsScr" hidden>
     <div class="panel">
-      <h2>Välj bana</h2>
+      <h2 id="levelsTitle">Välj bana</h2>
       <div class="levels" id="levelGrid"></div>
       <button class="btn ghost" id="levelsBack">Tillbaka</button>
     </div>
@@ -259,6 +322,28 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <button class="btn green" id="resumeBtn">Fortsätt</button>
       <button class="btn ghost" id="restartBtn">Börja om banan</button>
       <button class="btn ghost" id="quitBtn">Till menyn</button>
+    </div>
+  </div>
+
+  <!-- Stjärnmål före banan -->
+  <div class="screen scrim" id="goalScr" hidden>
+    <div class="panel goalpanel">
+      <span class="kick" id="goalKick">GRÖNDALEN</span>
+      <h2 id="goalTitle">Bana 1</h2>
+      <div class="goalhead" id="goalHead">Stjärnmål</div>
+      <ul class="goals" id="goalList"></ul>
+      <button class="btn green" id="goalOk">Till strid!</button>
+    </div>
+  </div>
+
+  <!-- Välsignelse i tornet -->
+  <div class="screen scrim" id="blessScr" hidden>
+    <div class="panel">
+      <span class="kick">VÄLSIGNELSE</span>
+      <h2>Välj en</h2>
+      <p class="tiny" id="blessSub"></p>
+      <div class="blesslist" id="blessList"></div>
+      <button class="btn ghost" id="blessBack">Till menyn</button>
     </div>
   </div>
 
@@ -281,6 +366,8 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <div class="stars" id="resStars"><i></i><i></i><i></i></div>
       <div class="reslines">
         <div id="resSub">Bana 1 erövrad</div>
+        <div class="resnews" id="resNews" hidden></div>
+        <ul class="goals small" id="resGoals"></ul>
         <div class="coinpill"><i class="coin"></i><span id="resCoins">+0</span></div>
       </div>
       <button class="btn green" id="resNext">Nästa bana</button>
@@ -319,27 +406,41 @@ const $ = id => document.getElementById(id);
 const rand = (a,b) => a + Math.random()*(b-a);
 const clamp = (v,a,b) => v<a?a:v>b?b:v;
 const dec = v => String(+v.toFixed(1)).replace('.',',');
+import {TUNE, G, L, R, HW, PAIR, RIKEN, rikeFor, BANOR, BOSSAR, stjarnmal, malText, malKlart, tornVaning, tornDi, dagensFro, VALSIGNELSER, valsignelseVal} from './banor.js';
 const PZ = 20, EZ = -30, XL = 4.6, SPAWN_Z = PZ - 2.2;
 const BSPD = 6.2, MAXB = 520, MAXR = 380, MAXP = 1300;
-const METER = 26;
-// Balans (satt med snabbspolad simulering, se SPEC v2): vågstorlek, borgens HP, bossarnas HP och förstärkning som växer med din armé
-const TUNE = {size:1.2, ramp:.05, every:.9, hp:1.3, hpRamp:.15, bossHp:2.0, giantHp:4.5, grow:12, react:.08, reactRamp:.012, cannonDmg:2};
+const NLV = BANOR.length;
 
 /* ================= Sparning ================= */
-const SAVE_KEY = 'riddarportar.v2', OLD_KEY = 'riddarportar.v1';
-const freshSave = () => ({coins:0, unlocked:1, stars:Array(10).fill(0), upg:{rate:0,pot:0,champ:0,hp:0,storm:0,fire:0,ice:0}, mute:false, music:true, seen:{}});
-function normalize(s){ const d = freshSave(); return {...d, ...s, upg:{...d.upg, ...(s.upg||{})}, seen:{...(s.seen||{})}, stars:(s.stars||d.stars).concat(Array(10).fill(0)).slice(0,10)}; }
+// v3: ny nyckel. Första gången flyttas allt från v2 (eller v1) över. De gamla nycklarna lämnas orörda.
+const SAVE_KEY = 'riddarportar.v3', OLD_KEYS = ['riddarportar.v2', 'riddarportar.v1'];
+const freshSave = () => ({coins:0, unlocked:1, stars:Array(NLV).fill(0), mal:{}, upg:{rate:0,pot:0,champ:0,hp:0,storm:0,fire:0,ice:0,armor:0,chest:0}, mute:false, music:true, seen:{},
+  torn:{bast:0, dag:{}, run:null}, news:{}});
+function normalize(s){
+  const d = freshSave();
+  return {...d, ...s, upg:{...d.upg, ...(s.upg||{})}, seen:{...(s.seen||{})}, mal:{...(s.mal||{})}, news:{...(s.news||{})},
+    torn:{...d.torn, ...(s.torn||{}), dag:{...((s.torn||{}).dag||{})}},
+    stars:(s.stars||d.stars).concat(Array(NLV).fill(0)).slice(0,NLV)};
+}
 function loadSave(){
   try{ const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if(s && s.upg) return normalize(s); }catch(e){}
-  // flytta över framsteg från v1 (v1-nyckeln lämnas orörd)
-  try{
-    const o = JSON.parse(localStorage.getItem(OLD_KEY));
-    if(o && o.upg){ const n = normalize(o); n.music = true; n.from = 'v1'; try{ localStorage.setItem(SAVE_KEY, JSON.stringify(n)); }catch(e){} return n; }
-  }catch(e){}
+  for(const k of OLD_KEYS){
+    try{
+      const o = JSON.parse(localStorage.getItem(k));
+      if(o && o.upg){
+        const n = normalize(o); n.from = k.slice(-2); n.migShown = 0;
+        // i v2 stannade upplåsningen på 10. Är bana 10 vunnen öppnas Frostmarken och Tornet direkt.
+        if(n.stars[9] > 0 && n.unlocked < 11){ n.unlocked = 11; n.news.frost = 1; n.news.torn = 1; }
+        try{ localStorage.setItem(SAVE_KEY, JSON.stringify(n)); }catch(e){}
+        return n;
+      }
+    }catch(e){}
+  }
   return freshSave();
 }
 let save = loadSave(), noPersist = false;
 function persist(){ if(noPersist) return; try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }catch(e){} }
+const tornOppet = () => save.unlocked > 10 || save.stars[9] > 0;
 
 /* ================= Uppgraderingar ================= */
 const PW_ICON = {
@@ -347,39 +448,34 @@ const PW_ICON = {
   fire:'<path d="M12.5 1.5c1 4.2 6.5 6.4 6.5 12.3a7 7 0 0 1-14 0c0-3.2 2-5.3 3.2-6.4.1 2.2 1.1 3.4 2.3 3.6-.4-3.3-.2-6.4 2-9.5z"/>',
   ice:'<g stroke="currentColor" stroke-width="2.3" stroke-linecap="round" fill="none"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="M9 3.6l3 2.2 3-2.2M9 20.4l3-2.2 3 2.2"/></g>',
 };
+// v3: fler nivåer (värdena för nivå 0 till v2:s max är oförändrade) och två nya uppgraderingar
 const UPG = {
-  rate:{name:'Skjuttakt', desc:'Fler skott per sekund', max:6, cost:[60,120,200,300,420,560], val:l=>2.6+0.6*l, fmt:v=>dec(v)+' skott/s',
+  rate:{name:'Skjuttakt', desc:'Fler skott per sekund', max:10, cost:[60,120,200,300,420,560,760,1000,1300,1700], val:l=>2.6+0.6*l, fmt:v=>dec(v)+' skott/s',
         icon:'<path d="M2 12h13l-3-4h3l5 4-5 4h-3l3-4" /><rect x="2" y="5" width="7" height="2" rx="1"/><rect x="2" y="17" width="7" height="2" rx="1"/>'},
-  pot:{name:'Startpott', desc:'Riddare per skott', max:4, cost:[90,190,320,480], val:l=>1+l, fmt:v=>v+' per skott',
+  pot:{name:'Startpott', desc:'Riddare per skott', max:7, cost:[90,190,320,480,800,1200,1700], val:l=>1+l, fmt:v=>v+' per skott',
         icon:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="12" cy="15" r="3"/><path d="M3 22c0-3 2-5 4-5s4 2 4 5zM13 22c0-3 2-5 4-5s4 2 4 5z"/>'},
-  champ:{name:'Kämpe', desc:'Tung riddare som fäller 10 fiender', max:3, cost:[120,260,450], val:l=>l, fmt:v=>v===0?'Låst':v+' per bana',
+  champ:{name:'Kämpe', desc:'Tung riddare som fäller 10 fiender', max:5, cost:[120,260,450,800,1250], val:l=>l, fmt:v=>v===0?'Låst':v+' per bana',
         icon:'<path d="M12 1 3 4.5v6.2C3 16.4 6.8 21.6 12 23c5.2-1.4 9-6.6 9-12.3V4.5z"/>'},
-  hp:{name:'Borgens HP', desc:'Porten tål fler fiender', max:6, cost:[50,100,170,250,350,470], val:l=>12+6*l, fmt:v=>v+' HP',
+  hp:{name:'Borgens HP', desc:'Porten tål fler fiender', max:10, cost:[50,100,170,250,350,470,650,880,1150,1500], val:l=>12+6*l, fmt:v=>v+' HP',
         icon:'<path d="M3 21V9l3 2V6l3 2V3h6v5l3-2v5l3-2v12z"/>'},
-  storm:{name:'Stormanfall', desc:'Dubbelt så många riddare per skott', max:3, cost:[140,280,460], lock:2, val:l=>5+1.5*l, fmt:v=>dec(v)+' s', icon:PW_ICON.storm},
-  fire:{name:'Brinnande pilar', desc:'Salva som bränner ett område', max:3, cost:[140,280,460], lock:4, val:l=>2.6+0.5*l, fmt:v=>'eldradie '+dec(v), icon:PW_ICON.fire},
-  ice:{name:'Is', desc:'Fiender och bossar fryser', max:3, cost:[140,280,460], lock:6, val:l=>3+0.8*l, fmt:v=>dec(v)+' s', icon:PW_ICON.ice},
+  armor:{name:'Rustning', desc:'Några riddare får sköld och tål en extra träff', max:5, cost:[400,650,950,1300,1750], lock:11, val:l=>l*6, fmt:v=>v+' % med sköld',
+        icon:'<path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5zm0 3.2 5 1.9v4c0 3.4-2.1 6.6-5 7.8z"/>'},
+  chest:{name:'Krigskista', desc:'Mer mynt efter varje bana', max:5, cost:[300,550,850,1200,1600], lock:11, val:l=>l*10, fmt:v=>'+'+v+' % mynt',
+        icon:'<path d="M3 9a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2H3zm0 3h18v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm8 0v4h2v-4z"/>'},
+  storm:{name:'Stormanfall', desc:'Dubbelt så många riddare per skott', max:5, cost:[140,280,460,750,1100], lock:2, val:l=>5+1.5*l, fmt:v=>dec(v)+' s', icon:PW_ICON.storm},
+  fire:{name:'Brinnande pilar', desc:'Salva som bränner ett område', max:5, cost:[140,280,460,750,1100], lock:4, val:l=>2.6+0.5*l, fmt:v=>'eldradie '+dec(v), icon:PW_ICON.fire},
+  ice:{name:'Is', desc:'Fiender och bossar fryser', max:5, cost:[140,280,460,750,1100], lock:6, val:l=>3+0.8*l, fmt:v=>dec(v)+' s', icon:PW_ICON.ice},
 };
-const POWCD = {storm:l=>15-1.5*l, fire:l=>13-1.5*l, ice:l=>19-2*l};
+const POWCD = {storm:l=>Math.max(6,15-1.5*l), fire:l=>Math.max(6,13-1.5*l), ice:l=>Math.max(8,19-2*l)};
+// v3: egen mätare per kraft. Varje fälld fiende fyller alla upplåsta mätare; att använda en kraft tömmer bara dess egen.
+const POWMETER = {storm:22, fire:26, ice:30};
 const POWS = ['storm','fire','ice'];
-const powUnlocked = k => save.unlocked >= UPG[k].lock;
+const powUnlocked = k => save.unlocked >= UPG[k].lock || (game.lv && game.lv.torn);
+const upgUnlocked = k => !UPG[k].lock || save.unlocked >= UPG[k].lock;
 
 /* ================= Banor ================= */
-function G(z,x,w,t,v,amp=0,spd=0,ph=0){ return {z,x,w,t,v,amp,spd,ph,pair:0}; }
-const L = -2.5, R = 2.5, HW = 4.6;
-const PAIR = (z,t1,v1,t2,v2) => [{...G(z,L,HW,t1,v1),pair:1},{...G(z,R,HW,t2,v2),pair:2}];
-const LEVELS = [
-  {hp:90, every:4.6, size:7, rs:3.0, gates:[G(8,L,HW,'mul',2),G(8,R,HW,'add',10),G(-8,0,5,'mul',2)]},
-  {hp:150, every:4.8, size:7, rs:3.1, gates:[...PAIR(9,'mul',2,'add',20),G(-1,-2.7,4,'add',10),G(-1,2.7,4,'div',2),G(-13,0,3.4,'mul',3)]},
-  {hp:200, every:4.7, size:8, rs:3.2, cannon:9, gates:[G(9,0,4,'mul',2,2.6,0.9),...PAIR(-2,'mul',3,'add',20),G(-14,0,3.6,'mys',0)]},
-  {hp:300, every:4.5, size:9, rs:3.3, cannon:8.5, archers:2, gold:13, gates:[G(10,L,HW,'div',2),G(10,R,HW,'mul',2),G(1,0,3.4,'add',10,3,1.1),...PAIR(-8,'mul',2,'add',20),G(-17,0,3,'mys',0,2.6,1.2)]},
-  {boss:'dragon', hp:420, every:5.4, size:8, rs:3.3, gold:15, gates:[...PAIR(10,'mul',3,'add',20),G(1,0,3.6,'mys',0),G(-8,L,HW,'mul',2),G(-8,R,HW,'sub',5),G(-17,0,4,'add',10,2.8,1.0)]},
-  {hp:470, every:4.3, size:11, rs:3.5, cannon:8, archers:3, gold:14, cav:{every:15,n:5}, gates:[G(10,0,3,'mul',2,3.2,1.4),G(2,L,HW,'sub',5),G(2,R,HW,'mul',2),G(-6,0,3,'mul',3,3,1.0,1.5),...PAIR(-15,'add',20,'mys',0)]},
-  {hp:570, every:4.1, size:12, brute:0.15, rs:3.6, cannon:7.5, archers:3, gold:13, cav:{every:16,n:5}, shield:{every:22}, gates:[G(10,L,HW,'div',2),G(10,R,HW,'mul',2),G(3,0,2.8,'mul',3,3.3,1.5),...PAIR(-5,'mul',2,'add',20),G(-14,0,3,'mys',0,3,1.7,0.8)]},
-  {hp:690, every:3.9, size:14, brute:0.2, rs:3.7, cannon:7, archers:4, gold:12, cav:{every:14,n:6}, shield:{every:20}, gates:[G(11,0,2.8,'mul',2,3.3,1.6),G(4,L,HW,'sub',5),G(4,R,HW,'div',2),G(-3,0,2.6,'mul',3,3.4,1.8,1),...PAIR(-12,'add',20,'mys',0),G(-19,0,3,'mul',2,3,1.2)]},
-  {hp:830, every:3.7, size:16, brute:0.24, rs:3.8, cannon:6.5, archers:4, gold:12, cav:{every:13,n:7}, shield:{every:18}, gates:[G(11,L,HW,'sub',5),G(11,R,HW,'mul',2),G(4,0,2.6,'mul',2,3.4,2.0),...PAIR(-4,'mul',3,'add',20),G(-12,0,3,'add',10,3.2,1.6,2),G(-19,L,HW,'mul',2),G(-19,R,HW,'div',2)]},
-  {boss:'giant', hp:600, bossHp:520, every:4.4, size:12, brute:0.2, rs:3.6, cannon:9, archers:3, gold:13, cav:{every:18,n:6}, gates:[G(11,0,2.6,'mul',2,3.4,2.1),...PAIR(4,'mul',3,'add',20),G(-3,0,2.6,'mys',0,3.4,1.6,1.2),G(-11,L,HW,'sub',5),G(-11,R,HW,'add',10),G(-18,0,2.6,'mul',2,3.4,1.9,0.4)]},
-];
+// Banorna ligger i banor.js (BANOR). Tornets våningar skapas av tornVaning().
+const LEVELS = BANOR;
 
 /* ================= Ljud (WebAudio-syntes) ================= */
 const Snd = {
@@ -439,9 +535,11 @@ const Snd = {
   whoosh(){ if(!this.ok('whoosh',0.3)) return; this.noise(.5,.3,1200,0,.5); this.tone(400,.4,'sawtooth',.05,1200); },
   fireBoom(){ if(!this.ok('fireBoom',0.3)) return; this.noise(.8,.4,500,0,.4); this.tone(110,.5,'sine',.3,50); },
   ice(){ if(!this.ok('ice',0.5)) return; [2093,2637,3136,3951,3136].forEach((f,i)=>this.tone(f,.25,'triangle',.06,null,i*.05)); this.noise(.4,.15,6000,0,1); },
+  howl(){ if(!this.ok('howl',0.8)) return; this.tone(440,.9,'sine',.12,700); this.tone(445,.9,'triangle',.05,690,.05); },
   slow(){ if(!this.ok('slow',0.8)) return; this.tone(240,1.3,'sine',.22,48); this.noise(1,.2,180,0,.6); },
 };
-// Musik: trumslinga och bas, tempot ökar när fiendeborgen har lite HP kvar
+// Musik: trumslinga, bas och (i Frostmarken och Eldbergen) en melodi. Varje rike har egna toner och tempo.
+// Tempot ökar när fiendeborgen har lite HP kvar.
 const Music = {
   g:null, next:0, step:0, bpm:100,
   tick(){
@@ -450,22 +548,24 @@ const Music = {
     if(!this.g){ this.g = c.createGain(); this.g.gain.value = 0; this.g.connect(Snd.master); }
     this.g.gain.setTargetAtTime(want ? .34 : 0, c.currentTime, .12);
     if(!want){ this.next = 0; return; }
-    const fr = game.ehp/game.ehpMax, hot = fr < .3;
-    const target = 100 + (game.lv.boss ? 10 : 0) + (hot ? 38 : fr < .6 ? 14 : 0);
+    const fr = game.ehp/game.ehpMax, hot = fr < .3, mu = game.rike.musik;
+    const target = mu.bpm + (game.lv.boss ? 10 : 0) + (hot ? 38 : fr < .6 ? 14 : 0);
     this.bpm += (target - this.bpm) * .03;
     const s16 = 60/this.bpm/4;
     if(this.next < c.currentTime) this.next = c.currentTime + .05;
-    while(this.next < c.currentTime + .2){ this.play(this.step, this.next, s16, hot); this.next += s16; this.step = (this.step+1) % 64; }
+    while(this.next < c.currentTime + .2){ this.play(this.step, this.next, s16, hot, mu); this.next += s16; this.step = (this.step+1) % 64; }
   },
-  play(s, t, s16, hot){
+  play(s, t, s16, hot, mu){
     const b = s % 16, bar = (s >> 4) & 3, dst = this.g, boss = !!game.lv.boss;
     if(b===0 || b===8 || (b===10 && hot) || (b===14 && bar===3)){ Snd.toneAt(t,150,.16,'sine',.9,42,dst); }
     if(b===4 || b===12){ Snd.noiseAt(t,.13,.45,1800,.8,'bandpass',dst); Snd.toneAt(t,190,.08,'triangle',.25,140,dst); }
     if(hot && (b===13 || b===15)) Snd.noiseAt(t,.08,.25,2200,.8,'bandpass',dst);
     if(b%2===0 || hot) Snd.noiseAt(t,.035,b%4===2?.16:.08,8000,1,'highpass',dst);
-    const roots = boss ? [110,103.83,98,92.5] : [146.83,116.54,130.81,110];
+    const roots = boss ? mu.bossRot : mu.rot;
     if(b===0 || b===3 || b===6 || b===10 || b===13) Snd.toneAt(t, roots[bar]*(b===10?1.5:1), s16*2.2, 'sawtooth', .16, null, dst);
     if(hot && (b===0 || b===8)) Snd.toneAt(t, roots[bar]*4, s16*1.6, 'square', .05, null, dst);
+    if(mu.melodi==='klocka' && (b===0 || b===6 || b===11)){ const m = [4,3,2,6][(b+bar)%4]; Snd.toneAt(t, roots[bar]*m, s16*5, 'triangle', .07, null, dst); Snd.toneAt(t+.01, roots[bar]*m*2, s16*3, 'sine', .03, null, dst); }
+    if(mu.melodi==='gnistra' && (b===2 || b===7 || b===14)){ const m = [3,4,3.56,2.67][(b+bar)%4]; Snd.toneAt(t, roots[bar]*m, s16*1.8, 'square', .045, roots[bar]*m*.98, dst); }
   },
 };
 function setMute(m){
@@ -490,7 +590,7 @@ scene.background = new THREE.Color(FOG);
 scene.fog = new THREE.Fog(FOG, 70, 150);
 const camera = new THREE.PerspectiveCamera(50, 1, 0.5, 300);
 
-scene.add(new THREE.HemisphereLight(0xe4f3ff, 0x5d7d3a, 1.25));
+const hemi = new THREE.HemisphereLight(0xe4f3ff, 0x5d7d3a, 1.25); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff0d2, 2.4);
 sun.position.set(-14, 34, 16); sun.target.position.set(0, 0, -6);
 sun.castShadow = true;
@@ -543,6 +643,17 @@ const grassTex = canvasTex(256,256,(g,w,h)=>{
   for(let i=0;i<1400;i++){ const s=rand(2,7); g.fillStyle=`hsla(${rand(88,118)},${rand(40,60)}%,${rand(36,56)}%,${rand(.25,.6)})`; g.fillRect(rand(0,w),rand(0,h),s*.5,s); }
   for(let i=0;i<40;i++){ g.fillStyle=Math.random()<.5?'rgba(255,255,255,.7)':'rgba(255,220,90,.75)'; g.beginPath(); g.arc(rand(0,w),rand(0,h),1.6,0,7); g.fill(); }
 },[40,40]);
+const snowTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#eaf3fb'; g.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){ const s=rand(3,12); g.fillStyle=`hsla(${rand(200,215)},${rand(30,55)}%,${rand(82,96)}%,${rand(.3,.7)})`; g.beginPath(); g.ellipse(rand(0,w),rand(0,h),s,s*.5,0,0,7); g.fill(); }
+  for(let i=0;i<60;i++){ g.fillStyle='rgba(255,255,255,.95)'; g.fillRect(rand(0,w),rand(0,h),1.5,1.5); }
+},[40,40]);
+const ashTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#4a3a36'; g.fillRect(0,0,w,h);
+  for(let i=0;i<1100;i++){ const s=rand(2,8); g.fillStyle=`hsla(${rand(8,28)},${rand(10,25)}%,${rand(18,34)}%,${rand(.3,.7)})`; g.fillRect(rand(0,w),rand(0,h),s,s*.6); }
+  for(let i=0;i<26;i++){ g.strokeStyle=`rgba(255,${rand(80,140)|0},30,${rand(.35,.7)})`; g.lineWidth=rand(1,2.4); g.beginPath(); let x=rand(0,w), y=rand(0,h); g.moveTo(x,y); for(let k=0;k<4;k++){ x+=rand(-18,18); y+=rand(-18,18); g.lineTo(x,y);} g.stroke(); }
+},[40,40]);
+const GROUND_TEX = {gras:grassTex, sno:snowTex, aska:ashTex};
 const roadTex = canvasTex(256,256,(g,w,h)=>{
   g.fillStyle='#c9b48a'; g.fillRect(0,0,w,h);
   const rows=8, cols=4;
@@ -555,46 +666,65 @@ const roadTex = canvasTex(256,256,(g,w,h)=>{
 },[2,12]);
 
 /* ================= Värld ================= */
+// Marken, vägen och dekoren byter utseende per rike (applyTheme). Dekoren för varje rike byggs en gång och visas eller döljs.
 const world = new THREE.Group(); scene.add(world);
-{
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(260,260), new THREE.MeshLambertMaterial({map:grassTex}));
-  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; world.add(ground);
-  const len = PZ - EZ + 6;
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(11, len), new THREE.MeshLambertMaterial({map:roadTex}));
-  road.rotation.x = -Math.PI/2; road.position.set(0, .02, (PZ+EZ)/2); road.receiveShadow = true; world.add(road);
-  const curbParts = [];
-  for(const sx of [-1,1]) for(let z=EZ-2; z<PZ+3; z+=1.6){
-    curbParts.push(part(Box(.55,.38,1.45), 0xa79d8e, sx*5.75, .19, z, 0, rand(-.04,.04), 0));
-  }
-  const curbs = new THREE.Mesh(merge(curbParts), vcMat); curbs.castShadow = curbs.receiveShadow = true; world.add(curbs);
-  const treeG = merge([
-    part(Cyl(.18,.26,1.2,6),0x7a5230,0,.6,0),
-    part(Cone(1.3,1.9,7),0x2f8f46,0,1.9,0),
-    part(Cone(1.0,1.6,7),0x3caa52,0,2.8,0),
-    part(Cone(.62,1.2,7),0x55c062,0,3.6,0),
-  ]);
+const groundMat = new THREE.MeshLambertMaterial({map:grassTex}), roadMat = new THREE.MeshLambertMaterial({map:roadTex}), curbMat = new THREE.MeshLambertMaterial({vertexColors:true});
+const terrMat = new THREE.MeshLambertMaterial({vertexColors:true}), lavaGlowMat = new THREE.MeshBasicMaterial({vertexColors:true});
+const dekor = {};
+function decorTrees(geo, n, rng, mat=terrMat){
   const trees = [];
-  for(let i=0;i<170;i++){
+  for(let i=0;i<n;i++){
     const side = Math.random()<.5?-1:1, x = side*rand(8.5,46), z = rand(-80,40);
     if(z>PZ-4 && Math.abs(x)<16) continue;
     if(z<EZ+2 && z>EZ-12 && Math.abs(x)<14) continue;
-    trees.push([x,z,rand(.8,1.6),rand(0,6.28)]);
+    trees.push([x,z,rand(rng[0],rng[1]),rand(0,6.28)]);
   }
   for(let i=0;i<24;i++) trees.push([rand(-30,30), rand(-90,-48), rand(1.2,2), rand(0,6)]);
-  const tm = new THREE.InstancedMesh(treeG, vcMat, trees.length);
+  const tm = new THREE.InstancedMesh(geo, mat, trees.length);
   trees.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), new THREE.Vector3(t[2],t[2]*rand(.9,1.2),t[2])); tm.setMatrixAt(i,_m4); });
-  tm.castShadow = true; world.add(tm);
-  const rockG = merge([part(new THREE.DodecahedronGeometry(.6,0),0x9a9a9a)]);
-  const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),0x3d9d48,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),0x4fb257,.5,.3,.2)]);
-  for(const [geo,count] of [[rockG,30],[bushG,50]]){
-    const im = new THREE.InstancedMesh(geo, vcMat, count);
-    for(let i=0;i<count;i++){ const s=Math.random()<.5?-1:1; _m4.compose(_v.set(s*rand(6.6,20),0,rand(-60,30)), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.4))); im.setMatrixAt(i,_m4); }
-    im.castShadow = true; world.add(im);
-  }
-  const mtnG = merge([part(Cone(14,16,6),0x7d9fb0,0,8,0), part(Cone(6,5,6),0xf4f8fb,0,14,0)]);
-  const mtn = new THREE.InstancedMesh(mtnG, vcMat, 7);
+  tm.castShadow = true; return tm;
+}
+function decorScatter(geo, count, rx, mat=terrMat, shadow=true){
+  const im = new THREE.InstancedMesh(geo, mat, count);
+  for(let i=0;i<count;i++){ const s=Math.random()<.5?-1:1; _m4.compose(_v.set(s*rand(rx[0],rx[1]),0,rand(-60,30)), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.4))); im.setMatrixAt(i,_m4); }
+  im.castShadow = shadow; return im;
+}
+function decorMountains(geo, mat=terrMat){
+  const mtn = new THREE.InstancedMesh(geo, mat, 7);
   [[-40,-120,1.4],[-12,-130,1.8],[22,-125,1.5],[52,-112,1.2],[-70,-100,1.1],[80,-95,1.3],[0,-150,2.2]].forEach((m,i)=>{ _m4.compose(_v.set(m[0],0,m[1]), _q.setFromEuler(_e.set(0,i,0)), _one.clone().multiplyScalar(m[2])); mtn.setMatrixAt(i,_m4); });
-  world.add(mtn);
+  return mtn;
+}
+{
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(260,260), groundMat);
+  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; world.add(ground);
+  const len = PZ - EZ + 6;
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(11, len), roadMat);
+  road.rotation.x = -Math.PI/2; road.position.set(0, .02, (PZ+EZ)/2); road.receiveShadow = true; world.add(road);
+  const curbParts = [];
+  for(const sx of [-1,1]) for(let z=EZ-2; z<PZ+3; z+=1.6){
+    curbParts.push(part(Box(.55,.38,1.45), 0xffffff, sx*5.75, .19, z, 0, rand(-.04,.04), 0));
+  }
+  const curbs = new THREE.Mesh(merge(curbParts), curbMat); curbs.castShadow = curbs.receiveShadow = true; world.add(curbs);
+  // Gröndalen: granskog, buskar, stenar och blå berg
+  const gron = new THREE.Group();
+  gron.add(decorTrees(merge([part(Cyl(.18,.26,1.2,6),0x7a5230,0,.6,0), part(Cone(1.3,1.9,7),0x2f8f46,0,1.9,0), part(Cone(1.0,1.6,7),0x3caa52,0,2.8,0), part(Cone(.62,1.2,7),0x55c062,0,3.6,0)]), 170, [.8,1.6]));
+  gron.add(decorScatter(merge([part(new THREE.DodecahedronGeometry(.6,0),0x9a9a9a)]), 30, [6.6,20]));
+  gron.add(decorScatter(merge([part(new THREE.IcosahedronGeometry(.7,0),0x3d9d48,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),0x4fb257,.5,.3,.2)]), 50, [6.6,20]));
+  gron.add(decorMountains(merge([part(Cone(14,16,6),0x7d9fb0,0,8,0), part(Cone(6,5,6),0xf4f8fb,0,14,0)])));
+  // Frostmarken: snötäckta granar, isblock och vita berg
+  const frost = new THREE.Group();
+  frost.add(decorTrees(merge([part(Cyl(.16,.24,1.1,6),0x5a4030,0,.55,0), part(Cone(1.25,1.8,7),0x245c48,0,1.8,0), part(Cone(1.05,.7,7),0xf2f8ff,0,2.45,0), part(Cone(.95,1.5,7),0x2c6b52,0,2.8,0), part(Cone(.75,.6,7),0xf6faff,0,3.35,0), part(Cone(.55,1.1,7),0xffffff,0,3.7,0)]), 150, [.8,1.5]));
+  frost.add(decorScatter(merge([part(new THREE.OctahedronGeometry(.7,0),0xaee0ff,0,.4,0,0,0,0,1,1.6,1), part(new THREE.OctahedronGeometry(.45,0),0xd6f1ff,.5,.3,.2,0,0,0,1,1.4,1)]), 40, [6.6,22]));
+  frost.add(decorScatter(merge([part(new THREE.SphereGeometry(.8,7,5),0xffffff,0,.1,0,0,0,0,1.6,.45,1.2)]), 50, [6.4,24], terrMat, false));
+  frost.add(decorMountains(merge([part(Cone(14,16,6),0xb8cfe2,0,8,0), part(Cone(8.5,8,6),0xffffff,0,12.2,0)])));
+  // Eldbergen: döda träd, basaltblock, lavagölar och vulkaner
+  const eld = new THREE.Group();
+  eld.add(decorTrees(merge([part(Cyl(.12,.22,2.2,5),0x2a1d18,0,1.1,0), part(Cyl(.05,.09,1.2,4),0x2a1d18,.35,1.8,0,0,0,-.8), part(Cyl(.05,.08,1,4),0x2a1d18,-.3,2.1,0,0,0,.9)]), 90, [.8,1.4]));
+  eld.add(decorScatter(merge([part(Cyl(.5,.6,1.3,6),0x3a3030,0,.65,0), part(Cyl(.35,.45,.9,6),0x463a38,.6,.45,.2)]), 46, [6.6,22]));
+  eld.add(decorScatter(merge([part(Cyl(1.2,1.4,.08,10),0xff6a14,0,.04,0), part(Cyl(.7,.8,.1,10),0xffc23a,0,.06,0)]), 22, [7,26], lavaGlowMat, false));
+  eld.add(decorMountains(merge([part(Cone(14,16,6),0x3e2c28,0,8,0), part(Cyl(3.2,4.4,2,6),0x2a1e1c,0,15,0), part(Cyl(2.6,2.6,.3,6),0xff6a14,0,16.1,0)])));
+  dekor.gron = gron; dekor.frost = frost; dekor.eld = eld;
+  world.add(gron, frost, eld);
   const poleG = merge([part(Cyl(.06,.08,3,6),0x6b4a2a,0,1.5,0), part(new THREE.SphereGeometry(.12,6,4),0xf6c445,0,3.05,0)]);
   const poles = new THREE.InstancedMesh(poleG, vcMat, 12);
   const flagsB = [], flagGeo = new THREE.PlaneGeometry(.9,.55,4,1);
@@ -606,6 +736,18 @@ const world = new THREE.Group(); scene.add(world);
   }
   poles.castShadow = true; world.add(poles);
   world.userData.flags = flagsB;
+}
+let curTheme = null;
+function applyTheme(rike){
+  if(curTheme === rike.id) return; curTheme = rike.id;
+  const t = rike.tema;
+  scene.background.set(t.fog); scene.fog.color.set(t.fog);
+  hemi.color.set(t.himmel[0]); hemi.groundColor.set(t.himmel[1]); hemi.intensity = t.himmel[2];
+  sun.color.set(t.sol[0]); sun.intensity = t.sol[1];
+  groundMat.map = GROUND_TEX[t.mark]; groundMat.needsUpdate = true;
+  roadMat.color.set(t.vag); curbMat.color.set(t.kant);
+  for(const k in dekor) dekor[k].visible = k===t.dekor;
+  document.body.style.background = '#' + new THREE.Color(t.fog).getHexString();
 }
 
 /* ---------- borgar ---------- */
@@ -748,28 +890,74 @@ const cavGeo = merge([
   part(Box(.1,.6,.3), 0x2b1d1a, 0,.85,.68, -.6,0,0),
 ]);
 
-function Army(max){ return {n:0,max,x:new Float32Array(max),z:new Float32Array(max),vx:new Float32Array(max),ph:new Float32Array(max),hop:new Float32Array(max),hopD:new Float32Array(max),hopH:new Float32Array(max),mask:new Uint32Array(max),hp:new Uint8Array(max),dead:new Uint8Array(max),kind:new Uint8Array(max),sp:new Float32Array(max),cb:new Uint8Array(max)}; }
+// v3: nya fiender och riddartyper
+const wolfGeo = merge([
+  part(Box(.42,.4,1.0), 0xc9d3dc, 0,.55,0), part(Box(.34,.18,.9), 0xeef3f7, 0,.36,0),
+  ...[-.13,.13].flatMap(sx=>[-.34,.34].map(sz=>part(Box(.11,.4,.11), 0x9aa7b3, sx,.2,sz))),
+  part(Box(.32,.3,.42), 0xc9d3dc, 0,.72,-.6), part(Box(.2,.16,.26), 0xb4c0cb, 0,.64,-.88),
+  part(Cone(.07,.18,4), 0x8c99a6, -.1,.94,-.56), part(Cone(.07,.18,4), 0x8c99a6, .1,.94,-.56),
+  part(Box(.06,.06,.04), 0x6fd8ff, -.09,.78,-.82), part(Box(.06,.06,.04), 0x6fd8ff, .09,.78,-.82),
+  part(Box(.12,.12,.5), 0xdfe6ec, 0,.68,.68, -.6,0,0),
+]);
+const trollGeo = merge([
+  part(Box(1.3,1.3,.9), 0x3b2e2a, 0,1.25,0), part(Box(1.0,.5,.7), 0x2a201d, 0,.35,0),
+  part(Box(.4,.7,.45), 0x3b2e2a, -.35,.35,0), part(Box(.4,.7,.45), 0x3b2e2a, .35,.35,0),
+  part(Box(.8,.6,.7), 0x463733, 0,2.15,-.1),
+  part(Box(.18,.08,.06), 0xffb020, -.18,2.2,-.46), part(Box(.18,.08,.06), 0xffb020, .18,2.2,-.46),
+  part(Box(.35,1.1,.35), 0x3b2e2a, -.85,1.2,-.1, 0,0,.25), part(Box(.35,1.1,.35), 0x3b2e2a, .85,1.2,-.1, 0,0,-.25),
+  part(Box(.9,.12,.6), 0xff6a14, 0,1.55,-.46), part(Box(.12,.9,.06), 0xff8a2a, -.3,1.2,-.47), part(Box(.12,.7,.06), 0xff8a2a, .35,1.0,-.47),
+]);
+const andeGeo = merge([
+  part(new THREE.OctahedronGeometry(.36,0), 0xffa21a, 0,1.0,0), part(new THREE.OctahedronGeometry(.22,0), 0xffe07a, 0,1.0,-.12),
+  part(Cone(.2,.6,5), 0xff5a14, 0,.6,0, Math.PI,0,0), part(Cone(.1,.35,4), 0xff7a1a, -.22,1.3,.05, 0,0,.5), part(Cone(.1,.35,4), 0xff7a1a, .22,1.3,.05, 0,0,-.5),
+  part(Box(.08,.08,.04), 0x2a1006, -.1,1.05,-.33), part(Box(.08,.08,.04), 0x2a1006, .1,1.05,-.33),
+]);
+const mageGeo = merge([
+  part(Cone(.42,1.3,7), 0x3d6fb8, 0,.65,0), part(Cyl(.2,.24,.4,7), 0x5a8ee0, 0,1.35,0),
+  part(new THREE.SphereGeometry(.2,8,6), 0xe8d2bc, 0,1.65,0), part(Cone(.26,.6,7), 0x2a5296, 0,2.05,0),
+  part(Box(.06,1.9,.06), 0x8a6a4a, .4,.95,-.1), part(new THREE.OctahedronGeometry(.16,0), 0xaef0ff, .4,1.98,-.1),
+]);
+const BLUE_C = {leg:0x39404f, body:0x2f6be0, trim:0xf6c445, metal:0xe6ecf3, shield:0x1f4fb8, plume:0x5aa0ff};
+const blueShieldGeo = merge([...unitParts(BLUE_C,'blue'), part(Box(.12,.62,.5), 0xc9d6ea, -.34,.56,-.05), part(Box(.13,.3,.22), 0xf6c445, -.36,.6,-.06), part(Box(.5,.1,.36), 0xc9d6ea, 0,1.12,0)]);
+const blueHorseGeo = merge([
+  part(Box(.5,.48,1.3), 0xe9e4da, 0,.92,0),
+  ...[-.17,.17].flatMap(sx=>[-.46,.46].map(sz=>part(Box(.13,.7,.13), 0xcfc8ba, sx,.35,sz))),
+  part(Box(.28,.6,.32), 0xe9e4da, 0,1.28,-.6, .5,0,0), part(Box(.26,.26,.52), 0xe9e4da, 0,1.56,-.85),
+  part(Box(.56,.2,.7), 0x2f6be0, 0,1.18,.05), part(Box(.4,.4,.28), 0x2f6be0, 0,1.55,.05),
+  part(Cyl(.15,.16,.24,8), 0xe6ecf3, 0,1.88,.05), part(Box(.06,.2,.3), 0x5aa0ff, 0,2.05,.08),
+  part(Cyl(.03,.03,1.9,5), 0x6b4626, .3,1.55,-.55, Math.PI/2-.12,0,0), part(Cone(.07,.24,5), 0xf6c445, .3,1.67,-1.56, -Math.PI/2+.12,0,0),
+]);
+const blueArcherGeo = merge(unitParts({...BLUE_C, shield:0x2f6be0}, 'archer').map((g,i)=>g));
+const frozenGeo = merge([...unitParts(BLUE_C,'blue'), part(Box(.7,1.25,.6), 0xbfe9ff, 0,.62,0)]);
+
+function Army(max){ return {n:0,max,x:new Float32Array(max),z:new Float32Array(max),vx:new Float32Array(max),ph:new Float32Array(max),hop:new Float32Array(max),hopD:new Float32Array(max),hopH:new Float32Array(max),mask:new Uint32Array(max),hp:new Uint8Array(max),dead:new Uint8Array(max),kind:new Uint8Array(max),sp:new Float32Array(max),cb:new Uint8Array(max),fz:new Float32Array(max),at:new Float32Array(max)}; }
 const B = Army(MAXB), Rd = Army(MAXR);
-const FIELDS = ['x','z','vx','ph','hop','hopD','hopH','mask','hp','dead','kind','sp','cb'];
+const FIELDS = ['x','z','vx','ph','hop','hopD','hopH','mask','hp','dead','kind','sp','cb','fz','at'];
 function addUnit(a,x,z,mask=0,hop=0,hopH=0){
   if(a.n >= a.max) return -1;
   const i = a.n++;
-  a.x[i]=x; a.z[i]=z; a.vx[i]=0; a.ph[i]=Math.random()*6.283; a.hop[i]=hop; a.hopD[i]=hop||1; a.hopH[i]=hopH; a.mask[i]=mask; a.hp[i]=1; a.dead[i]=0; a.kind[i]=0; a.sp[i]=0; a.cb[i]=0;
+  a.x[i]=x; a.z[i]=z; a.vx[i]=0; a.ph[i]=Math.random()*6.283; a.hop[i]=hop; a.hopD[i]=hop||1; a.hopH[i]=hopH; a.mask[i]=mask; a.hp[i]=1; a.dead[i]=0; a.kind[i]=0; a.sp[i]=0; a.cb[i]=0; a.fz[i]=0; a.at[i]=0;
   return i;
 }
+// blå riddartyper: 0 vanlig, 1 sköld (tål en extra träff), 2 ryttare (snabbare), 3 bågskytt (skjuter på håll)
+const KSPD = [1, 1, 1.7, 1];
+function setKnight(i, k){ B.kind[i] = k; B.hp[i] = k===1 ? 2 : 1; if(k===3) B.at[i] = rand(.2,.8); }
 function compact(a){
   let j=0;
   for(let i=0;i<a.n;i++){ if(a.dead[i]) continue; if(i!==j) for(const f of FIELDS) a[f][j]=a[f][i]; j++; }
   a.n=j;
 }
-function makeIM(geo, max){
-  const m = new THREE.InstancedMesh(geo, vcMat, max);
+function makeIM(geo, max, mat=vcMat){
+  const m = new THREE.InstancedMesh(geo, mat, max);
   m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.count = 0; m.frustumCulled = false; m.castShadow = true;
   world.add(m); return m;
 }
 const blueIM = makeIM(blueGeo, MAXB), redIM = makeIM(redGeo, MAXR), champIM = makeIM(champGeo, 8);
+const bShieldIM = makeIM(blueShieldGeo, MAXB), bHorseIM = makeIM(blueHorseGeo, MAXB), bArcherIM = makeIM(blueArcherGeo, MAXB), bFrozenIM = makeIM(frozenGeo, MAXB, iceMat);
 const shieldIM = makeIM(shieldGeo, 40), cavIM = makeIM(cavGeo, 60), archerIM = makeIM(archerGeo, 6);
-const enemyIMs = [redIM, shieldIM, cavIM, archerIM];
+const wolfIM = makeIM(wolfGeo, 90), trollIM = makeIM(trollGeo, 12), andeIM = makeIM(andeGeo, 80), mageIM = makeIM(mageGeo, 3);
+andeIM.material = new THREE.MeshBasicMaterial({vertexColors:true}); andeIM.castShadow = false;
+const enemyIMs = [redIM, shieldIM, cavIM, archerIM, wolfIM, trollIM, mageIM];
 function setM(arr,i,x,y,z,yaw,s){
   const c=Math.cos(yaw)*s, sn=Math.sin(yaw)*s, o=i*16;
   arr[o]=c; arr[o+1]=0; arr[o+2]=-sn; arr[o+3]=0;
@@ -778,7 +966,9 @@ function setM(arr,i,x,y,z,yaw,s){
   arr[o+12]=x; arr[o+13]=y; arr[o+14]=z; arr[o+15]=1;
 }
 let champs = [];
-const RR = [.55*.55, .62*.62, .85*.85, .7*.7]; // kollisionsradie per fiendetyp: vanlig, tung, sköld, ryttare
+// fiendetyper: 0 vanlig, 1 tung, 2 sköld, 3 ryttare, 4 isvarg, 5 lavatroll, 6 eldande
+const RR = [.55*.55, .62*.62, .85*.85, .7*.7, .5*.5, 1.0*1.0, .5*.5];
+const RDMG = [1, 2, 2, 1, 1, 3, 1];
 
 /* ---------- pilar och brinnande bultar ---------- */
 const arrowGeo = merge([part(Cyl(.035,.035,1.1,5),0x8a6236,0,0,0,Math.PI/2,0,0), part(Cone(.08,.22,5),0xc9ced6,0,0,.62,Math.PI/2,0,0), part(Box(.16,.02,.2),0xf2f2f2,0,0,-.5)]);
@@ -888,14 +1078,22 @@ function updateFloats(dt){
 let gates = [];
 const GATE_H = 2.7;
 const GSTYLE = {good:{panel:0x3aa4ff, beam:0x1f5fc8, stroke:'#0d2a66', fill:'#ffffff'}, bad:{panel:0xff4b45, beam:0xb52a24, stroke:'#5a0f0b', fill:'#ffffff'},
-  mys:{panel:0xa66bff, beam:0x6b2fc0, stroke:'#2e0f5c', fill:'#ffffff'}, gold:{panel:0xffd54a, beam:0xf6c445, stroke:'#6b4300', fill:'#fff6c8'}};
-const styleOf = (t) => t==='mul'||t==='add' ? 'good' : t==='mys' ? 'mys' : t==='gold' ? 'gold' : 'bad';
-function gateText(t,v){ return t==='mul' ? '×'+v : t==='add' ? '+'+v : t==='sub' ? '−'+v : t==='div' ? '÷'+v : t==='gold' ? '×'+v : '?'; }
+  mys:{panel:0xa66bff, beam:0x6b2fc0, stroke:'#2e0f5c', fill:'#ffffff'}, gold:{panel:0xffd54a, beam:0xf6c445, stroke:'#6b4300', fill:'#fff6c8'},
+  trans:{panel:0x3fd6a8, beam:0x1d8f6c, stroke:'#063d2e', fill:'#ffffff'}, fire:{panel:0xff7a1a, beam:0x8a2a0a, stroke:'#4a1200', fill:'#ffe9b0'}};
+const TRANS = {skold:1, hast:2, bage:3};
+const styleOf = (t) => t==='mul'||t==='add' ? 'good' : t==='mys' ? 'mys' : t==='gold' ? 'gold' : TRANS[t] ? 'trans' : 'bad';
+function gateText(t,v){ return t==='mul' ? '×'+v : t==='add' ? '+'+v : t==='sub' ? '−'+v : t==='div' ? '÷'+v : t==='gold' ? '×'+v : t==='skold' ? 'SKÖLD' : t==='hast' ? 'HÄST' : t==='bage' ? 'BÅGE' : '?'; }
+// Texten skalas så att den får plats. "rad1\nrad2" ger en liten överrad och en stor rad.
 function drawLabel(cv, txt, style){
   const s = GSTYLE[style], g = cv.getContext('2d'); g.clearRect(0,0,cv.width,cv.height);
-  g.font = '150px "Lilita One", "Arial Black", Impact, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
-  g.lineJoin='round'; g.lineWidth=22; g.strokeStyle = s.stroke; g.strokeText(txt, cv.width/2, cv.height/2+8);
-  g.fillStyle = s.fill; g.fillText(txt, cv.width/2, cv.height/2+8);
+  g.textAlign='center'; g.textBaseline='middle'; g.lineJoin='round';
+  const [top, main] = txt.includes('\n') ? txt.split('\n') : [null, txt];
+  let fs = top ? 112 : 150; g.font = `${fs}px "Lilita One", "Arial Black", Impact, sans-serif`;
+  const w = g.measureText(main).width; if(w > cv.width-30){ fs = Math.floor(fs*(cv.width-30)/w); g.font = `${fs}px "Lilita One", "Arial Black", Impact, sans-serif`; }
+  const y = top ? cv.height/2+30 : cv.height/2+8;
+  g.lineWidth=Math.max(10, fs*.15); g.strokeStyle = s.stroke; g.strokeText(main, cv.width/2, y);
+  g.fillStyle = s.fill; g.fillText(main, cv.width/2, y);
+  if(top){ g.font = '54px "Lilita One", "Arial Black", Impact, sans-serif'; g.lineWidth = 10; g.strokeText(top, cv.width/2, 38); g.fillText(top, cv.width/2, 38); }
 }
 function signMesh(text){
   const cv = document.createElement('canvas'); cv.width = 256; cv.height = 96;
@@ -942,7 +1140,18 @@ function gateGroup(d){
 function makeGate(d, slot){
   const o = gateGroup(d);
   world.add(o.grp);
-  return {...d, ...o, cx:d.x, bit:(1<<slot)>>>0, cd:0, cdMax:1, left:d.v, tog:0, pulse:0, ftT:0, cur:null, resT:0, comboCd:0};
+  const g = {...d, ...o, cx:d.x, bit:(1<<slot)>>>0, cd:0, cdMax:1, left:d.v, tog:0, pulse:0, ftT:0, cur:null, resT:0, comboCd:0, fire:0, reT:0, flames:null};
+  if(d.brinn) igniteGate(g);
+  return g;
+}
+// Brinnande port: riddarna som går in släcker elden men går åt. Elden tänds igen efter en stund.
+function igniteGate(g){
+  g.fire = g.brinn; relabel(g, 'SLÄCK\n'+g.fire, 'fire');
+  if(!g.flames && !game.sim){ g.flames = true; }
+}
+function extinguish(g){
+  g.fire = 0; g.reT = 16; relabel(g, gateText(g.t,g.v), styleOf(g.t));
+  floatText('SLÄCKT!', g.cx, GATE_H+1.4, g.z, 'huge good', 1.3); shock(g.cx, g.z, 0x9fe0ff, 3.4, .6); burst(g.cx, 2, g.z, 0xdfefff, 26, 5, .25, .9, 5); Snd.bonus();
 }
 function disposeGate(g){ world.remove(g.grp); g.grp.traverse(o=>{ if(o.geometry) o.geometry.dispose(); if(o.material){ if(o.material.map) o.material.map.dispose(); o.material.dispose(); } }); }
 function clearGates(){ for(const g of gates) disposeGate(g); gates = []; }
@@ -950,9 +1159,10 @@ function relabel(g, txt, st){ g.txt = txt; g.st = st; drawLabel(g.cv, txt, st); 
 function redrawLabels(){ for(const g of gates){ drawLabel(g.cv, g.txt, g.st); g.tex.needsUpdate = true; } }
 
 /* ================= Bossar ================= */
-function makeDragon(){
+const DRAGON_C = {dragon:[0x2e7d4f,0x1f5a3a,0xe8c25a,0xf3ead2,0x58b26d], icedragon:[0x6fb4e8,0x3f7fb8,0xe6f6ff,0xffffff,0xa8dcff], ashdragon:[0x2a2224,0x161214,0xff7a1a,0xd9c7b0,0x8a2a14]};
+function makeDragon(kind='dragon'){
   const mat = new THREE.MeshLambertMaterial({vertexColors:true, emissive:0});
-  const BODY=0x2e7d4f, DK=0x1f5a3a, BELLY=0xe8c25a, HORN=0xf3ead2, MEM=0x58b26d;
+  const [BODY, DK, BELLY, HORN, MEM] = DRAGON_C[kind];
   const g = new THREE.Group();
   const body = new THREE.Mesh(merge([
     part(Box(2.0,1.5,3.0), BODY, 0,1.45,0),
@@ -984,9 +1194,10 @@ function makeDragon(){
   g.scale.setScalar(1.85);
   return {g, mat, neck, head, jaw, wings};
 }
-function makeGiant(){
+const GIANT_C = {giant:[0xe0a882,0x8a5a33,0x6b4426,0x3b2a1a,0x8a3f1c,0x4b5a3a,0x6a6e78,0x7a5230], firegiant:[0x8a3a2a,0x2a1d1a,0x3b2a26,0x1a1210,0xff7a1a,0x3a2a26,0x4a4a52,0x3a2622]};
+function makeGiant(kind='giant'){
   const mat = new THREE.MeshLambertMaterial({vertexColors:true, emissive:0});
-  const SKIN=0xe0a882, TUN=0x8a5a33, TUN2=0x6b4426, BELT=0x3b2a1a, HAIR=0x8a3f1c, PANTS=0x4b5a3a, IRON=0x6a6e78;
+  const [SKIN, TUN, TUN2, BELT, HAIR, PANTS, IRON, CLUB] = GIANT_C[kind];
   const g = new THREE.Group();
   const torso = new THREE.Mesh(merge([
     part(Box(2.3,2.0,1.4), TUN, 0,3.4,0), part(Box(2.4,.35,1.5), BELT, 0,2.5,0), part(Box(.5,.4,.2), 0xf6c445, 0,2.5,.76),
@@ -1000,95 +1211,236 @@ function makeGiant(){
   const armL = new THREE.Group(); armL.position.set(-1.42,4.2,0); { const m = new THREE.Mesh(merge([part(Box(.62,1.9,.62), SKIN, 0,-.95,0), part(Box(.66,.5,.66), TUN, 0,-.2,0)]), mat); m.castShadow = true; armL.add(m); } g.add(armL);
   const armR = new THREE.Group(); armR.position.set(1.42,4.2,0);
   { const m = new THREE.Mesh(merge([part(Box(.62,1.9,.62), SKIN, 0,-.95,0), part(Box(.66,.5,.66), TUN, 0,-.2,0),
-      part(Cyl(.16,.16,.7,6), 0x5b3a1e, 0,-1.95,0), part(Cyl(.24,.48,2.3,8), 0x7a5230, 0,-3.3,0),
+      part(Cyl(.16,.16,.7,6), 0x5b3a1e, 0,-1.95,0), part(Cyl(.24,.48,2.3,8), CLUB, 0,-3.3,0),
       ...[0,1,2,3].map(k=>part(Cone(.12,.36,4), 0xd6d2c8, Math.cos(k*1.57)*.42,-3.7,Math.sin(k*1.57)*.42, Math.sin(k*1.57)*1.57,0,-Math.cos(k*1.57)*1.57))]), mat);
     m.castShadow = true; armR.add(m); }
   g.add(armR);
   g.scale.setScalar(1.3);
   return {g, mat, legs, armL, armR};
 }
-const dragon = {obj:makeDragon(), on:false, x:0, tx:0, st:'idle', t:2, lanes:[], front:0, flash:0, dead:0, phase:1, wt:0};
-const giant = {obj:makeGiant(), on:false, alive:false, x:0, z:0, hp:1, max:1, st:'walk', t:2.5, arm:0, flash:0, dead:0, phase:1, step:0, mark:null, thud:0};
-dragon.obj.g.visible = false; giant.obj.g.visible = false; world.add(dragon.obj.g, giant.obj.g);
+// Frostdrottningen: står på muren med isstav och krona
+function makeQueen(){
+  const mat = new THREE.MeshLambertMaterial({vertexColors:true, emissive:0});
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(merge([
+    part(Cone(1.5,3.6,10), 0x7fb8ea, 0,1.8,0), part(Cone(1.2,2.6,10), 0xd8eeff, 0,1.4,.12),
+    part(Cyl(.55,.75,1.0,10), 0x5a96d8, 0,3.7,0), part(Box(2.2,.3,.6), 0xbfe4ff, 0,4.15,0),
+    part(new THREE.SphereGeometry(.48,10,8), 0xeaf2fa, 0,4.65,0), part(Box(.12,.1,.06), 0x1d3d6e, -.16,4.7,.44), part(Box(.12,.1,.06), 0x1d3d6e, .16,4.7,.44),
+    part(Box(1.0,.9,.3), 0xf2f8ff, 0,4.6,-.32),
+    ...[-.36,-.18,0,.18,.36].map((x,i)=>part(Cone(.09,i===2?.6:.38,4), 0xaef0ff, x,5.2+(i===2?.1:0),.05)),
+    part(Cyl(.28,.32,.14,10), 0xf6c445, 0,5.02,0),
+  ]), mat); body.castShadow = true; g.add(body);
+  const arm = new THREE.Group(); arm.position.set(.9,3.8,0); g.add(arm);
+  arm.add(new THREE.Mesh(merge([part(Box(.3,1.2,.3), 0x7fb8ea, 0,-.5,0), part(Cyl(.06,.06,3.6,6), 0xdfefff, .1,-.4,.3), part(new THREE.OctahedronGeometry(.4,0), 0x8fe6ff, .1,1.5,.3)]), mat));
+  g.scale.setScalar(1.35);
+  return {g, mat, arm};
+}
+// Väggbossar (draken, isdraken, askdraken, frostdrottningen) delar tillstånd; utseendet byts per bana.
+const wallBossObjs = {dragon:makeDragon('dragon'), icedragon:makeDragon('icedragon'), ashdragon:makeDragon('ashdragon'), queen:makeQueen()};
+const walkBossObjs = {giant:makeGiant('giant'), firegiant:makeGiant('firegiant')};
+const dragon = {obj:wallBossObjs.dragon, kind:'dragon', on:false, x:0, tx:0, st:'idle', t:2, lanes:[], front:0, flash:0, dead:0, phase:1, wt:0, sweep:null, casts:0};
+const giant = {obj:walkBossObjs.giant, kind:'giant', on:false, alive:false, x:0, z:0, hp:1, max:1, st:'walk', t:2.5, arm:0, flash:0, dead:0, phase:1, step:0, mark:null, thud:0};
+for(const o of [...Object.values(wallBossObjs), ...Object.values(walkBossObjs)]){ o.g.visible = false; world.add(o.g); }
 
 /* ================= Speltillstånd ================= */
-const game = {mode:'attract', idx:0, lv:LEVELS[0], ehp:1, ehpMax:1, php:1, phpMax:1, champLeft:0, waveT:3, fireT:0, aimX:0, targetX:0, firing:false, T:0, over:false, shake:0, collapse:0, playerBreak:0, shots:0, dmg:0, autoT:0, nextIdx:0,
-  sim:false, bot:false, botT:0, botSkill:1, stat:{}, meter:0, meterFull:false, pcd:{storm:0,fire:0,ice:0}, stormT:0, iceT:0, stun:0, comboN:0, comboT:0,
+const game = {mode:'attract', idx:0, lv:LEVELS[0], rike:RIKEN[0], di:0, mobil:isSmall, ehp:1, ehpMax:1, php:1, phpMax:1, champLeft:0, waveT:3, fireT:0, aimX:0, targetX:0, firing:false, T:0, over:false, shake:0, collapse:0, playerBreak:0, shots:0, dmg:0, autoT:0, nextIdx:0,
+  sim:false, bot:false, botT:0, botSkill:1, stat:{}, meters:{storm:0,fire:0,ice:0}, pcd:{storm:0,fire:0,ice:0}, stormT:0, iceT:0, stun:0, comboN:0, comboT:0,
   cavT:0, shT:0, canT:0, goldT:0, goldSlot:28, cavWarn:null, slowT:0, focusT:0, focusK:0, focus:new THREE.Vector3(), result:null, resT:0,
-  dmgAcc:0, dmgAccT:0, dmgAccX:0, gAcc:0, gAccT:0, cards:[], cardI:0, crenelsDown:0, kills:0, castleFlash:0};
-let archers = [], cshots = [], arrows = [], burns = [];
+  dmgAcc:0, dmgAccT:0, dmgAccX:0, gAcc:0, gAccT:0, cards:[], cardI:0, crenelsDown:0, kills:0, castleFlash:0,
+  wolfT:0, trollT:0, andeT:0, snow:{t:0, on:0, k:0}, skada:0, comboMax:0, kampar:0, topp:0, mal:[], bl:{}, tornN:0};
+let archers = [], cshots = [], arrows = [], burns = [], mages = [], iceLanes = [], lavas = [], pools = [];
+const blN = k => game.bl[k] || 0;
+
+/* ---------- effekter för de nya rikena ---------- */
+const iceLaneMeshes = pool(3, ()=>{ const m = new THREE.Mesh(new THREE.PlaneGeometry(1,1), basicT(0x7fd8ff,.35)); m.rotation.x = -Math.PI/2; m.position.y = .075; return m; });
+const poolMeshes = pool(8, ()=>{ const m = new THREE.Mesh(new THREE.CircleGeometry(1,28), basicT(0xff5a14,.55)); m.rotation.x = -Math.PI/2; m.position.y = .085; return m; });
+const snowTexAnim = canvasTex(256,256,(g,w,h)=>{ g.clearRect(0,0,w,h); for(let i=0;i<160;i++){ g.fillStyle=`rgba(255,255,255,${rand(.25,.85)})`; g.beginPath(); g.arc(rand(0,w),rand(0,h),rand(1,3.2),0,7); g.fill(); } for(let i=0;i<14;i++){ const gr=g.createRadialGradient(rand(0,w),rand(0,h),2,0,0,1); } },[3,4]);
+const snowMesh = new THREE.Mesh(new THREE.PlaneGeometry(13, 24), new THREE.MeshBasicMaterial({color:0xf4f9ff, transparent:true, opacity:0, depthWrite:false}));
+snowMesh.rotation.x = -Math.PI/2; snowMesh.position.set(0, 3.4, -6); snowMesh.renderOrder = 3; snowMesh.visible = false; world.add(snowMesh);
+const snowFlakes = new THREE.Mesh(new THREE.PlaneGeometry(13, 24), new THREE.MeshBasicMaterial({map:snowTexAnim, transparent:true, opacity:0, depthWrite:false}));
+snowFlakes.rotation.x = -Math.PI/2; snowFlakes.position.set(0, 3.6, -6); snowFlakes.renderOrder = 4; snowFlakes.visible = false; world.add(snowFlakes);
+const SNOW_Z = [-18, 6];
+const lavaTex = canvasTex(128,128,(g,w,h)=>{ g.fillStyle='#ff5a10'; g.fillRect(0,0,w,h); for(let i=0;i<70;i++){ g.fillStyle=Math.random()<.5?'rgba(255,214,90,.8)':'rgba(170,30,0,.6)'; g.beginPath(); g.ellipse(rand(0,w),rand(0,h),rand(4,16),rand(2,6),0,0,7); g.fill(); } },[4,1]);
+const lavaGroup = new THREE.Group(); world.add(lavaGroup);
+const plankGeo = merge([part(Box(1,.18,2.4),0x7a5230,0,0,0), ...[-.35,0,.35].map(x=>part(Box(.08,.2,2.42),0x4a3220,x,.01,0)), part(Box(1.1,.3,.2),0x5b3a1e,0,.1,-1.15), part(Box(1.1,.3,.2),0x5b3a1e,0,.1,1.15)]);
+function buildLava(lv){
+  for(const c of [...lavaGroup.children]){ lavaGroup.remove(c); c.traverse(o=>{ if(o.geometry && o.geometry!==plankGeo) o.geometry.dispose(); if(o.material && o.material.map!==lavaTex && o.material!==vcMat) o.material.dispose?.(); }); }
+  lavas = (lv.lava||[]).map((l,li)=>{
+    const L2 = {z:l.z, bro:l.bro.map((x,k)=>({x, w:2.5, open:true, t:3.2 + k*2.1 + li*1.1, warn:0, m:null, y:.12}))};
+    if(!game.sim){
+      const riv = new THREE.Mesh(new THREE.PlaneGeometry(11.6, 2.0), new THREE.MeshBasicMaterial({map:lavaTex}));
+      riv.rotation.x = -Math.PI/2; riv.position.set(0,.05,l.z); lavaGroup.add(riv); L2.riv = riv;
+      for(const sz of [-1,1]){ const bank = new THREE.Mesh(merge([part(Box(11.8,.3,.35),0x2a201d,0,.15,0)]), vcMat); bank.position.set(0,0,l.z+sz*1.1); bank.castShadow = true; lavaGroup.add(bank); }
+      for(const b of L2.bro){ const m = new THREE.Mesh(plankGeo, new THREE.MeshLambertMaterial({vertexColors:true, emissive:0})); m.scale.set(b.w,1,1); m.position.set(b.x,.12,l.z); m.castShadow = true; lavaGroup.add(m); b.m = m; }
+    }
+    return L2;
+  });
+}
+function updateLava(dt, frozen){
+  for(const l of lavas){
+    if(l.riv && !game.sim){ lavaTex.offset.x = (game.T*.05)%1; lavaTex.offset.y = Math.sin(game.T*.7)*.05; }
+    for(const b of l.bro){
+      if(!frozen) b.t -= dt;
+      if(b.t <= 0){
+        if(b.open){ if(l.bro.filter(q=>q.open).length > 1){ b.open = false; b.t = 1.9*rand(.85,1.2); } else b.t = .6; }
+        else { b.open = true; b.t = 5.5*rand(.85,1.25); }
+      }
+      b.warn = b.open && b.t < 1.2 && l.bro.filter(q=>q.open).length > 1;
+      if(b.m){ b.y += ((b.open ? .12 : -.45) - b.y)*Math.min(1,dt*8); b.m.position.y = b.y; const w = b.warn ? (Math.sin(game.T*22)>0?1:0) : b.open ? 0 : 1; b.m.material.emissive.setRGB(w*.6, w*.16, 0); }
+    }
+  }
+}
+const onBridge = (l, x) => l.bro.some(b => b.open && Math.abs(x-b.x) < b.w/2);
+// öppen om tt sekunder? (datorspelaren förutser broarna när den är skicklig)
+const bridgeOpenAt = (b, tt) => b.open ? b.t > tt : b.t < tt;
+function addPool(x, z, r, T){ const p = {x, z, r, t:0, T, m: game.sim ? null : poolMeshes.find(m=>!m.visible)||null}; if(p.m){ p.m.visible = true; p.m.position.set(x,.085,z); p.m.scale.setScalar(r); } pools.push(p); }
+function updatePools(dt){
+  for(let i=pools.length-1;i>=0;i--){
+    const p = pools[i]; p.t += dt;
+    if(p.t >= p.T){ if(p.m) p.m.visible = false; pools.splice(i,1); continue; }
+    if(p.m){ p.m.material.opacity = (.42 + .15*Math.sin(game.T*12)) * Math.min(1,(p.T-p.t)*2); if(Math.random()<.5) flame(p.x+rand(-p.r,p.r)*.7, .2, p.z+rand(-p.r,p.r)*.7, 1, 3); }
+    const r2 = p.r*p.r;
+    for(let j=0;j<B.n;j++){ if(B.dead[j]) continue; const dx=B.x[j]-p.x, dz=B.z[j]-p.z; if(dx*dx+dz*dz<r2){ B.dead[j]=1; game.stat.pool = (game.stat.pool||0)+1; burst(B.x[j],.6,B.z[j],0xff7a1a,3,2,.13,.4); } }
+  }
+}
+// Frostfil: först ett blått sken, sedan fryser riddarna i filen (de går nästan inte framåt). Drottningens filar spräcker dem efteråt.
+function castIceLane(x, warn=1.2, dur=3.2, shatter=false){
+  x = clamp(x, -3.6, 3.6);
+  const l = {x, st:'warn', t:warn, dur, shatter, m: game.sim ? null : iceLaneMeshes.find(m=>!m.visible)||null};
+  if(l.m){ l.m.visible = true; l.m.position.set(x,.075,(EZ+PZ-4)/2); l.m.scale.set(2.4, PZ-4-EZ, 1); l.m.material.color.set(0x7fd8ff); }
+  iceLanes.push(l); Snd.ice();
+}
+function updateIceLanes(dt){
+  for(let i=iceLanes.length-1;i>=0;i--){
+    const l = iceLanes[i]; l.t -= dt;
+    if(l.st==='warn'){
+      if(l.m) l.m.material.opacity = .15 + .25*Math.abs(Math.sin(game.T*10));
+      if(l.t<=0){ l.st = 'on'; l.t = l.dur; for(let j=0;j<B.n;j++) if(!B.dead[j] && Math.abs(B.x[j]-l.x) < 1.2){ B.fz[j] = l.dur; } if(!game.sim) for(let k=0;k<14;k++) burst(l.x+rand(-1.1,1.1), .3, rand(EZ+2,PZ-5), 0xdff6ff, 2, 2, .18, .8, 2); }
+    } else {
+      if(l.m){ l.m.material.opacity = .45; l.m.material.color.set(0xbfefff); }
+      for(let j=0;j<B.n;j++) if(!B.dead[j] && Math.abs(B.x[j]-l.x) < 1.2 && B.fz[j] < .35) B.fz[j] = .35;
+      if(l.t<=0){
+        if(l.shatter) for(let j=0;j<B.n;j++) if(!B.dead[j] && B.fz[j]>.5 && Math.abs(B.x[j]-l.x) < 1.25){ B.dead[j]=1; burst(B.x[j],.7,B.z[j],0xcff4ff,4,3,.16,.5); }
+        if(l.m) l.m.visible = false; iceLanes.splice(i,1);
+      }
+    }
+  }
+}
+function updateSnow(dt, frozen){
+  const s = game.snow, st = game.lv.storm || (dragon.on && dragon.kind==='queen' && dragon.phase>=2 ? {every:13, dur:7} : null);
+  if(st && game.mode==='play' && !game.over){
+    if(s.on>0){ s.on -= dt; }
+    else if(!frozen){ s.t -= dt; if(s.t<=0){ s.on = st.dur; s.t = st.every*rand(.85,1.15); floatText('SNÖSTORM!', 0, 5, -6, 'huge good', 1.4); Snd.whoosh(); } }
+  } else s.on = Math.max(0, s.on - dt);
+  s.k += ((s.on>0 ? 1 : 0) - s.k)*Math.min(1, dt*1.6);
+  if(game.sim) return;
+  snowMesh.visible = snowFlakes.visible = s.k > .01;
+  snowMesh.material.opacity = s.k*.8; snowFlakes.material.opacity = s.k;
+  snowTexAnim.offset.set((game.T*.21)%1, (game.T*-.6)%1);
+  if(s.k>.3 && Math.random()<.8) burst(rand(-6,6), rand(4,7), rand(SNOW_Z[0],SNOW_Z[1]), 0xffffff, 1, 1, .1, 1.2, .2);
+}
+const inSnow = z => game.snow.k > .5 && z > SNOW_Z[0] && z < SNOW_Z[1];
 
 function resetCastle(c){ c.g.position.y = 0; c.g.rotation.z = 0; c.crenels.forEach(k=>{ k.visible = true; }); }
-function loadLevel(idx, mode){
-  game.idx = idx; game.lv = LEVELS[idx]; game.mode = mode;
-  const lv = game.lv;
-  clearGates(); gates = lv.gates.map((d,i)=>makeGate(d,i));
+// idx: banans nummer − 1 (i tornet: våningen − 1). lvObj: en våning från tornVaning().
+function loadLevel(idx, mode, lvObj=null){
+  const lv = lvObj || LEVELS[idx];
+  game.idx = idx; game.lv = lv; game.mode = mode;
+  game.di = lv.di ?? idx;
+  game.rike = lv.rike ? RIKEN.find(r=>r.id===lv.rike) : rikeFor(idx);
+  if(!game.sim) applyTheme(game.rike);
+  const glid = game.rike.glid || 1;
+  clearGates(); gates = lv.gates.map((d,i)=>makeGate(glid!==1 && d.amp ? {...d, spd:d.spd*glid} : d, i));
   B.n = 0; Rd.n = 0; champs = []; P.n = 0;
-  game.ehpMax = game.ehp = Math.round(lv.hp*(TUNE.hp+TUNE.hpRamp*idx)*(lv.boss==='dragon'?TUNE.bossHp:1));
-  game.phpMax = game.php = UPG.hp.val(save.upg.hp);
-  game.champLeft = UPG.champ.val(save.upg.champ);
+  const BS = lv.boss ? BOSSAR[lv.boss] : null;
+  let ehp = lv.hp*(TUNE.hp+TUNE.hpRamp*game.di)*(BS && BS.typ==='wall' ? BS.hpMul : 1);
+  if(lv.boss==='dragon' && game.mobil && !lv.torn) ehp *= TUNE.mobilDrake;
+  game.ehpMax = game.ehp = Math.round(ehp);
+  game.phpMax = game.php = UPG.hp.val(save.upg.hp) + 8*blN('port');
+  game.champLeft = UPG.champ.val(save.upg.champ) + blN('kampe');
   game.waveT = mode==='play' ? 4 : 2; game.fireT = 0; game.T = 0; game.over = false; game.collapse = 0; game.playerBreak = 0;
   game.aimX = game.targetX = 0; game.firing = false; game.shots = 0; game.dmg = 0; game.kills = 0;
-  game.meter = 0; game.meterFull = false; game.pcd = {storm:0,fire:0,ice:0}; game.stormT = 0; game.iceT = 0; game.stun = 0; game.comboN = 0; game.comboT = 0;
-  game.cavT = lv.cav ? lv.cav.every*.55 : 0; game.shT = lv.shield ? lv.shield.every*.6 : 0; game.canT = lv.cannon ? lv.cannon*.7 : 0; game.goldT = lv.gold ? lv.gold*.6 : 0;
+  game.meters = {storm:0,fire:0,ice:0}; game.pcd = {storm:0,fire:0,ice:0}; game.stormT = 0; game.iceT = 0; game.stun = 0; game.comboN = 0; game.comboT = 0;
+  game.cavT = lv.cav ? lv.cav.every*.55 : 0; game.shT = lv.shield ? lv.shield.every*.6 : 0; game.canT = lv.cannon ? lv.cannon*.7 : 0; game.goldT = lv.gold ? lv.gold*.6/(1+blN('guld')) : 0;
+  game.wolfT = lv.wolves ? lv.wolves.every*.5 : 0; game.trollT = lv.troll ? lv.troll.every*.6 : 0; game.andeT = lv.andar ? lv.andar.every*.5 : 0;
+  game.snow = {t: lv.storm ? lv.storm.every*.6 : 6, on:0, k:0};
   game.cavWarn = null; game.slowT = 0; game.focusT = 0; game.result = null; game.resT = 0; game.dmgAcc = 0; game.dmgAccT = 0; game.gAcc = 0; game.gAccT = 0; game.botT = 0;
   game.crenelsDown = 0; game.castleFlash = 0;
+  game.skada = 0; game.comboMax = 0; game.kampar = 0; game.topp = 0;
+  game.mal = lv.torn ? [] : stjarnmal(idx);
   resetCastle(enemyC); resetCastle(playerC);
   // fiender på muren och kanonen
-  const AX = {1:[0],2:[-2.3,2.3],3:[-3.6,0,3.6],4:[-4,-1.35,1.35,4]};
+  const AX = {1:[0],2:[-2.3,2.3],3:[-3.6,0,3.6],4:[-4,-1.35,1.35,4]}, MX = {1:[0],2:[-2.6,2.6]};
   archers = (AX[lv.archers]||[]).map(x=>({x, alive:true, t:rand(1.5,3.5), draw:0, fall:0}));
+  mages = (MX[lv.mages]||[]).map(x=>({x, alive:true, t:rand(4,6), fall:0, cast:0}));
   cshots.forEach(s=>{ if(s.mark) s.mark.visible=false; if(s.ball) s.ball.visible=false; }); cshots = [];
   arrows = []; burns.forEach(b=>{ if(b.m) b.m.visible=false; }); burns = [];
-  laneMeshes.forEach(m=>m.visible=false); markMeshes.forEach(m=>m.visible=false); ballMeshes.forEach(m=>m.visible=false);
+  iceLanes = []; pools = [];
+  laneMeshes.forEach(m=>m.visible=false); markMeshes.forEach(m=>m.visible=false); ballMeshes.forEach(m=>m.visible=false); iceLaneMeshes.forEach(m=>m.visible=false); poolMeshes.forEach(m=>m.visible=false);
+  snowMesh.visible = snowFlakes.visible = false;
+  buildLava(lv);
   cannon.visible = !!lv.cannon;
   // bossar
-  dragon.on = lv.boss==='dragon'; dragon.obj.g.visible = dragon.on; Object.assign(dragon, {x:0, tx:0, st:'idle', t:3, lanes:[], front:0, flash:0, dead:0, phase:1});
-  dragon.obj.g.rotation.set(0,0,0); dragon.obj.g.position.set(0,4.2,EZ-.9);
-  giant.on = lv.boss==='giant'; giant.obj.g.visible = giant.on;
-  Object.assign(giant, {alive:giant.on, x:0, z:EZ+4, hp:Math.round((lv.bossHp||1)*TUNE.giantHp), max:Math.round((lv.bossHp||1)*TUNE.giantHp), st:'walk', t:3, arm:0, flash:0, dead:0, phase:1, step:0, thud:0});
+  const wb = BS && BS.typ==='wall' ? lv.boss : null, gb = BS && BS.typ==='walk' ? lv.boss : null;
+  for(const k in wallBossObjs) wallBossObjs[k].g.visible = k===wb;
+  for(const k in walkBossObjs) walkBossObjs[k].g.visible = k===gb;
+  dragon.on = !!wb; if(wb){ dragon.obj = wallBossObjs[wb]; dragon.kind = wb; }
+  Object.assign(dragon, {x:0, tx:0, st:'idle', t:3, lanes:[], front:0, flash:0, dead:0, phase:1, sweep:null, casts:0});
+  dragon.obj.g.rotation.set(0,0,0); dragon.obj.g.position.set(0, dragon.kind==='queen'?3.0:4.2, dragon.kind==='queen'?EZ+.2:EZ-.9);
+  giant.on = !!gb; if(gb){ giant.obj = walkBossObjs[gb]; giant.kind = gb; }
+  const ghp = Math.round((lv.bossHp||1)*TUNE.giantHp);
+  Object.assign(giant, {alive:giant.on, x:0, z:EZ+4, hp:ghp, max:ghp, st:'walk', t:3, arm:0, flash:0, dead:0, phase:1, step:0, thud:0});
   if(giant.mark){ giant.mark.visible = false; giant.mark = null; }
   giant.obj.g.rotation.set(0,0,0); giant.obj.g.position.set(0,0,giant.z);
   setFrozen(false);
+  // välsignelsen Förtrupp: börja med riddare på planen
+  if(mode==='play') for(let k=0;k<25*blN('start');k++) addUnit(B, rand(-3.5,3.5), SPAWN_Z - rand(1,6));
   hudAll();
 }
 
 /* ---------- HUD ---------- */
 const ui = {ehp:$('ehp'), ehpName:$('ehpName'), ehpFill:$('ehpFill'), php:$('php'), phpFill:$('phpFill'), army:$('armyN'), champ:$('champBtn'), champN:$('champN'), lvl:$('lvlTag'), ebar:$('ebar'), pbar:$('pbar'),
   ebarL:$('ebar').querySelector('.lbl'), pbarL:$('pbar').querySelector('.lbl'), bossbar:$('bossbar'), bossName:$('bossName'), bossFill:$('bossFill'), bossHp:$('bossHp'), bbarL:$('bbar').querySelector('.lbl'),
-  combo:$('combo'), hud:$('hud'), frost:$('frost'), plbl:$('plbl'), pw:Object.fromEntries(POWS.map(k=>[k,$('pw-'+k)]))};
+  combo:$('combo'), hud:$('hud'), frost:$('frost'), plbl:$('plbl'), bless:$('blessRow'), pw:Object.fromEntries(POWS.map(k=>[k,$('pw-'+k)]))};
 const popT = {};
 function pop(el, key){ if(game.sim) return; const t = performance.now(); if(popT[key] && t-popT[key]<140) return; popT[key]=t; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
 function hudE(){ if(game.sim) return; ui.ehp.textContent = Math.max(0,Math.ceil(game.ehp)); ui.ehpFill.style.width = `calc(${Math.max(0,game.ehp/game.ehpMax)*100}% - 6px)`;
-  if(dragon.on) ui.ehpName.textContent = 'DRAKEN'; }
+  if(dragon.on) ui.ehpName.textContent = BOSSAR[dragon.kind].kort; }
 function hudP(){ if(game.sim) return; ui.php.textContent = Math.max(0,game.php); ui.phpFill.style.width = `calc(${Math.max(0,game.php/game.phpMax)*100}% - 6px)`; }
-function hudC(){ if(game.sim) return; ui.champN.textContent = game.champLeft; ui.champ.hidden = save.upg.champ===0; ui.champ.classList.toggle('off', game.champLeft<=0); }
+function hudC(){ if(game.sim) return; ui.champN.textContent = game.champLeft; ui.champ.hidden = save.upg.champ===0 && blN('kampe')===0; ui.champ.classList.toggle('off', game.champLeft<=0); }
 function hudBoss(){ if(game.sim || !giant.on) return; ui.bossHp.textContent = Math.max(0,Math.ceil(giant.hp)); ui.bossFill.style.width = `calc(${Math.max(0,giant.hp/giant.max)*100}% - 6px)`;
-  ui.bossName.textContent = giant.alive ? 'JÄTTEN' + (giant.phase>1?' · RASANDE':'') : 'JÄTTEN HAR FALLIT'; }
+  const nm = BOSSAR[giant.kind].kort; ui.bossName.textContent = giant.alive ? nm + (giant.phase>1?' · RASANDE':'') : nm + ' HAR FALLIT · RIV BORGEN!'; }
 function setTicks(bar, fr){ bar.querySelectorAll('.tick').forEach(t=>t.remove()); for(const f of fr){ const t=document.createElement('i'); t.className='tick'; t.style.left = `calc(3px + (100% - 6px) * ${f})`; bar.appendChild(t);} }
+function hudBless(){
+  if(game.sim) return;
+  const on = !!game.lv.torn && Object.keys(game.bl).length>0;
+  ui.bless.hidden = !on; if(!on) return;
+  ui.bless.innerHTML = '<span class="bhead">VÄLSIGNELSER</span>' + VALSIGNELSER.filter(v=>game.bl[v.id]).map(v=>`<span class="bchip" title="${v.namn}: ${v.text}"><b>${v.ikon}</b>${v.namn}${game.bl[v.id]>1?` ×${game.bl[v.id]}`:''}</span>`).join('');
+}
 function hudAll(){
   if(game.sim) return;
   ui.ebar.classList.toggle('boss', dragon.on); ui.ehpName.textContent = '';
   setTicks(ui.ebar, dragon.on ? [1/3, 2/3] : []);
   ui.bossbar.hidden = !giant.on; setTicks($('bbar'), giant.on ? [.5] : []);
   ui.hud.classList.toggle('bosslv', !!game.lv.boss); ui.hud.classList.toggle('giantlv', giant.on);
-  hudE(); hudP(); hudC(); hudBoss(); ui.lvl.textContent = 'BANA ' + (game.idx+1);
+  hudE(); hudP(); hudC(); hudBoss(); ui.lvl.textContent = game.lv.torn ? 'TORNET · VÅNING ' + game.lv.torn : 'BANA ' + (game.idx+1);
   ui.combo.classList.remove('on');
+  hudBless();
   hudPow(true);
 }
 const powState = {};
 function hudPow(force){
   if(game.sim) return;
-  const p = Math.round(Math.min(1, game.meter/METER)*40)/40;
-  let any = false;
+  let any = false, anyReady = false;
   for(const k of POWS){
-    const el = ui.pw[k], un = powUnlocked(k), cd = game.pcd[k]>0 ? Math.ceil(game.pcd[k]) : 0, ready = un && game.meter>=METER && cd===0;
-    any = any || un;
+    const el = ui.pw[k], un = powUnlocked(k), p = Math.round(Math.min(1, game.meters[k]/POWMETER[k])*40)/40, cd = game.pcd[k]>0 ? Math.ceil(game.pcd[k]) : 0, ready = un && p>=1 && cd===0;
+    any = any || un; anyReady = anyReady || ready;
     const key = `${un}|${p}|${cd}|${ready}`;
     if(!force && powState[k]===key) continue; powState[k] = key;
     el.hidden = !un; el.style.setProperty('--p', p); el.classList.toggle('ready', ready); el.classList.toggle('cool', cd>0);
     el.querySelector('.cd').textContent = cd ? cd : '';
   }
-  ui.plbl.hidden = !any; const full = game.meter>=METER; if(ui.plbl.dataset.f!==String(full)){ ui.plbl.dataset.f = full; ui.plbl.textContent = full ? 'VÄLJ EN!' : 'KRAFT'; }
+  ui.plbl.hidden = !any; if(ui.plbl.dataset.f!==String(anyReady)){ ui.plbl.dataset.f = anyReady; ui.plbl.textContent = anyReady ? 'TRYCK!' : 'KRAFTER'; }
 }
 let lastArmy = -1;
 
@@ -1096,7 +1448,7 @@ let lastArmy = -1;
 function damageEnemy(d, x){
   if(game.mode !== 'play' || game.over) { burst(x, 1.2, EZ+.3, 0xffffff, 3, 3, .12, .4); return; }
   game.ehp -= d; game.dmg += d;
-  if(giant.on && giant.alive && game.ehp < game.ehpMax*.1){ game.dmg -= game.ehpMax*.1 - game.ehp; game.ehp = game.ehpMax*.1; if(game.T - (game.shieldMsgT||-9) > 4){ game.shieldMsgT = game.T; floatText('FÄLL JÄTTEN FÖRST!', 0, 6, EZ+2, 'bad'); } }
+  if(giant.on && giant.alive && game.ehp < game.ehpMax*.1){ game.dmg -= game.ehpMax*.1 - game.ehp; game.ehp = game.ehpMax*.1; if(game.T - (game.shieldMsgT||-9) > 4){ game.shieldMsgT = game.T; floatText(`FÄLL ${BOSSAR[giant.kind].kort} FÖRST!`, 0, 6, EZ+2, 'bad'); } }
   hudE(); pop(ui.ebarL,'e');
   game.shake = Math.max(game.shake, d>=5 ? .7 : .12);
   if(dragon.on){ if(dragon.flash <= -.3) dragon.flash = .07; } else game.castleFlash = .1;
@@ -1108,9 +1460,11 @@ function damageEnemy(d, x){
     const c = enemyC.crenels[game.crenelsDown++];
     if(c && c.visible){ c.visible=false; if(!game.sim){ const wp = c.getWorldPosition(new THREE.Vector3()); burst(wp.x,wp.y,wp.z,0xa69486,10,5,.3,1.1,6); } }
   }
-  // bågskyttarna faller när borgen tar skada
-  const alive = archers.filter(a=>a.alive), keep = Math.ceil(archers.length * Math.max(0,game.ehp)/game.ehpMax - .001);
-  for(let k=0; k < alive.length-keep; k++) killArcher(alive[k]);
+  // skyttar och magiker faller när borgen tar skada
+  for(const list of [archers, mages]){
+    const alive = list.filter(a=>a.alive), keep = Math.ceil(list.length * Math.max(0,game.ehp)/game.ehpMax - .001);
+    for(let k=0; k < alive.length-keep; k++) killArcher(alive[k]);
+  }
   if(game.ehp <= 0) win();
 }
 function damageBoss(d, x, z){
@@ -1122,6 +1476,7 @@ function damageBoss(d, x, z){
 }
 function hurtPlayer(x, d=1){
   if(game.mode !== 'play' || game.over){ burst(x,1,PZ-.3,0xffffff,3,3,.12,.4); return; }
+  game.skada += Math.min(d, game.php);
   game.php = Math.max(0, game.php - d); hudP(); pop(ui.pbarL,'p');
   game.shake = Math.max(game.shake,.35);
   burst(x,1.2,PZ-.4,0xe0473c,10,4,.18,.6);
@@ -1138,23 +1493,33 @@ function banner(title, sub='', boss=false){
 function slowmo(x,y,z,dur=1.4){ if(game.sim) return; game.slowT = dur; game.focus.set(x,y,z); game.focusT = dur + .7; Snd.slow(); }
 function killRed(j, meter=true){
   Rd.dead[j] = 1; game.kills++;
-  if(meter) addMeter(Rd.kind[j]>=2 ? 2 : 1);
+  const k = Rd.kind[j];
+  if(k===5){ addPool(Rd.x[j], Rd.z[j], 1.25, 1.6); burst(Rd.x[j],1,Rd.z[j],0xff6a14,20,5,.22,.7,5); Snd.fireBoom(); }
+  if(k===6 && Rd.cb[j]===0){ for(const s of [-1,1]){ const n = addUnit(Rd, clamp(Rd.x[j]+s*.6,-XL,XL), Rd.z[j]-.4, 0, .3, .6); if(n>=0){ Rd.kind[n]=6; Rd.cb[n]=1; Rd.sp[n]=Rd.sp[j]; } } burst(Rd.x[j],1,Rd.z[j],0xffc23a,8,4,.15,.4); }
+  if(meter) addMeter(k===2||k===5 ? 2 : 1);
 }
 function addMeter(n){
-  if(!POWS.some(powUnlocked) || game.mode!=='play') return;
-  game.meter = Math.min(METER, game.meter + n);
-  if(game.meter>=METER && !game.meterFull){ game.meterFull = true; if(POWS.some(k=>powUnlocked(k) && game.pcd[k]<=0)){ Snd.ready(); floatText('KRAFT REDO!', game.aimX, 3, SPAWN_Z-3, 'gold small'); } }
+  if(game.mode!=='play') return;
+  const mul = 1 + .5*blN('matare');
+  for(const k of POWS){
+    if(!powUnlocked(k)) continue;
+    const was = game.meters[k] >= POWMETER[k];
+    game.meters[k] = Math.min(POWMETER[k], game.meters[k] + n*mul);
+    if(!was && game.meters[k] >= POWMETER[k] && game.pcd[k]<=0){ Snd.ready(); floatText(`${UPG[k].name.toUpperCase()} REDO!`, game.aimX, 3, SPAWN_Z-3, 'gold small'); }
+  }
 }
 function killArcher(a){
   if(!a.alive) return; a.alive = false; a.fall = .001;
-  burst(a.x, 5, EZ-.6, 0xe0473c, 12, 4, .18, .7, 5); 
+  burst(a.x, 5, EZ-.6, 0xe0473c, 12, 4, .18, .7, 5);
 }
 
 function fire(){
-  const pot = UPG.pot.val(save.upg.pot) * (game.stormT>0 ? 2 : 1);
+  const pot = (UPG.pot.val(save.upg.pot) + blN('pott')) * (game.stormT>0 ? 2 : 1);
+  const shieldP = UPG.armor.val(save.upg.armor)/100 + Math.min(.75, .25*blN('skold'));
   for(let k=0;k<pot;k++){
     const off = (k-(pot-1)/2)*(game.stormT>0?.3:.42);
-    addUnit(B, clamp(game.aimX+off+rand(-.08,.08),-XL,XL), SPAWN_Z - 1.4 - rand(0,.5), 0, .4, 1.3);
+    const j = addUnit(B, clamp(game.aimX+off+rand(-.08,.08),-XL,XL), SPAWN_Z - 1.4 - rand(0,.5), 0, .4, 1.3);
+    if(j>=0 && shieldP>0 && Math.random()<shieldP) setKnight(j, 1);
   }
   ballista.userData.recoil = 1;
   game.shots++; game.stat.shot = (game.stat.shot||0)+pot;
@@ -1163,13 +1528,15 @@ function fire(){
 function sendChamp(){
   if(game.mode!=='play' || game.over || game.champLeft<=0) return;
   if(champs.length >= 8) return;
-  game.champLeft--; hudC(); pop(ui.champ,'c');
-  champs.push({x:game.aimX, z:SPAWN_Z, hp:10, ph:0, hop:.5});
+  game.champLeft--; game.kampar++; hudC(); pop(ui.champ,'c');
+  champs.push({x:game.aimX, z:SPAWN_Z, hp:blN('kampe') ? 15 : 10, ph:0, hop:.5});
   Snd.horn(); floatText('KÄMPE!', game.aimX, 2.5, SPAWN_Z-1, 'gold');
   if(hintOn) hideHint();
 }
 function spawnWave(){
-  const lv = game.lv, first = game.idx<3, size = first ? Math.round(lv.size*(game.idx?1.1:1)) + Math.floor(game.T/(game.idx?18:25)) : Math.round(lv.size*(TUNE.size + TUNE.ramp*game.idx)) + Math.floor(game.T/TUNE.grow) + Math.floor(B.n*(TUNE.react + TUNE.reactRamp*game.idx));
+  const lv = game.lv, idx = game.idx, di = game.di, first = !lv.torn && idx<3;
+  const size = first ? Math.round(lv.size*(idx?1.1:1)) + Math.floor(game.T/(idx?18:25))
+    : Math.round(lv.size*(TUNE.size + TUNE.ramp*di)) + Math.floor(game.T/TUNE.grow) + Math.floor(B.n*(TUNE.react + TUNE.reactRamp*Math.min(di, TUNE.reactMax)));
   const cx = rand(-3.4,3.4);
   for(let k=0;k<size;k++){
     const j = addUnit(Rd, clamp(cx+rand(-1.4,1.4),-XL,XL), EZ+1.6+rand(0,2.2), 0, .3, .5);
@@ -1197,8 +1564,25 @@ function spawnShield(){
   for(let k=0;k<7;k++){ const j = addUnit(Rd, -3.9+k*1.3, EZ+1.8, 0, .3, .4); if(j>=0){ Rd.kind[j]=2; Rd.hp[j]=5; Rd.sp[j]=game.lv.rs*.5; } }
   floatText('SKÖLDVÄGG!', 0, 3.5, EZ+4, 'bad'); Snd.horn();
 }
+// Isvargar: en flock som springer fort i sicksack
+function spawnWolves(n){
+  const cx = rand(-3,3);
+  for(let k=0;k<n;k++){ const j = addUnit(Rd, clamp(cx+rand(-1.2,1.2),-XL,XL), EZ+1.4-rand(0,2.5), 0, .25, .5); if(j>=0){ Rd.kind[j]=4; Rd.hp[j]=1; Rd.sp[j]=game.lv.rs*1.9; } }
+  floatText('ISVARGAR!', cx, 3.5, EZ+5, 'bad'); Snd.howl();
+}
+// Lavatroll: långsamt, tål åtta träffar och lämnar en lavapöl när det faller
+function spawnTroll(n){
+  for(let k=0;k<n;k++){ const j = addUnit(Rd, rand(-3.4,3.4), EZ+1.6-k*1.8); if(j>=0){ Rd.kind[j]=5; Rd.hp[j]=8; Rd.sp[j]=game.lv.rs*.55; } }
+  floatText('LAVATROLL!', 0, 4, EZ+4, 'bad'); Snd.roar();
+}
+// Eldandar: snabba, och varje ande delar sig i två när den träffas första gången
+function spawnAndar(n){
+  const cx = rand(-3.2,3.2);
+  for(let k=0;k<n;k++){ const j = addUnit(Rd, clamp(cx+rand(-1.6,1.6),-XL,XL), EZ+1.6-rand(0,2)); if(j>=0){ Rd.kind[j]=6; Rd.hp[j]=1; Rd.cb[j]=0; Rd.sp[j]=game.lv.rs*1.45; } }
+  floatText('ELDANDAR!', cx, 4, EZ+5, 'bad'); Snd.whoosh();
+}
 function spawnGold(){
-  const zs = []; for(let z=-18; z<=8; z+=1) if(gates.every(g=>Math.abs(g.z-z)>2.4)) zs.push(z);
+  const zs = []; for(let z=-18; z<=8; z+=1) if(gates.every(g=>Math.abs(g.z-z)>2.4) && lavas.every(l=>Math.abs(l.z-z)>2.2)) zs.push(z);
   if(!zs.length) return;
   const z = zs[Math.random()*zs.length|0], x = rand(-2.9,2.9);
   const slot = game.goldSlot = game.goldSlot===28 ? 29 : 28, bit = (1<<slot)>>>0;
@@ -1230,27 +1614,39 @@ function rollMys(g){
 }
 function comboHit(n, x, z, g){
   game.comboT = 1.8;
+  if(n > game.comboMax) game.comboMax = n;
   if(n > game.comboN){
     game.comboN = n;
     if(!game.sim){ ui.combo.innerHTML = `KOMBO <b>×${n}</b>`; ui.combo.classList.add('on'); pop(ui.combo,'combo'); }
   }
   if(n>=3 && g.comboCd<=0){
     g.comboCd = .7;
-    const extra = Math.min(12, n*2);
+    const extra = Math.min(24, n*2*(1+blN('kombo')));
     for(let k=0;k<extra;k++){ const j = addUnit(B, clamp(x+rand(-1,1),-XL,XL), z-rand(.2,1.2), 0, .35, 1); if(j>=0){ B.mask[j] = (~gates.filter(q=>q.z<z-.01).reduce((m,q)=>m|q.bit,0))>>>0; B.cb[j]=n; } }
     game.stat.combo = (game.stat.combo||0)+extra;
     floatText(`+${extra}`, x, GATE_H+1.6, z, 'gold small');
     shock(x, z, 0xffd54a, 3.2, .6); burst(x, 2, z, 0xffd54a, 18, 5, .16, .6); Snd.combo(n);
   }
 }
+const TRANS_TXT = {1:'SKÖLD!', 2:'TILL HÄST!', 3:'BÅGSKYTTAR!'};
 function applyGate(g, i){
   g.pulse = 1;
+  if(g.fire>0){
+    B.dead[i]=1; g.fire--; game.stat.brinn = (game.stat.brinn||0)+1; burst(B.x[i],1,g.z,0xdfefff,3,2.5,.14,.4);
+    if(g.fire<=0) extinguish(g); else if(!game.sim) relabel(g, 'SLÄCK\n'+g.fire, 'fire');
+    return;
+  }
   let t = g.t, v = g.v;
   if(t==='mys'){ if(!g.cur) rollMys(g); t = g.cur.t; v = g.cur.v; }
   if(t==='gold') t = 'mul';
-  if(t==='mul'){
+  if(TRANS[t]){
+    setKnight(i, TRANS[t]);
+    if(g.ftT<=0){ floatText(TRANS_TXT[TRANS[t]], g.cx, GATE_H+.6, g.z, 'good'); g.ftT=.9; }
+    if(Math.random()<.3) burst(B.x[i],1,g.z,0x6fe6c0,2,2.5,.13,.35);
+    Snd.good();
+  } else if(t==='mul'){
     const cb = Math.min(255, B.cb[i]+1); B.cb[i] = cb;
-    for(let k=0;k<v-1;k++){ const j = addUnit(B, clamp(B.x[i]+rand(-.7,.7),-XL,XL), B.z[i]+rand(.1,.7), B.mask[i], .25, .6); if(j<0) break; B.cb[j] = cb; game.stat.clone = (game.stat.clone||0)+1; }
+    for(let k=0;k<v-1;k++){ const j = addUnit(B, clamp(B.x[i]+rand(-.7,.7),-XL,XL), B.z[i]+rand(.1,.7), B.mask[i], .25, .6); if(j<0) break; B.cb[j] = cb; if(B.kind[i]) setKnight(j, B.kind[i]); B.hp[j] = B.hp[i]; game.stat.clone = (game.stat.clone||0)+1; }
     if(g.ftT<=0){ floatText(g.txt, g.cx, GATE_H+.5, g.z, g.st==='gold'?'gold':'good'); g.ftT=.9; }
     if(cb>=2) comboHit(cb, B.x[i], g.z, g);
     if(g.st==='gold') burst(B.x[i],1,g.z,0xffd54a,2,3,.14,.4);
@@ -1282,6 +1678,7 @@ function updateGates(dt){
     if(g.cd>0) g.cd -= dt;
     if(g.ftT>0) g.ftT -= dt;
     if(g.comboCd>0) g.comboCd -= dt;
+    if(g.brinn && g.fire<=0 && g.reT>0){ g.reT -= dt; if(g.reT<=0){ igniteGate(g); floatText('PORTEN BRINNER IGEN!', g.cx, GATE_H+1.2, g.z, 'bad small'); } }
     g.pulse = Math.max(0, g.pulse - dt*5);
     if(g.t==='mys' && g.cur){ g.resT -= dt; if(g.resT<=0){ g.cur = null; relabel(g, '?', 'mys'); g.pulse = 1; } }
     if(g.dyn){
@@ -1291,13 +1688,15 @@ function updateGates(dt){
       g.grp.scale.setScalar(Math.max(.01, Math.min(sIn, sOut)));
     }
     if(game.sim) continue;
+    if(g.fire>0 && Math.random()<.7){ flame(g.cx+rand(-g.w/2,g.w/2), rand(.3,GATE_H), g.z, 1, 3); }
     const s = 1 + g.pulse*.18; g.label.scale.set(s,s,1);
     const dim = g.cd>0;
-    g.panel.material.opacity = g.st==='gold' ? .45 + .25*Math.sin(game.T*10) : dim ? .12 : .38 + g.pulse*.25;
+    g.panel.material.opacity = g.st==='gold' ? .45 + .25*Math.sin(game.T*10) : g.fire>0 ? .5 + .2*Math.sin(game.T*13) : dim ? .12 : .38 + g.pulse*.25;
     g.label.material.opacity = dim ? .75 : 1;
     let frac = -1;
     if((g.t==='add' || g.t==='sub') && g.cd>0) frac = 1 - g.cd/g.cdMax;
     else if(g.dyn) frac = g.life/g.lifeMax;
+    else if(g.brinn && g.fire>0) frac = 1 - g.fire/g.brinn;
     g.ring.visible = g.ringBg.visible = frac>=0;
     if(frac>=0) g.ring.geometry.setDrawRange(0, Math.max(1, Math.round(frac*40))*6);
   }
@@ -1305,9 +1704,10 @@ function updateGates(dt){
 
 /* ---------- krafter ---------- */
 function usePower(k){
-  if(game.mode!=='play' || game.over || !powUnlocked(k) || game.meter<METER || game.pcd[k]>0) return false;
-  game.meter = 0; game.meterFull = false; game.pcd[k] = POWCD[k](save.upg[k]);
+  if(game.mode!=='play' || game.over || !powUnlocked(k) || game.meters[k]<POWMETER[k] || game.pcd[k]>0) return false;
+  game.meters[k] = 0; game.pcd[k] = POWCD[k](save.upg[k]);
   const l = save.upg[k];
+  game.stat.pow = (game.stat.pow||0)+1;
   if(k==='storm'){
     game.stormT = UPG.storm.val(l); game.fireT = 0;
     banner('Stormanfall!', 'Dubbla riddare'); Snd.storm(); shock(game.aimX, SPAWN_Z-1, 0x6fb0ff, 4, .6);
@@ -1315,7 +1715,8 @@ function usePower(k){
     fireSalvo(l);
   } else if(k==='ice'){
     game.iceT = UPG.ice.val(l); setFrozen(true);
-    if(dragon.on && (dragon.st==='breath' || dragon.st==='warn')){ dragon.st = 'idle'; dragon.t = 1.2; showLanes(false); }
+    if(dragon.on && (dragon.st==='breath' || dragon.st==='warn' || dragon.st==='cast')){ dragon.st = 'idle'; dragon.t = 1.2; showLanes(false); }
+    iceLanes.forEach(q=>{ if(q.st==='warn'){ q.t = 99; } });
     banner('Is!', 'Allt står still'); Snd.ice();
     for(let i=0;i<Rd.n;i++) burst(Rd.x[i],1,Rd.z[i],0xcff4ff,2,2,.14,.6);
   }
@@ -1368,6 +1769,7 @@ function burnTick(b){
   }
   if(b.z < EZ+5){
     for(const a of archers) if(a.alive && Math.abs(a.x-b.x) < b.r+.6) killArcher(a);
+    for(const a of mages) if(a.alive && Math.abs(a.x-b.x) < b.r+.6) killArcher(a);
     if(dragon.on){ if(!dragon.dead && Math.abs(dragon.x-b.x) < b.r+2) damageEnemy(3, b.x); }
     else damageEnemy(2, b.x);
   }
@@ -1375,15 +1777,33 @@ function burnTick(b){
 }
 
 /* ---------- bossarnas beteende ---------- */
+// Andedräkt: 'lane' är en rak fil (draken), 'sweep' sveper i sidled (isdraken och askdraken i fas 2).
+const BREATH = {dragon:{col:0xff7a1a, warn:0xff2a1a, fl:FIRE_COLS}, icedragon:{col:0x9fe6ff, warn:0x3aa8ff, fl:[0xdff6ff,0xaee8ff,0xffffff,0x8fd8ff]}, ashdragon:{col:0xff5a14, warn:0xff2a1a, fl:FIRE_COLS}};
 function showLanes(on){
+  const d = dragon, c = BREATH[d.kind] || BREATH.dragon;
   for(let k=0;k<2;k++){
-    const m = laneMeshes[k], lx = dragon.lanes[k];
+    const m = laneMeshes[k], lx = d.lanes[k];
     if(!on || lx===undefined || game.sim){ m.visible = false; continue; }
-    m.visible = true; m.material.color.set(0xff2a1a); m.position.set(lx,.07,(EZ+PZ-4)/2); m.scale.set(2.5, PZ-4-EZ, 1);
+    m.visible = true; m.material.color.set(c.warn);
+    if(d.sweep && d.st==='warn'){ const sw = d.sweep[k]; m.position.set((sw[0]+sw[1])/2,.07,(EZ+PZ-4)/2); m.scale.set(Math.abs(sw[1]-sw[0])+2.5, PZ-4-EZ, 1); }
+    else { m.position.set(lx,.07,(EZ+PZ-4)/2); m.scale.set(2.5, PZ-4-EZ, 1); }
   }
 }
+function breathMode(){
+  const d = dragon;
+  if(d.kind==='icedragon') return d.phase===1 ? 'lane' : 'sweep';
+  if(d.kind==='ashdragon') return d.phase===2 ? 'sweep' : 'lane';
+  return 'lane';
+}
+const PHASE_TXT = {
+  dragon:[['Draken blir arg!','Elden kommer tätare'],['Draken rasar!','Två eldfiler samtidigt']],
+  icedragon:[['Isdraken sveper!','Isen sveper över banan'],['Isdraken rasar!','Två svep samtidigt']],
+  ashdragon:[['Askdraken vaknar!','Elden sveper och eldandar kommer'],['Askdraken rasar!','Två eldfiler och lavatroll']],
+  queen:[['Frostdrottningen blir arg!','Två frostfiler och snöstorm'],['Frostdrottningen rasar!','Tre frostfiler']],
+};
 function updateDragon(dt, frozen){
   const d = dragon, o = d.obj; if(!d.on) return;
+  if(d.kind==='queen') return updateQueen(dt, frozen);
   if(d.flash>-.3) d.flash -= dt;
   const f = d.flash>0 ? 1 : 0; o.mat.emissive.setRGB(f*.22, f*.07, f*.02);
   if(d.dead>0){
@@ -1391,48 +1811,96 @@ function updateDragon(dt, frozen){
     o.g.position.set(d.x, 4.2 - k*k*7, EZ-.9 + k*3);
     o.g.rotation.set(k*1.2, 0, Math.sin(d.dead*9)*.1*(1-k));
     o.wings[0].rotation.z = -(.2+k*1.1); o.wings[1].rotation.z = .2+k*1.1;
-    if(Math.random()<.5) burst(d.x+rand(-2,2), rand(1,5), EZ+rand(-1,2), Math.random()<.5?0xff7a1a:0x2e7d4f, 3, 4, .3, .8, 5);
+    if(Math.random()<.5) burst(d.x+rand(-2,2), rand(1,5), EZ+rand(-1,2), Math.random()<.5?BREATH[d.kind].col:DRAGON_C[d.kind][0], 3, 4, .3, .8, 5);
     return;
   }
   if(!frozen) d.wt += dt;
   o.wings[0].rotation.z = -(.25 + Math.sin(d.wt*3)*.35); o.wings[1].rotation.z = .25 + Math.sin(d.wt*3)*.35;
   if(game.mode==='play' && !game.over && !frozen){
     const fr = game.ehp/game.ehpMax, ph = fr>2/3 ? 1 : fr>1/3 ? 2 : 3;
-    if(ph>d.phase){ d.phase = ph; banner(ph===2?'Draken blir arg!':'Draken rasar!', ph===2?'Elden kommer tätare':'Två eldfiler samtidigt', true); Snd.roar(); hudE(); d.t = Math.min(d.t,.8); }
+    if(ph>d.phase){ d.phase = ph; const tx = PHASE_TXT[d.kind][ph-2]; banner(tx[0], tx[1], true); Snd.roar(); hudE(); d.t = Math.min(d.t,.8); }
     d.t -= dt;
     if(d.st==='idle'){
       if(d.t<=0){
-        const lx = clamp(Math.random()<.6 ? game.aimX : rand(-3.4,3.4), -3.4, 3.4);
-        d.lanes = [lx]; if(d.phase>=3) d.lanes.push(clamp(lx + (lx>0?-4.6:4.6), -3.4, 3.4));
-        d.tx = lx; d.st = 'move'; d.t = .7;
+        const mode = breathMode(), lx = clamp(Math.random()<.6 ? game.aimX : rand(-3.4,3.4), -3.4, 3.4);
+        if(mode==='sweep'){
+          const dir = Math.random()<.5 ? 1 : -1, a = -3.6*dir, b = 3.6*dir;
+          d.sweep = [[a, d.phase>=3 ? 0 : b]]; if(d.phase>=3) d.sweep.push([b, 0]);
+          d.lanes = d.sweep.map(s=>s[0]); d.tx = 0;
+        } else {
+          d.sweep = null; d.lanes = [lx]; if(d.phase>=3) d.lanes.push(clamp(lx + (lx>0?-4.6:4.6), -3.4, 3.4)); d.tx = lx;
+        }
+        d.st = 'move'; d.t = .7;
       }
     } else if(d.st==='move'){
-      if(d.t<=0){ d.st = 'warn'; d.t = [1.35,1.1,.95][d.phase-1]; showLanes(true); Snd.roar(); }
+      if(d.t<=0){ d.st = 'warn'; d.t = [1.35,1.1,.95][d.phase-1] + (d.sweep ? .2 : 0); showLanes(true); Snd.roar(); }
     } else if(d.st==='warn'){
-      if(d.t<=0){ d.st = 'breath'; d.t = 1.7; d.front = EZ+.5; Snd.breath(); }
+      if(d.t<=0){
+        d.st = 'breath'; d.t = 1.7; d.front = EZ+.5; Snd.breath(); showLanes(true);
+        d.casts++;
+        if(d.kind==='ashdragon' && d.phase===2 && d.casts%2===0) spawnAndar(5);
+        if(d.kind==='ashdragon' && d.phase===3 && d.casts%3===0) spawnTroll(1);
+      }
     } else if(d.st==='breath'){
       d.front = Math.min(PZ-4, d.front + 32*dt);
+      if(d.sweep){ const k = 1 - Math.max(0, d.t)/1.7; d.lanes = d.sweep.map(s=>s[0] + (s[1]-s[0])*Math.min(1, k*1.15)); showLanes(true); }
       burnLanes();
-      if(d.t<=0){ d.st = 'idle'; d.t = [3.0,2.3,1.7][d.phase-1]; showLanes(false); }
+      if(d.t<=0){ d.st = 'idle'; d.t = [3.0,2.3,1.7][d.phase-1]; d.sweep = null; showLanes(false); }
     }
   }
   if(!frozen && (d.st==='move' || d.st==='idle')) d.x += clamp(d.tx - d.x, -3*dt, 3*dt);
+  if(d.st==='breath' && d.sweep) d.x += clamp(d.lanes[0] - d.x, -6*dt, 6*dt);
   o.g.position.set(d.x, 4.2 + Math.sin(d.wt*2)*.08, EZ-.9);
   const tgtNeck = d.st==='breath' ? .55 : d.st==='warn' ? -.3 : Math.sin(d.wt*1.3)*.08;
   o.neck.rotation.x += (tgtNeck - o.neck.rotation.x)*Math.min(1,dt*8);
   o.jaw.rotation.x += ((d.st==='breath' ? .55 : d.st==='warn' ? .25 : 0) - o.jaw.rotation.x)*Math.min(1,dt*10);
   if(!game.sim && (d.st==='warn' || d.st==='breath')){
-    for(let k=0;k<2;k++){ const m = laneMeshes[k]; if(!m.visible) continue; m.material.color.set(d.st==='breath'?0xff7a1a:0xff2a1a); m.material.opacity = d.st==='breath' ? .5 : .22 + .25*Math.abs(Math.sin(game.T*10)); }
+    const c = BREATH[d.kind];
+    for(let k=0;k<2;k++){ const m = laneMeshes[k]; if(!m.visible) continue; m.material.color.set(d.st==='breath'?c.col:c.warn); m.material.opacity = d.st==='breath' ? .5 : .22 + .25*Math.abs(Math.sin(game.T*10)); }
   }
 }
 function burnLanes(){
-  const d = dragon; let fx = 0;
+  const d = dragon; let fx = 0; const c = BREATH[d.kind];
   for(let i=0;i<B.n;i++){
     if(B.dead[i] || B.z[i] > d.front) continue;
-    for(const lx of d.lanes) if(Math.abs(B.x[i]-lx) < 1.25){ B.dead[i]=1; if(fx++<10) burst(B.x[i],.8,B.z[i],0xff7a1a,4,3,.18,.5); break; }
+    for(const lx of d.lanes) if(Math.abs(B.x[i]-lx) < 1.25){ B.dead[i]=1; if(fx++<10) burst(B.x[i],.8,B.z[i],c.col,4,3,.18,.5); break; }
   }
-  for(const c of champs) for(const lx of d.lanes) if(c.hp>0 && c.z < d.front && Math.abs(c.x-lx)<1.4){ c.hp = 0; burst(c.x,1,c.z,0xff7a1a,20,5,.2,.7); }
-  if(!game.sim) for(const lx of d.lanes) for(let k=0;k<9;k++) flame(lx+rand(-1.1,1.1), rand(.2,1.2), rand(EZ+1, d.front), 1, 3.5);
+  for(const ch of champs) for(const lx of d.lanes) if(ch.hp>0 && ch.z < d.front && Math.abs(ch.x-lx)<1.4){ ch.hp = 0; burst(ch.x,1,ch.z,c.col,20,5,.2,.7); }
+  if(!game.sim) for(const lx of d.lanes) for(let k=0;k<9;k++) burst(lx+rand(-1.1,1.1), rand(.2,1.2), rand(EZ+1, d.front), c.fl[Math.random()*4|0], 1, 1.2, rand(.2,.36), rand(.3,.55), 3.5);
+}
+// Frostdrottningen: lyfter staven, frostfiler fryser och spräcker riddarna, och hon kallar på isvargar
+function updateQueen(dt, frozen){
+  const d = dragon, o = d.obj;
+  if(d.flash>-.3) d.flash -= dt;
+  const f = d.flash>0 ? 1 : 0; o.mat.emissive.setRGB(f*.12, f*.16, f*.25);
+  if(d.dead>0){
+    d.dead += dt; const k = Math.min(1, d.dead/1.6);
+    o.g.position.set(d.x, 3.0 - k*k*6, EZ+.2 + k*2.5); o.g.rotation.set(k*1.3, 0, 0); o.g.scale.setScalar(1.35*(1-k*.4));
+    if(Math.random()<.6) burst(d.x+rand(-1.5,1.5), rand(1,6), EZ+rand(-1,2), Math.random()<.5?0xdff6ff:0x7fb8ea, 3, 4, .3, .8, 5);
+    return;
+  }
+  if(!frozen) d.wt += dt;
+  if(game.mode==='play' && !game.over && !frozen){
+    const fr = game.ehp/game.ehpMax, ph = fr>2/3 ? 1 : fr>1/3 ? 2 : 3;
+    if(ph>d.phase){ d.phase = ph; const tx = PHASE_TXT.queen[ph-2]; banner(tx[0], tx[1], true); Snd.roar(); hudE(); d.t = Math.min(d.t,.8); }
+    d.t -= dt;
+    if(d.st==='idle'){
+      d.x += clamp(d.tx - d.x, -2.5*dt, 2.5*dt);
+      if(d.t<=0){ d.st = 'cast'; d.t = 1.0; d.tx = clamp(game.aimX*.6, -3, 3); }
+    } else if(d.st==='cast'){
+      if(d.t<=0){
+        const n = d.phase, a = clamp(Math.random()<.65 ? game.aimX : rand(-3.4,3.4), -3.6, 3.6), xs = [a];
+        const others = [-3.6,-1.2,1.2,3.6].filter(x=>Math.abs(x-a)>2.2).sort(()=>Math.random()-.5);
+        for(let k=1;k<n;k++) if(others[k-1]!==undefined) xs.push(others[k-1]);
+        for(const x of xs) castIceLane(x, [1.3,1.15,1.05][d.phase-1], 3, true);
+        d.casts++; if(d.casts%2===0) spawnWolves(5 + d.phase);
+        d.st = 'idle'; d.t = [3.6,3.2,2.8][d.phase-1]; d.tx = rand(-2.5,2.5);
+      }
+    }
+  }
+  o.g.position.set(d.x, 3.0 + Math.sin(d.wt*1.6)*.1, EZ+.2);
+  o.arm.rotation.x += ((d.st==='cast' ? -2.4 : -.2 + Math.sin(d.wt*1.3)*.1) - o.arm.rotation.x)*Math.min(1, dt*6);
+  if(!game.sim && d.st==='cast' && Math.random()<.7) burst(d.x+1.4, 8.6, EZ+.6, 0xbfefff, 2, 2.5, .16, .6, 2);
 }
 function updateGiant(dt, frozen){
   const g = giant, o = g.obj; if(!g.on) return;
@@ -1445,9 +1913,10 @@ function updateGiant(dt, frozen){
     if(g.dead>5) o.g.visible = false;
     return;
   }
+  if(g.kind==='firegiant' && !game.sim && Math.random()<.35) flame(g.x+rand(-1,1), rand(2,7), g.z+rand(-.6,.6), 1, 2);
   if(game.mode==='play' && !game.over && !frozen){
     const ph = g.hp/g.max > .5 ? 1 : 2;
-    if(ph>g.phase){ g.phase = ph; banner('Jätten blir rasande!', 'Han går fortare', true); Snd.roar(); hudBoss(); }
+    if(ph>g.phase){ g.phase = ph; banner(`${BOSSAR[g.kind].namn} blir rasande!`, 'Han går fortare', true); Snd.roar(); hudBoss(); }
     g.t -= dt;
     if(g.st==='walk'){
       const sp = [.62,.85][g.phase-1];
@@ -1463,7 +1932,7 @@ function updateGiant(dt, frozen){
       g.arm += (0 - g.arm)*Math.min(1,dt*4);
       if(g.t<=0){ g.st = 'walk'; g.t = [2.6,1.8][g.phase-1]; }
     }
-    if(g.z >= PZ-3.6){ g.st = 'rec'; g.arm = 1; shock(g.x, PZ-1, 0xff3a2a, 7, .8); Snd.smash(); banner('Jätten nådde porten!'); hurtPlayer(g.x, game.php); }
+    if(g.z >= PZ-3.6){ g.st = 'rec'; g.arm = 1; shock(g.x, PZ-1, 0xff3a2a, 7, .8); Snd.smash(); banner(`${BOSSAR[g.kind].namn} nådde porten!`); hurtPlayer(g.x, game.php); }
   }
   if(g.mark){ g.mark.position.set(g.x,.09,g.z+3.1); const p = 1 + .08*Math.sin(game.T*20); g.mark.scale.setScalar(2.5*p); g.mark.material.opacity = .85; }
   o.g.position.set(g.x, 0, g.z);
@@ -1478,6 +1947,7 @@ function giantImpact(){
   for(let i=0;i<B.n;i++){ if(B.dead[i]) continue; const dx = B.x[i]-cx, dz = B.z[i]-cz; if(dx*dx+dz*dz < r2){ B.dead[i]=1; n++; } }
   for(const c of champs){ const dx = c.x-cx, dz = c.z-cz; if(dx*dx+dz*dz < r2) c.hp = 0; }
   shock(cx, cz, 0xffffff, 4, .5); shock(cx, cz, 0xb59a74, 6, .8); burst(cx, .4, cz, 0xb59a74, 30, 7, .3, .9, 5);
+  if(g.kind==='firegiant'){ addPool(cx, cz, 2.3, 3.2); shock(cx, cz, 0xff6a14, 5, .7); }
   game.shake = Math.max(game.shake, .65); Snd.smash();
   if(n>0) floatText('−'+n, cx, 2.5, cz, 'bad');
 }
@@ -1485,12 +1955,12 @@ function giantDie(){
   giant.alive = false; giant.dead = .001; giant.st = 'dead';
   if(giant.mark){ giant.mark.visible = false; giant.mark = null; }
   hudBoss();
-  game.meter = METER; game.meterFull = true;
-  banner('Jätten föll!', 'Riv borgen nu!', true); Snd.roar();
+  for(const k of POWS) game.meters[k] = POWMETER[k];
+  banner(`${BOSSAR[giant.kind].namn} föll!`, 'Riv borgen nu!', true); Snd.roar();
   slowmo(giant.x, 3, giant.z, 1.4);
 }
 
-/* ---------- bågskyttar, kanon och pilar ---------- */
+/* ---------- bågskyttar, frostmagiker, kanon och pilar ---------- */
 function updateArchers(dt, frozen){
   let n = 0; const arr = archerIM.instanceMatrix.array;
   for(const a of archers){
@@ -1512,6 +1982,21 @@ function updateArchers(dt, frozen){
   }
   archerIM.count = n; archerIM.instanceMatrix.needsUpdate = true;
 }
+function updateMages(dt, frozen){
+  let n = 0; const arr = mageIM.instanceMatrix.array;
+  for(const a of mages){
+    if(a.alive && !frozen && game.mode==='play' && !game.over){
+      a.t -= dt; a.cast = a.t < 1 ? 1 - a.t : 0;
+      if(a.t<=0){ a.t = 8*rand(.85,1.2); castIceLane(Math.random()<.6 ? game.aimX : rand(-3.4,3.4), 1.25, 3.2, false); floatText('FROSTFIL!', a.x, 6.5, EZ, 'bad small'); }
+      if(a.cast>0 && !game.sim && Math.random()<.4) burst(a.x+.4, 6.6, EZ-1.6, 0xaef0ff, 1, 1.5, .12, .5, 1.5);
+    }
+    if(a.fall>0){ a.fall += dt; if(a.fall>2) continue; }
+    if(game.sim) continue;
+    const fy = a.fall>0 ? -a.fall*a.fall*5 : 0, fz = a.fall>0 ? a.fall*2 : 0;
+    setM(arr, n++, a.x, 4.2+fy+a.cast*.3, EZ-1.6+fz, Math.PI, 1.3);
+  }
+  mageIM.count = n; mageIM.instanceMatrix.needsUpdate = true;
+}
 function updateCannon(dt, frozen){
   if(!cannon.visible && !cshots.length) return;
   const rec = cannon.userData.recoil || 0; cannon.userData.recoil = Math.max(0, rec - dt*3);
@@ -1531,18 +2016,20 @@ function updateCannon(dt, frozen){
       shock(s.x1, s.z1, 0xffffff, 2.8, .45); burst(s.x1,.5,s.z1,0x5a5048,24,6,.25,.8,6); burst(s.x1,.5,s.z1,0xff9a3a,10,4,.2,.4,4);
       game.shake = Math.max(game.shake,.4); Snd.boom();
       if(game.mode==='play' && !game.over){
-        if(Math.abs(game.aimX - s.x1) < 1.35){ game.stun = .7; floatText('TRÄFF!', s.x1, 2.5, s.z1, 'bad'); hurtPlayer(s.x1, game.idx<5 ? 1 : TUNE.cannonDmg); }
+        if(Math.abs(game.aimX - s.x1) < 1.35){ game.stun = .7; floatText('TRÄFF!', s.x1, 2.5, s.z1, 'bad'); hurtPlayer(s.x1, game.di<5 ? 1 : TUNE.cannonDmg); }
         else floatText('UNDVEK!', game.aimX, 2.4, SPAWN_Z-1, 'good small');
       }
     }
   }
 }
 const _dir = new THREE.Vector3(), _Z = new THREE.Vector3(0,0,1), _s1 = new THREE.Vector3(1,1,1);
+let blueArrows = 0;
 function updateArrows(dt, frozen){
-  let na = 0, nf = 0;
+  let na = 0, nf = 0; blueArrows = 0;
   for(let i=arrows.length-1;i>=0;i--){
     const a = arrows[i];
-    if(!(frozen && !a.fire)) a.t += dt;
+    if(!(frozen && !a.fire && !a.blue)) a.t += dt;
+    if(a.blue) blueArrows++;
     if(a.t < 0) continue;
     const k = Math.min(1, a.t/a.T);
     if(k>=1){ arrows.splice(i,1); landArrow(a); continue; }
@@ -1551,22 +2038,32 @@ function updateArrows(dt, frozen){
     _dir.set(a.x1-a.x0, (a.y1-a.y0) + a.h*4*(1-2*k), a.z1-a.z0).normalize();
     _q.setFromUnitVectors(_Z, _dir); _m4.compose(_v.set(px,py,pz), _q, _s1);
     if(a.fire){ if(nf<16) fboltIM.setMatrixAt(nf++, _m4); if(Math.random()<.7) flame(px,py,pz,1,1); }
-    else if(na<40) arrowIM.setMatrixAt(na++, _m4);
+    else if(na<80) arrowIM.setMatrixAt(na++, _m4);
   }
   arrowIM.count = na; fboltIM.count = nf; arrowIM.instanceMatrix.needsUpdate = fboltIM.instanceMatrix.needsUpdate = true;
 }
 function landArrow(a){
   if(a.fire){ burst(a.x1,.3,a.z1,0xffa020,6,3,.18,.4); return; }
+  if(a.blue){
+    let best = 1.1*1.1, bj = -1;
+    for(let j=0;j<Rd.n;j++){ if(Rd.dead[j]) continue; const dx=Rd.x[j]-a.x1, dz=Rd.z[j]-a.z1, d=dx*dx+dz*dz; if(d<best){ best=d; bj=j; } }
+    if(bj>=0){ if(--Rd.hp[bj] <= 0) killRed(bj); burst(Rd.x[bj],.8,Rd.z[bj],0xe0473c,4,2.5,.13,.35); }
+    return;
+  }
   let best = .9*.9, bj = -1;
   for(let j=0;j<B.n;j++){ if(B.dead[j]) continue; const dx=B.x[j]-a.x1, dz=B.z[j]-a.z1, d=dx*dx+dz*dz; if(d<best){ best=d; bj=j; } }
-  if(bj>=0){ B.dead[bj]=1; burst(B.x[bj],.8,B.z[bj],0x5d8ef5,5,2.5,.13,.4); }
+  if(bj>=0){ if(B.hp[bj]>1){ B.hp[bj]--; B.kind[bj]=0; burst(B.x[bj],.9,B.z[bj],0xdfe6ee,4,2.5,.13,.35); } else { B.dead[bj]=1; burst(B.x[bj],.8,B.z[bj],0x5d8ef5,5,2.5,.13,.4); } }
   else burst(a.x1,.2,a.z1,0xc9b48a,3,1.5,.1,.3);
 }
 
 /* ---------- datorspelare: används av balanssimuleringen och testerna ---------- */
 function dangerLanes(){
   const out = [];
-  if(dragon.on && !dragon.dead && (dragon.st==='warn' || dragon.st==='breath' || dragon.st==='move')) out.push(...dragon.lanes);
+  if(dragon.on && !dragon.dead && dragon.kind!=='queen' && (dragon.st==='warn' || dragon.st==='breath' || dragon.st==='move')){
+    if(dragon.sweep) for(const s of dragon.sweep){ const lo = Math.min(s[0],s[1]), hi = Math.max(s[0],s[1]); for(let x=lo; x<=hi+.01; x+=1.2) out.push(x); }
+    else out.push(...dragon.lanes);
+  }
+  for(const l of iceLanes) out.push(l.x);
   return out;
 }
 function botTick(dt){
@@ -1582,22 +2079,27 @@ function botTick(dt){
       const tt = Math.max(0,(SPAWN_Z - g.z)/BSPD);
       const gx = g.amp && sk>.7 ? clamp(g.x + Math.sin((game.T+tt)*g.spd + g.ph)*g.amp, -5.2+g.w/2, 5.2-g.w/2) : g.cx;
       if(Math.abs(x-gx) < g.w/2 - .3){
+        if(inSnow(g.z) && Math.random() > sk){ s += 1; continue; }       // snöstormen skymmer porten
         let t = g.t, v = g.v; if(t==='mys' && g.cur){ t = g.cur.t; v = g.cur.v; }
-        s += t==='mul' ? v*3 : t==='gold' ? 20 : t==='add' ? (g.cd>1 ? 1 : v*.35) : t==='mys' ? 2 : t==='sub' ? -5 : t==='div' ? -v*3 : 0;
+        let sc = t==='mul' ? v*3 : t==='gold' ? 20 : t==='add' ? (g.cd>1 ? 1 : v*.35) : t==='mys' ? 2 : t==='sub' ? -5 : t==='div' ? -v*3 : TRANS[t] ? 4 : 0;
+        if(g.fire>0) sc = B.n > g.fire*2.5 ? sc*.6 : -4;
+        s += sc;
       }
     }
     for(const lx of lanes) if(Math.abs(x-lx) < 1.6) s -= 60;
+    if(alert) for(const l of lavas){ const tt = sk > .45 ? Math.max(0,(SPAWN_Z - l.z)/BSPD) : 0; if(!l.bro.some(b => Math.abs(x-b.x) < b.w/2 - .2 && bridgeOpenAt(b, tt))) s -= 18; }
     if(alert) for(const c of cshots) if(c.T-c.t < 1.3 && Math.abs(x-c.x1) < 1.7) s -= 40;
     if(giant.alive && Math.abs(x-giant.x) < 1.2) s += 15;
     s -= Math.abs(x-game.targetX)*.5;
     if(s>best){ best = s; bx = x; }
   }
   game.targetX = clamp(bx + (Math.random()+Math.random()+Math.random()-1.5)*(1-sk)*1.6, -XL, XL);
-  if(game.meter>=METER && Math.random() < .3+.7*sk){
+  if(Math.random() < .3+.7*sk){
     let near = 0; for(let i=0;i<Rd.n;i++) if(Rd.z[i] > -2) near++;
-    if(powUnlocked('ice') && game.pcd.ice<=0 && (lanes.length || (giant.alive && giant.st==='wind') || near>14)) usePower('ice');
-    else if(powUnlocked('fire') && game.pcd.fire<=0 && (near>6 || game.lv.boss)) usePower('fire');
-    else if(powUnlocked('storm') && game.pcd.storm<=0) usePower('storm');
+    const rdy = k => powUnlocked(k) && game.pcd[k]<=0 && game.meters[k]>=POWMETER[k];
+    if(rdy('ice') && (lanes.length || (giant.alive && giant.st==='wind') || near>14)) usePower('ice');
+    else if(rdy('fire') && (near>6 || game.lv.boss)) usePower('fire');
+    else if(rdy('storm')) usePower('storm');
   }
   if(game.champLeft>0 && (Rd.n > 22 || (giant.alive && giant.z > -6) || game.ehp/game.ehpMax < .3)) sendChamp();
 }
@@ -1625,6 +2127,7 @@ function update(dt){
     game.firing = true;
   }
   if(game.bot && play && !game.over) botTick(dt);
+  if(autoFire && play && !game.over && !game.sim) game.firing = true;
   game.aimX += (game.targetX - game.aimX) * Math.min(1, dt*14);
   ballista.position.x = game.aimX;
   aimLine.position.x = game.aimX;
@@ -1635,7 +2138,7 @@ function update(dt){
   ballista.rotation.z = game.stun>0 ? Math.sin(game.T*40)*.08 : 0;
 
   if(sim && !game.over && mode!=='after'){
-    const rate = mode==='attract' ? 3 : UPG.rate.val(save.upg.rate) * (game.stormT>0 ? 1.15 : 1);
+    const rate = mode==='attract' ? 3 : UPG.rate.val(save.upg.rate) * (1 + .2*blN('takt')) * (game.stormT>0 ? 1.15 : 1);
     game.fireT -= dt;
     if(game.firing && game.fireT<=0 && game.stun<=0){ fire(); game.fireT = 1/rate; }
     if(!frozen){
@@ -1645,12 +2148,17 @@ function update(dt){
         if(lv.cav){ game.cavT -= dt; if(game.cavT<=0){ warnCav(); game.cavT = lv.cav.every*rand(.85,1.15); } }
         if(lv.shield){ game.shT -= dt; if(game.shT<=0){ spawnShield(); game.shT = lv.shield.every*rand(.9,1.1); } }
         if(lv.cannon){ game.canT -= dt; if(game.canT<=0){ fireCannon(); game.canT = lv.cannon*rand(.85,1.15)*(game.ehp/game.ehpMax<.35?.8:1); } }
+        if(lv.wolves){ game.wolfT -= dt; if(game.wolfT<=0){ spawnWolves(lv.wolves.n); game.wolfT = lv.wolves.every*rand(.85,1.15); } }
+        if(lv.troll){ game.trollT -= dt; if(game.trollT<=0){ spawnTroll(lv.troll.n); game.trollT = lv.troll.every*rand(.85,1.15); } }
+        if(lv.andar){ game.andeT -= dt; if(game.andeT<=0){ spawnAndar(lv.andar.n); game.andeT = lv.andar.every*rand(.85,1.15); } }
       }
     }
-    if(play && lv.gold){ game.goldT -= dt; if(game.goldT<=0){ spawnGold(); game.goldT = lv.gold*rand(.85,1.2); } }
+    if(play && lv.gold){ game.goldT -= dt; if(game.goldT<=0){ spawnGold(); game.goldT = lv.gold*rand(.85,1.2)/(1+blN('guld')); } }
   }
   updateCavWarn(dt, frozen);
   updateGates(dt);
+  updateLava(dt, frozen);
+  updateSnow(dt, frozen);
 
   if(sim){
     buildB(B, BB); buildB(Rd, RB);
@@ -1669,19 +2177,22 @@ function update(dt){
           }
           const tv = best<9 ? clamp(bdx*3,-2.2,2.2) : 0;
           Rd.vx[i] += (tv - Rd.vx[i])*Math.min(1,dt*6);
-        } else Rd.vx[i] *= .9;
+        } else if(k===4){ Rd.vx[i] = Math.sin(game.T*3.2 + Rd.ph[i])*2.6; }
+        else if(k===6){ Rd.vx[i] = Math.sin(game.T*2 + Rd.ph[i]*2)*1.4; }
+        else Rd.vx[i] *= .9;
         Rd.x[i] = clamp(x + Rd.vx[i]*dt, -XL, XL);
         Rd.z[i] = z + (Rd.sp[i] || lv.rs)*dt;
         if(Rd.hop[i]>0) Rd.hop[i]-=dt;
       }
       if(play && Rd.z[i] > 4 && Rd.z[i]-(Rd.sp[i]||lv.rs)*dt <= 4 && Math.abs(Rd.x[i]-game.aimX) > 2 && game.T - (game.warnT||-9) > 2.5){ game.warnT = game.T; floatText('!', Rd.x[i], 2.4, Rd.z[i], 'huge bad', 1.1); Snd.bad(); }
-      if(Rd.z[i] > PZ-.6){ Rd.dead[i]=1; hurtPlayer(Rd.x[i], k===0||k===3 ? 1 : 2); }
+      if(Rd.z[i] > PZ-.6){ Rd.dead[i]=1; hurtPlayer(Rd.x[i], RDMG[k]); }
     }
     // blå
     const gAlive = giant.on && giant.alive;
+    let archersNow = 0;
     for(let i=0;i<B.n;i++){
       if(B.dead[i]) continue;
-      const x = B.x[i], z = B.z[i], b0 = bIdx(z);
+      const x = B.x[i], z = B.z[i], b0 = bIdx(z), kind = B.kind[i];
       let best = 9, bdx = 0;
       for(let b=Math.max(0,b0-2); b<=b0; b++) for(let q=RB.start[b]; q<RB.start[b+1]; q++){
         const j = RB.list[q]; if(Rd.dead[j]) continue;
@@ -1689,9 +2200,12 @@ function update(dt){
         const dx = Rd.x[j]-x; if(dx>2.6 || dx<-2.6) continue;
         const d = dx*dx+dz*dz; if(d<best){ best=d; bdx=dx; }
       }
-      const tv = best<9 ? clamp(bdx*3,-2.6,2.6) : 0;
+      const fz = B.fz[i] > 0; if(fz) B.fz[i] -= dt;
+      let tv = best<9 && !fz ? clamp(bdx*3,-2.6,2.6) : 0;
+      // framför en lavaflod söker riddarna sig mot närmaste öppna bro
+      for(const l of lavas){ const dz = z - l.z; if(dz > 0 && dz < 5.5 && !fz){ let bx = null, bd = 99; for(const b of l.bro){ if(!b.open) continue; const d = Math.abs(b.x - x); if(d < bd){ bd = d; bx = b.x; } } if(bx!==null && bd > .5) tv = clamp((bx - x)*2.4, -3.6, 3.6); } }
       B.vx[i] += (tv - B.vx[i])*Math.min(1,dt*6);
-      const nx = clamp(x + B.vx[i]*dt, -XL, XL), nz = z - BSPD*dt;
+      const nx = clamp(x + B.vx[i]*dt*(fz?.1:1), -XL, XL), nz = z - BSPD*KSPD[kind]*(fz ? .12 : 1)*dt;
       B.x[i] = nx; B.z[i] = nz;
       if(B.hop[i]>0) B.hop[i]-=dt;
       for(const g of gates){
@@ -1699,21 +2213,38 @@ function update(dt){
         if(z > g.z && nz <= g.z && Math.abs(nx-g.cx) < g.w/2){ B.mask[i] |= g.bit; applyGate(g, i); if(B.dead[i]) break; }
       }
       if(B.dead[i]) continue;
-      if(gAlive){ const dx = nx-giant.x, dz = nz-giant.z; if(dx>-1.5 && dx<1.5 && dz>-1 && dz<1.2){ B.dead[i]=1; damageBoss(1, nx, nz); burst(nx,1.5,nz,0xffd24a,2,3,.12,.3); continue; } }
+      // lavafloden: utan öppen bro brinner riddaren upp
+      let burnt = false;
+      for(const l of lavas) if(z > l.z && nz <= l.z && !onBridge(l, nx)){ B.dead[i]=1; burnt = true; game.stat.lava = (game.stat.lava||0)+1; burst(nx,.6,l.z,0xff7a1a,5,3,.16,.5,3); break; }
+      if(burnt) continue;
+      // bågskyttar skjuter på håll
+      if(kind===3 && !fz){
+        archersNow++;
+        B.at[i] -= dt;
+        if(B.at[i] <= 0 && blueArrows < 70){
+          B.at[i] = 1.25*rand(.85,1.15);
+          let tb = 1e9, tj = -1; const bz0 = bIdx(nz-11), bz1 = bIdx(nz-1.5);
+          for(let b=bz0; b<=bz1; b++) for(let q=RB.start[b]; q<RB.start[b+1]; q++){ const j = RB.list[q]; if(Rd.dead[j]) continue; const dz = nz - Rd.z[j]; if(dz<1.5 || dz>11) continue; const dx = Rd.x[j]-nx; if(dx>3.5 || dx<-3.5) continue; const d = dx*dx*2 + dz; if(d<tb){ tb=d; tj=j; } }
+          if(tj>=0){ const T = .55; arrows.push({blue:true, x0:nx, y0:1.2, z0:nz, x1:Rd.x[tj], y1:.6, z1:Rd.z[tj] + (Rd.sp[tj]||lv.rs)*T, t:0, T, h:1.4}); blueArrows++; if(!game.sim && Math.random()<.2) Snd.arrow(); }
+        }
+      }
+      if(gAlive){ const dx = nx-giant.x, dz = nz-giant.z; if(dx>-1.5 && dx<1.5 && dz>-1 && dz<1.2){ B.dead[i]=1; damageBoss(kind===2?2:1, nx, nz); burst(nx,1.5,nz,0xffd24a,2,3,.12,.3); continue; } }
       const b1 = bIdx(nz);
       let hit = false;
       for(let b=Math.max(0,b1-1); b<=Math.min(NBK-1,b1+1) && !hit; b++) for(let q=RB.start[b]; q<RB.start[b+1]; q++){
         const j = RB.list[q]; if(Rd.dead[j]) continue;
         const dx = Rd.x[j]-nx, dz = Rd.z[j]-nz;
         if(dx*dx+dz*dz < RR[Rd.kind[j]]){
-          if(--Rd.hp[j] <= 0) killRed(j); else if(Rd.kind[j]===2) burst(Rd.x[j],.9,Rd.z[j]-.3,0xd9d2c4,3,2.5,.12,.3);
-          B.dead[i]=1; hit = true;
+          if(--Rd.hp[j] <= 0) killRed(j); else if(Rd.kind[j]===2 || Rd.kind[j]===5) burst(Rd.x[j],.9,Rd.z[j]-.3,0xd9d2c4,3,2.5,.12,.3);
+          if(B.hp[i] > 1){ B.hp[i]--; B.kind[i] = 0; B.z[i] += .25; burst(nx,.9,nz,0xdfe6ee,4,2.5,.13,.35); }
+          else B.dead[i]=1;
+          hit = true;
           burst((nx+Rd.x[j])/2, .7, (nz+Rd.z[j])/2, Math.random()<.5?0x5d8ef5:0xe0473c, 6, 3.2, .13, .45);
           Snd.clash(); break;
         }
       }
       if(hit) continue;
-      if(nz < EZ+.3){ B.dead[i]=1; damageEnemy(1, nx); }
+      if(nz < EZ+.3){ B.dead[i]=1; game.stat.reach = (game.stat.reach||0)+1; damageEnemy(kind===2 ? 2 : 1, nx); }
     }
     // kämpar
     for(const c of champs){
@@ -1729,17 +2260,21 @@ function update(dt){
       if(gAlive && Math.abs(c.x-giant.x)<1.9 && Math.abs(c.z-giant.z)<1.3){ c.hp = 0; damageBoss(15, c.x, c.z); continue; }
       if(c.z < EZ+.6){
         c.hp = 0; damageEnemy(10, c.x);
-        let ba = null; for(const a of archers) if(a.alive && (!ba || Math.abs(a.x-c.x) < Math.abs(ba.x-c.x))) ba = a; if(ba) killArcher(ba);
+        let ba = null; for(const a of archers.concat(mages)) if(a.alive && (!ba || Math.abs(a.x-c.x) < Math.abs(ba.x-c.x))) ba = a; if(ba) killArcher(ba);
       }
     }
     champs = champs.filter(c=>c.hp>0);
     updateDragon(dt, frozen);
     updateGiant(dt, frozen);
     updateArchers(dt, frozen);
+    updateMages(dt, frozen);
     updateCannon(dt, frozen);
     updateArrows(dt, frozen);
     updateBurns(dt);
+    updateIceLanes(frozen ? 0 : dt);
+    updatePools(dt);
     compact(B); compact(Rd);
+    if(B.n > game.topp) game.topp = B.n;
   }
 
   // efterspel: borgar rasar
@@ -1765,41 +2300,60 @@ function update(dt){
 /* ================= Rendering av enheter ================= */
 function drawUnits(){
   const t = game.T;
-  let a = blueIM.instanceMatrix.array;
+  const bIMs = [blueIM, bShieldIM, bHorseIM, bArcherIM], bArr = bIMs.map(m=>m.instanceMatrix.array), bc = [0,0,0,0];
+  const fa = bFrozenIM.instanceMatrix.array; let nfz = 0;
   for(let i=0;i<B.n;i++){
+    if(B.fz[i] > 0){ setM(fa, nfz++, B.x[i], 0, B.z[i], 0, 1.05); continue; }
+    const k = B.kind[i];
     const hop = B.hop[i]>0 ? Math.sin(B.hop[i]/B.hopD[i]*Math.PI)*B.hopH[i] : 0;
-    const bob = Math.abs(Math.sin(t*13 + B.ph[i]))*.12;
-    setM(a,i,B.x[i],hop+bob,B.z[i], Math.sin(t*13+B.ph[i])*.12 - B.vx[i]*.12, 1.05);
+    const bob = Math.abs(Math.sin(t*(k===2?16:13) + B.ph[i]))*(k===2?.16:.12);
+    setM(bArr[k], bc[k]++, B.x[i], hop+bob, B.z[i], Math.sin(t*13+B.ph[i])*(k===2?.04:.12) - B.vx[i]*.12, k===2 ? 1.0 : 1.05);
   }
-  blueIM.count = B.n; blueIM.instanceMatrix.needsUpdate = true;
-  const ar = redIM.instanceMatrix.array, as = shieldIM.instanceMatrix.array, ac = cavIM.instanceMatrix.array;
-  let nr = 0, ns = 0, nc = 0;
+  bIMs.forEach((m,k)=>{ m.count = bc[k]; m.instanceMatrix.needsUpdate = true; });
+  bFrozenIM.count = nfz; bFrozenIM.instanceMatrix.needsUpdate = true;
+  const ar = redIM.instanceMatrix.array, as = shieldIM.instanceMatrix.array, ac = cavIM.instanceMatrix.array, aw = wolfIM.instanceMatrix.array, at = trollIM.instanceMatrix.array, aa = andeIM.instanceMatrix.array;
+  let nr = 0, ns = 0, nc = 0, nw = 0, nt = 0, nan = 0;
   const fz = game.iceT>0 ? 0 : 1;
   for(let i=0;i<Rd.n;i++){
     const k = Rd.kind[i];
     const hop = Rd.hop[i]>0 ? Math.sin(Rd.hop[i]/Rd.hopD[i]*Math.PI)*Rd.hopH[i] : 0;
     if(k===3){ if(nc<60) setM(ac,nc++,Rd.x[i],Math.abs(Math.sin(t*16+Rd.ph[i]))*.18*fz,Rd.z[i], Math.PI, 1.1); continue; }
     if(k===2){ if(ns<40) setM(as,ns++,Rd.x[i],hop+Math.abs(Math.sin(t*7+Rd.ph[i]))*.05*fz,Rd.z[i], Math.PI, 1.25); continue; }
+    if(k===4){ if(nw<90) setM(aw,nw++,Rd.x[i],hop+Math.abs(Math.sin(t*18+Rd.ph[i]))*.14*fz,Rd.z[i], Math.PI - Math.atan2(Rd.vx[i], Rd.sp[i])*.9*fz, 1.1); continue; }
+    if(k===5){ if(nt<12) setM(at,nt++,Rd.x[i],Math.abs(Math.sin(t*5+Rd.ph[i]))*.08*fz,Rd.z[i], Math.PI + Math.sin(t*5+Rd.ph[i])*.08*fz, .9 + Rd.hp[i]*.04); continue; }
+    if(k===6){ if(nan<80) setM(aa,nan++,Rd.x[i],.25+Math.sin(t*6+Rd.ph[i])*.2*fz,Rd.z[i], Math.PI + t*2*fz, Rd.cb[i] ? .8 : 1.05); continue; }
     const bob = Math.abs(Math.sin(t*11 + Rd.ph[i]))*.1*fz;
     setM(ar,nr++,Rd.x[i],hop+bob,Rd.z[i], Math.PI + Math.sin(t*11+Rd.ph[i])*.12*fz + Rd.vx[i]*.12, k===1 ? 1.15+Rd.hp[i]*.15 : 1.05);
   }
-  redIM.count = nr; shieldIM.count = ns; cavIM.count = nc;
-  redIM.instanceMatrix.needsUpdate = shieldIM.instanceMatrix.needsUpdate = cavIM.instanceMatrix.needsUpdate = true;
-  a = champIM.instanceMatrix.array;
+  redIM.count = nr; shieldIM.count = ns; cavIM.count = nc; wolfIM.count = nw; trollIM.count = nt; andeIM.count = nan;
+  for(const m of [redIM, shieldIM, cavIM, wolfIM, trollIM, andeIM]) m.instanceMatrix.needsUpdate = true;
+  const a = champIM.instanceMatrix.array;
   champs.forEach((c,i)=>{ const hop = c.hop>0 ? Math.sin(c.hop/.5*Math.PI)*1.5 : 0; setM(a,i,c.x,hop+Math.abs(Math.sin(c.ph))*.2,c.z,Math.sin(c.ph)*.1,2.1); });
   champIM.count = champs.length; champIM.instanceMatrix.needsUpdate = true;
 }
 
 /* ================= Kamera ================= */
+// Stående: som i v2. Liggande: kameran räknas fram så att hela banan (fiendeborgen till ballistan) syns mellan HUD-raderna.
 const camBase = new THREE.Vector3(), camLook = new THREE.Vector3(0,0,-6), _cp = new THREE.Vector3(), _cl = new THREE.Vector3();
 let camIntro = 0;
 function fitCamera(){
   const w = innerWidth, h = innerHeight, a = w/h;
   renderer.setSize(w,h,false);
   camera.aspect = a;
-  if(a < 1){ camera.fov = 50; camBase.set(0, 31, 35); camLook.set(0,0,-2.2); }
-  else { camera.fov = 45; camBase.set(0, 36, 40); camLook.set(0,0,-4); }
-  camera.updateProjectionMatrix();
+  if(a < 1){ camera.fov = 50; camBase.set(0, 31, 35); camLook.set(0,0,-2.2); camera.updateProjectionMatrix(); return; }
+  camera.fov = 45; camera.updateProjectionMatrix();
+  const topPx = 58, botPx = 74, yTop = 1 - 2*topPx/h, yBot = -1 + 2*botPx/h;
+  const dir = new THREE.Vector3(0, 36, 40).normalize(), top = new THREE.Vector3(0, 9, EZ-4.5), bot = new THREE.Vector3(0, 0, PZ+1.2);
+  let D = 54, lz = -4;
+  for(let it=0; it<40; it++){
+    camera.position.set(0, 0, lz).addScaledVector(dir, D); camera.lookAt(0, 0, lz); camera.updateMatrixWorld();
+    const pt = top.clone().project(camera).y, pb = bot.clone().project(camera).y;
+    const span = pt - pb, want = yTop - yBot;
+    D *= Math.pow(span/want, .8);
+    lz -= ((pt + pb)/2 - (yTop + yBot)/2) * D * .15;
+    lz = clamp(lz, -30, 20); D = clamp(D, 20, 140);
+  }
+  camBase.copy(camera.position); camLook.set(0, 0, lz);
 }
 function updateCamera(dt){
   game.shake = Math.max(0, game.shake - dt*2.2);
@@ -1842,18 +2396,35 @@ function snapshot(obj, yaw=.5, tilt=.35){
     return cv;
   }catch(e){ try{ renderer.setRenderTarget(null); snapScene.remove(obj); }catch(_){} return null; }
 }
-const unitGroup = (geo, n, gap, s=1) => { const g = new THREE.Group(); for(let k=0;k<n;k++){ const m = new THREE.Mesh(geo, vcMat); m.position.x = (k-(n-1)/2)*gap; m.position.z = -Math.abs(k-(n-1)/2)*.3; m.rotation.y = Math.PI; m.scale.setScalar(s); g.add(m); } return g; };
+const unitGroup = (geo, n, gap, s=1, mat=vcMat) => { const g = new THREE.Group(); for(let k=0;k<n;k++){ const m = new THREE.Mesh(geo, mat); m.position.x = (k-(n-1)/2)*gap; m.position.z = -Math.abs(k-(n-1)/2)*.3; m.rotation.y = Math.PI; m.scale.setScalar(s); g.add(m); } return g; };
+const gateWithUnits = (t, geo) => { const g = gateGroup(G(0,0,3.6,t,0)).grp; const u = unitGroup(geo, 3, .9); u.position.z = 1.6; u.rotation.y = Math.PI; g.add(u); return g; };
 const PICS = {
   cannon: ()=> makeCannon(),
   archers: ()=> unitGroup(archerGeo, 2, 1.2, 1.2),
   cav: ()=> unitGroup(cavGeo, 2, 1.4),
   shield: ()=> unitGroup(shieldGeo, 3, 1.15),
   brute: ()=> unitGroup(redGeo, 1, 1, 1.6),
-  dragon: ()=> makeDragon().g,
-  giant: ()=> makeGiant().g,
+  dragon: ()=> makeDragon('dragon').g,
+  giant: ()=> makeGiant('giant').g,
   pair: ()=> { const g = new THREE.Group(); for(const d of PAIR(0,'mul',3,'add',20)) g.add(gateGroup(d).grp); return g; },
   mys: ()=> gateGroup(G(0,0,3.6,'mys',0)).grp,
   gold: ()=> gateGroup(G(0,0,3.6,'gold',5)).grp,
+  wolves: ()=> unitGroup(wolfGeo, 3, 1.0, 1.1),
+  mages: ()=> unitGroup(mageGeo, 1, 1, 1.2),
+  troll: ()=> unitGroup(trollGeo, 1, 1, 1.1),
+  andar: ()=> unitGroup(andeGeo, 3, 1.0, 1.0, new THREE.MeshBasicMaterial({vertexColors:true})),
+  skold: ()=> gateWithUnits('skold', blueShieldGeo),
+  hast: ()=> gateWithUnits('hast', blueHorseGeo),
+  bage: ()=> gateWithUnits('bage', blueArcherGeo),
+  brinn: ()=> { const o = gateGroup(G(0,0,3.6,'mul',3)); drawLabel(o.cv, 'SLÄCK\n22', 'fire'); o.tex.needsUpdate = true; o.panel.material.color.set(GSTYLE.fire.panel); return o.grp; },
+  lava: ()=> { const g = new THREE.Group(); const r = new THREE.Mesh(new THREE.BoxGeometry(6,.1,1.8), new THREE.MeshBasicMaterial({map:lavaTex})); g.add(r); for(const x of [-1.8,1.8]){ const p = new THREE.Mesh(plankGeo, new THREE.MeshLambertMaterial({vertexColors:true})); p.scale.set(1.6,1,1); p.position.set(x,.12,0); g.add(p);} return g; },
+  queen: ()=> makeQueen().g,
+  icedragon: ()=> makeDragon('icedragon').g,
+  firegiant: ()=> makeGiant('firegiant').g,
+  ashdragon: ()=> makeDragon('ashdragon').g,
+};
+const CARD_ICON = {
+  storm_sno:'<g stroke="currentColor" stroke-width="2.3" stroke-linecap="round" fill="none"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="M9 3.6l3 2.2 3-2.2M9 20.4l3-2.2 3 2.2"/></g>',
 };
 const CARDS = {
   pair:{kick:'NY PORT', title:'Portpar', text:'Två bra portar sida vid sida. Sikta på den du vill ha. Passerar en riddare flera plusportar i rad får du kombo och extra riddare.'},
@@ -1866,17 +2437,34 @@ const CARDS = {
   brute:{kick:'NY FIENDE', title:'Tunga soldater', text:'Större röda soldater som tål tre träffar.'},
   dragon:{kick:'BOSS', title:'Draken på muren', text:'Ett rött sken visar var elden kommer. Riddare i filen brinner upp. Sikta runt elden!'},
   giant:{kick:'BOSS', title:'Jätten', text:'Han går mot din port och slår med klubban där ringen syns. Fäll honom innan han når fram, och riv sedan borgen.'},
-  storm:{kick:'NY KRAFT', title:'Stormanfall', text:'Slå ut fiender så fylls kraftmätaren. Tryck sedan på blixten: dubbelt så många riddare per skott i några sekunder.'},
+  storm:{kick:'NY KRAFT', title:'Stormanfall', text:'Varje kraft har en egen mätare som fylls när du fäller fiender. När blixten lyser: tryck för dubbelt så många riddare per skott.'},
   fire:{kick:'NY KRAFT', title:'Brinnande pilar', text:'En salva brinnande pilar mot fienderna där du siktar. Allt i elden brinner. Träffar också bossar och skyttar.'},
   ice:{kick:'NY KRAFT', title:'Is', text:'Fiender, kanon och bossar fryser till is och står still i några sekunder.'},
+  skold:{kick:'NY PORT', title:'Sköldporten', text:'Riddarna som går igenom får en sköld och tål en extra träff. Klonas de efteråt får klonerna också sköld.'},
+  wolves:{kick:'NY FIENDE', title:'Isvargar', text:'En flock vargar som springer fort i sicksack. Svåra att sikta på, men de dör av en träff.'},
+  sno:{kick:'NY FARA', title:'Snöstorm', text:'Ibland blåser en snöstorm in över mitten av banan och skymmer portarna. Kom ihåg var de bra portarna står!'},
+  mages:{kick:'NY FIENDE', title:'Frostmagiker', text:'Magikern på muren fryser en fil. Först syns ett blått sken, sedan fastnar riddarna i isen. Sikta bort från skenet.'},
+  hast:{kick:'NY PORT', title:'Hästporten', text:'Riddarna blir ryttare som springer mycket fortare och slår hårdare mot borgen.'},
+  queen:{kick:'BOSS', title:'Frostdrottningen', text:'Hon fryser filer där dina riddare spricker, kallar på isvargar och drar in snöstormar. Håll dig borta från de blå filerna.'},
+  icedragon:{kick:'BOSS', title:'Isdraken', text:'Hans isande andedräkt sveper i sidled över banan. Se åt vilket håll skenet pekar och flytta dig åt andra hållet.'},
+  lava:{kick:'NY FARA', title:'Lavafloder', text:'Lavan delar banan. Bara på broarna kommer riddarna över. Broarna sjunker ibland, och de blinkar rött strax innan.'},
+  bage:{kick:'NY PORT', title:'Bågporten', text:'Riddarna blir bågskyttar som skjuter på fiender långt framför sig medan de springer.'},
+  brinn:{kick:'NY PORT', title:'Brinnande port', text:'En port i brand måste släckas. Riddarna som går in släcker elden men går åt. När den är släckt är porten bra igen.'},
+  troll:{kick:'NY FIENDE', title:'Lavatroll', text:'Långsamt och starkt, tål åtta träffar. När det faller lämnar det en pöl av lava.'},
+  andar:{kick:'NY FIENDE', title:'Eldandar', text:'Snabba eldandar. Varje ande delar sig i två när den träffas första gången.'},
+  firegiant:{kick:'BOSS', title:'Eldjätten', text:'Han går mot porten och klubban lämnar brinnande lava där den slår. Fäll honom innan han når fram.'},
+  ashdragon:{kick:'BOSS', title:'Askdraken', text:'Slutstriden i tre faser: först eldfiler, sedan svepande eld och eldandar, sist två filer och lavatroll.'},
 };
-const CARD_ORDER = ['dragon','giant','cannon','archers','cav','shield','brute','storm','fire','ice','pair','mys','gold'];
-function levelFeatures(idx){
-  const lv = LEVELS[idx], f = new Set();
+const CARD_ORDER = ['dragon','giant','queen','icedragon','firegiant','ashdragon','cannon','archers','cav','shield','brute','wolves','sno','mages','lava','troll','andar','storm','fire','ice','pair','mys','gold','skold','hast','bage','brinn'];
+function levelFeatures(lv){
+  const f = new Set();
   if(lv.gates.some(g=>g.pair)) f.add('pair');
   if(lv.gates.some(g=>g.t==='mys')) f.add('mys');
+  for(const t of ['skold','hast','bage']) if(lv.gates.some(g=>g.t===t)) f.add(t);
+  if(lv.gates.some(g=>g.brinn)) f.add('brinn');
   if(lv.cannon) f.add('cannon'); if(lv.archers) f.add('archers'); if(lv.gold) f.add('gold');
   if(lv.cav) f.add('cav'); if(lv.shield) f.add('shield'); if(lv.brute) f.add('brute');
+  if(lv.wolves) f.add('wolves'); if(lv.mages) f.add('mages'); if(lv.storm) f.add('sno'); if(lv.lava) f.add('lava'); if(lv.troll) f.add('troll'); if(lv.andar) f.add('andar');
   if(lv.boss) f.add(lv.boss);
   for(const k of POWS) if(powUnlocked(k)) f.add(k);
   return f;
@@ -1891,104 +2479,261 @@ function showCard(){
   $('cardOk').textContent = game.cardI < game.cards.length-1 ? 'Nästa' : (game.lv.boss ? 'Möt bossen!' : 'Till strid!');
   const pic = $('cardPic'); pic.innerHTML = '';
   if(UPG[k] && UPG[k].icon){ pic.innerHTML = `<svg viewBox="0 0 24 24" style="color:#fff">${UPG[k].icon}</svg>`; }
+  else if(k==='sno'){ pic.innerHTML = `<svg viewBox="0 0 24 24" style="color:#fff">${CARD_ICON.storm_sno}</svg>`; }
   else {
-    if(!(k in picCache)){ const o = PICS[k] && PICS[k](); picCache[k] = o ? snapshot(o, k==='dragon'||k==='giant'||k==='cannon' ? .55 : k==='pair'||k==='mys'||k==='gold' ? .15 : .45) : null; }
+    if(!(k in picCache)){ const o = PICS[k] && PICS[k](); picCache[k] = o ? snapshot(o, BOSSAR[k]||k==='cannon' ? .55 : ['pair','mys','gold','skold','hast','bage','brinn','lava'].includes(k) ? .15 : .45) : null; }
     if(picCache[k]) pic.appendChild(picCache[k]);
   }
   show('cardScr');
 }
 
 /* ================= Skärmar och flöde ================= */
-const screens = ['start','levelsScr','pauseScr','resultScr','shopScr','cardScr'];
+const screens = ['start','mapScr','levelsScr','pauseScr','resultScr','shopScr','cardScr','goalScr','blessScr'];
 function show(id){ screens.forEach(s => $(s).hidden = s!==id); }
 function coinsUI(){ document.querySelectorAll('.coinN').forEach(e=>e.textContent = save.coins); }
 let hintOn = false;
 function hideHint(){ hintOn = false; $('hint').hidden = true; }
+const nextCampaign = () => Math.min(save.unlocked-1, NLV-1);
+const allDone = () => save.stars[NLV-1] > 0;
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 
 function toMenu(){
-  loadLevel(Math.min(save.unlocked-1, 9), 'attract');
+  game.bl = {};
+  loadLevel(nextCampaign(), 'attract');
   $('hud').hidden = true; show('start'); coinsUI();
-  const n = Math.min(save.unlocked, 10);
-  $('playBtn').textContent = save.unlocked>10 || (save.unlocked===10 && save.stars[9]>0) ? 'Spela bana 10' : 'Spela bana ' + n;
-  if(save.from==='v1' && !save.migShown){ save.migShown = 1; persist(); setTimeout(()=>banner('Välkommen till v2!', 'Dina stjärnor och mynt följde med'), 600); }
+  const n = nextCampaign();
+  $('playBtn').textContent = allDone() ? 'Spela bana ' + NLV : 'Spela bana ' + (n+1);
+  $('playSub').textContent = rikeFor(n).namn;
+  $('tornBtn').hidden = !tornOppet();
+  $('tornBtn').classList.toggle('new', !!save.news.torn);
+  $('mapBtn').classList.toggle('new', !!(save.news.frost || save.news.eld));
+  if(save.from && !save.migShown){ save.migShown = 1; persist(); setTimeout(()=>banner('Välkommen till v3!', save.news.frost ? 'Dina stjärnor och mynt följde med. Frostmarken och Tornet är öppna!' : 'Dina stjärnor och mynt följde med'), 600); }
 }
+// banstart: först målen, sedan introkorten, sedan striden
 function startLevel(idx){
   Snd.init();
+  game.bl = {};
   loadLevel(idx, 'play');
   show(null); $('hud').hidden = false;
   hintOn = false; $('hint').hidden = true;
-  game.cards = CARD_ORDER.filter(k => levelFeatures(idx).has(k) && !save.seen[k]).slice(0,3); game.cardI = 0;
-  if(game.cards.length){ game.mode = 'card'; showCard(); } else beginLevel();
+  game.cards = CARD_ORDER.filter(k => levelFeatures(game.lv).has(k) && !save.seen[k]).slice(0,3); game.cardI = 0;
+  game.mode = 'card'; showGoals();
+}
+function showGoals(){
+  const lv = game.lv, r = game.rike, done = save.mal[game.idx] || 0;
+  $('goalKick').textContent = lv.torn ? 'TORNET' : r.namn.toUpperCase();
+  $('goalKick').style.background = `linear-gradient(${r.kort[0]},${r.kort[1]})`;
+  if(lv.torn){
+    $('goalTitle').textContent = 'Våning ' + lv.torn + (lv.boss ? ' · Boss' : '');
+    const bl = VALSIGNELSER.filter(v=>game.bl[v.id]);
+    $('goalList').innerHTML = `<li class="info">${lv.boss ? BOSSAR[lv.boss].namn + ' väntar.' : 'Riv borgen för att klättra vidare.'}</li>` +
+      (bl.length ? bl.map(v=>`<li class="bl"><b>${v.ikon}</b>${v.namn}${game.bl[v.id]>1?' ×'+game.bl[v.id]:''}: ${v.text}</li>`).join('') : `<li class="info">Var tredje våning väljer du en välsignelse.</li>`);
+    $('goalHead').textContent = bl.length ? 'Dina välsignelser' : '';
+  } else {
+    $('goalTitle').textContent = `Bana ${game.idx+1}` + (lv.boss ? ' · ' + BOSSAR[lv.boss].namn : '');
+    $('goalHead').textContent = 'Stjärnmål';
+    $('goalList').innerHTML = game.mal.map((m,i)=>`<li class="${done & (1<<i) ? 'ok' : ''}"><i class="chk"></i>${malText(m)}</li>`).join('');
+  }
+  $('goalOk').textContent = game.cards.length ? 'Vidare' : (lv.boss ? 'Möt bossen!' : 'Till strid!');
+  show('goalScr');
 }
 function beginLevel(){
   show(null); game.mode = 'play';
-  hintOn = game.idx===0 && save.stars[0]===0; $('hint').hidden = !hintOn;
+  hintOn = game.idx===0 && !game.lv.torn && save.stars[0]===0; $('hint').hidden = !hintOn;
   camIntro = 1;
   const lv = game.lv, idx = game.idx;
-  if(lv.boss==='dragon'){ banner('Draken på muren', 'Bana 5 · Boss', true); game.focus.set(0,6,EZ); game.focusT = 1.8; Snd.roar(); }
-  else if(lv.boss==='giant'){ banner('Jätten', 'Bana 10 · Slutstriden', true); game.focus.set(0,4,giant.z); game.focusT = 1.8; Snd.roar(); }
-  else { banner(`Bana ${idx+1}`, 'Riv borgen'); Snd.horn(); }
+  const sub = lv.torn ? `Tornet · Våning ${lv.torn}` : `Bana ${idx+1}`;
+  if(lv.boss){ const B2 = BOSSAR[lv.boss]; banner(B2.namn, sub + ' · Boss', true); game.focus.set(0, B2.typ==='wall'?6:4, B2.typ==='wall'?EZ:giant.z); game.focusT = 1.8; Snd.roar(); }
+  else { const bl = VALSIGNELSER.filter(v=>game.bl[v.id]).map(v=>v.namn); banner(lv.torn ? `Våning ${lv.torn}` : `Bana ${idx+1}`, lv.torn ? (bl.length ? 'Välsignad: ' + bl.join(', ') : 'Klättra i tornet') : 'Riv borgen'); Snd.horn(); }
 }
-function starsFor(){ const r = game.php/game.phpMax; return r>=.8?3:r>=.45?2:1; }
+function goalStats(won){ return {won, skada:game.skada, tid:game.T, kombo:game.comboMax, kampar:game.kampar, topp:game.topp}; }
 function win(){
   if(game.over) return; game.over = true;
-  const stars = starsFor(), idx = game.idx, boss = !!game.lv.boss;
-  const first = save.stars[idx]===0;
-  const coins = Math.round((40 + idx*18 + stars*12 + (boss?70:0)) * (first ? 1 : .5));
-  save.coins += coins; save.stars[idx] = Math.max(save.stars[idx], stars);
-  if(idx+2 > save.unlocked) save.unlocked = Math.min(10, idx+2);
+  const idx = game.idx, lv = game.lv, boss = !!lv.boss, chest = 1 + UPG.chest.val(save.upg.chest)/100;
+  let stars = 0, coins = 0, news = '';
+  if(lv.torn){
+    const n = lv.torn;
+    coins = Math.round((25 + n*6 + (boss?60:0)) * chest);
+    const run = save.torn.run;
+    if(run){ run.vaning = n+1; }
+    if(n > save.torn.bast){ save.torn.bast = n; news = 'Nytt rekord i tornet!'; }
+    if(run && run.dag){ const d = run.dag; if(!(save.torn.dag[d] >= n)) save.torn.dag[d] = n; }
+    game.result = {won:true, stars:0, coins, torn:n, news, bless: n%3===0};
+  } else {
+    const met = game.mal.map(m=>malKlart(m, goalStats(true)));
+    const mask = met.reduce((m,v,i)=>m | (v ? 1<<i : 0), 0), was = save.mal[idx] || 0, all = mask | was;
+    const first = save.stars[idx]===0;
+    stars = Math.max(1, met.filter(Boolean).length);
+    const total = Math.max(1, [0,1,2].filter(i=>all & (1<<i)).length);
+    coins = Math.round((40 + idx*18 + stars*12 + (boss?70:0)) * (first ? 1 : .5) * chest);
+    save.mal[idx] = all; save.stars[idx] = Math.max(save.stars[idx], total);
+    if(idx+2 > save.unlocked) save.unlocked = Math.min(NLV, idx+2);
+    if(idx===9 && first){ save.news.frost = 1; save.news.torn = 1; news = 'Frostmarken och Tornet har öppnats!'; }
+    if(idx===19 && first){ save.news.eld = 1; news = 'Eldbergen har öppnats!'; }
+    if(idx===NLV-1 && first) news = 'Alla tre riken är dina! Klättra vidare i Tornet.';
+    game.result = {won:true, stars, coins, met, was, news};
+  }
+  save.coins += coins;
   persist();
-  game.result = {won:true, stars, coins};
-  game.nextIdx = Math.min(9, idx+1);
+  game.nextIdx = Math.min(NLV-1, idx+1);
   for(let i=0;i<Rd.n;i++){ Rd.dead[i]=1; burst(Rd.x[i],.6,Rd.z[i],0xe0473c,4,3,.14,.5); }
   for(const a of archers) killArcher(a);
+  for(const a of mages) killArcher(a);
+  iceLanes.forEach(l=>{ if(l.m) l.m.visible=false; }); iceLanes = [];
   if(dragon.on){ dragon.dead = .001; dragon.lanes = []; showLanes(false); }
   if(giant.on && giant.alive){ giant.alive = false; giant.dead = .001; if(giant.mark){ giant.mark.visible=false; giant.mark=null; } }
   game.collapse = .001;
   if(game.sim) return;
   Snd.boom();
-  if(dragon.on){ slowmo(dragon.x, 5, EZ, 1.6); banner('Draken är besegrad!', '', true); }
+  if(dragon.on){ slowmo(dragon.x, 5, EZ, 1.6); banner(`${BOSSAR[dragon.kind].namn} är besegrad!`, '', true); }
   else slowmo(0, 4, EZ-2, 1.4);
   game.resT = 2.9;
 }
 function lose(){
   if(game.over) return; game.over = true;
-  const idx = game.idx;
-  const coins = Math.max(5, Math.round((game.dmg/game.ehpMax) * (40 + idx*14)));
+  const idx = game.idx, lv = game.lv, chest = 1 + UPG.chest.val(save.upg.chest)/100;
+  let coins, news = '';
+  if(lv.torn){
+    coins = Math.max(5, Math.round((game.dmg/game.ehpMax) * (20 + lv.torn*5) * chest));
+    const best = lv.torn - 1;
+    if(best > save.torn.bast){ save.torn.bast = best; }
+    save.torn.run = null;
+    news = `Du klarade ${best} ${best===1?'våning':'våningar'}. Bästa: ${save.torn.bast}.`;
+  } else coins = Math.max(5, Math.round((game.dmg/game.ehpMax) * (40 + idx*14) * chest));
   save.coins += coins; persist();
-  game.result = {won:false, stars:0, coins};
+  game.result = {won:false, stars:0, coins, torn:lv.torn, news, met:game.mal.map(()=>false), was:save.mal[idx]||0};
   game.nextIdx = idx;
   game.playerBreak = .001;
   if(game.sim) return;
   Snd.boom(); game.resT = 2.0;
 }
-function showResult(won, stars, coins){
+function showResult(r){
+  const won = r.won, lv = game.lv, boss = lv.boss;
   $('hud').hidden = true; show('resultScr');
-  const last = game.idx===9 && won, boss = game.lv.boss;
-  $('resTitle').textContent = won ? (last ? 'Riket är ditt!' : boss==='dragon' ? 'Draken är besegrad!' : 'Seger!') : 'Borgen föll';
-  $('resSub').textContent = won ? (last ? 'Jätten har fallit och alla tio borgar är erövrade.' : `Bana ${game.idx+1} erövrad`)
-    : (giant.on && giant.alive && giant.z >= PZ-3.6 ? 'Jätten nådde porten. Tips: krafterna och Kämpar biter på honom.' : giant.on && giant.alive ? `Jätten stod kvar med ${Math.ceil(giant.hp)} HP. Borgen faller först när han är fälld.` : `Du tog ${Math.round(game.dmg/game.ehpMax*100)} % av ${dragon.on?'drakens kraft':'fiendens borg'}. Tips: köp uppgraderingar i Smedjan.`);
-  $('resNext').textContent = won ? (last ? 'Spela igen' : 'Nästa bana') : 'Försök igen';
+  const last = !lv.torn && game.idx===NLV-1 && won;
+  const ttl = lv.torn ? (won ? `Våning ${lv.torn} klar!` : 'Tornet stoppade dig')
+    : won ? (last ? 'Alla riken är dina!' : boss && BOSSAR[boss].typ==='wall' ? `${BOSSAR[boss].namn} är besegrad!` : boss ? `${BOSSAR[boss].namn} har fallit!` : 'Seger!') : 'Din port föll';
+  $('resTitle').textContent = ttl;
+  const gName = giant.on ? BOSSAR[giant.kind].namn : '';
+  $('resSub').textContent = lv.torn ? (won ? (r.bless ? 'Välj en välsignelse innan nästa våning.' : `Nästa: våning ${lv.torn+1}`) : r.news)
+    : won ? (last ? 'Askdraken är besegrad och alla trettio borgar är erövrade.' : `Bana ${game.idx+1} erövrad`)
+    : (giant.on && giant.alive && giant.z >= PZ-3.6 ? `${gName} nådde porten. Tips: krafterna och Kämpar biter på honom.` : giant.on && giant.alive ? `${gName} stod kvar med ${Math.ceil(giant.hp)} HP. Borgen faller först när han är fälld.` : `Du tog ${Math.round(game.dmg/game.ehpMax*100)} % av ${dragon.on?BOSSAR[dragon.kind].kort.toLowerCase()+'s kraft':'fiendens borg'}. Tips: köp uppgraderingar i Smedjan.`);
+  const nw = $('resNews'); nw.hidden = !(r.news && (won || !lv.torn)); nw.textContent = r.news || '';
+  $('resNext').textContent = lv.torn ? (won ? (r.bless ? 'Välj välsignelse' : `Våning ${lv.torn+1}`) : 'Klättra igen') : won ? (last ? 'Till Tornet' : 'Nästa bana') : 'Försök igen';
   const st = [...$('resStars').children]; st.forEach(s=>s.classList.remove('on'));
-  $('resStars').style.display = won ? '' : 'none';
-  st.slice(0,stars).forEach((s,i)=>setTimeout(()=>{ s.classList.add('on'); Snd.star(i); }, 350 + i*300));
-  const el = $('resCoins'); let shown = 0; const t0 = performance.now();
+  $('resStars').style.display = won && !lv.torn ? '' : 'none';
+  st.slice(0,r.stars).forEach((s,i)=>setTimeout(()=>{ s.classList.add('on'); Snd.star(i); }, 350 + i*300));
+  // stjärnmålen bockas av
+  const gl = $('resGoals'); gl.hidden = !!lv.torn;
+  if(!lv.torn){
+    gl.innerHTML = game.mal.map((m,i)=>`<li class="${r.met[i] ? 'ok now' : (r.was & (1<<i)) ? 'ok' : ''}" style="--d:${.4+i*.3}s"><i class="chk"></i>${malText(m)}${!r.met[i] && (r.was & (1<<i)) ? ' <small>(tidigare)</small>' : ''}</li>`).join('');
+  }
+  const el = $('resCoins'); let shown = 0; const t0 = performance.now(); const coins = r.coins;
   const step = () => { const k = Math.min(1,(performance.now()-t0)/900); const v = Math.round(coins*k); if(v!==shown){ shown=v; el.textContent='+'+v; if(v%5===0) Snd.coin(); } if(k<1) requestAnimationFrame(step); };
-  el.textContent = '+0'; setTimeout(step, 300 + stars*300); setTimeout(()=>{ el.textContent = '+'+coins; }, 1500 + stars*300);
+  el.textContent = '+0'; setTimeout(step, 300 + r.stars*300); setTimeout(()=>{ el.textContent = '+'+coins; }, 1500 + r.stars*300);
 }
+function resNext(){
+  const r = game.result || {}, lv = game.lv;
+  if(lv.torn){ if(r.won){ if(r.bless) showBless(); else startTorn(); } else newTorn(save.torn.lastDag ? today() : null); return; }
+  if(r.won && game.idx===NLV-1) return openMap();
+  startLevel(game.nextIdx);
+}
+
+/* ---------- världskartan ---------- */
+function openMap(){
+  show('mapScr'); coinsUI(); $('mapTitle').textContent = 'Världskartan';
+  const list = $('mapList'); list.innerHTML = '';
+  for(const r of RIKEN){
+    const open = save.unlocked > r.fran, stars = save.stars.slice(r.fran, r.till+1).reduce((a,b)=>a+b,0), won = save.stars.slice(r.fran, r.till+1).filter(s=>s>0).length;
+    const isNew = (r.id==='frost' && save.news.frost) || (r.id==='eld' && save.news.eld);
+    const b = document.createElement('button'); b.className = 'realm' + (open?'':' locked') + (isNew?' new':''); b.disabled = !open;
+    b.style.setProperty('--a', r.kort[0]); b.style.setProperty('--b', r.kort[1]);
+    b.innerHTML = `<span class="rn">${r.namn}</span><span class="rt">${open ? r.text : `Klara bana ${r.fran} för att öppna`}</span>
+      <span class="rs"><i class="star"></i>${stars}/30 · ${won}/10 borgar</span>${isNew ? '<span class="nytt">NYTT</span>' : ''}`;
+    b.addEventListener('click', ()=>{ Snd.init(); Snd.click(); if(r.id==='frost') save.news.frost = 0; if(r.id==='eld') save.news.eld = 0; persist(); renderLevels(r); show('levelsScr'); });
+    list.appendChild(b);
+  }
+  const t = document.createElement('button'); const tOpen = tornOppet();
+  t.className = 'realm torn' + (tOpen?'':' locked') + (save.news.torn?' new':''); t.disabled = !tOpen;
+  t.innerHTML = `<span class="rn">Tornet</span><span class="rt">${tOpen ? 'Ändlöst. Varje våning är lite svårare. Var tredje väljer du en välsignelse.' : 'Klara bana 10 för att öppna'}</span>
+    <span class="rs">${tOpen ? `Bästa våning: ${save.torn.bast}` : ''}</span>${save.news.torn ? '<span class="nytt">NYTT</span>' : ''}`;
+  t.addEventListener('click', ()=>{ Snd.init(); Snd.click(); openTorn(); });
+  list.appendChild(t);
+}
+function renderLevels(r){
+  $('levelsTitle').textContent = r.namn;
+  const grid = $('levelGrid'); grid.innerHTML = '';
+  grid.style.setProperty('--a', r.kort[0]); grid.style.setProperty('--b', r.kort[1]);
+  for(let i=r.fran;i<=r.till;i++){
+    const boss = LEVELS[i].boss;
+    const b = document.createElement('button'); b.className = 'lvbtn' + (boss?' boss':'') + (i===save.unlocked-1?' cur':''); b.disabled = i>=save.unlocked;
+    b.innerHTML = `${i+1}${boss?'<span class="bt">BOSS</span>':''}<span class="st">${[0,1,2].map(k=>`<i class="${k<save.stars[i]?'on':''}"></i>`).join('')}</span>`;
+    b.setAttribute('aria-label','Bana '+(i+1)+(boss?', boss':''));
+    b.addEventListener('click', ()=>{ Snd.init(); Snd.click(); startLevel(i); });
+    grid.appendChild(b);
+  }
+}
+
+/* ---------- tornet ---------- */
+function openTorn(){
+  save.news.torn = 0; persist();
+  show('mapScr'); coinsUI(); $('mapTitle').textContent = 'Tornet';
+  const run = save.torn.run, d = today(), dagBest = save.torn.dag[d] || 0;
+  const list = $('mapList');
+  list.innerHTML = `<div class="tornbox">
+    <p>Bästa våning: <b>${save.torn.bast}</b></p>
+    ${run ? `<p>Pågående klättring: våning <b>${run.vaning}</b>${run.dag ? ' (dagens torn)' : ''}</p>` : ''}
+    ${run ? '<button class="btn green" id="tornGo">Fortsätt klättra</button>' : ''}
+    <button class="btn ${run?'ghost':'green'}" id="tornNew">Ny klättring</button>
+    <button class="btn ghost" id="tornDay">Dagens torn <small>(bästa i dag: ${dagBest})</small></button>
+    <p class="tiny">Dagens torn har samma våningar för alla i dag.</p></div>`;
+  if(run) $('tornGo').addEventListener('click', ()=>{ Snd.init(); Snd.click(); startTorn(); });
+  $('tornNew').addEventListener('click', ()=>{ Snd.init(); Snd.click(); newTorn(null); });
+  $('tornDay').addEventListener('click', ()=>{ Snd.init(); Snd.click(); newTorn(d); });
+}
+function newTorn(dag){
+  save.torn.run = {vaning:1, fro: dag ? dagensFro(dag) : (Math.random()*1e9)|0, dag:dag||null, bl:{}};
+  save.torn.lastDag = !!dag; persist(); startTorn();
+}
+function startTorn(){
+  const run = save.torn.run; if(!run){ openTorn(); return; }
+  Snd.init();
+  game.bl = {...run.bl};
+  const n = run.vaning, lv = tornVaning(n, run.fro);
+  loadLevel(n-1, 'play', lv);
+  show(null); $('hud').hidden = false; hintOn = false; $('hint').hidden = true;
+  game.cards = CARD_ORDER.filter(k => levelFeatures(lv).has(k) && !save.seen[k]).slice(0,3); game.cardI = 0;
+  game.mode = 'card'; showGoals();
+}
+function showBless(){
+  const run = save.torn.run; if(!run){ openTorn(); return; }
+  const n = run.vaning - 1, opts = valsignelseVal(n, run.fro, run.bl);
+  $('blessSub').textContent = `Efter våning ${n}. Den gäller resten av klättringen.`;
+  const list = $('blessList'); list.innerHTML = '';
+  for(const id of opts){
+    const v = VALSIGNELSER.find(q=>q.id===id);
+    const b = document.createElement('button'); b.className = 'bless';
+    b.innerHTML = `<b>${v.ikon}</b><span><strong>${v.namn}${run.bl[id] ? ` (har ×${run.bl[id]})` : ''}</strong>${v.text}</span>`;
+    b.addEventListener('click', ()=>{ Snd.init(); Snd.coin(); run.bl[id] = (run.bl[id]||0)+1; persist(); startTorn(); });
+    list.appendChild(b);
+  }
+  show('blessScr');
+}
+
+/* ---------- Smedjan ---------- */
 let shopTab = 'army';
-function openShop(){ show('shopScr'); renderShop(); }
+function openShop(){ shopTab = 'army'; show('shopScr'); renderShop(); }
 function renderShop(){
   coinsUI();
   $('tabArmy').classList.toggle('on', shopTab==='army'); $('tabPow').classList.toggle('on', shopTab==='pow');
   const powNew = POWS.some(k=>powUnlocked(k) && save.upg[k]===0 && save.coins>=UPG[k].cost[0]);
   $('tabPow').innerHTML = 'Krafter' + (powNew && shopTab!=='pow' ? '<i class="dot"></i>' : '');
   const list = $('shopList'); list.innerHTML = '';
-  for(const k of shopTab==='army' ? ['rate','pot','champ','hp'] : POWS){
-    const u = UPG[k], l = save.upg[k], maxed = l>=u.max, cost = maxed?0:u.cost[l], locked = u.lock && !powUnlocked(k);
+  for(const k of shopTab==='army' ? ['rate','pot','champ','hp','armor','chest'] : POWS){
+    const u = UPG[k], l = save.upg[k], maxed = l>=u.max, cost = maxed?0:u.cost[l], locked = u.lock && !upgUnlocked(k);
     const card = document.createElement('div'); card.className = 'card' + (locked?' locked':'');
     const pips = Array.from({length:u.max},(_,i)=>`<i class="${i<l?'on':''}"></i>`).join('');
-    const val = locked ? `Låses upp på bana ${u.lock}` : u.lock ? `${u.fmt(u.val(l))}${maxed?'':' → '+u.fmt(u.val(l+1))} · laddar ${dec(POWCD[k](l))} s` : `${u.fmt(u.val(l))}${maxed?'':' → '+u.fmt(u.val(l+1))}`;
+    const val = locked ? `Låses upp på bana ${u.lock}` : POWS.includes(k) ? `${u.fmt(u.val(l))}${maxed?'':' → '+u.fmt(u.val(l+1))} · laddar ${dec(POWCD[k](l))} s` : `${u.fmt(u.val(l))}${maxed?'':' → '+u.fmt(u.val(l+1))}`;
     card.innerHTML = `<div class="ic"><svg viewBox="0 0 24 24" style="color:var(--gold)">${u.icon}</svg></div>
       <div class="info"><h3>${u.name}</h3><p>${u.desc}</p><div class="pips">${pips}</div>
       <div class="val">${val}</div></div>
@@ -1999,38 +2744,31 @@ function renderShop(){
       save.coins -= cost; save.upg[k]++; persist(); Snd.coin(); renderShop();
     });
   }
-  $('shopPlay').textContent = 'Spela bana ' + (game.nextIdx+1);
-}
-function renderLevels(){
-  const grid = $('levelGrid'); grid.innerHTML = '';
-  for(let i=0;i<10;i++){
-    const boss = LEVELS[i].boss;
-    const b = document.createElement('button'); b.className = 'lvbtn' + (boss?' boss':'') + (i===save.unlocked-1?' cur':''); b.disabled = i>=save.unlocked;
-    b.innerHTML = `${i+1}${boss?'<span class="bt">BOSS</span>':''}<span class="st">${[0,1,2].map(k=>`<i class="${k<save.stars[i]?'on':''}"></i>`).join('')}</span>`;
-    b.setAttribute('aria-label','Bana '+(i+1)+(boss?', boss':''));
-    b.addEventListener('click', ()=>{ Snd.init(); Snd.click(); startLevel(i); });
-    grid.appendChild(b);
-  }
+  $('shopPlay').textContent = game.lv.torn && save.torn.run ? `Klättra: våning ${save.torn.run.vaning}` : 'Spela bana ' + (game.nextIdx+1);
 }
 function pause(){ if(game.mode!=='play' || game.over) return; game.mode='pause'; game.firing=false; show('pauseScr'); }
 
 /* ---------- knappar ---------- */
 const on = (id, fn) => $(id).addEventListener('click', e => { Snd.init(); Snd.click(); fn(e); });
-on('playBtn', ()=> startLevel(Math.min(save.unlocked-1, 9)));
-on('levelsBtn', ()=>{ renderLevels(); show('levelsScr'); });
-on('levelsBack', ()=> show('start'));
-on('shopBtn1', ()=>{ game.nextIdx = Math.min(save.unlocked-1,9); openShop(); });
+on('playBtn', ()=> startLevel(allDone() ? NLV-1 : nextCampaign()));
+on('mapBtn', openMap);
+on('tornBtn', openTorn);
+on('mapBack', toMenu);
+on('levelsBack', openMap);
+on('shopBtn1', ()=>{ game.nextIdx = nextCampaign(); game.lv = LEVELS[game.nextIdx]; openShop(); });
 on('shopBack', ()=>{ if(game.mode==='after') show('resultScr'); else toMenu(); });
-on('shopPlay', ()=> startLevel(game.nextIdx));
+on('shopPlay', ()=>{ if(game.lv.torn && save.torn.run){ if(game.result && game.result.won && game.result.bless) showBless(); else startTorn(); } else startLevel(game.nextIdx); });
 on('tabArmy', ()=>{ shopTab='army'; renderShop(); });
 on('tabPow', ()=>{ shopTab='pow'; renderShop(); });
 on('pauseBtn', pause);
 on('resumeBtn', ()=>{ game.mode='play'; show(null); });
-on('restartBtn', ()=> startLevel(game.idx));
+on('restartBtn', ()=>{ if(game.lv.torn) startTorn(); else startLevel(game.idx); });
 on('quitBtn', toMenu);
-on('resNext', ()=> startLevel(game.nextIdx));
+on('resNext', resNext);
 on('resShop', openShop);
 on('resMenu', toMenu);
+on('goalOk', ()=>{ if(game.cards.length) showCard(); else beginLevel(); });
+on('blessBack', toMenu);
 on('cardOk', ()=>{ game.cardI++; if(game.cardI < game.cards.length) showCard(); else beginLevel(); });
 document.querySelectorAll('.sndbtn').forEach(b => b.addEventListener('click', ()=>{ setMute(!save.mute); Snd.click(); }));
 document.querySelectorAll('.musbtn').forEach(b => b.addEventListener('click', ()=>{ Snd.init(); setMusic(!save.music); Snd.click(); }));
@@ -2055,18 +2793,28 @@ canvas.addEventListener('pointerdown', e => {
   if(hintOn) hideHint();
 });
 canvas.addEventListener('pointermove', e => { if(e.pointerId===activePointer && game.mode==='play') game.targetX = pointerToX(e.clientX, e.clientY); });
-const endP = e => { if(e.pointerId===activePointer){ activePointer=null; game.firing=false; } };
+const endP = e => { if(e.pointerId===activePointer){ activePointer=null; game.firing=autoFire; } };
 canvas.addEventListener('pointerup', endP); canvas.addEventListener('pointercancel', endP);
 canvas.addEventListener('contextmenu', e => e.preventDefault());
+// Tangenter (för test på dator): ←/→ eller A/D siktar, F skjuter hela tiden (på/av), mellanslag skickar Kämpe, 1/2/3 krafter, Esc paus
+let autoFire = false;
 window.addEventListener('keydown', e => {
   if(e.key===' ') sendChamp(); if(e.key==='Escape') pause();
   const pk = {'1':'storm','2':'fire','3':'ice'}[e.key]; if(pk) usePower(pk);
+  if(game.mode==='play' && !game.over){
+    const k = e.key.toLowerCase();
+    if(k==='arrowleft' || k==='a'){ game.targetX = clamp(game.targetX - .8, -XL, XL); if(hintOn) hideHint(); }
+    if(k==='arrowright' || k==='d'){ game.targetX = clamp(game.targetX + .8, -XL, XL); if(hintOn) hideHint(); }
+    if(k==='f'){ autoFire = !autoFire; game.firing = autoFire; $('autoTag').hidden = !autoFire; floatText(autoFire ? 'SKJUTER' : 'STOPP', game.aimX, 2.5, SPAWN_Z-2, 'small'); if(hintOn) hideHint(); }
+  }
 });
-document.addEventListener('visibilitychange', ()=>{ if(document.hidden) pause(); });
+// #prov i adressen: ingen automatisk paus när fliken döljs (för provspelning i en panel som tar skärmbilder)
+const PROV = location.hash.includes('prov');
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden && !PROV) pause(); });
 window.addEventListener('resize', fitCamera);
 
 /* ================= Huvudloop ================= */
-const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
+const fpsEl = $('fps'); let showFps = location.hash.includes('fps'); fpsEl.hidden = !showFps;
 let last = performance.now(), fAcc = 0, fN = 0, slowAcc = 0, slowN = 0;
 function frame(now){
   requestAnimationFrame(frame);
@@ -2075,7 +2823,7 @@ function frame(now){
   let ts = 1; if(game.slowT>0){ game.slowT -= dt; ts = .28; }
   const sdt = dt*ts;
   if(game.mode !== 'pause' && game.mode !== 'card') update(sdt);
-  if(game.resT>0){ game.resT -= dt; if(game.resT<=0 && game.result){ game.mode='after'; if(game.result.won) Snd.win(); else Snd.lose(); showResult(game.result.won, game.result.stars, game.result.coins); } }
+  if(game.resT>0){ game.resT -= dt; if(game.resT<=0 && game.result){ game.mode='after'; if(game.result.won) Snd.win(); else Snd.lose(); showResult(game.result); } }
   drawUnits();
   updateParticles(game.mode==='pause'||game.mode==='card'?0:sdt);
   updateShocks(game.mode==='pause'||game.mode==='card'?0:sdt);
@@ -2093,43 +2841,64 @@ function frame(now){
 }
 
 /* ---------- testkrokar och balanssimulering ---------- */
-function simLevel(idx, maxT=360, dt=1/30, skill=game.botSkill){
+function simLevel(idx, maxT=420, dt=1/30, skill=game.botSkill, lvObj=null){
   game.sim = true;
-  loadLevel(idx, 'play'); game.bot = true; game.botSkill = skill; game.stat = {clone:0, add:0, combo:0, shot:0, peak:0, lost:0};
+  loadLevel(idx, 'play', lvObj); game.bot = true; game.botSkill = skill; game.stat = {clone:0, add:0, combo:0, shot:0, peak:0, lost:0, pow:0};
   let t = 0;
   while(!game.result && t < maxT){ update(dt); t += dt; if(B.n>game.stat.peak) game.stat.peak = B.n; }
   const r = game.result || {won:false, stars:0, coins:0, timeout:true};
-  const out = {...r, stat:game.stat, t:+t.toFixed(1), ehp:Math.max(0,Math.round(game.ehp)), php:game.php, giant:giant.on ? Math.max(0,Math.round(giant.hp)) : undefined, giantZ:giant.on ? +giant.z.toFixed(1) : undefined};
+  const out = {won:r.won, stars:r.stars, coins:r.coins, timeout:r.timeout, met:r.met, stat:game.stat, t:+t.toFixed(1), ehp:Math.max(0,Math.round(game.ehp)), php:game.php, phpMax:game.phpMax, skada:game.skada,
+    giant:giant.on ? Math.max(0,Math.round(giant.hp)) : undefined, giantZ:giant.on ? +giant.z.toFixed(1) : undefined};
   game.sim = false; game.bot = false;
   return out;
 }
-function buyAll(order=['pot','rate','hp','champ','storm','fire','ice']){
+function buyAll(order=['pot','rate','hp','champ','storm','fire','ice','armor','chest']){
   let bought = true;
   while(bought){
     bought = false; let bk = null, bc = 1e9;
-    for(const k of order){ const u = UPG[k], l = save.upg[k]; if(l>=u.max || (u.lock && !powUnlocked(k))) continue; if(u.cost[l] < bc){ bc = u.cost[l]; bk = k; } }
+    for(const k of order){ const u = UPG[k], l = save.upg[k]; if(l>=u.max || (u.lock && !upgUnlocked(k))) continue; if(u.cost[l] < bc){ bc = u.cost[l]; bk = k; } }
     if(bk && save.coins >= bc){ save.coins -= bc; save.upg[bk]++; bought = true; }
   }
 }
-function campaign({retries=6, buy=true, start=null, skill=.5}={}){
+function campaign({retries=6, buy=true, start=null, skill=.5, mobil=false, fran=0, till=NLV}={}){
   game.botSkill = skill;
-  const real = save; noPersist = true; save = start ? normalize(JSON.parse(JSON.stringify(start))) : freshSave(); save.seen = Object.fromEntries(CARD_ORDER.map(k=>[k,1]));
+  const real = save, realMob = game.mobil; noPersist = true; game.mobil = mobil;
+  save = start ? normalize(JSON.parse(JSON.stringify(start))) : freshSave(); save.seen = Object.fromEntries(CARD_ORDER.map(k=>[k,1]));
   const log = [];
   try{
-    for(let i=0;i<10;i++){
+    for(let i=0;i<till;i++){
+      if(i < fran){ save.unlocked = Math.max(save.unlocked, i+2); continue; }
       let tries = 0, r;
       do{ tries++; r = simLevel(i); if(!r.won && buy) buyAll(); } while(!r.won && tries < retries);
-      log.push({lv:i+1, tries, won:r.won, t:r.t, stars:r.stars, php:r.php, ehp:r.ehp, giant:r.giant, giantZ:r.giantZ, upg:Object.values(save.upg).join(''), coins:save.coins});
+      log.push({lv:i+1, boss:LEVELS[i].boss||'', tries, won:r.won, t:r.t, stars:r.stars, php:r.php, phpMax:r.phpMax, ehp:r.ehp, mal:r.met ? r.met.map(v=>v?'✓':'·').join('') : '', giant:r.giant, giantZ:r.giantZ, upg:Object.values(save.upg).join(''), coins:save.coins, peak:r.stat.peak});
       if(buy) buyAll();
       if(!r.won) break;
     }
-  } finally { save = real; noPersist = false; game.sim = false; toMenu(); }
+  } finally { save = real; noPersist = false; game.sim = false; game.mobil = realMob; toMenu(); }
   return log;
 }
-window.__rp = { TUNE, game, B, Rd, save:()=>save, startLevel, sendChamp, ui, gates:()=>gates, dragon, giant, usePower, simLevel, campaign, buyAll, LEVELS, UPG,
+// Tornet: våning 1 till till laddas och spelas av datorspelaren. Med full=true har den alla uppgraderingar (mäter hur långt man kan klättra).
+function tornSim({till=40, skill=.5, fro=12345, full=true, stopOnLoss=false}={}){
+  const real = save; noPersist = true;
+  save = freshSave(); save.unlocked = NLV; save.seen = Object.fromEntries(CARD_ORDER.map(k=>[k,1]));
+  if(full) for(const k in UPG) save.upg[k] = UPG[k].max;
+  const log = [], bl = {};
+  try{
+    for(let n=1;n<=till;n++){
+      let r, err = null;
+      try{ game.bl = {...bl}; const lv = tornVaning(n, fro); r = simLevel(n-1, 420, 1/30, skill, lv); r.boss = lv.boss||''; }
+      catch(e){ err = String(e && e.message || e); r = {won:false, t:0}; }
+      log.push({n, boss:r.boss, won:r.won, t:r.t, php:r.php, err});
+      if(n%3===0 && r.won){ const o = valsignelseVal(n, fro, bl); bl[o[0]] = (bl[o[0]]||0)+1; }
+      if(stopOnLoss && !r.won) break;
+    }
+  } finally { save = real; noPersist = false; game.sim = false; game.bl = {}; toMenu(); }
+  return log;
+}
+window.__rp = { TUNE, game, camera, camBase, camLook, B, Rd, save:()=>save, startLevel, sendChamp, ui, gates:()=>gates, dragon, giant, usePower, simLevel, campaign, tornSim, buyAll, LEVELS, UPG, tornVaning, startTorn, newTorn, openMap, openTorn, showBless,
   step(n=60, dt=1/60, render=false){ let ms=0; for(let k=0;k<n;k++){ const t0=performance.now(); if(game.mode!=='pause' && game.mode!=='card') update(dt); drawUnits(); updateParticles(dt); updateShocks(dt); updateFloats(dt); updateCamera(dt); if(render) renderer.render(scene,camera); ms+=performance.now()-t0; } return {msPerFrame:+(ms/n).toFixed(2), mode:game.mode, ehp:game.ehp, php:game.php, b:B.n, r:Rd.n}; },
   aim(x, fire=true){ game.targetX=x; game.firing=fire; if(hintOn) hideHint(); }, bot(on=true){ game.bot = on; },
-  cards(){ return game.cards; }, okCard(){ $('cardOk').click(); },
+  cards(){ return game.cards; }, okCard(){ if(!$('goalScr').hidden) $('goalOk').click(); else $('cardOk').click(); },
   spawn(nb, nr){ for(let i=0;i<nb;i++) addUnit(B, rand(-XL,XL), rand(-20,15)); for(let i=0;i<nr;i++){ const j=addUnit(Rd, rand(-XL,XL), rand(-25,10)); if(j>=0) Rd.sp[j]=game.lv.rs; } }, fps:()=>window.__fps, showFps(){ showFps=true; fpsEl.hidden=false; } };
 
 fitCamera();
