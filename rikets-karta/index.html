@@ -23,7 +23,7 @@
 :root{
   --navy:#16213f; --navy-2:#223062; --panel:rgba(18,26,56,.88);
   --gold:#f6c445; --gold-dk:#b9831c; --paper:#fff7e6; --muted:#b9c3e6;
-  --o0:#8f897c; --o1:#2f6be0; --o2:#d8392f; --o3:#2fa84f; --o4:#dca81c;
+  --o0:#8f897c; --o1:#2f6be0; --o2:#d8392f; --o3:#2fa84f; --o4:#dca81c; --o5:#4b3a70;
   --f-title:"Grenze Gotisch","Times New Roman",serif;
   --f-ui:"Lilita One","Arial Black",Impact,system-ui,sans-serif;
   --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -46,14 +46,15 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 .type .ib{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#fff7e6;vertical-align:-4px;margin-right:5px;}
 .type .ib svg{width:13px;height:13px;fill:#3a2508;}
 .cl .ti.cap{background:linear-gradient(#ffe27a,#e6a51c);}
-.cl.o0{color:#fff}.cl.o0 .ti{border-color:var(--o0)}.cl.o1 .ti{border-color:var(--o1)}.cl.o2 .ti{border-color:var(--o2)}.cl.o3 .ti{border-color:var(--o3)}.cl.o4 .ti{border-color:var(--o4)}
-.cl.o0{background:var(--o0)}.cl.o1{background:var(--o1)}.cl.o2{background:var(--o2)}.cl.o3{background:var(--o3)}.cl.o4{background:var(--o4)}
+.cl.o0{color:#fff}.cl.o0 .ti{border-color:var(--o0)}.cl.o1 .ti{border-color:var(--o1)}.cl.o2 .ti{border-color:var(--o2)}.cl.o3 .ti{border-color:var(--o3)}.cl.o4 .ti{border-color:var(--o4)}.cl.o5 .ti{border-color:var(--o5)}
+.cl.o0{background:var(--o0)}.cl.o1{background:var(--o1)}.cl.o2{background:var(--o2)}.cl.o3{background:var(--o3)}.cl.o4{background:var(--o4)}.cl.o5{background:var(--o5)}
 .cl.sel{box-shadow:0 0 0 3px #fff,0 0 14px 4px rgba(255,255,255,.7);}
 .cl.tgt{box-shadow:0 0 0 3px var(--gold),0 0 16px 6px rgba(246,196,69,.8);}
 .cl.bump{animation:bump .35s ease-out;}
 @keyframes bump{0%{scale:1}35%{scale:1.35}100%{scale:1}}
 .ql{position:absolute;left:0;top:0;padding:0 6px;border-radius:8px;font-family:var(--f-ui);font-size:14px;line-height:17px;color:#fff;border:1.5px solid rgba(255,255,255,.85);will-change:transform;font-variant-numeric:tabular-nums;opacity:.92;text-shadow:0 1px 0 rgba(0,0,0,.4);}
-.ql.o1{background:var(--o1)}.ql.o2{background:var(--o2)}.ql.o3{background:var(--o3)}.ql.o4{background:var(--o4)}
+.ql.o1{background:var(--o1)}.ql.o2{background:var(--o2)}.ql.o3{background:var(--o3)}.ql.o4{background:var(--o4)}.ql.o5{background:var(--o5)}
+.ql.ship::before{content:"";display:inline-block;width:12px;height:12px;margin-right:3px;vertical-align:-1px;background:#fff;-webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 2h2v3l6 9h-6v2h-2V4zM3 17h18l-3 5H6z"/></svg>') center/contain no-repeat;mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 2h2v3l6 9h-6v2h-2V4zM3 17h18l-3 5H6z"/></svg>') center/contain no-repeat;}
 #drag,#guideSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
 #guideSvg path{fill:none;stroke:var(--gold);stroke-width:7;stroke-linecap:round;stroke-dasharray:14 10;animation:gdash .7s linear infinite;filter:drop-shadow(0 0 5px rgba(0,0,0,.7));}
 #guideSvg polygon{fill:var(--gold);filter:drop-shadow(0 0 4px rgba(0,0,0,.7));}
@@ -177,18 +178,65 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
 .type svg{width:46px;height:40px;grid-row:span 2;}
 .type b{font-family:var(--f-ui);font-weight:400;font-size:16px;color:var(--paper);}
 .types.one{grid-template-columns:1fr;}
+.types .type.wide{grid-column:1/-1;}
+.newflag{margin:3px;}
 .advice{display:flex;flex-direction:column;gap:8px;}
 .advice div{background:rgba(246,196,69,.12);border-radius:12px;padding:8px 10px;font-weight:800;font-size:14.5px;color:#ffe9b0;text-align:left;}
 .diffbtn{font-size:17px!important;}
 .diffbtn b{font-weight:400;color:var(--gold);margin-left:6px;}
 #helpScr .panel{max-width:440px;}
 .panel h3.sub{margin:2px 0 0;font-family:var(--f-ui);font-weight:400;font-size:18px;text-align:center;color:var(--gold);}
-@media (prefers-reduced-motion:reduce){#hint{animation:none}#drag line{animation:none}#guideSvg path{animation:none}}
+/* v3: väder, fria fälttåg, flikar på kampanjkartan, nyheter */
+#wx{align-self:center;display:flex;align-items:center;gap:6px;background:var(--panel);border-radius:10px;padding:3px 10px;font-size:14px;box-shadow:0 0 0 2px rgba(255,255,255,.25);text-shadow:0 1px 0 rgba(0,0,0,.5);}
+#wx.warn{box-shadow:0 0 0 2px var(--gold);animation:wxp 1s ease-in-out infinite;}
+#wx svg{width:18px;height:18px;fill:#cfe6ff;flex:none;}
+@keyframes wxp{50%{box-shadow:0 0 0 3px #fff}}
+#flash{position:absolute;inset:0;background:#e8f0ff;opacity:0;pointer-events:none;}
+#vig{transition:background .8s;}
+#vig.regn{background:radial-gradient(ellipse at 50% 45%,rgba(40,60,90,.18) 40%,rgba(10,16,30,.55) 100%);}
+#vig.storm{background:radial-gradient(ellipse at 50% 45%,rgba(30,30,60,.32) 30%,rgba(8,8,24,.72) 100%);}
+.tabs{display:flex;gap:6px;background:rgba(0,0,0,.3);border-radius:14px;padding:4px;}
+.tabs button{flex:1;font-family:var(--f-ui);font-size:18px;padding:8px 6px;border-radius:11px;color:var(--muted);}
+.tabs button.on{background:linear-gradient(#ffd866,#eaa922);color:#3f2700;}
+.tabs button[disabled]{opacity:.55;}
+.newflag{background:linear-gradient(#ffe27a,#e6a51c);color:#3f2700;border-radius:14px;padding:10px 12px;font-family:var(--f-ui);font-size:19px;text-align:center;box-shadow:0 0 0 3px #fff7e6,0 0 22px rgba(246,196,69,.8);animation:bump .6s ease-out;}
+.newflag small{display:block;font-family:var(--f-body);font-weight:800;font-size:14px;}
+.opt{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;font-weight:900;font-size:15px;}
+.seg{display:flex;gap:4px;background:rgba(0,0,0,.3);border-radius:12px;padding:3px;}
+.seg button{flex:1;padding:8px 4px;border-radius:9px;font-family:var(--f-ui);font-size:16px;color:var(--muted);}
+.seg button.on{background:#fff7e6;color:#3a2508;}
+.opt input[type=range]{width:100%;accent-color:var(--gold);height:28px;}
+.opt output{font-family:var(--f-ui);color:var(--gold);font-size:18px;}
+.daily{background:rgba(246,196,69,.12);border-radius:14px;padding:10px 12px;font-weight:800;font-size:14px;color:#ffe9b0;text-align:center;}
+.seedtxt{font-size:12px;color:var(--muted);text-align:center;}
+@media (orientation:landscape) and (max-height:520px){
+  .screen{justify-content:flex-start;}
+  .panel{max-width:min(720px,94vw);padding:12px 14px;gap:8px;border-radius:20px;}
+  .panel h2{font-size:26px;}
+  .types{grid-template-columns:repeat(3,1fr);}
+  .stars i{width:44px;height:44px}.stars i:nth-child(2){width:54px;height:54px;margin-top:-8px}
+  .btn{font-size:19px;padding:9px 14px;}
+  #start{flex-direction:row;align-items:center;justify-content:space-around;gap:16px;}
+  .titleblock{margin-top:0;}
+  .titleblock h1{font-size:64px;}
+  .startmenu{margin-bottom:0;max-width:380px;gap:8px;}
+  .startmenu .btn.green{font-size:22px;padding:11px;}
+  #guide{left:auto;right:max(12px,env(safe-area-inset-right,0px));transform:none;bottom:12px;width:300px;font-size:14px;padding:8px 10px;}
+  #hint{left:auto;right:max(12px,env(safe-area-inset-right,0px));transform:none;bottom:76px;max-width:300px;font-size:14px;animation:none;}
+  #hud .top{max-width:none;}
+  #toast{top:calc(env(safe-area-inset-top,0px) + 62px);}
+  #campSvg{max-height:58vh;}
+  #mapScr .panel{max-width:min(720px,94vw);}
+  #freeScr .panel{display:grid;grid-template-columns:1fr 1fr;}
+  #freeScr .panel>h2,#freeScr .panel>.wide{grid-column:1/-1;}
+}
+@media (prefers-reduced-motion:reduce){#hint{animation:none}#drag line{animation:none}#guideSvg path{animation:none}#wx.warn{animation:none}}
 </style>
 
 <div id="app">
   <canvas id="c"></canvas>
   <div id="vig"></div>
+  <div id="flash"></div>
   <svg id="guideSvg"></svg>
   <div id="labels"></div>
   <svg id="drag"></svg>
@@ -200,6 +248,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <div class="mid">
         <div class="row1"><span id="lvlName">Bana 1</span><span id="timer"><i></i><i></i><i></i><span id="timeTxt">0:00</span></span></div>
         <div id="power"></div>
+        <div id="wx" hidden></div>
       </div>
       <button class="iconbtn sndbtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
     </div>
@@ -229,16 +278,18 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
         <button class="btn ghost sndbtn" style="flex:0 0 56px" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff7e6"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sndon" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#fff7e6" stroke-width="2" fill="none"/><path class="sndoff" d="M16 9l6 6M22 9l-6 6" stroke="#ff8a7a" stroke-width="2.4" fill="none"/></svg></button>
       </div>
       <div class="row">
+        <button class="btn ghost" id="freeBtn">Fria fälttåg</button>
         <button class="btn ghost" id="helpBtn">Så spelar du</button>
-        <button class="btn ghost diffbtn" id="diffBtn">Svårighet<b>Normal</b></button>
       </div>
+      <button class="btn ghost diffbtn" id="diffBtn">Svårighet i fälttågen<b>Normal</b></button>
     </div>
   </div>
 
   <!-- Kampanjkarta -->
   <div class="screen scrim" id="mapScr" hidden>
     <div class="panel">
-      <h2>Riket Valdmark</h2>
+      <div class="tabs" id="realmTabs"><button data-r="0">Valdmark</button><button data-r="1">Öriket</button></div>
+      <h2 id="mapTitle">Riket Valdmark</h2>
       <svg id="campSvg" viewBox="0 0 360 540"></svg>
       <div class="row"><button class="btn ghost" id="mapShop">Rustkammaren</button><button class="btn ghost" id="mapBack">Tillbaka</button></div>
     </div>
@@ -256,6 +307,9 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
         <b>Tryck</b><span>på din borg och sedan på målet fungerar också.</span>
         <b>Nyp</b><span>för att zooma. Dra på tom mark för att flytta kartan.</span>
         <b>Håll</b><span>fingret på en borg för att se vad den gör. Ikonen ovanför siffran visar typen; guldbotten betyder huvudborg.</span>
+        <b>Skepp</b><span>dra från en hamn (ankaret) till en hamn på andra sidan en streckad sjöled. Skepp är långsammare men kommer åt andra öar och förbi fästningar.</span>
+        <b>Väder</b><span>regn gör alla till fots långsammare. Storm stänger sjölederna (de blir röda). Skylten vid timern varnar i förväg.</span>
+        <b>Gunst</b><span>i Öriket och fria fälttåg får den som har flest borgar efter 10 minuter Kronans gunst: fler soldater.</span>
       </div>
       <h3 class="sub">Borgarna</h3>
       <div class="types" id="helpTypes"></div>
@@ -269,6 +323,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
       <p id="inNum">Bana 1 av 12</p>
       <h2 id="inName">Ekdalen</h2>
       <div class="foes" id="inFoes"></div>
+      <div class="newflag" id="inNew" hidden></div>
       <div class="tip" id="inTip"></div>
       <div class="types" id="inTypes"></div>
       <p class="tiny" id="inStars"></p>
@@ -296,6 +351,7 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
         <div id="resSub">Ekdalen är ditt</div>
         <div class="goldpill" id="resGoldPill"><i class="coin"></i><span id="resGold">+0</span></div>
       </div>
+      <div class="newflag" id="resNew" hidden></div>
       <div class="advice" id="resAdvice" hidden></div>
       <button class="btn ghost" id="resEasy" hidden>Prova svårighet Lätt</button>
       <button class="btn green" id="resNext">Nästa bana</button>
@@ -303,6 +359,34 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
         <button class="btn ghost" id="resShop">Rustkammaren</button>
         <button class="btn ghost" id="resMap">Kartan</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Fria fälttåg -->
+  <div class="screen scrim" id="freeScr" hidden>
+    <div class="panel">
+      <h2>Fria fälttåg</h2>
+      <p class="wide">Varje fälttåg är en ny karta. Välj hur stort kriget ska bli.</p>
+      <div class="opt"><span>Borgar</span><div><output id="fN">14</output><input type="range" id="fSize" min="6" max="30" step="1" value="14" aria-label="Antal borgar"></div></div>
+      <div class="opt"><span>Herrar</span><div class="seg" id="fLords"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button></div></div>
+      <div class="opt"><span>Svårighet</span><div class="seg" id="fDiff"><button data-v="easy">Lätt</button><button data-v="normal">Normal</button><button data-v="hard">Svår</button></div></div>
+      <div class="opt"><span>Land</span><div class="seg" id="fLand"><button data-v="mix">Blandat</button><button data-v="land">Fastland</button><button data-v="isl">Öar</button></div></div>
+      <div class="opt"><span>Väder</span><div class="seg" id="fWx"><button data-v="1">På</button><button data-v="0">Av</button></div></div>
+      <button class="btn green wide" id="fNew">Nytt fälttåg</button>
+      <div class="daily wide" id="fDailyTxt"></div>
+      <button class="btn wide" id="fDaily">Dagens karta</button>
+      <div class="row wide"><button class="btn ghost" id="fAgain">Samma karta igen</button><button class="btn ghost" id="fBack">Tillbaka</button></div>
+      <p class="seedtxt wide" id="fStats"></p>
+    </div>
+  </div>
+
+  <!-- Nyhet: nytt land -->
+  <div class="screen scrim" id="newsScr" hidden>
+    <div class="panel">
+      <div class="newflag">Nytt land: Öriket!<small>Du har erövrat hela Valdmark. Nu väntar tolv banor bland öar, hamnar och stormar.</small></div>
+      <div class="types" id="newsTypes"></div>
+      <button class="btn green" id="newsGo">Segla till Öriket</button>
+      <button class="btn ghost" id="newsLater">Senare</button>
     </div>
   </div>
 
@@ -345,22 +429,37 @@ function makeNoise(seed){
 
 /* ================= Spelregler och data ================= */
 const P1 = 1;                                   // spelaren
-const OCOL = [0xa59f8e, 0x2f6be0, 0xd8392f, 0x2fa84f, 0xe8b31f];
-const OCSS = ['#8f897c','#2f6be0','#d8392f','#2fa84f','#dca81c'];
+const OCOL = [0xa59f8e, 0x2f6be0, 0xd8392f, 0x2fa84f, 0xe8b31f, 0x4b3a70];
+const OCSS = ['#8f897c','#2f6be0','#d8392f','#2fa84f','#dca81c','#4b3a70'];
+const NO = OCOL.length;                         // antal ägare inklusive neutral (0)
 const LORDS = {
   2:{name:'Röde Ragnar', kind:'aggr', trait:'aggressiv'},
   3:{name:'Gröna Greta', kind:'caut', trait:'försiktig'},
   4:{name:'Gule Gunnar', kind:'opp',  trait:'opportunist'},
+  5:{name:'Svarta Sigrid', kind:'sea', trait:'sjöfarare'},
 };
 const TYPES = {
   by:  {name:'By',       prod:.55, cap:30, def:1},
   borg:{name:'Borg',     prod:.9,  cap:50, def:1},
   fast:{name:'Fästning', prod:.65, cap:60, def:1.5},
   smed:{name:'Smedja',   prod:0,   cap:30, def:1},
+  hamn:{name:'Hamn',     prod:.7,  cap:40, def:.8},
+  torn:{name:'Vakttorn', prod:.35, cap:25, def:1.25},
 };
 const CAPITAL_PROD = 1.3, SMED_BONUS = 1.2, BASE_SPEED = 2.4;
+// v3: skepp seglar långsammare än marsch. Vakttorn skjuter en soldat i taget på kolonner inom räckvidden.
+const SHIP = .72, TOWER_R = 3.4, TOWER_CD = 1.15;
+// Kronans gunst (v3-kartor): efter FAVOR_T sekunder producerar herren med flest borgar 40 % mer,
+// och 35 procentenheter mer för var femte minut därefter, så att långa krig avgörs
+const FAVOR_T = 600;
+const favorMul = t => 1.4 + .35*Math.floor(Math.max(0, t-FAVOR_T)/300);
+// väder: regn saktar marschen, storm stänger sjölederna (och saktar lite)
+const WX = {
+  regn: {name:'Regn',  land:.7,  sea:true},
+  storm:{name:'Storm', land:.85, sea:false},
+};
 const LEVELS = [
-  {name:'Ekdalen',     n:7,  foes:[3],     par:150, seed:3007, sp:6.0, smed1:true, tip:'Guiden visar vägen. Ta de grå byarna nära dig först – Gröna Greta väntar en stund innan hon anfaller dig.'},
+  {name:'Ekdalen',     n:7,  foes:[3],     par:150, seed:3007, sp:6.0, smed1:true, tip:'Guiden visar vägen. Ta de grå byarna nära dig först. Gröna Greta väntar en stund innan hon anfaller dig.'},
   {name:'Vargmon',     n:7,  foes:[4],     par:85, seed:12591,  tip:'Ny borgtyp: Fästning (sköld). Varje försvarare räknas som 1,5. Ta byarna först och fästningen när siffran är grön.'},
   {name:'Silverbäck',  n:8,  foes:[2],     par:95, seed:19612,  tip:'Röde Ragnar är aggressiv. Ta smedjan (hammaren) tidigt och låt några trupper stå kvar i huvudborgen.'},
   {name:'Ljungheden',  n:10, foes:[3,4],   par:100, seed:27097, tip:'Svep över flera av dina borgar innan du släpper, så anfaller alla samtidigt.'},
@@ -372,7 +471,26 @@ const LEVELS = [
   {name:'Stormnäs',    n:20, foes:[2,3,4], par:260, seed:72613, tip:'Nyp för att zooma och dra på tom mark för att flytta kartan.'},
   {name:'Svartskog',   n:22, foes:[2,3,4], par:290, seed:83196, tip:'Byar är billiga att ta men ger lite. Fästningar och smedjor avgör kriget.'},
   {name:'Kronlandet',  n:25, foes:[2,3,4], par:300, seed:90984, tip:'Rikets hjärta. Den som håller Kronlandet håller hela Valdmark.'},
+  // ---- Öriket (v3). isl = antal öar, towers = vakttorn, wx = väder, news = nyheter med introkort och guidesteg ----
+  {name:'Ankarvik',     n:8,  foes:[3],     par:170, seed:5101, isl:2, news:['hamn'], tip:'Ta hamnen (ankaret) på din ö. Därifrån seglar dina trupper till andra hamnar längs de streckade sjölederna.'},
+  {name:'Saltholmen',   n:9,  foes:[5],     par:170, seed:5203, isl:3, news:['sigrid'], tip:'Svarta Sigrid anfaller helst över vattnet. Låt några trupper stå kvar i dina hamnar.'},
+  {name:'Måsskär',      n:10, foes:[5],     par:180, seed:5307, isl:2, towers:2, news:['torn'], tip:'Vakttornet (bågen) skjuter på fiender som går förbi inom ringen. Ta det tidigt.'},
+  {name:'Dimfjärden',   n:11, foes:[3,5],   par:200, seed:5413, isl:3, towers:1, wx:{k:['regn'], first:45, gap:[60,85], dur:[18,26]}, news:['regn'], tip:'Regnet gör att alla går långsammare en stund. Det varnas i förväg uppe vid timern.'},
+  {name:'Stormudden',   n:12, foes:[2,5],   par:210, seed:5519, isl:3, towers:1, wx:{k:['storm'], first:50, gap:[60,85], dur:[16,24]}, news:['storm'], tip:'Under storm är sjölederna stängda. Skicka skeppen innan stormen kommer.'},
+  {name:'Tångön',       n:14, foes:[4,5],   par:230, seed:5623, isl:4, towers:2, wx:{k:['regn','storm'], first:55, gap:[60,90], dur:[16,26]}, tip:'Gule Gunnar slår mot den som är svag. Låt honom och Sigrid nöta på varandra.'},
+  {name:'Sälgrund',     n:15, foes:[3,5],   par:240, seed:5729, isl:3, towers:2, wx:{k:['storm','regn'], first:50, gap:[60,90], dur:[16,26]}, tip:'Skeppen tar sig förbi fästningar: segla runt i stället för att anfalla rakt på.'},
+  {name:'Fyrholmen',    n:17, foes:[2,4,5], par:260, seed:5831, isl:4, towers:2, wx:{k:['regn','storm'], first:60, gap:[65,95], dur:[16,26]}, tip:'Tre herrar. Ta en ö helt först, så har du ryggen fri.'},
+  {name:'Bärnstensön',  n:19, foes:[2,3,5], par:280, seed:5939, isl:5, towers:3, wx:{k:['storm','regn'], first:60, gap:[65,95], dur:[16,26]}, tip:'Många öar. Hamnarna avgör vem som når vart.'},
+  {name:'Kaparbukten',  n:21, foes:[2,4,5], par:300, seed:6043, isl:4, towers:3, wx:{k:['regn','storm'], first:55, gap:[60,90], dur:[18,28]}, tip:'Vakttorn vid hamnarna gör det dyrt för Sigrid att landstiga.'},
+  {name:'Valfjärden',   n:23, foes:[3,4,5], par:320, seed:6151, isl:5, towers:3, wx:{k:['storm','regn'], first:55, gap:[60,90], dur:[18,28]}, tip:'Använd stormen: när sjölederna stängs kan ingen nå dina öar över vattnet.'},
+  {name:'Havskronan',   n:26, foes:[2,3,5], par:340, seed:6257, isl:5, towers:4, wx:{k:['regn','storm'], first:50, gap:[60,90], dur:[18,28]}, tip:'Örikets krona. Den som håller havet håller riket.'},
 ];
+// riken (fälttåg) på kampanjkartan. Ett nytt rike läggs till här och i LEVELS.
+const REALMS = [
+  {name:'Valdmark', title:'Riket Valdmark', from:0,  to:12},
+  {name:'Öriket',   title:'Öriket',         from:12, to:24},
+];
+const realmOf = idx => REALMS.findIndex(r=>idx>=r.from && idx<r.to);
 const NL = LEVELS.length;
 /* Svårighetskurva (v2). Mätt med en människolik testbot: en handling var 2–3:e sekund, en borg per drag.
    prod = fiendens produktion, pace = hur långsamt de tänker, wake = första draget (s),
@@ -391,7 +509,23 @@ const TUNE = [
   {prod:1.078, pace:1.4, wake:2, grace:11, src:3, foeN:24, youN:20},
   {prod:1.041, pace:1.49, wake:3, grace:16, src:3, foeN:23, youN:21},
   {prod:1.07, pace:1.42, wake:2, grace:12, src:3, foeN:23, youN:20},
+  // Öriket (v3), framsökt med testboten
+  {prod:0.71, pace:2.29, wake:7, grace:58, src:2, foeN:16, youN:25},   // Ö1 guidebanan, lättare än målet (x 0,35)
+  {prod:0.898, pace:1.84, wake:5, grace:34, src:2, foeN:20, youN:23},   // Ö2  x 0,663
+  {prod:1.113, pace:1.32, wake:2, grace:8, src:3, foeN:24, youN:20},    // Ö3  x 1,021
+  {prod:0.958, pace:1.69, wake:4, grace:26, src:2, foeN:21, youN:22},   // Ö4  x 0,762
+  {prod:0.926, pace:1.77, wake:4, grace:30, src:2, foeN:21, youN:22},   // Ö5  x 0,709
+  {prod:1.244, pace:1, wake:0, grace:8, src:3, foeN:27, youN:20},      // Ö6  x 1,241 (kartan är lätt, så fienden får full fart)
+  {prod:0.83, pace:2, wake:6, grace:43, src:2, foeN:19, youN:24},       // Ö7  x 0,550
+  {prod:0.774, pace:2.14, wake:6, grace:50, src:2, foeN:17, youN:24},   // Ö8  x 0,457
+  {prod:0.726, pace:2.25, wake:7, grace:56, src:2, foeN:17, youN:25},   // Ö9  x 0,377
+  {prod:0.758, pace:2.18, wake:7, grace:52, src:2, foeN:17, youN:25},   // Ö10 x 0,430
+  {prod:0.734, pace:2.23, wake:7, grace:55, src:2, foeN:17, youN:25},   // Ö11 x 0,391
+  {prod:0.986, pace:1.63, wake:4, grace:23, src:3, foeN:22, youN:21},  // Ö12 x 0,81 med tre borgar per anfall (för hand: kurvan har en brant tröskel här)
 ];
+// fria fälttåg: samma skala som testbotens sökning (x 0 = lättast, 1 = svårast)
+function tuneX(x){ const l=(a,b,t)=>a+(b-a)*t; return {prod:+l(.5,1.1,x).toFixed(3), pace:+l(2.8,1.35,x).toFixed(2), wake:Math.round(l(10,2,x)), grace:Math.round(l(85,8,Math.min(x,1))), src:x<.3?1:x<.85?2:3, foeN:Math.round(l(12,24,x)), youN:Math.round(l(28,20,Math.min(x,1)))}; }
+const FREE_DIFF = {easy:{name:'Lätt', x:.12}, normal:{name:'Normal', x:.5}, hard:{name:'Svår', x:.9}};
 // Lätt: fienden producerar långsammare, tänker långsammare och väntar längre innan de anfaller dig
 const DIFF = {
   normal:{name:'Normal', prod:1,   pace:1,    grace:0,  foeN:1,   gold:1},
@@ -408,7 +542,15 @@ const UPG = {
     icon:'<path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5zm-1 6h2v3h3v2h-3v3h-2v-3H8v-2h3z"/>'},
   sword:{name:'Vassare svärd', desc:'Dina trupper slåss 6 % hårdare per nivå', max:5, cost:[100,180,280,400,540],
     icon:'<path d="M14.5 3 21 3v6.5l-9.3 9.3 1.8 1.8-1.4 1.4-3-3-3.6 3.6-1.4-1.4 3.6-3.6-3-3 1.4-1.4 1.8 1.8z"/>'},
+  // v3
+  ship:{name:'Skeppsbyggare', desc:'Dina skepp seglar 15 % fortare per nivå', max:5, cost:[120,220,340,480,640],
+    icon:'<path d="M11 2h2v3l6 9h-6v2h-2V4zM3 17h18l-3 5H6z"/>'},
+  wall:{name:'Tjocka murar', desc:'Dina borgar försvarar sig 6 % bättre per nivå', max:5, cost:[120,220,340,480,640],
+    icon:'<path d="M2 21V8h3v3h3V8h3v3h2V8h3v3h3V8h3v13z"/>'},
+  rich:{name:'Rika marker', desc:'Alla dina borgar tar fram 5 % fler soldater per nivå', max:5, cost:[140,250,380,530,700],
+    icon:'<path d="M12 2c3 3 5 6 5 9a5 5 0 0 1-4 4.9V22h-2v-6.1A5 5 0 0 1 7 11c0-3 2-6 5-9z"/>'},
 };
+const UPG0 = () => Object.fromEntries(Object.keys(UPG).map(k=>[k,0]));
 const ICON = {
   crown:'<svg viewBox="0 0 24 24"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></svg>',
   by:'<svg viewBox="0 0 24 24"><path d="M12 3 1.5 11.5H4.5V21h5.5v-6h4v6h5.5v-9.5h3z"/></svg>',
@@ -416,33 +558,55 @@ const ICON = {
   hammer:'<svg viewBox="0 0 24 24"><path d="M2.5 7.5 9 2l3.2 2.6 1.3-1.1 2.4 2.4-1.1 1.3 1.6 1.9-2.6 2.4-1.9-1.8L7.4 13zM12.6 12.8l2.4-2.2 7.2 7.6-2.6 2.4z"/></svg>',
   fast:'<svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5z"/></svg>',
   smed:'<svg viewBox="0 0 24 24"><path d="M2 8h13l1-2h6v4c-3 0-5 1-6 3l2 4H6l2-4c-3 0-5-2-6-5zM6 19h12v2H6z"/></svg>',
+  anchor:'<svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 1 5.8V9h3v2h-3v8.9c2.6-.4 4.6-2.2 5.3-4.6L16 16l3-5 3 5-1.6-.6C19.4 19.2 16 22 12 22s-7.4-2.8-8.4-6.6L2 16l3-5 3 5-2.3-.7c.7 2.4 2.7 4.2 5.3 4.6V11H8V9h3V7.8A3 3 0 0 1 12 2zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>',
+  bow:'<svg viewBox="0 0 24 24"><path d="M4 2c6 2 10 6 12 12l-1.9.7C12.3 9.6 9 6.3 3.3 4zM3 21l9.6-9.6-1.1-2.9 1.9-.7 1 2.6L20 5h-2V3h4v4h-2V6.4L14.4 12l2.6 1-.7 1.9-2.9-1.1L4.4 22.4z"/></svg>',
+  rain:'<svg viewBox="0 0 24 24"><path d="M6 13a4 4 0 0 1-.4-8A6 6 0 0 1 17 5.5 4 4 0 0 1 18 13zM7 15l-1.5 4h1.6L8.6 15zm5 0-1.5 4h1.6l1.5-4zm5 0-1.5 4h1.6l1.5-4z"/></svg>',
+  storm:'<svg viewBox="0 0 24 24"><path d="M6 12a4 4 0 0 1-.4-8A6 6 0 0 1 17 4.5 4 4 0 0 1 18 12h-4.2l1.7-3H11l-2.5 5H11l-1.5 8L16 12z"/></svg>',
+  sigrid:'<svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5v2l2 1-2 1c0 3-2.2 5-5 5s-5-2-5-5L5 10l2-1V7a5 5 0 0 1 5-5zM4 22c0-3 3-5 8-5s8 2 8 5z"/></svg>',
 };
 
 // typikon ovanför siffran: hus, torn, sköld, hammare (krona för huvudborgen)
-const TICON = {by:ICON.by, borg:ICON.borg, fast:ICON.fast, smed:ICON.hammer};
+const TICON = {by:ICON.by, borg:ICON.borg, fast:ICON.fast, smed:ICON.hammer, hamn:ICON.anchor, torn:ICON.bow};
 const TINFO = {
   by:'Liten och billig att ta. Producerar långsamt.',
   borg:'Standard. Producerar snabbare och rymmer fler.',
   fast:'Försvar ×1,5: varje försvarare räknas som 1,5. Ta den med en stor styrka.',
   smed:'Producerar inget, men gör alla dina trupper 20 % starkare.',
+  hamn:'Härifrån seglar trupperna till andra hamnar längs sjölederna. Skepp är långsammare men tar sig förbi fästningar. Öppen kaj: försvar ×0,8.',
+  torn:'Skjuter på fiendekolonner som går förbi inom ringen. Försvar ×1,25.',
 };
 // siluetter för hjälpen, introkorten och informationsrutan (samma former som 3D-modellerna)
 const SIL = {
   by:'<svg class="sil" viewBox="0 0 46 40"><ellipse cx="23" cy="36" rx="21" ry="3.5" fill="#6f8a45"/><path fill="#eadcb8" d="M3 25h14v10H3zM20 27h12v8H20zM33 24h11v11H33z"/><path fill="#d8b45a" d="M1 26l9-8 9 8zM18.5 28l7.5-7 7.5 7zM31.5 25l7-7 7 7z"/><path fill="#7f5a32" d="M8 29h4v6H8zM24 30h3v5h-3zM37 28h4v7h-4z"/></svg>',
   borg:'<svg class="sil" viewBox="0 0 46 40"><ellipse cx="23" cy="36" rx="21" ry="3.5" fill="#857d6e"/><path fill="#b8ae9c" d="M3 25h40v11H3z"/><path fill="#b8ae9c" d="M3 22h3v3H3zM9 22h3v3H9zM34 22h3v3h-3zM40 22h3v3h-3z"/><path fill="#cdc4b2" d="M17 9h12v27H17z"/><path fill="#cdc4b2" d="M15 6h3.5v4H15zM21.3 6h3.4v4h-3.4zM27.5 6H31v4h-3.5z"/><path fill="#2f6be0" d="M16 6l7-6 7 6z"/><path fill="#2b1d14" d="M20 29h6v7h-6z"/></svg>',
   fast:'<svg class="sil" viewBox="0 0 46 40"><ellipse cx="23" cy="37" rx="22" ry="3" fill="#6f695f"/><path fill="#9d9a94" d="M5 21h36v15H5z"/><path fill="#8a867f" d="M1 15h8v21H1zM37 15h8v21h-8zM13 18h7v18h-7zM26 18h7v18h-7z"/><path fill="#a9a6a0" d="M17 7h12v15H17z"/><path fill="#2f6be0" d="M0 15l5-6 5 6zM36 15l5-6 5 6zM16 7l7-7 7 7z"/><path fill="#2b1d14" d="M20 29h6v7h-6z"/></svg>',
+  hamn:'<svg class="sil" viewBox="0 0 46 40"><rect x="0" y="30" width="46" height="10" fill="#3f8fc6"/><path fill="#8a5a32" d="M22 27h24v3H22z"/><path fill="#6b4626" d="M25 30h2v6h-2zM33 30h2v6h-2zM41 30h2v6h-2z"/><path fill="#eadcb8" d="M2 18h16v12H2z"/><path fill="#8a5a32" d="M0 19l10-8 10 8z"/><path fill="#7a4a24" d="M27 22h16l-3 5H30z"/><path fill="#3a2a1a" d="M34.5 8h1.5v14h-1.5z"/><path fill="#2f6be0" d="M36 9l7 8h-7z"/></svg>',
+  torn:'<svg class="sil" viewBox="0 0 46 40"><ellipse cx="23" cy="36" rx="16" ry="3.5" fill="#857d6e"/><path fill="#cdc4b2" d="M18 12h10v24H18z"/><path fill="#8a5a32" d="M14 8h18v5H14z"/><path fill="#6b4626" d="M15 13h2v3h-2zM29 13h2v3h-2z"/><path fill="#2f6be0" d="M13 8l10-8 10 8z"/><path fill="#ff8a2a" d="M21 5h4v3h-4z"/><path fill="#2b1d14" d="M21 29h4v7h-4zM22 18h2v4h-2z"/><circle cx="23" cy="24" r="21" fill="none" stroke="#f6c445" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/></svg>',
   smed:'<svg class="sil" viewBox="0 0 46 40"><ellipse cx="23" cy="36" rx="21" ry="3.5" fill="#7f776a"/><circle cx="31" cy="6" r="3.5" fill="#9a9a9a"/><circle cx="35" cy="2.5" r="2.5" fill="#b4b4b4"/><path fill="#6f6860" d="M28 9h6v17h-6z"/><path fill="#a7774a" d="M3 22h26v14H3z"/><path fill="#6b4a2a" d="M1 23l15-9 15 9z"/><path fill="#ff8a2a" d="M7 27h9v7H7z"/><path fill="#ffd36a" d="M9 30h5v4H9z"/><path fill="#2d2d33" d="M31 27h13v3h-3v2h1.5v4H33v-4h1.5v-2H32l-2-1.5z"/></svg>',
 };
 function typeCard(t){ return `<div class="type">${SIL[t]}<b><i class="ib">${TICON[t]}</i>${TYPES[t].name}</b><span>${TINFO[t]}</span></div>`; }
+// nyheter i Öriket: introkort (skepp och hamn, Sigrid, vakttorn, regn, storm)
+const NEWS = {
+  hamn:{title:'Nytt: hamnar och skepp', card:()=>typeCard('hamn')},
+  sigrid:{title:'Ny herre: Svarta Sigrid', card:()=>`<div class="type">${'<svg class="sil" viewBox="0 0 46 40"><rect x="0" y="30" width="46" height="10" fill="#3f8fc6"/><path fill="#5a3a22" d="M8 26h30l-4 6H12z"/><path fill="#3a2a1a" d="M22 4h2v22h-2z"/><path fill="#4b3a70" d="M24 6l12 10-12 4z"/><path fill="#4b3a70" d="M22 8l-10 12 10 2z"/></svg>'}<b><i class="ib">${ICON.sigrid}</i>Svarta Sigrid</b><span>Sjöfarare. Anfaller helst över vattnet och tar gärna hamnar.</span></div>`},
+  torn:{title:'Nytt: vakttorn', card:()=>typeCard('torn')},
+  regn:{title:'Nytt: regn', card:()=>`<div class="type"><svg class="sil" viewBox="0 0 24 24" style="fill:#9cc8ff">${ICON.rain.replace(/<\/?svg[^>]*>/g,'')}</svg><b>Regn</b><span>Alla kolonner till fots går 30 % långsammare. Varnas i förväg vid timern.</span></div>`},
+  storm:{title:'Nytt: storm', card:()=>`<div class="type"><svg class="sil" viewBox="0 0 24 24" style="fill:#c9b8ff">${ICON.storm.replace(/<\/?svg[^>]*>/g,'')}</svg><b>Storm</b><span>Sjölederna stängs. Inga nya skepp kan segla förrän stormen är över.</span></div>`},
+};
 
 /* ================= Sparning ================= */
 const SAVE_KEY = 'riketskarta.v1';
 // v2 behåller nyckeln riketskarta.v1 så att gamla framsteg finns kvar; nya fält får standardvärden.
-const freshSave = () => ({gold:0, unlocked:1, stars:Array(NL).fill(0), best:Array(NL).fill(0), upg:{march:0,capital:0,start:0,sword:0}, mute:false, help:false, diff:'normal', guide:false, losses:Array(NL).fill(0)});
+// v3 lägger till: tre förbättringar, Öriket (bana 13–24 i samma listor), fria fälttåg, dagens karta, guidesteg per nyhet.
+const freshSave = () => ({gold:0, unlocked:1, stars:Array(NL).fill(0), best:Array(NL).fill(0), upg:UPG0(), mute:false, help:false, diff:'normal', guide:false, losses:Array(NL).fill(0),
+  lessons:{}, oriket:false, realm:0,
+  free:{n:14, lords:2, diff:'normal', land:'mix', wx:1, seed:0, wins:0, plays:0},
+  daily:{date:'', best:0, wins:0}});
 function loadSave(){
   try{
     const s = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(s && s.upg){ const d = freshSave(); return {...d, ...s, upg:{...d.upg, ...s.upg}, stars:(s.stars||[]).concat(d.stars).slice(0,NL), best:(s.best||[]).concat(d.best).slice(0,NL), losses:(s.losses||[]).concat(d.losses).slice(0,NL), diff:DIFF[s.diff]?s.diff:'normal'}; }
+    if(s && s.upg){ const d = freshSave(); return {...d, ...s, upg:{...d.upg, ...s.upg}, stars:(s.stars||[]).concat(d.stars).slice(0,NL), best:(s.best||[]).concat(d.best).slice(0,NL), losses:(s.losses||[]).concat(d.losses).slice(0,NL), diff:DIFF[s.diff]?s.diff:'normal',
+      lessons:{...(s.lessons||{})}, free:{...d.free, ...(s.free||{})}, daily:{...d.daily, ...(s.daily||{})}}; }
   }catch(e){}
   return freshSave();
 }
@@ -452,7 +616,12 @@ function persist(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
 /* ================= Bangenerering ================= */
 function edgeR(L,x,z){ const a = Math.atan2(z/L.rz, x/L.rx); return 1 + 0.13*(L.nz(Math.cos(a)*1.6+L.ph, Math.sin(a)*1.6+3.1)*2-1) + 0.07*(L.nz(x*.18+9, z*.18+4)*2-1); }
 function landRR(L,x,z){ return Math.hypot(x/L.rx, z/L.rz); }
-function landAt(L,x,z){ const e = edgeR(L,x,z); return 1 - sstep(e-0.1, e, landRR(L,x,z)); }
+function landAt(L,x,z){ if(L.isl) return islandLand(L,x,z); const e = edgeR(L,x,z); return 1 - sstep(e-0.1, e, landRR(L,x,z)); }
+// v3: öar. Varje ö är en egen brusig ellips. inner() säger om en punkt ligger på land med marginal.
+function islE(L,I,x,z){ const a = Math.atan2((z-I.z)/I.rz, (x-I.x)/I.rx); return 1 + 0.14*(L.nz(Math.cos(a)*1.6+I.ph, Math.sin(a)*1.6+3.1)*2-1) + 0.06*(L.nz(x*.18+9, z*.18+4)*2-1); }
+function islRR(I,x,z){ return Math.hypot((x-I.x)/I.rx, (z-I.z)/I.rz); }
+function islandLand(L,x,z){ let m = 0; for(const I of L.isl){ const r = islRR(I,x,z); if(r > 1.4) continue; const e = islE(L,I,x,z); m = Math.max(m, 1 - sstep(e-.1, e, r)); } return m; }
+function inner(L,x,z,mg){ if(!L.isl) return landRR(L,x,z) <= edgeR(L,x,z)-mg; for(const I of L.isl) if(islRR(I,x,z) <= islE(L,I,x,z)-mg) return true; return false; }
 function fbm(L,x,z){ return L.nz(x,z)*.6 + L.nz(x*2.1+7,z*2.1+3)*.28 + L.nz(x*4.3+1,z*4.3+9)*.12; }
 function segDist(px,pz,ax,az,bx,bz){ const dx=bx-ax, dz=bz-az, l2=dx*dx+dz*dz; const t = l2? clamp(((px-ax)*dx+(pz-az)*dz)/l2,0,1):0; return Math.hypot(px-ax-dx*t, pz-az-dz*t); }
 function polyDist(px,pz,pts){ let m=1e9; for(let i=0;i+3<pts.length;i+=2) m=Math.min(m, segDist(px,pz,pts[i],pts[i+1],pts[i+2],pts[i+3])); return m; }
@@ -470,9 +639,43 @@ function heightAt(L,x,z){
 }
 
 function genLevel(idx, seedIn){
-  let seed = seedIn ?? LEVELS[idx].seed ?? (1009 + idx*7919);
-  for(let k=0;k<60;k++, seed+=101){ const L = tryGen(idx, seed); if(L) return L; }
+  const def = LEVELS[idx];
+  let seed = seedIn ?? def.seed ?? (1009 + idx*7919);
+  // Valdmark (v1/v2) använder den gamla generatorn oförändrad, så banorna ser likadana ut som förut
+  for(let k=0;k<60;k++, seed+=101){ const L = def.isl ? tryGenNew(def, seed, idx) : tryGen(idx, seed); if(L){ L.def = def; return L; } }
   throw new Error('kunde inte skapa bana');
+}
+/* ---------- fria fälttåg: allt härleds ur fröet och valen ---------- */
+const FOE_POOL = [2,3,4,5];
+// små kartor rymmer färre herrar (annars står alla med en full huvudborg var och ingen kan anfalla)
+const maxLords = n => n < 9 ? 1 : n < 12 ? 2 : 3;
+function freeDef(o){
+  const r = mulberry32((o.seed*2654435761)>>>0), n = clamp(o.n|0, 6, 30), lords = clamp(o.lords|0, 1, maxLords(n));
+  const pool = FOE_POOL.slice(); for(let i=pool.length-1;i>0;i--){ const j=(r()*(i+1))|0; [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  const land = o.land==='mix' ? (r()<.55 ? 'isl' : 'land') : o.land;
+  const isl = land==='isl' && n >= 9 ? clamp(Math.round(n/5.5)+(r()<.5?0:1), 2, 5) : 1;
+  const towers = r()<.75 ? Math.floor(n/8) : 0;
+  const wk = r()<.5 ? ['regn','storm'] : ['storm','regn'];
+  const x = (FREE_DIFF[o.diff]||FREE_DIFF.normal).x;
+  return {free:true, name:o.daily?'Dagens karta':'Fritt fälttåg', n, foes:pool.slice(0,lords), isl, towers, par:Math.round(40 + n*9 + lords*25),
+    wx:o.wx ? {k:wk, first:50, gap:[60,95], dur:[16,26]} : null, g:2 + x*4, x, tip:'Fritt fälttåg: ta alla fiendeborgar. Kartan är ny för varje frö.'};
+}
+function genFree(o){
+  const def = freeDef(o);
+  let seed = o.seed;
+  for(let k=0;k<80;k++, seed+=7919){ const L = tryGenNew(def, seed, -1); if(L){ L.def = def; L.freeSeed = o.seed; return L; } }
+  // reserv: blir det inga öar av fröet blir det fastland
+  const d2 = {...def, isl:1}; seed = o.seed;
+  for(let k=0;k<80;k++, seed+=7919){ const L = tryGenNew(d2, seed, -1); if(L){ L.def = d2; L.freeSeed = o.seed; return L; } }
+  throw new Error('kunde inte skapa karta');
+}
+// dagens karta: samma frö för alla samma dag
+function dateKey(d=new Date()){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function dailyOpts(key=dateKey()){
+  let h = 2166136261; for(const ch of 'riket'+key){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  const seed = (h>>>0) % 900000 + 1000, r = mulberry32(seed);
+  const n = 10 + Math.floor(r()*13);
+  return {seed, n, lords: n<13 ? 1+(r()<.6?1:0) : 2+(r()<.5?1:0), diff:'normal', land:'mix', wx:1, daily:key};
 }
 function tryGen(idx, seed){
   const def = LEVELS[idx], rng = mulberry32(seed), N = def.n, sp = def.sp || 5.5;
@@ -577,18 +780,225 @@ function tryGen(idx, seed){
   return L;
 }
 
+/* ---------- v3: generator för Öriket och fria fälttåg ---------- */
+// Öar med vatten emellan, hamnar på kusten och sjöleder mellan hamnarna. Startplatserna väljs så att
+// alla herrar har lika långt till varandra och lika stora "zoner", och de närmaste byarna jämnas ut.
+function tryGenNew(def, seed, idx){
+  const rng = mulberry32(seed), N = def.n, sp = def.sp || 5.5, K = def.isl || 1;
+  const L = {idx, seed, N, nz:makeNoise(seed*3+1), ph:rng()*10, mounts:[], rivers:[], cs:[], foes:def.foes.slice(), isl:null, lanes:[]};
+  const cs = L.cs;
+  if(K >= 2){
+    const cnt = Array(K).fill(Math.floor(N/K)); for(let i=0;i<N%K;i++) cnt[i]++;
+    const Rt = Math.sqrt(N*sp*sp*1.7/Math.PI) + 3, isl = [];
+    for(let i=0;i<K;i++){
+      const r = Math.sqrt(cnt[i]*sp*sp*.95/Math.PI) + 1.6;
+      let I = null;
+      for(let t=0;t<500 && !I;t++){
+        const c = {x:(rng()*2-1)*Rt*.7, z:(rng()*2-1)*Rt*1.2, rx:r*(.92+rng()*.22), rz:r*(.92+rng()*.22), ph:rng()*10};
+        const gap = J => Math.hypot(J.x-c.x, J.z-c.z) - Math.max(J.rx,J.rz)*1.12 - Math.max(c.rx,c.rz)*1.12;
+        if(isl.some(J=>gap(J) < 2.6)) continue;
+        if(isl.length && !isl.some(J=>gap(J) < 8)) continue;
+        I = c;
+      }
+      if(!I) return null;
+      isl.push(I);
+    }
+    // dra ihop öarna mot mitten så att kartan inte blir mest vatten (minst 2,8 vatten mellan öarna)
+    const gapOf = (I,J) => Math.hypot(J.x-I.x, J.z-I.z) - Math.max(J.rx,J.rz)*1.12 - Math.max(I.rx,I.rz)*1.12;
+    for(let it=0; it<60; it++){
+      const cx = isl.reduce((s0,I)=>s0+I.x,0)/K, cz = isl.reduce((s0,I)=>s0+I.z,0)/K; let moved = false;
+      for(const I of isl){ const dx = cx-I.x, dz = (cz-I.z)*.8, l = Math.hypot(dx,dz); if(l < .4) continue;
+        const ox = I.x, oz = I.z; I.x += dx/l*.4; I.z += dz/l*.4;
+        if(isl.some(J=>J!==I && gapOf(I,J) < 2.8)){ I.x = ox; I.z = oz; } else moved = true; }
+      if(!moved) break;
+    }
+    // centrera öarna
+    const x0 = Math.min(...isl.map(I=>I.x-I.rx*1.15)), x1 = Math.max(...isl.map(I=>I.x+I.rx*1.15));
+    const z0 = Math.min(...isl.map(I=>I.z-I.rz*1.15)), z1 = Math.max(...isl.map(I=>I.z+I.rz*1.15));
+    for(const I of isl){ I.x -= (x0+x1)/2; I.z -= (z0+z1)/2; }
+    L.isl = isl; L.rx = Math.max((x1-x0)/2, 6); L.rz = Math.max((z1-z0)/2, 8);
+    for(let i=0;i<K;i++){
+      const I = isl[i]; let minD = sp*.92, placed = 0;
+      for(let t=0;t<5000 && placed<cnt[i];t++){
+        if(t%900===899) minD *= .92;
+        const a = rng()*6.283, rr = Math.sqrt(rng())*.9, x = I.x+Math.cos(a)*rr*I.rx, z = I.z+Math.sin(a)*rr*I.rz;
+        if(!inner(L,x,z,.26)) continue;
+        if(cs.some(c=>(c.x-x)**2+(c.z-z)**2 < minD*minD)) continue;
+        cs.push({id:cs.length, x, z, isl:i}); placed++;
+      }
+      if(placed < cnt[i]) return null;
+    }
+  } else {
+    const R = Math.sqrt(N*sp*sp*.95/Math.PI) + 2.4;
+    L.rx = R*.78; L.rz = R*1.34;
+    let minD = sp;
+    for(let t=0; t<9000 && cs.length<N; t++){
+      if(t%1800===1799) minD *= .94;
+      const x=(rng()*2-1)*L.rx*.9, z=(rng()*2-1)*L.rz*.9;
+      if(!inner(L,x,z,.24)) continue;
+      if(cs.some(c=>(c.x-x)**2+(c.z-z)**2 < minD*minD)) continue;
+      cs.push({id:cs.length, x, z, isl:0});
+    }
+    if(cs.length<N) return null;
+  }
+  L.W = 2*L.rx + 12; L.D = 2*L.rz + 12;
+  // grannar på land (Voronoi på ett rutnät), aldrig över vatten mellan öar
+  const adj = cs.map(()=>new Set());
+  for(let x=-L.rx*1.05; x<=L.rx*1.05; x+=.45) for(let z=-L.rz*1.05; z<=L.rz*1.05; z+=.45){
+    if(landAt(L,x,z) < .5) continue;
+    let a=-1,b=-1,da=1e9,db=1e9;
+    for(const c of cs){ const d=Math.hypot(c.x-x,c.z-z); if(d<da){ db=da; b=a; da=d; a=c.id; } else if(d<db){ db=d; b=c.id; } }
+    if(b>=0 && db-da < .5 && cs[a].isl===cs[b].isl){ adj[a].add(b); adj[b].add(a); }
+  }
+  const dist = (a,b) => Math.hypot(cs[a].x-cs[b].x, cs[a].z-cs[b].z);
+  for(let a=0;a<N;a++) for(const b of [...adj[a]]) if(dist(a,b) > sp*2.25){ adj[a].delete(b); adj[b].delete(a); }
+  // varje ö hänger ihop på land
+  for(let guard=0; guard<60; guard++){
+    const comp = new Int16Array(N).fill(-1); let nc = 0;
+    for(let s0=0;s0<N;s0++){ if(comp[s0]>=0) continue; const st=[s0]; comp[s0]=nc; while(st.length){ const v=st.pop(); for(const w of adj[v]) if(comp[w]<0){ comp[w]=nc; st.push(w); } } nc++; }
+    let best=null, bd=1e9;
+    for(let a=0;a<N;a++) for(let b=0;b<N;b++) if(comp[a]!==comp[b] && cs[a].isl===cs[b].isl && dist(a,b)<bd){ bd=dist(a,b); best=[a,b]; }
+    if(!best) break;
+    adj[best[0]].add(best[1]); adj[best[1]].add(best[0]);
+  }
+  L.edges = []; for(let a=0;a<N;a++) for(const b of adj[a]) if(a<b) L.edges.push([a,b]);
+  // sjöleder
+  const harb = new Set(), lanes = [];
+  // en sjöled får gå över sina egna öar nära hamnarna men aldrig över en tredje ö
+  const laneOk = (a,b) => { const ia = cs[a].isl, ib = cs[b].isl; let wet = 0;
+    for(let k=1;k<24;k++){ const t=k/24, x=lerp(cs[a].x,cs[b].x,t), z=lerp(cs[a].z,cs[b].z,t);
+      if(landAt(L,x,z) < .5){ wet++; continue; }
+      for(let i=0;i<L.isl.length;i++) if(i!==ia && i!==ib && islRR(L.isl[i],x,z) < islE(L,L.isl[i],x,z)) return false; }
+    return wet >= 4; };
+  const addLane = (a,b) => { lanes.push([a,b]); harb.add(a); harb.add(b); };
+  if(K >= 2){
+    const pairBest = (i,j) => { const c = [];
+      for(const A of cs) if(A.isl===i) for(const B of cs) if(B.isl===j) c.push({a:A.id, b:B.id, d:dist(A.id,B.id) - (harb.has(A.id)?2.5:0) - (harb.has(B.id)?2.5:0)});
+      c.sort((p,q)=>p.d-q.d); for(const p of c.slice(0,10)) if(laneOk(p.a,p.b)) return p; return null; };
+    const pd = []; for(let i=0;i<K;i++) for(let j=i+1;j<K;j++){ let m=1e9; for(const A of cs) if(A.isl===i) for(const B of cs) if(B.isl===j) m=Math.min(m,dist(A.id,B.id)); pd.push({i,j,d:m}); }
+    pd.sort((p,q)=>p.d-q.d);
+    const grp = [...Array(K).keys()], root = x => grp[x]===x ? x : (grp[x]=root(grp[x]));
+    let maxMst = 0; const extra = [];
+    for(const e of pd){ if(root(e.i)!==root(e.j)){ const p = pairBest(e.i,e.j); if(!p) return null; addLane(p.a,p.b); grp[root(e.i)] = root(e.j); maxMst = Math.max(maxMst, e.d); } else extra.push(e); }
+    let ne = K-1;
+    for(const e of extra){ if(ne<=0 || e.d > maxMst*1.6) continue; const p = pairBest(e.i,e.j); if(p && !lanes.some(([a,b])=>(a===p.a&&b===p.b)||(a===p.b&&b===p.a))){ addLane(p.a,p.b); ne--; } }
+  }
+  // genvägar över vattnet längs kusten (även på fastland), förbi fästningar
+  if(N >= 10){
+    const gd = floyd(N, (a,b)=>adj[a].has(b) ? dist(a,b) : 0);
+    const coast = cs.filter(c=>!inner(L,c.x,c.z,.42));
+    const cand = [];
+    for(const A of coast) for(const B of coast){ if(A.id>=B.id || A.isl!==B.isl) continue; const d = dist(A.id,B.id); if(d < sp*1.4 || d > sp*4.2) continue;
+      let wet = 0; for(let k=1;k<12;k++){ const t=k/12; if(landAt(L,lerp(A.x,B.x,t),lerp(A.z,B.z,t)) < .5) wet++; }
+      if(wet >= 7 && gd[A.id*N+B.id] > d*1.7) cand.push({a:A.id, b:B.id, v:gd[A.id*N+B.id]/d + rng()*.3}); }
+    cand.sort((p,q)=>q.v-p.v);
+    let nk = (K>=2 ? 0 : 1) + (N>=18 ? 1 : 0);
+    for(const p of cand){ if(nk<=0) break; if(lanes.some(([a,b])=>a===p.a||a===p.b||b===p.a||b===p.b)) continue; addLane(p.a,p.b); nk--; }
+  }
+  L.lanes = lanes;
+  L.seaM = new Uint8Array(N*N);
+  for(const [a,b] of lanes){ adj[a].add(b); adj[b].add(a); L.seaM[a*N+b] = L.seaM[b*N+a] = 1; }
+  L.adj = adj.map(s=>[...s]);
+  L.elen = cs.map((_,a)=>cs.map((_,b)=>dist(a,b)));
+  // allt måste gå att nå
+  { const seen = new Uint8Array(N), st=[0]; seen[0]=1; while(st.length){ const v=st.pop(); for(const w of L.adj[v]) if(!seen[w]){ seen[w]=1; st.push(w); } } if(seen.some(v=>!v)) return null; }
+  // startplatser
+  const D = floyd(N, (a,b)=>L.adj[a].includes(b) ? dist(a,b)/(L.seaM[a*N+b]?SHIP:1) : 0);
+  const K0 = 1 + def.foes.length, candS = cs.filter(c=>!harb.has(c.id)).map(c=>c.id);
+  if(candS.length < K0 + 1) return null;
+  // poäng: långt mellan herrarna, lika stora zoner och lika mycket "tryck" från grannarna
+  // (annars vinner den som står i en ände av kartan medan de i mitten kläms)
+  const score = S0 => { let mp = 1e9; const pr = Array(S0.length).fill(0);
+    for(let i=0;i<S0.length;i++) for(let j=i+1;j<S0.length;j++){ const d = D[S0[i]*N+S0[j]]; mp = Math.min(mp, d); pr[i] += sp/d; pr[j] += sp/d; }
+    const zs = Array(S0.length).fill(0); for(let v=0;v<N;v++){ let b=0, bd=1e9; S0.forEach((s0,k)=>{ const d=D[s0*N+v]; if(d<bd){ bd=d; b=k; } }); zs[b]++; }
+    return mp - sp*1.1*(Math.max(...zs)-Math.min(...zs)) - sp*15*(Math.max(...pr)-Math.min(...pr)); };
+  let best = null, bs = -1e9;
+  for(let r=0;r<40;r++){
+    const S0 = [candS[(rng()*candS.length)|0]];
+    while(S0.length<K0){ let bi=-1, bv=-1; for(const c of candS){ if(S0.includes(c)) continue; const v = Math.min(...S0.map(s0=>D[s0*N+c])) + rng()*.5; if(v>bv){ bv=v; bi=c; } } S0.push(bi); }
+    let sc = score(S0);
+    for(let it=0; it<3; it++){ let imp = false;
+      for(let k=0;k<K0;k++) for(const c of candS){ if(S0.includes(c)) continue; const o0 = S0[k]; S0[k] = c; const v = score(S0); if(v > sc+1e-6){ sc = v; imp = true; } else S0[k] = o0; }
+      if(!imp) break; }
+    if(sc > bs){ bs = sc; best = S0.slice(); }
+  }
+  // vem som får vilken plats lottas ur fröet, så att ingen färg alltid får det bästa läget (i v1 vann röd för ofta)
+  for(let i=best.length-1;i>0;i--){ const j=(rng()*(i+1))|0; [best[i],best[j]]=[best[j],best[i]]; }
+  const starts = best;
+  if(D[starts[0]*N+starts[1]] < sp*(N < K0*2.5 ? .9 : 1.5)) return null;
+  // typer
+  const g = def.g ?? (idx>=12 ? 3 + (idx-12)*.45 : idx*.6);
+  const w = {by:.46, borg:.3, fast:.15, smed:.09};
+  const pick = () => { let r = rng()*(w.by+w.borg+w.fast+w.smed); for(const k in w){ r-=w[k]; if(r<=0) return k; } return 'by'; };
+  for(const c of cs){ c.type = harb.has(c.id) ? 'hamn' : pick(); c.owner0 = 0; c.home = 0; }
+  const free = cs.filter(c=>!starts.includes(c.id) && c.type!=='hamn');
+  // vakttorn mellan startplatserna
+  const nt = Math.min(def.towers||0, Math.max(0, free.length-3));
+  if(nt){ const between = c => { let m=1e9; for(let i=0;i<starts.length;i++) for(let j=i+1;j<starts.length;j++){ const A=cs[starts[i]], B=cs[starts[j]]; m=Math.min(m, segDist(c.x,c.z,A.x,A.z,B.x,B.z)); } return m; };
+    const zoneNear = c => Math.min(...starts.map(s0=>dist(s0,c.id)));
+    free.filter(c=>zoneNear(c) > sp*1.05).map(c=>({c, v:between(c)+rng()*3})).sort((a,b)=>a.v-b.v).slice(0,nt).forEach(o=>o.c.type='torn'); }
+  const smeds = cs.filter(c=>c.type==='smed'); for(let i=1+Math.floor(N/9); i<smeds.length; i++) smeds[i].type='by';
+  if(N>=8 && !free.some(c=>c.type==='fast')){ const f2 = free.filter(c=>c.type==='by'||c.type==='borg'); if(f2.length>3) f2[(rng()*f2.length)|0].type='fast'; }
+  starts.forEach((s0,k)=>{ const c=cs[s0]; c.type='borg'; c.owner0 = k===0 ? P1 : def.foes[k-1]; c.home = c.owner0; });
+  for(const c of cs){
+    if(c.owner0){ c.n0 = 20; continue; }
+    c.n0 = Math.round({by:5+rng()*4+g, borg:9+rng()*5+g, fast:9+rng()*5+g, smed:7+rng()*4+g, hamn:7+rng()*4+g, torn:8+rng()*4+g}[c.type]);
+  }
+  // rättvisa: varje herre har sina två närmaste grannar som lika byar
+  for(const s0 of starts){
+    const near = L.adj[s0].filter(j=>!cs[j].owner0 && cs[j].type!=='hamn' && cs[j].type!=='torn').sort((a,b)=>D[s0*N+a]-D[s0*N+b]);
+    if(!near.length){ if(s0===starts[0] || N >= K0*2.5) return null; continue; }
+    near.slice(0,2).forEach((j,r)=>{ cs[j].type = r===0 ? 'by' : (cs[j].type==='fast'||cs[j].type==='smed' ? 'borg' : cs[j].type); cs[j].n0 = Math.round(r===0 ? 6+g : (cs[j].type==='by'?7:10)+g); });
+  }
+  // berg långt från borgar och vägar
+  const nm = 1 + Math.floor(N/7);
+  for(let t=0; t<500 && L.mounts.length<nm; t++){
+    const x=(rng()*2-1)*L.rx, z=(rng()*2-1)*L.rz;
+    if(!inner(L,x,z,.22)) continue;
+    const dc = Math.min(...cs.map(c=>Math.hypot(c.x-x,c.z-z)));
+    const de = L.edges.length ? Math.min(...L.edges.map(([a,b])=>segDist(x,z,cs[a].x,cs[a].z,cs[b].x,cs[b].z))) : 9;
+    const room = Math.min(dc-1.6, de-.6);
+    if(room < 1.4) continue;
+    if(L.mounts.some(m=>Math.hypot(m.x-x,m.z-z)<3)) continue;
+    L.mounts.push({x,z,h:1.3+rng()*1.4, s:clamp(room/2.6,.6,1.4)});
+  }
+  for(const c of cs) c.h = Math.max(.32, baseHeight(L,c.x,c.z));
+  return L;
+}
+// kortaste vägar mellan alla par (få borgar, så Floyd räcker)
+function floyd(N, w){
+  const D = new Float32Array(N*N).fill(1e9);
+  for(let a=0;a<N;a++){ D[a*N+a] = 0; for(let b=0;b<N;b++){ const v = a!==b ? w(a,b) : 0; if(v>0) D[a*N+b] = v; } }
+  for(let k=0;k<N;k++) for(let i=0;i<N;i++){ const ik = D[i*N+k]; if(ik>=1e9) continue; for(let j=0;j<N;j++){ const v = ik + D[k*N+j]; if(v < D[i*N+j]) D[i*N+j] = v; } }
+  return D;
+}
+
 /* ================= Spellogik (fungerar utan grafik, även i snabbspolning) ================= */
 const AIK = {
-  aggr:{think:2.2, margin:1.25, reserve:4,  lord:1.5, neutral:.9,  player:1.0, maxSrc:3, reinforce:.25, rear:.7},
-  caut:{think:2.1, margin:1.3,  reserve:7,  lord:.9,  neutral:1.4, player:.85, maxSrc:2, reinforce:1,   rear:.95},
-  opp: {think:1.6, margin:1.12, reserve:6,  lord:1.1, neutral:1.0, player:.9,  maxSrc:3, reinforce:.55, rear:.8},
+  aggr:{think:2.2, margin:1.25, reserve:4,  lord:1.5, neutral:.9,  player:1.0, maxSrc:3, reinforce:.25, rear:.7,  sea:1},
+  caut:{think:2.1, margin:1.3,  reserve:7,  lord:.9,  neutral:1.4, player:.85, maxSrc:2, reinforce:1,   rear:.95, sea:.9},
+  opp: {think:1.6, margin:1.12, reserve:6,  lord:1.1, neutral:1.0, player:.9,  maxSrc:3, reinforce:.55, rear:.8,  sea:1},
+  // Svarta Sigrid: sjöfarare, gillar hamnar och anfall över vattnet
+  sea: {think:1.9, margin:1.18, reserve:5,  lord:1.2, neutral:1.0, player:1.0, maxSrc:3, reinforce:.5,  rear:.8,  sea:1.8, harbor:1.5},
 };
+// väderlistan för en match dras ur kartans frö, så samma karta får samma väder
+function makeWeather(L){
+  const w = L.def && L.def.wx; if(!w) return [];
+  const r = mulberry32((L.seed*7+13)>>>0), out = []; let t = w.first, i = 0;
+  const sea = L.lanes && L.lanes.length;   // utan sjöleder har stormen inget att stänga: då blir det regn
+  while(t < 2400){ const dur = Math.round(lerp(w.dur[0], w.dur[1], r())), k = w.k[i%w.k.length]; out.push({at:t, kind:k==='storm' && !sea ? 'regn' : k, dur, warned:false}); t += dur + Math.round(lerp(w.gap[0], w.gap[1], r())); i++; }
+  return out;
+}
 function newState(L, opt={}){
   const S = {L, t:0, cs:L.cs.map(c=>({id:c.id, x:c.x, z:c.z, type:c.type, home:c.home, owner:c.owner0, n:c.n0, cap:TYPES[c.type].cap})),
-    cols:[], ev:[], over:false, winner:0, demo:!!opt.demo, nextId:1, smed:[0,0,0,0,0], dead:[0,0,0,0,0], ai:[], aiPace:1, grace:0, srcCap:9, hold:false,
-    st:{sends:0, fail:{by:0,borg:0,fast:0,smed:0}, caps:0, lost:0, capLost:false, full:0, firstLost:0, smedTaken:false},
-    mods:[0,1,2,3,4].map(()=>({atk:1, prod:1, march:1, capProd:1}))};
+    cols:[], ev:[], over:false, winner:0, demo:!!opt.demo, nextId:1, smed:Array(NO).fill(0), dead:Array(NO).fill(0), ai:[], aiPace:1, grace:0, srcCap:9, hold:false,
+    st:{sends:0, fail:{by:0,borg:0,fast:0,smed:0,hamn:0,torn:0}, caps:0, lost:0, capLost:false, full:0, firstLost:0, smedTaken:false, ships:0, shot:0, stormFail:0},
+    ships:Array(NO).fill(0), wxList:makeWeather(L), wx:null, storm:false, landMul:1,
+    mods:Array.from({length:NO},()=>({atk:1, prod:1, march:1, capProd:1, ship:1, def:1}))};
+  for(const c of S.cs) c.cd = 0;
   S.present = [P1, ...L.foes];
+  // v3-kartor (Öriket och fria fälttåg): datorherrarna flyttar fram fulla borgar och slår hårdare när de leder, så att krigen avgörs
+  S.v3 = !!(L.def && (L.def.isl || L.def.free));
   const aiProd = 1 + L.idx*.008;
   for(const o of L.foes) S.mods[o].prod = aiProd;
   if(opt.demo){
@@ -597,8 +1007,8 @@ function newState(L, opt={}){
     for(const o of L.foes) S.ai.push({owner:o, kind:kinds[o]||LORDS[o].kind, timer:1+Math.random()});
     S.mods[P1].prod = aiProd;
   } else {
-    const u = opt.upg || save.upg, T = tuneFor(L.idx, opt.diff || save.diff);
-    Object.assign(S.mods[P1], {atk:1+.06*u.sword, march:1+.12*u.march, capProd:1+.2*u.capital});
+    const u = {...UPG0(), ...(opt.upg || save.upg)}, T = opt.tune || tuneFor(L.idx, opt.diff || save.diff);
+    Object.assign(S.mods[P1], {atk:1+.06*u.sword, march:1+.12*u.march, capProd:1+.2*u.capital, ship:1+.15*u.ship, def:1+.06*u.wall, prod:1+.05*u.rich});
     for(const o of L.foes) S.mods[o].prod = T.prod;
     for(const c of S.cs){ if(c.home===P1) c.n = T.youN + 6*u.start; else if(c.home) c.n = T.foeN; }
     for(const o of L.foes) S.ai.push({owner:o, kind:LORDS[o].kind, timer:T.wake+Math.random()*1.5});
@@ -611,10 +1021,11 @@ function newState(L, opt={}){
 }
 const hasSmed = (S,o) => o>0 && S.smed[o]>0;
 const atkMul = (S,o) => S.mods[o].atk * (hasSmed(S,o)?SMED_BONUS:1);
-const defMul = (S,c) => TYPES[c.type].def * (hasSmed(S,c.owner)?SMED_BONUS:1) * (c.owner?S.mods[c.owner].atk:1);
+const defMul = (S,c) => TYPES[c.type].def * (hasSmed(S,c.owner)?SMED_BONUS:1) * (c.owner?S.mods[c.owner].atk*S.mods[c.owner].def:1);
 function prodRate(S,c){
   if(!c.owner) return 0;
   let p = TYPES[c.type].prod * S.mods[c.owner].prod;
+  if(S.favor && c.owner===S.favor) p *= favorMul(S.t);
   if(c.home){ p *= CAPITAL_PROD; if(c.home===P1 && c.owner===P1) p *= S.mods[P1].capProd; }
   return p;
 }
@@ -625,7 +1036,11 @@ function dijkstra(S, src, o, avoid=1000){
     let u=-1, bd=1e9; for(let i=0;i<N;i++) if(!done[i] && d[i]<bd){ bd=d[i]; u=i; }
     if(u<0) break; done[u]=1;
     const pen = (u!==src && S.cs[u].owner!==o) ? avoid : 0;   // undvik att marschera genom andras borgar
-    for(const v of S.L.adj[u]){ const nd = d[u] + S.L.elen[u][v] + pen; if(nd<d[v]){ d[v]=nd; prev[v]=u; } }
+    const sea = S.L.seaM;
+    for(const v of S.L.adj[u]){
+      let e = S.L.elen[u][v];
+      if(sea && sea[u*N+v]){ if(S.storm) continue; e /= SHIP; }   // sjöled: långsammare, stängd i storm
+      const nd = d[u] + e + pen; if(nd<d[v]){ d[v]=nd; prev[v]=u; } }
   }
   return {d, prev};
 }
@@ -633,7 +1048,10 @@ function makeCol(S, o, n, path){
   const pts = [], cum = [0];
   for(const id of path){ pts.push(S.cs[id].x, S.cs[id].z); }
   for(let i=1;i<path.length;i++) cum.push(cum[i-1] + S.L.elen[path[i-1]][path[i]]);
-  const q = {id:S.nextId++, o, n, path, pts, cum, len:cum[cum.length-1], d:0, seg:0, to:path[path.length-1], from:path[0], v:BASE_SPEED*S.mods[o].march, dead:false};
+  const N = S.cs.length, sea = path.slice(1).map((v,i)=>!!(S.L.seaM && S.L.seaM[path[i]*N+v]));
+  const q = {id:S.nextId++, o, n, path, pts, cum, len:cum[cum.length-1], d:0, seg:0, to:path[path.length-1], from:path[0], v:BASE_SPEED*S.mods[o].march, dead:false, sea, wait:0, x:pts[0], z:pts[1]};
+  // restid i sekunder (skepp går långsammare)
+  q.tt = 0; for(let i=0;i<sea.length;i++) q.tt += (cum[i+1]-cum[i]) / (q.v * (sea[i] ? SHIP*S.mods[o].ship/S.mods[o].march : 1));
   S.cols.push(q); return q;
 }
 // Vägen går helst genom egna borgar. Ligger en främmande borg i vägen stannar kolonnen där och anfaller den.
@@ -655,9 +1073,11 @@ function send(S, srcs, tid, o){
   }
   if(tot && o===P1) S.st.sends++;
   // ett svep från flera borgar anländer samtidigt: kolonner med kort väg väntar i borgen
-  const far = Math.max(0, ...made.map(q=>q.len));
-  for(const q of made) q.d = -(far - q.len);
-  if(tot) S.ev.push({k:'send', o, to:tid, n:tot, real:made.map(q=>q.to)});
+  const far = Math.max(0, ...made.map(q=>q.tt));
+  for(const q of made) q.wait = far - q.tt;
+  const ship = made.some(q=>q.sea.some(Boolean));
+  if(ship){ S.ships[o]++; if(o===P1) S.st.ships++; }
+  if(tot) S.ev.push({k:'send', o, to:tid, n:tot, real:made.map(q=>q.to), ship});
   return tot;
 }
 function colPos(q, d, out){
@@ -681,10 +1101,11 @@ function colFights(S){
   const C = S.cols;
   for(const q of C){ colPos(q, q.d, q); }
   for(let i=0;i<C.length;i++){
-    const a = C[i]; if(a.dead || a.d < 0) continue;
+    const a = C[i]; if(a.dead || a.wait > 0) continue;
     for(let j=i+1;j<C.length;j++){
-      const b = C[j]; if(b.dead || a.o===b.o || b.d < 0) continue;
+      const b = C[j]; if(b.dead || a.o===b.o || b.wait > 0) continue;
       if(Math.abs(a.x-b.x) > 3 || Math.abs(a.z-b.z) > 3) continue;
+      if(a.sea[a.seg] !== b.sea[b.seg]) continue;          // skepp och fotfolk möts inte
       const a0=a.path[a.seg], a1=a.path[a.seg+1], b0=b.path[b.seg], b1=b.path[b.seg+1];
       let hit = false;
       if(a0===b1 && a1===b0){ // samma väg, mot varandra
@@ -713,10 +1134,11 @@ function arrive(S, q){
   }
 }
 function endCheck(S){
-  const alive = [0,0,0,0,0];
+  const alive = Array(NO).fill(0);
   for(const c of S.cs) if(c.owner) alive[c.owner]++;
   for(const q of S.cols) alive[q.o]++;
   for(const o of S.present) if(!alive[o] && !S.dead[o]){ S.dead[o]=1; S.ev.push({k:'elim', o}); }
+  if(S.t > (S.maxT||1e9) && S.demo){ S.over = true; S.winner = 0; return; }
   if(S.demo){
     const left = S.present.filter(o=>alive[o]);
     if(left.length<=1){ S.over = true; S.winner = left[0]||0; }
@@ -726,7 +1148,22 @@ function endCheck(S){
 function step(S, dt){
   if(S.over) return;
   S.t += dt;
+  // väder: varning 10 s före, sedan regn eller storm en stund
+  if(S.wxList.length && !S.hold){
+    const w = S.wxList[0];
+    if(!w.warned && S.t >= w.at-10){ w.warned = true; S.ev.push({k:'wxwarn', kind:w.kind, in:Math.max(0, w.at-S.t)}); }
+    if(!S.wx && S.t >= w.at){ S.wx = w; S.storm = !WX[w.kind].sea; S.landMul = WX[w.kind].land; S.ev.push({k:'wxstart', kind:w.kind, dur:w.dur}); }
+    if(S.wx && S.t >= S.wx.at + S.wx.dur){ S.ev.push({k:'wxend', kind:S.wx.kind}); S.wx = null; S.storm = false; S.landMul = 1; S.wxList.shift(); }
+  }
   S.smed.fill(0); for(const c of S.cs) if(c.type==='smed' && c.owner) S.smed[c.owner]++;
+  if(S.v3 && S.t > FAVOR_T && Math.floor(S.t/3) !== Math.floor((S.t-dt)/3)){
+    const k = Array(NO).fill(0); for(const c of S.cs) if(c.owner) k[c.owner]++;
+    let b = 0; for(let o=1;o<NO;o++) if(k[o] > k[b]) b = o;
+    // gunsten byter bara ägare när någon har minst två borgar mer än den som har den
+    const cur = S.favor||0, tie = k.filter((v,o)=>o && v===k[b]).length > 1;
+    const f = cur && k[cur] > 0 && k[b] < k[cur]+2 ? cur : tie ? 0 : b;
+    if(f !== (S.favor||0)){ S.favor = f; S.ev.push({k:'favor', o:f}); }
+  }
   for(const c of S.cs){
     if(!c.owner || (S.hold && c.owner!==P1)) continue;   // under guiden står fienden helt still
     if(c.n < c.cap) c.n = Math.min(c.cap, c.n + prodRate(S,c)*dt);
@@ -734,7 +1171,8 @@ function step(S, dt){
     else if(c.n > c.cap) c.n = Math.max(c.cap, c.n - Math.max(.8, (c.n-c.cap)*.06)*dt);
   }
   for(const q of S.cols){
-    q.d += q.v*dt;
+    if(q.wait > 0){ q.wait -= dt; continue; }
+    q.d += q.v*dt*(q.sea[q.seg] ? SHIP*S.mods[q.o].ship/S.mods[q.o].march : S.landMul);
     // passerar en borg på vägen: är den inte längre egen anfaller kolonnen den
     while(q.seg < q.path.length-2 && q.d >= q.cum[q.seg+1]){
       const node = q.path[q.seg+1];
@@ -743,6 +1181,18 @@ function step(S, dt){
     }
   }
   colFights(S);
+  // vakttorn skjuter på närmaste främmande kolonn inom räckvidden
+  for(const c of S.cs){
+    if(c.type!=='torn' || !c.owner || (S.hold && c.owner!==P1)) continue;
+    c.cd -= dt; if(c.cd > 0) continue;
+    let best = null, bd = TOWER_R;
+    for(const q of S.cols){ if(q.dead || q.o===c.owner || q.wait>0) continue; const d = Math.hypot(q.x-c.x, q.z-c.z); if(d < bd){ bd = d; best = q; } }
+    if(!best){ c.cd = .2; continue; }
+    c.cd = TOWER_CD;
+    best.n -= 1; if(best.o===P1) S.st.shot++;
+    if(best.n < 1) best.dead = true;
+    S.ev.push({k:'shot', c:c.id, x:best.x, z:best.z, o:c.owner, t:best.o, kill:best.dead});
+  }
   for(const q of S.cols) if(!q.dead && q.d >= q.len) arrive(S,q);
   S.cols = S.cols.filter(q=>!q.dead);
   for(const a of S.ai){
@@ -766,7 +1216,9 @@ function aiThink(S, ai){
     if(q.o===c.owner) friend[q.to] += q.n;
     else { if(c.owner===o) threat[q.to] += q.n*atkMul(S,q.o); else if(q.o!==o) third[q.to] += q.n*atkMul(S,q.o); }
   }
-  const DJ = {}; for(const c of mine) DJ[c.id] = dijkstra(S, c.id, o).d;
+  const DJ = {}, DP = {}; for(const c of mine){ const r = dijkstra(S, c.id, o); DJ[c.id] = r.d; DP[c.id] = r.prev; }
+  const seaM = S.L.seaM, far = seaM ? 90 : 60;
+  const viaSea = (s,t) => { if(!seaM) return false; let v = t; for(let g=0; g<N && v!==s && v>=0; g++){ const u = DP[s][v]; if(u>=0 && seaM[u*N+v]) return true; v = u; } return false; };
   // 1. försvar: skicka förstärkning till en hotad borg
   if(Math.random() < k.reinforce){
     for(const c of mine){
@@ -776,9 +1228,25 @@ function aiThink(S, ai){
       if(best && bd/spd < 12){ send(S,[best.id],c.id,o); return; }
     }
   }
+  // v3: fulla borgar i baklandet producerar inget. Flytta dem mot fronten även när det finns något att anfalla.
+  if(S.v3 && Math.random() < .4){
+    const front = mine.filter(c=>S.L.adj[c.id].some(j=>S.cs[j].owner!==o));
+    for(const r of mine){
+      if(front.includes(r) || r.n < r.cap*.92) continue;
+      let tgt=null, bv=1e9;
+      for(const f of front){ const v = f.n + DJ[r.id][f.id]*.5; if(v<bv){ bv=v; tgt=f; } }
+      if(tgt){ send(S,[r.id],tgt.id,o); return; }
+    }
+  }
   // 2. anfall
   // utan anfall en stund samlar herren fler borgar och tar större risk, så ingen kan gömma sig för evigt
-  const idle = ai.idle||0, maxSrc = k.maxSrc + Math.floor(idle/3), margin = Math.max(1.05, k.margin - idle*.04);
+  let lead = 0, stag = 0;
+  if(S.v3){ let my = 0, all = 0; for(const c of S.cs){ if(c.owner){ all += c.n; if(c.owner===o) my += c.n; } } lead = my/Math.max(1,all) > .5 ? 4 : my/Math.max(1,all) > .35 ? 2 : 0;
+    // dödläge: har herren inte vuxit på länge samlar han allt fler borgar till varje anfall
+    if(mine.length > (ai.rec||0) || mine.length < (ai.rec||0)-2 || ai.recT===undefined){ ai.rec = mine.length; ai.recT = S.t; }
+    stag = clamp(Math.floor((S.t - ai.recT - 90)/45), 0, 6); }
+  // i dödläge slår herren med övermakt från många borgar på en gång, så att erövringen håller
+  const idle = ai.idle||0, maxSrc = k.maxSrc + Math.floor(idle/3) + lead + stag*2, margin = Math.max(1.05, k.margin - idle*.04 - lead*.02) + (idle < 3 ? stag*.25 : 0);
   let best=null, bestScore=0;
   const srcAll = mine.filter(s=>s.n >= k.reserve+2 && !(threat[s.id] > s.n*defMul(S,s)*.7));
   const early = !S.demo && S.t < S.grace;
@@ -787,7 +1255,7 @@ function aiThink(S, ai){
     if(early && (t.owner===P1 || (!t.owner && S.zone[t.id]))) continue;
     const ms = (!S.demo && t.owner===P1) ? Math.min(maxSrc, S.srcCap + Math.floor(idle/4)) : maxSrc;
     const srcs = srcAll.slice().sort((a,b)=>DJ[a.id][t.id]-DJ[b.id][t.id]);
-    if(DJ[srcs[0].id][t.id] > 60) continue;
+    if(DJ[srcs[0].id][t.id] > far) continue;
     const eta = DJ[srcs[0].id][t.id]/spd;
     let defN = t.n + prodRate(S,t)*eta + friend[t.id] - ownInc[t.id]*0;
     if(ai.kind==='opp') defN -= third[t.id]/Math.max(.5,defMul(S,t))*.8;
@@ -796,10 +1264,11 @@ function aiThink(S, ai){
     let sum = 0, used = [], maxEta = 0;
     for(const s of srcs){ if(used.length>=ms) break; sum += Math.floor(s.n/2)*atk; used.push(s.id); maxEta = Math.max(maxEta, DJ[s.id][t.id]/spd); if(sum>=need) break; }
     if(sum < need) continue;
-    let v = {by:1, borg:1.5, fast:1.35, smed:1.45}[t.type] * (t.home?1.3:1);
-    v *= t.owner===0 ? k.neutral : k.lord*(t.owner===P1?k.player:1);
+    let v = {by:1, borg:1.5, fast:1.35, smed:1.45, hamn:1.3, torn:1.2}[t.type] * (t.home?1.3:1);
+    v *= t.owner===0 ? k.neutral : k.lord*(t.owner===P1 && !S.demo ? k.player : 1);   // i datormatcher (demo) är blå en herre som alla andra
     if(ai.kind==='opp'){ v *= 1 + 1.4*(1 - Math.min(1, t.n/(t.cap*.5))); if(third[t.id]>0) v *= 1.5; }
     if(ai.kind==='aggr' && t.owner && t.owner!==o) v *= 1.15;
+    if(seaM){ if(k.sea!==1 && viaSea(srcs[0].id, t.id)) v *= k.sea; if(k.harbor && t.type==='hamn') v *= k.harbor; }
     const score = v / (maxEta + used.length*1.2 + need*.05 + 2);
     if(score > bestScore){ bestScore = score; best = {t:t.id, used}; }
   }
@@ -816,15 +1285,18 @@ function aiThink(S, ai){
   }
 }
 
+// guld efter en kampanjbana (spelet och testboten använder samma regel)
+function campGold(won, idx, stars, first, caps){ return won ? Math.round((60 + 18*idx)*(first?1:.5)) + stars*10 : Math.round(30 + 10*idx + 5*caps); }
+
 /* ---------- snabbspolning för test ---------- */
-function simulate({level=11, seed, seconds=1200, dt=1/30, kinds, campaign=false, upg}={}){
-  const L = genLevel(level, seed);
+function simulate({level=11, seed, seconds=1200, dt=1/30, kinds, campaign=false, upg, free}={}){
+  const L = free ? genFree(free) : genLevel(level, seed);
   let S;
   if(campaign){ S = newState(L, {upg:upg||{march:0,capital:0,start:0,sword:0}}); S.ai.push({owner:P1, kind:(kinds&&kinds[1])||'opp', timer:1}); }
   else S = newState(L, {demo:true, kinds});
   const t0 = performance.now(); let caps = 0, fights = 0;
   while(S.t < seconds && !S.over){ step(S, dt); for(const e of S.ev){ if(e.k==='capture') caps++; if(e.k==='fight') fights++; } S.ev.length = 0; }
-  const own = [0,0,0,0,0]; for(const c of S.cs) own[c.owner]++;
+  const own = Array(NO).fill(0); for(const c of S.cs) own[c.owner]++;
   return {level:level+1, seed:L.seed, castles:L.N, winner:S.over?S.winner:0, seconds:Math.round(S.t), captures:caps, fights, owners:own, ms:Math.round(performance.now()-t0)};
 }
 
@@ -874,6 +1346,9 @@ const Snd = {
   pick(){ if(!this.ok('pick',.05)) return; this.tone(520,.06,'triangle',.12,780); },
   coin(){ if(!this.ok('coin',.05)) return; this.tone(1320,.07,'square',.07); this.tone(1760,.12,'square',.07,null,.06); },
   star(i){ if(!this.ok()) return; this.tone(784*Math.pow(1.26,i),.2,'square',.1); },
+  horn(){ if(!this.ok('horn',.8)) return; this.tone(196,.5,'sawtooth',.07,185,0,700); this.tone(294,.45,'sawtooth',.05,290,.05,800); },
+  twang(){ if(!this.ok('twang',.12)) return; this.tone(620,.09,'triangle',.08,260); this.noise(.05,.06,3000,0,4); },
+  thunder(){ if(!this.ok('thunder',1.5)) return; this.noise(1.2,.35,120,0,.6); this.noise(.5,.25,400,.05,.8); },
 };
 function setMute(m){
   save.mute = m; persist(); Snd.init();
@@ -893,7 +1368,7 @@ renderer.toneMappingExposure = 1.08;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x231a12);
 const camera = new THREE.PerspectiveCamera(40, 1, .5, 400);
-scene.add(new THREE.HemisphereLight(0xeaf4ff, 0x6a5a3a, 1.2));
+const hemi = new THREE.HemisphereLight(0xeaf4ff, 0x6a5a3a, 1.2); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff0d6, 2.3);
 sun.castShadow = true;
 const isSmall = Math.min(innerWidth, innerHeight) < 600;
@@ -948,7 +1423,7 @@ const waterTex = canvasTex(256,256,(g,w,h)=>{
 },[6,6]);
 
 /* ---------- terrängmaterial: landskapen färgas efter ägare direkt i shadern ---------- */
-const MAXS = 25;
+const MAXS = 32;
 const TU = {
   uSite:{value:Array.from({length:MAXS},()=>new THREE.Vector4(999,999,0,1e4))},
   uColA:{value:Array.from({length:MAXS},()=>new THREE.Color())},
@@ -1012,6 +1487,32 @@ const unitIM = OCOL.map((_,o)=>{
   scene.add(im); return im;
 });
 
+/* ---------- skepp (InstancedMesh per färg) ---------- */
+function shipGeo(o){
+  const P = [], body = OCOL[o];
+  P.push(part(Box(.42,.26,1.05), 0x6b4626, 0,.13,0));
+  P.push(part(Box(.46,.06,1.09), 0x4a2f1c, 0,.27,0));
+  P.push(part(Cone(.24,.4,4), 0x6b4626, 0,.13,-.7, -Math.PI/2,Math.PI/4,0, 1,1,.75));
+  P.push(part(Box(.36,.16,.26), 0x5a3a22, 0,.36,.38));
+  P.push(part(Cyl(.03,.035,1.15,5), 0x3a2a1a, 0,.82,0));
+  P.push(part(Box(.78,.66,.05), body, 0,.86,.02));
+  P.push(part(Box(.8,.07,.07), 0xf3e2b0, 0,.52,.02));
+  P.push(part(Box(.06,.1,.24), body, 0,1.42,.1));
+  const g = merge(P); g.scale(.95,.95,.95); return g;
+}
+const MAXSHIP = 80;
+const shipIM = OCOL.map((_,o)=>{
+  const im = new THREE.InstancedMesh(shipGeo(o), vcMat, MAXSHIP);
+  im.instanceMatrix.setUsage(THREE.DynamicDrawUsage); im.frustumCulled = false; im.count = 0; im.castShadow = true;
+  scene.add(im); return im;
+});
+/* ---------- regn och storm ---------- */
+const RAINN = 520;
+const rainIM = new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.7,.03), new THREE.MeshBasicMaterial({color:0xcfe6ff, transparent:true, opacity:.7, depthWrite:false}), RAINN);
+rainIM.instanceMatrix.setUsage(THREE.DynamicDrawUsage); rainIM.frustumCulled = false; rainIM.count = 0; rainIM.renderOrder = 5; scene.add(rainIM);
+const rainP = Array.from({length:RAINN}, ()=>({x:Math.random()*2-1, y:Math.random()*14, z:Math.random()*2-1, v:16+Math.random()*6}));
+const lanesMat = new THREE.MeshBasicMaterial({color:0xf4f8ff, transparent:true, opacity:.9, depthWrite:false});
+
 /* ---------- borgmodeller ---------- */
 const STONE = 0xcdc4b2, STONE_DK = 0x9d9483, STONE_FT = 0xb2a998, WOOD = 0x8a5a32, PLASTER = 0xeadcb8;
 function crenels(P, x0,x1,z, y, color, rotY=0){ for(let x=x0; x<=x1+1e-3; x+=.24){ const cx = rotY? z : x, cz = rotY? x : z; P.push(part(Box(.13,.14,.13), color, cx, y, cz)); } }
@@ -1069,6 +1570,37 @@ function buildCastleGeo(type){
     B.push(part(Box(.5,.66,.05), 0x2b1d14, 0,.61,1.27));
     return {B, O, flag:[0,3.55,-.1], h:3.9};
   }
+  if(type==='hamn'){
+    // hamn: brygga ut i vattnet (mot +z), förråd, kran och en liten kogg med segel i ägarens färg
+    B.push(part(Cyl(1.15,1.25,.18,16), 0x8f8468, 0,.09,0));
+    B.push(part(Box(1.0,.62,.72), PLASTER, -.38,.49,-.32));
+    O.push(part(prism(.36,1.12), 0xffffff, -.38,.98,-.32));
+    B.push(part(Box(.14,.22,.03), 0x5a3a22, -.38,.29,.05));
+    B.push(part(Box(.52,.09,2.1), WOOD, .38,.16,1.15));
+    for(const z of [.5,1.2,1.9]) for(const sx of [-1,1]) B.push(part(Cyl(.05,.05,.7,5), 0x5a3a22, .38+sx*.24,-.15,z));
+    B.push(part(Cyl(.06,.07,1.3,6), 0x5a3a22, .85,.7,.15));
+    B.push(part(Box(.08,.08,.9), 0x5a3a22, .85,1.33,.5));
+    B.push(part(Box(.32,.26,.26), 0x8a6a3a, .2,.33,.55));
+    B.push(part(Cyl(.15,.15,.28,8), 0x7a5230, -.1,.32,.5, Math.PI/2,0,0));
+    // koggen vid bryggan
+    B.push(part(Box(.42,.28,1.0), 0x6b4626, 1.05,.06,1.35));
+    B.push(part(Cone(.21,.32,4), 0x6b4626, 1.05,.06,.7, -Math.PI/2,Math.PI/4,0, 1,1,.8));
+    B.push(part(Cyl(.03,.03,1.1,5), 0x3a2a1a, 1.05,.7,1.35));
+    O.push(part(Box(.7,.62,.04), 0xffffff, 1.05,.82,1.3));
+    return {B, O, flag:[-.75,1.0,-.55], h:1.7};
+  }
+  if(type==='torn'){
+    // vakttorn: smalt högt stentorn med träskydd upptill och en eldkorg
+    B.push(part(Cyl(.95,1.05,.18,14), STONE_DK, 0,.09,0));
+    B.push(part(Box(.72,2.5,.72), STONE, 0,1.42,0));
+    B.push(part(Box(.8,.14,.8), STONE_DK, 0,.25,0));
+    for(const yy of [1.1,1.8]) for(const [x,z] of [[0,.37],[.37,0],[-.37,0]]) B.push(part(Box(x?.03:.08, .26, x?.08:.03), 0x2b1d14, x,yy,z));
+    B.push(part(Box(1.04,.36,1.04), WOOD, 0,2.82,0));
+    for(const [x,z] of [[.5,.5],[-.5,.5],[.5,-.5],[-.5,-.5]]) B.push(part(Cyl(.04,.04,.5,5), 0x5a3a22, x,2.86,z));
+    O.push(part(Cone(.82,.72,4), 0xffffff, 0,3.38,0, 0,Math.PI/4,0));
+    B.push(part(Box(.3,.4,.05), 0x2b1d14, 0,.42,.37));
+    return {B, O, flag:[0,3.72,0], h:3.9, glow:[0,2.82,.53]};
+  }
   // smedja: verkstad med städ, hög skorsten med rök och eldsken
   B.push(part(Cyl(1.15,1.28,.2,16), 0x7f776a, 0,.1,0));
   B.push(part(Box(1.2,.62,.82), 0xa7774a, -.2,.51,-.2));
@@ -1095,6 +1627,7 @@ const flagGeo = new THREE.PlaneGeometry(.5,.3,4,1); flagGeo.translate(.25,0,0);
 const crownGeo = merge([part(Cyl(.2,.17,.14,10), 0xf6c445, 0,0,0), ...[0,1,2,3,4].map(i=>part(Cone(.06,.16,4), 0xf6c445, Math.cos(i*1.256)*.17,.13,Math.sin(i*1.256)*.17))]);
 const glowGeo = new THREE.BoxGeometry(.6,.34,.04), glowMat = new THREE.MeshBasicMaterial({color:0xff8a2a});
 const ringGeo = new THREE.RingGeometry(1.5,1.72,48); ringGeo.rotateX(-Math.PI/2);
+const rangeGeo = new THREE.RingGeometry(TOWER_R-.24, TOWER_R, 64); rangeGeo.rotateX(-Math.PI/2);
 
 /* ---------- partiklar ---------- */
 const MAXP = 900;
@@ -1138,7 +1671,7 @@ function disposeWorld(){
   if(!W) return;
   scene.remove(W.group);
   W.group.traverse(o=>{ if(o.userData.own){ o.geometry?.dispose(); if(o.material!==vcMat && o.material!==terrMat) o.material?.dispose(); } });
-  for(const c of W.cs){ c.lbl.remove(); c.ringM.dispose(); }
+  for(const c of W.cs){ c.lbl.remove(); c.ringM.dispose(); if(c.rangeM) c.rangeM.dispose(); }
   for(const l of W.qlbl) l.el.remove();
   W = null;
 }
@@ -1211,6 +1744,21 @@ function buildWorld(L){
   }
   if(rp.length){ const roads = new THREE.Mesh(merge(rp), new THREE.MeshLambertMaterial({vertexColors:true, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2})); roads.receiveShadow = true; roads.userData.own = 1; group.add(roads); }
   if(bp.length){ const br = new THREE.Mesh(merge(bp), vcMat); br.castShadow = true; br.userData.own = 1; group.add(br); }
+  // sjöleder: streckade linjer på vattnet mellan hamnarna
+  if(L.lanes && L.lanes.length){
+    const lp = [];
+    for(const [a,b] of L.lanes){
+      const A = L.cs[a], B = L.cs[b], len = Math.hypot(B.x-A.x,B.z-A.z), dx=(B.x-A.x)/len, dz=(B.z-A.z)/len, px=-dz*.11, pz=dx*.11;
+      for(let d=1.3; d<len-1.3; d+=.85){
+        const e = Math.min(d+.5, len-1.3), x0=A.x+dx*d, z0=A.z+dz*d, x1=A.x+dx*e, z1=A.z+dz*e, y0=Math.max(hm(x0,z0),0)+.07, y1=Math.max(hm(x1,z1),0)+.07;
+        const g = new THREE.BufferGeometry();
+        g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([x0-px,y0,z0-pz, x0+px,y0,z0+pz, x1+px,y1,z1+pz, x0-px,y0,z0-pz, x1+px,y1,z1+pz, x1-px,y1,z1-pz]),3)); g.computeVertexNormals();
+        lp.push(part(g, 0xffffff));
+      }
+    }
+    if(lp.length){ const lm = new THREE.Mesh(merge(lp), lanesMat); lm.renderOrder = 3; lm.userData.own = 1; group.add(lm); }
+  }
+  lanesMat.color.setHex(0xf4f8ff); lanesMat.opacity = .9;
   // skog
   const trees = [];
   for(let x=-L.W/2+1; x<L.W/2-1; x+=.75) for(let z=-L.D/2+1; z<L.D/2-1; z+=.75){
@@ -1219,6 +1767,7 @@ function buildWorld(L){
     const h = hm(jx,jz); if(h < .14 || h > 1.25) continue;
     if(L.cs.some(c=>Math.hypot(c.x-jx,c.z-jz)<2.0)) continue;
     if(L.edges.some(([a,b])=>segDist(jx,jz,L.cs[a].x,L.cs[a].z,L.cs[b].x,L.cs[b].z)<.65)) continue;
+    if(L.lanes && L.lanes.some(([a,b])=>segDist(jx,jz,L.cs[a].x,L.cs[a].z,L.cs[b].x,L.cs[b].z)<.8)) continue;
     trees.push([jx,h,jz,.7+L.nz(jx*5,jz*5)*.6]);
   }
   if(trees.length){
@@ -1231,6 +1780,8 @@ function buildWorld(L){
   for(const c of L.cs){
     const gq = CGEO[c.type], g = new THREE.Group();
     g.position.set(c.x, c.h, c.z); g.rotation.y = (L.nz(c.x,c.z)-.5)*.5;
+    // hamnens brygga pekar ut mot vattnet
+    if(c.type==='hamn'){ let best = 0, bv = 9; for(let k=0;k<24;k++){ const a = k/24*6.283, v = landAt(L,c.x+Math.sin(a)*2.4,c.z+Math.cos(a)*2.4) + landAt(L,c.x+Math.sin(a)*1.5,c.z+Math.cos(a)*1.5); if(v<bv){ bv=v; best=a; } } g.rotation.y = best; }
     const body = new THREE.Mesh(gq.body, vcMat); body.castShadow = body.receiveShadow = true; g.add(body);
     const own = new THREE.Mesh(gq.own, ownerMat[0]); own.castShadow = true; g.add(own);
     const pole = new THREE.Mesh(poleGeo, vcMat); pole.position.set(...gq.flag); g.add(pole);
@@ -1240,8 +1791,11 @@ function buildWorld(L){
     const ringM = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:.0, depthWrite:false});
     const ring = new THREE.Mesh(ringGeo, ringM); ring.userData.ownMat = 1; ring.position.set(c.x, c.h+.04, c.z); ring.renderOrder = 3; group.add(ring);
     group.add(g);
+    // vakttornets räckvidd syns som en ring i ägarens färg
+    let rangeM = null;
+    if(c.type==='torn'){ rangeM = new THREE.MeshBasicMaterial({color:OCOL[0], transparent:true, opacity:.3, depthWrite:false, depthTest:false}); const rg = new THREE.Mesh(rangeGeo, rangeM); rg.position.set(c.x, c.h+.12, c.z); rg.renderOrder = 4; group.add(rg); }
     const lbl = document.createElement('div'); lbl.className = 'cl o0'; labelsEl.appendChild(lbl);
-    W.cs.push({g, own, flag, ring, ringM, lbl, top:gq.h+(c.home?1.0:.75), owner:-1, shown:-1, sx:0, sy:0, vis:false, smoke:gq.smoke, spark:gq.spark, type:c.type, home:c.home});
+    W.cs.push({g, own, flag, ring, ringM, rangeM, lbl, top:gq.h+(c.home?1.0:.75), owner:-1, shown:-1, sx:0, sy:0, vis:false, smoke:gq.smoke, spark:gq.spark, type:c.type, home:c.home});
   }
   // terränguniforms
   TU.uCount.value = L.N;
@@ -1260,6 +1814,7 @@ function setCastleOwner(i, o, wave){
   if(v.owner === o) return;
   const prev = v.owner;
   v.owner = o; v.own.material = ownerMat[o]; v.flag.material = flagMat[o];
+  if(v.rangeM){ v.rangeM.color.setHex(o ? OCOL[o] : 0xffffff); v.rangeM.opacity = o ? .6 : .3; }
   v.lbl.className = 'cl o'+o; v.shown = -1;
   const s = TU.uSite.value[i];
   if(wave && prev>=0){ TU.uColA.value[i].copy(TU.uColB.value[i]); TU.uColB.value[i].setHex(OCOL[o]); s.w = 0; }
@@ -1270,17 +1825,23 @@ function syncAll(){ for(let i=0;i<G.cs.length;i++) setCastleOwner(i, G.cs[i].own
 
 /* ================= Kamera ================= */
 const cam = {tx:0, tz:0, dist:40, yaw:0, pitch:1.04, intro:0, minD:9, maxD:80};
+// liggande skärm: kartan vrids 90° så att dess långa sida ligger längs skärmens långa sida
+const wantSide = () => !!W && innerWidth > innerHeight*1.15 && W.L.rz > W.L.rx*1.1;
 function fitDist(){
   const L = W.L, t = Math.tan(camera.fov*Math.PI/360), a = clamp(innerWidth/Math.max(1,innerHeight), .2, 5);
-  return Math.max((L.rx+1.4)/(t*a), (L.rz+2.6)*Math.sin(cam.pitch)/t*1.05);
+  const side = Math.abs(Math.sin(cam.yaw)) > .7, hx = side ? L.rz : L.rx, hz = side ? L.rx : L.rz;
+  return Math.max((hx+1.4)/(t*a), (hz+(side?4.4:2.6))*Math.sin(cam.pitch)/t*1.05);
 }
+let lastSide = null;
 function resize(){
   if(!innerWidth || !innerHeight) return;
   renderer.setSize(innerWidth, innerHeight, false);
   camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  if(W && mode!=='menu' && lastSide!==null && wantSide()!==lastSide){ framePlay(); return; }
   if(W){ W.camFit = fitDist(); cam.maxD = W.camFit*1.12; cam.dist = isFinite(cam.dist) ? clamp(cam.dist, cam.minD, cam.maxD) : W.camFit; }
 }
 function framePlay(){
+  cam.yaw = wantSide() ? Math.PI/2 : 0; lastSide = wantSide();
   const L = W.L, fit = fitDist();
   cam.maxD = fit*1.12;
   const t = Math.tan(camera.fov*Math.PI/360), a = clamp(innerWidth/Math.max(1,innerHeight), .2, 5);
@@ -1288,7 +1849,9 @@ function framePlay(){
   cam.dist = Math.min(fit, Math.max(comfy, 15));
   const home = G.cs.find(c=>c.home===P1) || G.cs[0];
   const k = cam.dist < fit*.97 ? .55 : 0;
-  cam.tx = home.x*k; cam.tz = home.z*k + 1.2; cam.yaw = 0;
+  // liggande: kartan flyttas ner en bit så att översta raden inte hamnar under knapparna
+  const off = cam.yaw ? -1.4 : 1.2;
+  cam.tx = home.x*k + Math.sin(cam.yaw)*off; cam.tz = home.z*k + Math.cos(cam.yaw)*off;
   clampCam();
 }
 function clampCam(){
@@ -1315,6 +1878,7 @@ function placeUnit(o, x, y, z, yaw, s=1){
 function renderState(dt){
   W.t += dt;
   for(const im of unitIM) im.count = 0;
+  for(const im of shipIM) im.count = 0;
   const T = W.t, sp = {};
   // borgar
   for(let i=0;i<G.cs.length;i++){
@@ -1357,7 +1921,15 @@ function renderState(dt){
     const figs = clamp(Math.ceil(q.n/2.5), 2, 36), rows = Math.ceil(figs/3);
     colPos(q, q.d, _pt);
     const yaw = Math.atan2(-_pt.dx, -_pt.dz);
-    for(let f=0; f<figs; f++){
+    // på en sjöled: skepp ute på vattnet, riddare den bit som går över land till och från hamnen
+    const atSea = q.sea[q.seg] && q.wait <= 0 && hm(_pt.x,_pt.z) < .1;
+    if(atSea){
+      // ett skepp per kolonn, större ju fler som är ombord
+      const im = shipIM[q.o];
+      if(im.count < MAXSHIP){ const sc = .85 + Math.min(.55, q.n/70), roll = Math.sin(T*2.2+q.id)*.08;
+        _m4.compose(_v.set(_pt.x, .02+Math.sin(T*2.6+q.id)*.04, _pt.z), _q.setFromEuler(_e.set(Math.sin(T*1.7+q.id)*.05, yaw, roll, 'YXZ')), _s3.set(sc,sc,sc)); im.setMatrixAt(im.count++, _m4); }
+    }
+    for(let f=0; f<figs && !atSea; f++){
       const r = Math.floor(f/3), dd = q.d - r*.34 - .2;
       if(dd < 1.0 && q.d < q.len) continue;
       const p = colPos(q, dd, _pa), lat = ((f%3)-1)*.2*(figs<3?0:1);
@@ -1367,22 +1939,61 @@ function renderState(dt){
     }
     let l = W.qlbl[qi];
     if(!l){ const el = document.createElement('div'); el.className='ql'; labelsEl.appendChild(el); l = W.qlbl[qi] = {el, n:-1, o:-1}; }
-    if(l.n!==q.n || l.o!==q.o){ l.n=q.n; l.o=q.o; l.el.className='ql o'+q.o; l.el.textContent = q.n; }
-    project(_pt.x, Math.max(hm(_pt.x,_pt.z),.1)+.6, _pt.z, sp);
+    if(l.n!==q.n || l.o!==q.o || l.s!==atSea){ l.n=q.n; l.o=q.o; l.s=atSea; l.el.className='ql o'+q.o+(atSea?' ship':''); l.el.textContent = q.n; }
+    project(_pt.x, Math.max(hm(_pt.x,_pt.z),.1)+(atSea?1.6:.6), _pt.z, sp);
     l.el.hidden = !sp.ok || q.d < 1.2;
     l.el.style.transform = `translate(${sp.x.toFixed(1)}px,${sp.y.toFixed(1)}px) translate(-50%,-100%)`;
     qi++;
   }
   for(let i=qi;i<W.qlbl.length;i++) W.qlbl[i].el.hidden = true;
   for(const im of unitIM) im.instanceMatrix.needsUpdate = true;
+  for(const im of shipIM) im.instanceMatrix.needsUpdate = true;
+  renderWeather(dt);
   // erövringsvåg i terrängen
   for(let i=0;i<W.L.N;i++){ const s = TU.uSite.value[i]; if(s.w < 900){ s.w += dt*11; if(s.w > 30){ s.w = 1e4; TU.uColA.value[i].copy(TU.uColB.value[i]); } } }
   if(W.crown) for(const c of W.crown) c.rotation.y = T*.8;
   waterTex.offset.set(T*.01, T*.006);
 }
+// regn faller runt kamerans mittpunkt; storm ger sneda droppar, mörkare ljus och blixtar
+let wxLight = 1, flashT = 0;
+function renderWeather(dt){
+  const kind = G && G.wx ? G.wx.kind : null;
+  const n = kind==='storm' ? RAINN : kind==='regn' ? 320 : 0;
+  wxLight = lerp(wxLight, kind==='storm' ? .55 : kind==='regn' ? .78 : 1, Math.min(1, dt*1.5));
+  hemi.intensity = 1.2*wxLight; sun.intensity = 2.3*wxLight;
+  rainIM.count = n;
+  if(n){
+    // dropparna skalas med kamerans avstånd så att regnet syns även när hela kartan visas
+    const R = Math.max(8, cam.dist*.7), slant = kind==='storm' ? .45 : .08, sc = Math.max(1, cam.dist/16);
+    for(let i=0;i<n;i++){ const p = rainP[i]; p.y -= p.v*dt*sc; if(p.y < 0){ p.y += 14*sc; p.x = Math.random()*2-1; p.z = Math.random()*2-1; }
+      _m4.compose(_v.set(cam.tx + p.x*R + slant*p.y, p.y, cam.tz + p.z*R), _q.setFromEuler(_e.set(0,0,-slant*.8)), _s3.set(sc,sc,sc)); rainIM.setMatrixAt(i,_m4); }
+    rainIM.instanceMatrix.needsUpdate = true;
+  }
+  const vc = $('vig').className; if(vc !== (kind||'')) $('vig').className = kind||'';
+  if(kind==='storm' && dt>0 && Math.random() < dt*.25){ flashT = .35; Snd.thunder(); }
+  if(flashT>0){ flashT -= dt; $('flash').style.opacity = Math.max(0, flashT/.35*.55*(Math.random()<.5?1:.6)).toFixed(2); } else if($('flash').style.opacity!=='0') $('flash').style.opacity = '0';
+}
+// en pil från vakttornet till kolonnen
+function arrowFx(x0,y0,z0,x1,y1,z1){
+  if(PT.n>=MAXP) return;
+  const i = PT.n++, life = .28;
+  PT.x[i]=x0; PT.y[i]=y0; PT.z[i]=z0; PT.vx[i]=(x1-x0)/life; PT.vy[i]=(y1-y0)/life + 2; PT.vz[i]=(z1-z0)/life;
+  PT.life[i]=PT.max[i]=life; PT.s[i]=.09; PT.gr[i]=14.3; PT.r[i]=.25; PT.g[i]=.16; PT.b[i]=.08;
+}
+const WXTXT = {
+  regn:{warn:'Regn på väg: marschen går långsammare en stund.', start:'Regn<small>Alla till fots går långsammare</small>', end:'Regnet är över.'},
+  storm:{warn:'Storm på väg: sjölederna stängs snart. Skicka skeppen nu!', start:'Storm!<small>Sjölederna är stängda</small>', end:'Stormen är över. Sjölederna är öppna igen.'},
+};
 function handleEvents(){
   for(const e of G.ev){
-    if(e.k==='send'){ if(e.o===P1) Snd.drums(); }
+    if(e.k==='send'){ if(e.o===P1){ Snd.drums(); if(e.ship) Snd.horn(); } }
+    else if(e.k==='shot'){ const c = G.cs[e.c], h = W.L.cs[e.c].h; arrowFx(c.x, h+2.9, c.z, e.x, Math.max(hm(e.x,e.z),.05)+.4, e.z);
+      if(e.kill) burst(e.x, Math.max(hm(e.x,e.z),.1)+.4, e.z, OCOL[e.t], 8, 2, .09, .5, 3);
+      if(e.o===P1 || e.t===P1) Snd.twang(); }
+    else if(e.k==='wxwarn'){ if(mode==='play'){ toast(WXTXT[e.kind].warn, 4); lesson(e.kind); } }
+    else if(e.k==='wxstart'){ if(e.kind==='storm'){ lanesMat.color.setHex(0xff3b2b); lanesMat.opacity = 1; } if(mode==='play') banner(WXTXT[e.kind].start); }
+    else if(e.k==='favor' && mode==='play'){ if(e.o) toast(e.o===P1 ? `Kronans gunst är din: du har flest borgar och producerar ${Math.round((favorMul(G.t)-1)*100)} % mer.` : `Kronans gunst: ${LORDS[e.o].name} har flest borgar och producerar ${Math.round((favorMul(G.t)-1)*100)} % mer.`, 4.5); }
+    else if(e.k==='wxend'){ lanesMat.color.setHex(0xf4f8ff); lanesMat.opacity = .9; if(mode==='play') toast(WXTXT[e.kind].end, 3); }
     else if(e.k==='capture'){
       const c = G.cs[e.c], h = W.L.cs[e.c].h;
       burst(c.x, h+1.2, c.z, OCOL[e.to], 26, 3.5, .14, .9, 5);
@@ -1407,17 +2018,25 @@ const powerEl = $('power'); const powerSeg = OCOL.map((_,o)=>{ const b = documen
 let hudAcc = 0;
 function updateHud(dt){
   hudAcc += dt; if(hudAcc < .25) return; hudAcc = 0;
-  const tot = [0,0,0,0,0]; let all = 0;
+  const tot = Array(NO).fill(0); let all = 0;
   for(const c of G.cs){ tot[c.owner] += c.n; all += c.n; }
   for(const q of G.cols){ tot[q.o] += q.n; all += q.n; }
-  const order = [1,2,3,4,0];
+  const order = [1,2,3,4,5,0];
   order.forEach((o,k)=>{ powerSeg[o].style.width = (tot[o]/Math.max(1,all)*100).toFixed(1)+'%'; powerSeg[o].style.order = k; });
   const t = G.t, m = Math.floor(t/60), s = Math.floor(t%60);
   $('timeTxt').textContent = m+':'+String(s).padStart(2,'0');
   const st = starsFor(t), stars = $('timer').querySelectorAll('i');
   stars.forEach((e,i)=>e.classList.toggle('on', i<st));
+  // väderskylt under styrkestapeln
+  const wxEl = $('wx'), nx = G.wxList[0];
+  let wh = '', warn = false;
+  const WXI = {regn:ICON.rain, storm:ICON.storm};
+  if(G.wx){ wh = `${WXI[G.wx.kind]}${WX[G.wx.kind].name}${G.wx.kind==='storm'?': sjölederna stängda':''} · ${Math.ceil(G.wx.at+G.wx.dur-G.t)} s`; }
+  else if(nx && nx.warned){ wh = `${WXI[nx.kind]}${WX[nx.kind].name} om ${Math.max(0,Math.ceil(nx.at-G.t))} s`; warn = true; }
+  if(wxEl.innerHTML !== wh) wxEl.innerHTML = wh;
+  wxEl.hidden = !wh; wxEl.classList.toggle('warn', warn);
 }
-const starsFor = t => { const par = LEVELS[curIdx].par; return t<=par ? 3 : t<=par*1.6 ? 2 : 1; };
+const starsFor = t => { const par = CUR.par; return t<=par ? 3 : t<=par*1.6 ? 2 : 1; };
 
 /* ================= Styrning: dra, nyp, panorera ================= */
 const drag = {sel:[], tgt:-1, active:false, x:0, y:0, armed:false};
@@ -1445,8 +2064,14 @@ function drawDrag(){
     const tx = drag.tgt>=0 ? W.cs[drag.tgt].sx : drag.x, ty = drag.tgt>=0 ? W.cs[drag.tgt].sy+8 : drag.y;
     if(drag.active || drag.tgt>=0) for(const i of drag.sel){ if(i===drag.tgt) continue; const v = W.cs[i]; html += `<line x1="${v.sx.toFixed(1)}" y1="${(v.sy+8).toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}"/>`; }
     const n = drag.sel.reduce((s,i)=> s + (i!==drag.tgt ? Math.floor(G.cs[i].n/2) : 0), 0);
-    let cls = '';
-    if(drag.tgt>=0 && G.cs[drag.tgt].owner!==P1){ const t = G.cs[drag.tgt]; cls = n*atkMul(G,P1) > (t.n+prodRate(G,t)*4)*defMul(G,t) ? 'ok' : 'no'; }
+    let cls = '', noWay = false;
+    // räcker det? Försvararna hinner producera under restiden (skepp är långsamma), minst 4 s
+    if(drag.tgt>=0 && G.cs[drag.tgt].owner!==P1){ const t = G.cs[drag.tgt]; let eta = 4;
+      noWay = drag.sel.every(i=>i===drag.tgt || !route(G, i, drag.tgt, P1));
+      for(const i of drag.sel){ if(i===drag.tgt) continue; const p = route(G, i, drag.tgt, P1); if(!p || p[p.length-1]!==drag.tgt) continue; let tt = 0;
+        for(let k=1;k<p.length;k++){ const sea = G.L.seaM && G.L.seaM[p[k-1]*G.cs.length+p[k]]; tt += G.L.elen[p[k-1]][p[k]] / (BASE_SPEED*(sea ? SHIP*G.mods[P1].ship : G.mods[P1].march*G.landMul)); }
+        eta = Math.max(eta, tt); }
+      cls = n*atkMul(G,P1) > (t.n+prodRate(G,t)*eta)*defMul(G,t) ? 'ok' : 'no'; }
     // står en främmande borg i vägen: visa var kolonnen stannar och anfaller först
     if(drag.active && drag.tgt>=0){
       for(const i of drag.sel){ if(i===drag.tgt) continue; const pth = route(G, i, drag.tgt, P1); if(!pth || pth[pth.length-1]===drag.tgt) continue;
@@ -1456,7 +2081,8 @@ function drawDrag(){
     }
     // siffran står ovanför fingret så att den syns på mobil
     if(drag.active && n>0){ const fx = clamp(drag.x, 70, innerWidth-70), fy = Math.max(40, drag.y-74);
-      html += `<text class="${cls}" text-anchor="middle" x="${fx.toFixed(1)}" y="${fy.toFixed(1)}">${n}${cls==='no'?' för få':cls==='ok'?' räcker':''}</text>`; }
+      const lab = noWay ? (G.storm ? ' stormen stänger' : ' bara med skepp') : cls==='no' ? ' för få' : cls==='ok' ? ' räcker' : '';
+      html += `<text class="${noWay?'no':cls}" text-anchor="middle" x="${fx.toFixed(1)}" y="${fy.toFixed(1)}">${n}${lab}</text>`; }
   }
   dragSvg.innerHTML = html;
 }
@@ -1481,9 +2107,18 @@ function doSend(srcs, tgt){
   const before = G.cols.length;
   const n = send(G, srcs, tgt, P1);
   const stop = G.cols.slice(before).find(q=>q.to!==tgt);
-  if(stop) toast(`Vägen är spärrad. Kolonnen anfaller ${{by:'byn',borg:'borgen',fast:'fästningen',smed:'smedjan'}[G.cs[stop.to].type]} på vägen först.`, 4);
+  if(stop){ const nm = {by:'Byn',borg:'Borgen',fast:'Fästningen',smed:'Smedjan',hamn:'Hamnen',torn:'Vakttornet'}[G.cs[stop.to].type];
+    toast(`${nm} ${G.cs[stop.to].type==='hamn'?'på andra sidan':'på vägen'} är inte din, så trupperna anfaller den först och går inte längre.`, 4); }
   if(n && guide && srcs.length>=2) guide.multi = true;
-  if(n && hintStep===1){ hintStep = 2; setHint(LEVELS[curIdx].foes.length ? `Bra! Fortsätt tills alla ${['','','röda','gröna','gula'][LEVELS[curIdx].foes[0]]} borgar är dina.` : ''); setTimeout(()=>{ if(hintStep===2) setHint(''); }, 4500); }
+  if(n && hintStep===1){ hintStep = 2; setHint(CUR.foes.length ? `Bra! Fortsätt tills alla ${['','','röda','gröna','gula','lila'][CUR.foes[0]]} borgar är dina.` : ''); setTimeout(()=>{ if(hintStep===2) setHint(''); }, 4500); }
+  // inget gick iväg: säg varför när det beror på vattnet
+  if(!n){
+    const s0 = srcs.find(i=>i!==tgt && G.cs[i].owner===P1 && G.cs[i].n>=2);
+    if(s0!==undefined && !route(G, s0, tgt, P1)){
+      const st = G.storm; G.storm = false; const ok = route(G, s0, tgt, P1); G.storm = st;
+      toast(ok && st ? 'Stormen har stängt sjölederna. Vänta tills den är över.' : 'Dit kommer du bara med skepp. Ta en hamn (ankaret) och dra från den till en annan hamn.', 4);
+    }
+  }
   return n;
 }
 canvas.addEventListener('pointerdown', e => {
@@ -1580,6 +2215,9 @@ const guideSvg = $('guideSvg');
 function startGuide(){ guide = {step:1, t:0, multi:false}; G.hold = true; $('guide').hidden = false; setHint(''); }
 function endGuide(skipped){
   if(!guide) return;
+  if(guide.lesson){ const g = guide; guide = null; $('guide').hidden = true; guideSvg.innerHTML = ''; save.lessons[g.lesson] = true; persist();
+    if(g.hold){ G.hold = false; G.grace = Math.max(G.grace, G.t + 30); setHint('Fienden vaknar nu.'); setTimeout(()=>{ if(!guide && mode==='play') setHint(''); }, 4000); }
+    return; }
   guide = null; $('guide').hidden = true; guideSvg.innerHTML = '';
   G.hold = false; G.grace = Math.max(G.grace, G.t + 45);
   save.guide = true; persist();
@@ -1600,7 +2238,54 @@ function arrowSvg(ids){
   const [x,y] = scrPt(ids[ids.length-1]); h += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="30"/>`;
   return h;
 }
+/* ---------- v3: korta guider för varje nyhet i Öriket ---------- */
+// Varje steg har text, pilar (lista med borgar) och ett villkor för att gå vidare. hold = fienden står still.
+const gd2 = (a,b) => Math.hypot(a.x-b.x, a.z-b.z);
+const myHarb = () => G.cs.filter(c=>c.owner===P1 && c.type==='hamn');
+const seaNb = i => W.L.adj[i].filter(j=>W.L.seaM && W.L.seaM[i*G.cs.length+j]);
+const LESSON = {
+  hamn:{hold:true, steps:[
+    {txt:'Ta hamnen (ankaret) på din ö. Hamnar är där skeppen lägger ut. Släpp när siffran ovanför fingret är <b style="color:#8dffa0">grön</b>; är den röd, vänta lite.', go:()=>myHarb().length>0,
+      ids:()=>{ const s0 = G.cs.filter(c=>c.owner===P1).sort((a,b)=>b.n-a.n)[0]; if(!s0) return null; const N = G.cs.length;
+        const byLand = c => { const p = route(G,s0.id,c.id,P1); return p && !p.some((v,k)=>k>0 && W.L.seaM[p[k-1]*N+v]); };
+        const h = G.cs.filter(c=>c.type==='hamn' && c.owner!==P1 && byLand(c)).sort((a,b)=>gd2(a,s0)-gd2(b,s0))[0]; return h ? [s0.id, h.id] : null; }},
+    {txt:'Dra från din hamn till en hamn på andra sidan vattnet. Trupperna seglar längs den streckade sjöleden.', go:()=>G.st.ships>0,
+      ids:()=>{ for(const h of myHarb()){ const t = seaNb(h.id).find(j=>G.cs[j].owner!==P1); if(t!==undefined) return [h.id, t]; } return null; }},
+    {txt:'Skeppet är långsammare än riddare till fots, men det seglar förbi fästningar och kommer åt andra öar. Nu vaknar fienden!', go:g=>g.t>7},
+  ]},
+  sigrid:{steps:[
+    {txt:'Svarta Sigrid (lila) är sjöfarare. Hon anfaller helst över vattnet och tar gärna hamnar. Ha trupper kvar i dina hamnar.', go:g=>g.t>9,
+      ids:()=>{ const h = G.cs.find(c=>c.home===5 && c.owner===5); return h ? [h.id] : null; }},
+  ]},
+  torn:{steps:[
+    {txt:'Vakttornet (bågen) skjuter på fiender som går förbi inom ringen. Ta det, så skyddar det dina vägar.', go:g=>g.t>25 || G.cs.some(c=>c.type==='torn' && c.owner===P1),
+      ids:()=>{ const mine = G.cs.filter(c=>c.owner===P1).sort((a,b)=>b.n-a.n)[0], t = G.cs.filter(c=>c.type==='torn' && c.owner!==P1).sort((a,b)=>gd2(a,mine)-gd2(b,mine))[0]; return mine && t ? [mine.id, t.id] : null; }},
+  ]},
+  regn:{weather:true, steps:[
+    {txt:'Regn på väg, se skylten uppe vid timern. När det regnar går alla till fots 30 % långsammare. Skeppen påverkas inte.', go:g=>g.t>8},
+  ]},
+  storm:{weather:true, steps:[
+    {txt:'Storm på väg! Under stormen blir sjölederna röda och stängda, och inga nya skepp kan segla. Skicka skeppen innan den kommer.', go:g=>g.t>9},
+  ]},
+};
+function lesson(k){
+  if(!LESSON[k] || save.lessons[k] || guide || mode!=='play' || CUR.kind!=='camp') return;
+  guide = {lesson:k, step:1, t:0, hold:!!LESSON[k].hold, steps:LESSON[k].steps};
+  if(guide.hold) G.hold = true;
+  $('guide').hidden = false; setHint('');
+}
+function updateLesson(dt){
+  const g = guide; g.t += dt;
+  const st = g.steps[g.step-1];
+  if(st.go(g)){ if(g.step >= g.steps.length){ endGuide(false); return; } g.step++; g.t = 0; return; }
+  const n = g.steps.length;
+  $('gStep').innerHTML = n>1 ? `Steg ${g.step} av ${n} ${g.steps.map((_,k)=>`<i class="${k<g.step?'on':''}"></i>`).join('')}` : 'Nytt!';
+  if($('gTxt').innerHTML !== st.txt) $('gTxt').innerHTML = st.txt;
+  const ids = st.ids ? st.ids() : null;
+  guideSvg.innerHTML = ids && !drag.active ? arrowSvg(ids) : '';
+}
 function updateGuide(dt){
+  if(guide.lesson){ updateLesson(dt); return; }
   const g = guide; g.t += dt;
   const mine = G.cs.filter(c=>c.owner===P1); if(!mine.length){ endGuide(true); return; }
   const strongest = mine.slice().sort((a,b)=>b.n-a.n)[0];
@@ -1639,13 +2324,15 @@ function updateGuide(dt){
 function lossAdvice(idx){
   const st = G.st, out = [];
   const hasSmed = G.cs.some(c=>c.type==='smed');
-  if(st.sends < 3) out.push('Du skickade nästan inga trupper. Dra från din blå borg till en grå by direkt i början – byarna är billiga och producerar åt dig.');
-  if(st.fail.fast) out.push('Du anföll en fästning för tidigt – fästningar försvarar ×1,5. Vänta tills siffran ovanför fingret är grön.');
+  if(st.sends < 3) out.push('Du skickade nästan inga trupper. Dra från din blå borg till en grå by direkt i början. Byarna är billiga och producerar åt dig.');
+  if(st.fail.fast) out.push('Du anföll en fästning för tidigt: fästningar försvarar ×1,5. Vänta tills siffran ovanför fingret är grön.');
   else if(st.fail.by+st.fail.borg+st.fail.smed >= 2) out.push('Flera anfall räckte inte. Släpp först när siffran ovanför fingret är grön, eller svep över två borgar.');
   if(st.capLost) out.push('Huvudborgen föll. Låt några trupper stå kvar hemma, och skicka förstärkning när en stor fiendekolonn är på väg.');
-  if(st.full > 40) out.push('Dina borgar stod fulla en lång stund. En full borg producerar inget mer – skicka trupperna vidare.');
+  if(st.full > 40) out.push('Dina borgar stod fulla en lång stund. En full borg producerar inget mer, så skicka trupperna vidare.');
   if(st.caps < 2 && st.sends >= 3) out.push('Ta de grå byarna nära dig först, innan fienden hinner dit. Fienden väntar en stund innan den anfaller dig.');
   if(hasSmed && !st.smedTaken) out.push('Smedjan gör alla dina trupper 20 % starkare. Försök ta den tidigt.');
+  if(G.L.lanes && G.L.lanes.length && !st.ships) out.push('Du seglade aldrig. Ta en hamn (ankaret) och dra till en hamn på andra sidan vattnet.');
+  if(st.shot >= 10) out.push(`Vakttornen sköt ${st.shot} av dina soldater. Ta tornet först eller gå en annan väg.`);
   if(!out.length) out.push('Det var jämnt! Svep över flera borgar och slå till när fienderna slåss mot varandra.');
   out.push('Guldet du fick räcker till en förbättring snart. Startbonus i Rustkammaren ger fler soldater från start.');
   return out.slice(0,3);
@@ -1655,81 +2342,128 @@ function lossAdvice(idx){
 function diffUI(){ document.querySelectorAll('.diffbtn b').forEach(b=>b.textContent = DIFF[save.diff].name); }
 function toggleDiff(){
   save.diff = save.diff==='easy' ? 'normal' : 'easy'; persist(); diffUI();
-  if(mode==='intro' && W){ G = newState(W.L); syncAll(); }
+  if(mode==='intro' && W && CUR.kind==='camp'){ G = newState(W.L); syncAll(); }
   toast(save.diff==='easy' ? 'Svårighet: Lätt. Fienden producerar och tänker långsammare.' : 'Svårighet: Normal.', 3.5);
 }
 
 /* ================= Skärmar och flöde ================= */
-const screens = ['start','mapScr','helpScr','introScr','pauseScr','resultScr','shopScr'];
+const screens = ['start','mapScr','helpScr','introScr','pauseScr','resultScr','shopScr','freeScr','newsScr'];
 let mode = 'menu', curIdx = 0, speed = 1, hintStep = 0, endT = 0;
+// CUR beskriver det som spelas: en kampanjbana eller ett fritt fälttåg
+let CUR = {kind:'camp', idx:0, name:LEVELS[0].name, par:LEVELS[0].par, foes:LEVELS[0].foes, news:[]};
 function show(id){ screens.forEach(s => $(s).hidden = s!==id); }
 function goldUI(){ document.querySelectorAll('.goldN').forEach(e=>e.textContent = save.gold); }
 function setHint(t){ $('hint').textContent = t; $('hint').hidden = !t; }
 function nextIdx(){ return Math.min(save.unlocked-1, NL-1); }
+const fmtT = t => `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+const localNum = idx => idx - REALMS[realmOf(idx)].from + 1;
 
-$('helpTypes').innerHTML = ['by','borg','fast','smed'].map(typeCard).join('');
+$('helpTypes').innerHTML = ['by','borg','fast','smed','hamn','torn'].map(typeCard).join('');
 function startAttract(){
   const L = genLevel(7, 4242 + Math.floor(Math.random()*50)*13);
   G = newState(L, {demo:true, kinds:{1:'opp'}});
   buildWorld(L); syncAll();
-  cam.dist = fitDist()*.95; cam.tx = 0; cam.tz = 0; cam.yaw = 0; cam.intro = 0;
+  cam.yaw = 0; cam.dist = fitDist()*.95; cam.tx = 0; cam.tz = 0; cam.intro = 0;
   mode = 'menu'; $('hud').hidden = true; clearDrag(); setHint('');
 }
+const allDone = () => save.stars[NL-1]>0 && save.unlocked>NL;
 function toMenu(){
   startAttract(); show('start'); goldUI();
   const n = nextIdx();
-  $('playBtn').textContent = save.stars[NL-1]>0 && save.unlocked>NL ? 'Spela Kronlandet' : `Spela bana ${n+1}: ${LEVELS[n].name}`;
+  $('playBtn').textContent = allDone() ? 'Spela ett fritt fälttåg' : (realmOf(n)===0 ? `Spela bana ${localNum(n)}: ${LEVELS[n].name}` : `${REALMS[realmOf(n)].name} ${localNum(n)}: ${LEVELS[n].name}`);
+  // gamla sparningar där Kronlandet redan är taget får veta att Öriket finns
+  if(save.unlocked > REALMS[1].from && !save.oriket){ $('newsTypes').innerHTML = ['hamn','torn'].map(typeCard).join(''); show('newsScr'); }
 }
 function openMap(){ if(mode!=='menu') toMenu(); show('mapScr'); renderCamp(); }
+function introCommon(L){
+  const present = ['by','borg','fast','smed','hamn','torn'].filter(t=>L.cs.some(c=>c.type===t));
+  $('inFoes').innerHTML = CUR.foes.map(o=>`<span class="foe"><i style="background:${OCSS[o]}"></i>${LORDS[o].name} <small>${LORDS[o].trait}</small></span>`).join('');
+  $('inTip').innerHTML = '<b>Tips:</b> ' + CUR.tip;
+  const news = (CUR.news||[]).filter(k=>NEWS[k]);
+  $('inNew').hidden = !news.length;
+  $('inNew').innerHTML = news.map(k=>NEWS[k].title).join(' · ') + (news.length ? '<small>Läs korten nedan. En kort guide visar hur det fungerar.</small>' : '');
+  const wxk = L.def && L.def.wx ? [...new Set(L.def.wx.k.map(k=>k==='storm' && !(L.lanes&&L.lanes.length) ? 'regn' : k))] : [];
+  const cards = news.map(k=>NEWS[k].card().replace('class="type"','class="type wide"')).concat(present.filter(t=>!news.includes(t)).map(typeCard)).concat(wxk.filter(k=>!news.includes(k)).map(k=>NEWS[k].card()));
+  $('inTypes').innerHTML = cards.join(''); diffUI();
+  const par = CUR.par;
+  $('inStars').textContent = `Tre stjärnor om du vinner inom ${fmtT(par)}, två inom ${fmtT(par*1.6)}.`;
+  $('inDiff').hidden = CUR.kind!=='camp';
+  show('introScr');
+}
 function prepLevel(idx){
   Snd.init();
   curIdx = idx;
-  const L = genLevel(idx);
+  const L = genLevel(idx), d = LEVELS[idx];
+  CUR = {kind:'camp', idx, name:d.name, par:d.par, foes:d.foes, tip:d.tip, news:d.news||[], opt:{}};
   G = newState(L);
   buildWorld(L); syncAll(); framePlay(); cam.intro = 1;
-  mode = 'intro'; updateSpeedBtn(); clearDrag(); setHint('');
+  mode = 'intro'; speed = 1; updateSpeedBtn(); clearDrag(); setHint('');
   $('hud').hidden = true;
-  $('inNum').textContent = `Bana ${idx+1} av ${NL}`;
-  $('inName').textContent = LEVELS[idx].name;
-  $('inFoes').innerHTML = LEVELS[idx].foes.map(o=>`<span class="foe"><i style="background:${OCSS[o]}"></i>${LORDS[o].name} <small>${LORDS[o].trait}</small></span>`).join('');
-  $('inTip').innerHTML = '<b>Tips:</b> ' + LEVELS[idx].tip;
-  const present = ['by','borg','fast','smed'].filter(t=>L.cs.some(c=>c.type===t));
-  $('inTypes').innerHTML = present.map(typeCard).join(''); diffUI();
-  const par = LEVELS[idx].par;
-  $('inStars').textContent = `Tre stjärnor om du vinner inom ${Math.floor(par/60)}:${String(par%60).padStart(2,'0')}, två inom ${Math.floor(par*1.6/60)}:${String(Math.round(par*1.6%60)).padStart(2,'0')}.`;
-  show('introScr');
+  $('inNum').textContent = `${REALMS[realmOf(idx)].name} · bana ${localNum(idx)} av ${REALMS[realmOf(idx)].to-REALMS[realmOf(idx)].from}`;
+  $('inName').textContent = d.name;
+  introCommon(L);
 }
+// fritt fälttåg eller dagens karta
+function prepFree(o){
+  Snd.init();
+  const L = genFree(o), d = L.def, x = d.x;
+  const opt = {tune:tuneX(x), upg:save.upg};
+  CUR = {kind:o.daily?'daily':'free', o, name:d.name, par:d.par, foes:d.foes, tip:d.tip, news:[], opt};
+  G = newState(L, opt);
+  buildWorld(L); syncAll(); framePlay(); cam.intro = 1;
+  mode = 'intro'; speed = 1; updateSpeedBtn(); clearDrag(); setHint('');
+  $('hud').hidden = true;
+  $('inNum').textContent = o.daily ? `Dagens karta · ${o.daily}` : `Fritt fälttåg · frö ${o.seed}`;
+  $('inName').textContent = `${d.n} borgar, ${d.foes.length} ${d.foes.length>1?'herrar':'herre'}`;
+  introCommon(L);
+}
+function replay(){ if(CUR.kind==='camp') prepLevel(CUR.idx); else prepFree(CUR.o); }
 function beginBattle(){
   if(!save.help){ save.help = true; persist(); $('helpBack').dataset.go = 'battle'; show('helpScr'); return; }
   show(null); $('hud').hidden = false; mode = 'play';
-  $('lvlName').textContent = `${curIdx+1}. ${LEVELS[curIdx].name}${save.diff==='easy'?' · Lätt':''}`;
+  const camp = CUR.kind==='camp';
+  $('lvlName').textContent = camp ? `${localNum(CUR.idx)}. ${CUR.name}${save.diff==='easy'?' · Lätt':''}` : `${CUR.name} · ${FREE_DIFF[CUR.o.diff]?.name||'Normal'}`;
   guide = null; $('guide').hidden = true;
-  hintStep = curIdx===0 && save.guide ? 1 : 0;
+  hintStep = camp && CUR.idx===0 && save.guide ? 1 : 0;
   setHint(hintStep ? 'Dra från din blå borg till en grå by' : '');
-  if(curIdx===0 && !save.guide) startGuide();
-  banner(`${LEVELS[curIdx].name}<small>Till strid!</small>`);
+  if(camp && CUR.idx===0 && !save.guide) startGuide();
+  else if(camp) for(const k of CUR.news) if(LESSON[k] && !LESSON[k].weather){ lesson(k); break; }
+  banner(`${CUR.name}<small>Till strid!</small>`);
   Snd.drums(); hudAcc = 1;
 }
 function pause(){ if(mode!=='play') return; mode = 'pause'; clearDrag(); hideInfo(); show('pauseScr'); }
 function resume(){ show(null); mode = 'play'; }
 function toggleSpeed(){ speed = speed===1 ? 2 : 1; updateSpeedBtn(); Snd.click(); }
 function updateSpeedBtn(){ $('speedTxt').textContent = '×'+speed; $('speedBtn').classList.toggle('on', speed===2); }
+let opened = false;
 function finish(){
   const won = G.winner===P1, idx = curIdx;
-  mode = 'end'; endT = 0; clearDrag(); setHint('');
+  mode = 'end'; endT = 0; clearDrag(); setHint(''); opened = false;
   let stars = 0, gold = 0;
-  if(won){
+  if(CUR.kind!=='camp'){
+    // fria fälttåg ger lite guld; dagens karta sparar bästa tid
+    const n = G.cs.length, dm = {easy:.8, normal:1, hard:1.3}[CUR.o.diff] || 1;
+    save.free.plays++;
+    if(won){ stars = starsFor(G.t); gold = Math.round((25 + 3*n + 15*CUR.foes.length)*dm) + stars*5; save.free.wins++;
+      if(CUR.kind==='daily'){ if(save.daily.date!==CUR.o.daily){ save.daily = {date:CUR.o.daily, best:0, wins:0}; } save.daily.wins++; if(!save.daily.best || G.t < save.daily.best) save.daily.best = Math.round(G.t); } }
+    else gold = Math.round(10 + n + 4*G.st.caps);
+    save.gold += gold; persist();
+    if(won){ Snd.win(); banner(`Seger!<small>${CUR.name} är ditt</small>`); } else { Snd.lose(); banner('Fälttåget föll'); }
+  } else if(won){
     stars = starsFor(G.t);
     const first = save.stars[idx]===0;
-    gold = Math.round((60 + 18*idx)*(first?1:.5)) + stars*10;
+    gold = campGold(true, idx, stars, first, G.st.caps);
     save.stars[idx] = Math.max(save.stars[idx], stars);
     save.best[idx] = save.best[idx] ? Math.min(save.best[idx], Math.round(G.t)) : Math.round(G.t);
+    const before = save.unlocked;
     save.unlocked = Math.max(save.unlocked, idx+2);
+    // tar man sista banan i ett rike öppnas nästa
+    if(idx+1===REALMS[0].to && before <= REALMS[1].from){ opened = true; save.oriket = true; }
     save.gold += gold; persist();
     Snd.win(); banner(`Seger!<small>${LEVELS[idx].name} är ditt</small>`);
   } else {
     // mer guld vid förlust, så att man kan köpa förbättringar och försöka igen
-    gold = Math.round(30 + 10*idx + 5*G.st.caps);
+    gold = campGold(false, idx, 0, false, G.st.caps);
     save.gold += gold; save.losses[idx] = (save.losses[idx]||0) + 1; persist();
     Snd.lose(); banner('Riket föll');
   }
@@ -1738,56 +2472,85 @@ function finish(){
 }
 function showResult(won, stars, gold){
   $('hud').hidden = true; show('resultScr');
-  const idx = curIdx;
-  $('resTitle').textContent = won ? 'Seger!' : 'Riket föll';
-  const m = Math.floor(G.t/60), s = Math.floor(G.t%60);
-  $('resSub').textContent = won ? `${LEVELS[idx].name} är ditt på ${m}:${String(s).padStart(2,'0')}` : `Du förlorade alla borgar i ${LEVELS[idx].name}.`;
+  const idx = curIdx, camp = CUR.kind==='camp';
+  $('resTitle').textContent = won ? 'Seger!' : camp ? 'Riket föll' : 'Fälttåget föll';
+  $('resSub').textContent = won ? `${CUR.name} är ditt på ${fmtT(G.t)}` : `Du förlorade alla borgar${camp?' i '+CUR.name:''}.`;
+  if(won && CUR.kind==='daily') $('resSub').textContent += ` · bästa tid i dag ${fmtT(save.daily.best)}`;
   $('resStars').hidden = !won; $('resGoldPill').hidden = false;
   $('resAdvice').hidden = won; $('resAdvice').innerHTML = won ? '' : lossAdvice(idx).map(t=>`<div>${t}</div>`).join('');
-  $('resEasy').hidden = won || save.diff==='easy' || (save.losses[idx]||0) < 2;
+  $('resEasy').hidden = !camp || won || save.diff==='easy' || (save.losses[idx]||0) < 2;
+  $('resNew').hidden = !opened;
+  $('resNew').innerHTML = 'Nytt land: Öriket har öppnats!<small>Tolv nya banor bland öar, hamnar, vakttorn och stormar. Finns på kampanjkartan.</small>';
   $('resGold').textContent = '+'+gold;
   const st = $('resStars').querySelectorAll('i'); st.forEach(e=>e.classList.remove('on'));
   if(won) st.forEach((e,i)=>{ if(i<stars) setTimeout(()=>{ e.classList.add('on'); Snd.star(i); }, 300+i*320); });
-  const last = idx===NL-1;
-  playNext = won && !last ? idx+1 : idx;
-  $('resNext').textContent = won ? (last ? 'Hela riket är ditt!' : 'Nästa bana') : 'Försök igen';
-  $('resNext').onclick = () => { Snd.click(); if(won && last){ toMenu(); return; } prepLevel(won ? idx+1 : idx); };
+  $('resMap').textContent = camp ? 'Kartan' : 'Fria fälttåg';
+  if(!camp){
+    playNext = idx;
+    $('resNext').textContent = won ? 'Nytt fälttåg' : 'Försök igen';
+    $('resNext').onclick = () => { Snd.click(); if(won){ if(CUR.kind==='daily') openFree(); else newFree(); } else replay(); };
+  } else {
+    const last = idx===NL-1, endRealm = idx+1===REALMS[realmOf(idx)].to;
+    playNext = won && !last ? idx+1 : idx;
+    $('resNext').textContent = won ? (last ? 'Hela riket är ditt! Prova fria fälttåg' : opened ? 'Segla till Öriket' : endRealm ? 'Nästa land' : 'Nästa bana') : 'Försök igen';
+    $('resNext').onclick = () => { Snd.click(); if(won && last){ toMenu(); openFree(); return; } prepLevel(won ? idx+1 : idx); };
+  }
   goldUI();
 }
 function renderShop(){
   const list = $('shopList'); list.innerHTML = '';
   for(const [k,u] of Object.entries(UPG)){
-    const lv = save.upg[k], max = lv>=u.max, cost = max ? 0 : u.cost[lv];
+    const lv = save.upg[k]||0, max = lv>=u.max, cost = max ? 0 : u.cost[lv];
     const d = document.createElement('div'); d.className = 'card';
     d.innerHTML = `<div class="ic"><svg viewBox="0 0 24 24">${u.icon}</svg></div><div class="info"><h3>${u.name}</h3><p>${u.desc}</p><div class="pips">${Array.from({length:u.max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</div></div>`;
     const b = document.createElement('button'); b.className = 'buy';
     b.innerHTML = max ? 'Max' : `<i class="coin"></i>${cost}`;
     b.disabled = max || save.gold < cost;
-    b.onclick = () => { if(save.gold < cost || max) return; save.gold -= cost; save.upg[k]++; persist(); Snd.coin(); goldUI(); renderShop(); };
+    b.onclick = () => { if(save.gold < cost || max) return; save.gold -= cost; save.upg[k] = lv+1; persist(); Snd.coin(); goldUI(); renderShop(); };
     d.appendChild(b); list.appendChild(d);
   }
-  $('shopPlay').textContent = `Spela bana ${(shopBackTo==='resultScr' ? playNext : nextIdx())+1}`;
+  const free = shopBackTo==='resultScr' && CUR.kind!=='camp';
+  const pi = shopBackTo==='resultScr' ? playNext : nextIdx();
+  $('shopPlay').textContent = free ? 'Spela samma karta igen' : allDone() && shopBackTo!=='resultScr' ? 'Fria fälttåg' : `Spela ${REALMS[realmOf(pi)].name} ${localNum(pi)}: ${LEVELS[pi].name}`;
   goldUI();
 }
 let shopBackTo = 'start', playNext = 0;
 function openShop(from){ shopBackTo = from; if(mode==='end'){ const keep = shopBackTo; toMenu(); shopBackTo = keep; } show('shopScr'); renderShop(); }
 
-/* ---------- kampanjkartan ---------- */
-const NODES = [[90,492],[196,470],[288,424],[236,360],[126,346],[66,276],[160,232],[272,250],[300,168],[204,118],[98,94],[196,36]];
-function renderCamp(){
-  const svg = $('campSvg');
-  let h = `<defs><pattern id="pp" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#e9d7a6"/><circle cx="2" cy="3" r=".7" fill="#d8c08a"/></pattern></defs>
-  <rect width="360" height="540" rx="18" fill="#3d7ea6"/>
-  <path d="M44 524 C 8 430, 26 318, 24 214 C 22 110, 84 14, 196 10 C 304 8, 348 88, 338 182 C 330 262, 352 330, 326 418 C 304 498, 226 532, 142 530 Z" fill="url(#pp)" stroke="#8b6a3a" stroke-width="4"/>
+/* ---------- kampanjkartan: ett blad per rike ---------- */
+const NODES = [
+  [[90,492],[196,470],[288,424],[236,360],[126,346],[66,276],[160,232],[272,250],[300,168],[204,118],[98,94],[196,36]],
+  [[70,486],[150,446],[250,470],[310,400],[226,342],[118,330],[52,250],[132,196],[236,224],[312,152],[210,92],[110,52]],
+];
+const CAMP_BG = [
+  `<path d="M44 524 C 8 430, 26 318, 24 214 C 22 110, 84 14, 196 10 C 304 8, 348 88, 338 182 C 330 262, 352 330, 326 418 C 304 498, 226 532, 142 530 Z" fill="url(#pp)" stroke="#8b6a3a" stroke-width="4"/>
   <path d="M28 318 C 90 324, 140 312, 200 318 M218 214 C 252 222, 290 212, 336 220" stroke="#7fb0c8" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <g fill="#9f9480">${[[60,180],[80,165],[250,300],[268,312],[150,420]].map(([x,y])=>`<path d="M${x-12} ${y+8} L${x} ${y-10} L${x+12} ${y+8}Z"/>`).join('')}</g>
-  <path d="M${NODES.map(p=>p.join(' ')).join(' L')}" stroke="#7a4a1a" stroke-width="3" stroke-dasharray="2 7" fill="none" stroke-linecap="round"/>`;
-  NODES.forEach(([x,y],i)=>{
-    const lock = i >= save.unlocked, st = save.stars[i], cur = i===nextIdx() && !st;
+  <g fill="#9f9480">${[[60,180],[80,165],[250,300],[268,312],[150,420]].map(([x,y])=>`<path d="M${x-12} ${y+8} L${x} ${y-10} L${x+12} ${y+8}Z"/>`).join('')}</g>`,
+  `<g fill="url(#pp)" stroke="#8b6a3a" stroke-width="3">
+    <path d="M30 470 C 20 430, 70 410, 120 420 C 190 432, 200 500, 150 520 C 100 536, 40 510, 30 470Z"/>
+    <path d="M220 440 C 230 400, 300 370, 336 400 C 352 440, 320 506, 262 500 C 230 496, 214 470, 220 440Z"/>
+    <path d="M70 310 C 100 280, 180 290, 250 320 C 280 350, 240 380, 180 372 C 120 366, 50 350, 70 310Z"/>
+    <path d="M20 250 C 30 200, 110 170, 160 190 C 200 210, 170 260, 120 270 C 70 280, 16 280, 20 250Z"/>
+    <path d="M200 230 C 210 180, 290 120, 340 140 C 352 180, 320 240, 270 250 C 230 256, 196 254, 200 230Z"/>
+    <path d="M70 70 C 100 30, 200 30, 240 70 C 260 110, 220 130, 160 126 C 100 122, 50 110, 70 70Z"/>
+  </g>
+  <g stroke="#e8f2ff" stroke-width="2" stroke-dasharray="5 6" fill="none" opacity=".8"><path d="M150 446 L250 470 M226 342 L310 400 M118 330 L52 250 M132 196 L236 224 M236 224 L312 152 M132 196 L110 52"/></g>
+  <g fill="#9f9480">${[[110,240],[280,190],[160,90]].map(([x,y])=>`<path d="M${x-10} ${y+7} L${x} ${y-8} L${x+10} ${y+7}Z"/>`).join('')}</g>`,
+];
+function renderCamp(){
+  const r = REALMS[save.realm] && (save.realm===0 || save.unlocked>REALMS[save.realm].from) ? save.realm : 0, R = REALMS[r];
+  $('mapTitle').textContent = R.title;
+  $('realmTabs').querySelectorAll('button').forEach(b=>{ const k = +b.dataset.r; b.classList.toggle('on', k===r); b.innerHTML = k>0 && save.unlocked<=REALMS[k].from ? `🔒 ${REALMS[k].name}` : REALMS[k].name; });
+  const svg = $('campSvg'), N = NODES[r];
+  let h = `<defs><pattern id="pp" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#e9d7a6"/><circle cx="2" cy="3" r=".7" fill="#d8c08a"/></pattern></defs>
+  <rect width="360" height="540" rx="18" fill="#3d7ea6"/>${CAMP_BG[r]}
+  <path d="M${N.map(p=>p.join(' ')).join(' L')}" stroke="#7a4a1a" stroke-width="3" stroke-dasharray="2 7" fill="none" stroke-linecap="round"/>`;
+  N.forEach(([x,y],k)=>{
+    const i = R.from + k, lock = i >= save.unlocked, st = save.stars[i], cur = i===nextIdx() && !st;
     const fill = lock ? '#8d8576' : st ? '#2f6be0' : '#f6c445';
     h += `<g class="node ${lock?'lock':''} ${cur?'cur':''}" data-i="${i}">
       <circle class="b" cx="${x}" cy="${y}" r="16" fill="${fill}"/>
-      <text x="${x}" y="${y+6}" font-size="17" fill="${lock?'#4d473d':st?'#fff':'#3f2700'}">${lock?'🔒':i+1}</text>
+      <text x="${x}" y="${y+6}" font-size="17" fill="${lock?'#4d473d':st?'#fff':'#3f2700'}">${lock?'🔒':k+1}</text>
       <text class="nm" x="${x}" y="${y+30}">${LEVELS[i].name}</text>
       ${st?`<text x="${x}" y="${y-21}" font-size="12" fill="#e2a514">${'★'.repeat(st)}<tspan fill="#b5a888">${'★'.repeat(3-st)}</tspan></text>`:''}
     </g>`;
@@ -1795,11 +2558,42 @@ function renderCamp(){
   svg.innerHTML = h;
   svg.querySelectorAll('.node').forEach(n => n.addEventListener('click', ()=>{ const i = +n.dataset.i; if(i < save.unlocked){ Snd.click(); prepLevel(i); } }));
 }
+$('realmTabs').querySelectorAll('button').forEach(b => b.addEventListener('click', ()=>{
+  const k = +b.dataset.r; Snd.init(); Snd.click();
+  if(k>0 && save.unlocked<=REALMS[k].from){ toast(`${REALMS[k].name} öppnas när du har tagit ${LEVELS[REALMS[k].from-1].name}, sista banan i ${REALMS[k-1].name}.`, 4); return; }
+  save.realm = k; persist(); renderCamp();
+}));
+
+/* ---------- fria fälttåg ---------- */
+function freeUI(){
+  const f = save.free;
+  $('fSize').value = f.n; $('fN').textContent = f.n;
+  $('fLords').querySelectorAll('button').forEach(b=>{ const off = +b.dataset.v > maxLords(f.n); b.disabled = off; b.style.opacity = off ? '.35' : ''; });
+  if(f.lords > maxLords(f.n)) $('fN').textContent = `${f.n} · plats för ${maxLords(f.n)} ${maxLords(f.n)>1?'herrar':'herre'}`;
+  for(const [id,key] of [['fLords','lords'],['fDiff','diff'],['fLand','land'],['fWx','wx']])
+    $(id).querySelectorAll('button').forEach(b=>b.classList.toggle('on', String(f[key])===b.dataset.v));
+  const d = dailyOpts(), won = save.daily.date===d.daily && save.daily.best;
+  $('fDailyTxt').innerHTML = `Dagens karta ${d.daily}: ${d.n} borgar, ${d.lords} ${d.lords>1?'herrar':'herre'}. Samma karta för alla i dag.<br>${won ? `Din bästa tid i dag: ${fmtT(save.daily.best)}` : 'Inte vunnen i dag än.'}`;
+  $('fAgain').hidden = !f.seed;
+  $('fStats').textContent = f.plays ? `Vunna fria fälttåg: ${f.wins} av ${f.plays}.${f.seed?` Senaste frö: ${f.seed}.`:''}` : 'Guldet du vinner här går till Rustkammaren.';
+}
+function openFree(){ if(mode!=='menu') toMenu(); show('freeScr'); freeUI(); }
+function newFree(){ save.free.seed = 1 + Math.floor(Math.random()*999998); persist(); prepFree({...save.free, lords:Math.min(save.free.lords, maxLords(save.free.n))}); }
+for(const [id,key,num] of [['fLords','lords',1],['fDiff','diff',0],['fLand','land',0],['fWx','wx',1]])
+  $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', ()=>{ Snd.init(); Snd.click(); save.free[key] = num ? +b.dataset.v : b.dataset.v; persist(); freeUI(); }));
+$('fSize').addEventListener('input', ()=>{ save.free.n = +$('fSize').value; persist(); freeUI(); });
 
 /* ---------- knappar ---------- */
 const on = (id, f) => $(id).addEventListener('click', ()=>{ Snd.init(); Snd.click(); f(); });
-on('playBtn', ()=>prepLevel(nextIdx()));
-on('mapBtn', openMap);
+on('playBtn', ()=>{ if(allDone()) openFree(); else prepLevel(nextIdx()); });
+on('mapBtn', ()=>{ save.realm = realmOf(nextIdx()); openMap(); });
+on('freeBtn', openFree);
+on('fNew', newFree);
+on('fDaily', ()=>prepFree(dailyOpts()));
+on('fAgain', ()=>{ if(save.free.seed) prepFree({...save.free}); });
+on('fBack', ()=>show('start'));
+on('newsGo', ()=>{ save.oriket = true; save.realm = 1; persist(); prepLevel(REALMS[1].from); });
+on('newsLater', ()=>{ save.oriket = true; persist(); show('start'); });
 on('shopBtn', ()=>openShop('start'));
 on('helpBtn', ()=>{ $('helpBack').dataset.go = ''; save.help = true; persist(); show('helpScr'); });
 on('helpBack', ()=>{ if($('helpBack').dataset.go==='battle'){ $('helpBack').dataset.go=''; beginBattle(); } else show('start'); });
@@ -1810,15 +2604,15 @@ on('diffBtn', toggleDiff);
 on('inDiff', toggleDiff);
 on('gSkip', ()=>endGuide(true));
 on('resEasy', ()=>{ save.diff = 'easy'; persist(); diffUI(); prepLevel(curIdx); toast('Svårighet: Lätt. Byt tillbaka på startskärmen eller här.', 4); });
-on('inBack', openMap);
+on('inBack', ()=>{ if(CUR.kind==='camp') openMap(); else openFree(); });
 on('pauseBtn', pause);
 on('resumeBtn', resume);
-on('restartBtn', ()=>{ prepLevel(curIdx); beginBattle(); });
-on('quitBtn', openMap);
+on('restartBtn', ()=>{ replay(); beginBattle(); });
+on('quitBtn', ()=>{ if(CUR.kind==='camp') openMap(); else openFree(); });
 on('resShop', ()=>openShop('resultScr'));
-on('resMap', openMap);
-on('shopPlay', ()=>prepLevel(shopBackTo==='resultScr' ? playNext : nextIdx()));
-on('shopBack', ()=>{ if(shopBackTo==='resultScr'){ toMenu(); show('mapScr'); renderCamp(); } else if(shopBackTo==='mapScr'){ show('mapScr'); renderCamp(); } else show('start'); });
+on('resMap', ()=>{ if(CUR.kind==='camp') openMap(); else openFree(); });
+on('shopPlay', ()=>{ if(shopBackTo==='resultScr'){ if(CUR.kind==='camp') prepLevel(playNext); else replay(); } else if(allDone()) openFree(); else prepLevel(nextIdx()); });
+on('shopBack', ()=>{ if(shopBackTo==='resultScr'){ if(CUR.kind==='camp'){ toMenu(); show('mapScr'); renderCamp(); } else openFree(); } else if(shopBackTo==='mapScr'){ show('mapScr'); renderCamp(); } else show('start'); });
 on('speedBtn', ()=>{ speed = speed===1 ? 2 : 1; updateSpeedBtn(); });
 on('zoomOut', ()=>{ if(!W) return; const target = cam.dist >= cam.maxD*.9 ? null : 1; if(target){ cam.dist = cam.maxD/1.12; cam.tx = 0; cam.tz = 0; } else framePlay(); });
 document.querySelectorAll('.sndbtn').forEach(b => b.addEventListener('click', ()=>{ setMute(!save.mute); Snd.click(); }));
@@ -1858,11 +2652,11 @@ function frame(now){
   }
 }
 // testkrok
-window.__rk = { AIK, G:()=>G, W:()=>W, mode:()=>mode, save:()=>save, cam, simulate, prepLevel, beginBattle, toMenu, LEVELS,
+window.__rk = { AIK, G:()=>G, W:()=>W, mode:()=>mode, save:()=>save, cam, simulate, prepLevel, prepFree, genFree, dailyOpts, beginBattle, toMenu, LEVELS, CUR:()=>CUR, openFree, openMap,
   send:(srcs,t)=>doSend(srcs,t), guide:()=>guide, TUNE, DIFF,
   step(n=60, dt=1/60, render=true){ const t0=performance.now(); for(let k=0;k<n;k++){ tick(dt); if(render) renderer.render(scene,camera); } return {ms:+((performance.now()-t0)/n).toFixed(2), mode, t:G&&+G.t.toFixed(1)}; },
   screen(i){ const v = W.cs[i]; return {x:v.sx, y:v.sy}; },
-  setSave(s){ save = {...freshSave(), ...s}; persist(); }, reset(){ save = freshSave(); persist(); } };
+  setSave(s){ save = {...freshSave(), ...s}; persist(); }, reset(){ save = freshSave(); persist(); }, reload(){ save = loadSave(); } };
 
 resize();
 setMute(save.mute); diffUI();

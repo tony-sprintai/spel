@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Baloo+2:wght@600;700;800&display=swap">
 <style>
-/* Layout: fullskärms-3D som följer gubben. HUD i kanterna, styrspak där fingret landar. En fast spelvärld (skog), ett tema. */
+/* Layout: fullskärms-3D som följer gubben. HUD i kanterna, styrspak där fingret landar. Bolaget: kontoret samlar karta, kontrakt, personal och stegen. */
 :root{
   --spruce:#16271f; --panel:rgba(20,36,29,.9); --panel-2:#22392e;
   --saw:#ffc93c; --saw-dk:#b98a12; --leaf:#5fbf4a; --leaf-dk:#347a27;
@@ -139,12 +139,51 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 .startmenu{width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px;margin-bottom:3vh;}
 .startmenu .btn{font-size:28px;padding:16px;}
 .startmenu small{text-align:center;font-size:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7);}
+/* ---------- v3: mål med varför, målkort, kontoret ---------- */
+#toast{top:44%;}
+#money{font-size:clamp(17px,5vw,25px);}
+#rate{font-size:12px;overflow:hidden;text-overflow:ellipsis;}
+#goal .why{font-size:12px;line-height:1.2;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#goal.can .why{color:#eaffdf;}
+#mal{pointer-events:auto;align-self:stretch;background:rgba(20,36,29,.66);border-radius:12px;padding:4px 10px 5px;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;font-weight:600;color:var(--muted);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.25);}
+#mal div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#mal b{color:var(--cream);font-weight:800;}
+#mal .hot{color:#bff5a8;}
+#mal .hot b{color:#d9ffcb;}
+#vehBtn{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 58px);pointer-events:auto;background:var(--panel);border-radius:16px;padding:6px 12px 4px;font-size:15px;box-shadow:0 3px 0 rgba(0,0,0,.3);}
+#officeNear{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 58px);pointer-events:auto;}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;}
+.tabs button{background:rgba(0,0,0,.3);border-radius:12px;padding:6px 10px 4px;font-size:15px;color:var(--muted);}
+.tabs button.on{background:var(--saw);color:#3d2600;}
+.panel.wide{max-width:460px;}
+.olist{display:flex;flex-direction:column;gap:6px;max-height:min(56vh,520px);overflow-y:auto;padding-right:2px;}
+.orow{background:rgba(0,0,0,.25);border-radius:14px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.25;}
+.orow .h{display:flex;justify-content:space-between;gap:8px;align-items:center;}
+.orow .h b{font-size:16px;}
+.orow small{color:var(--muted);font-weight:600;font-size:13px;}
+.orow .btn{font-size:15px;padding:7px 12px 5px;}
+.orow.cur{box-shadow:inset 0 0 0 2px var(--saw);}
+.orow.dim{opacity:.55;}
+.ok{color:#9be27f;} .no{color:var(--muted);}
+.tag{display:inline-block;border-radius:8px;padding:0 7px;font-size:12px;background:rgba(255,255,255,.12);color:var(--cream);}
+.tag.soon{background:#7a5af5;color:#fff;}
+.map{position:relative;height:250px;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#5aa6d6,#3d7fb3);}
+.map .land{position:absolute;inset:0;background:linear-gradient(170deg,#e8efe9 0%,#c9dcc6 22%,#7fb46b 48%,#5fa452 70%,#8cc070 100%);clip-path:polygon(30% 0,48% 2%,56% 12%,62% 24%,70% 30%,66% 40%,72% 50%,64% 62%,68% 72%,60% 82%,56% 92%,44% 100%,34% 96%,28% 86%,22% 74%,26% 60%,20% 48%,24% 36%,18% 22%,22% 10%);}
+.map .pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;white-space:nowrap;}
+.map .pin i{font-style:normal;font-size:20px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));}
+.map .pin span{background:var(--panel);border-radius:8px;padding:0 6px;}
+.map .pin.cur span{background:var(--saw);color:#3d2600;}
+.map .pin.lock{opacity:.6;}
+.stars{color:var(--saw);letter-spacing:1px;}
 @media (max-height:520px) and (min-width:560px){
-  .top{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;}
+  .top{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;column-gap:8px;}
   .toprow{grid-column:1;}
   #goal{grid-column:1;}
+  #mal{grid-column:2;grid-row:1 / span 2;}
   .card{grid-column:2;grid-row:auto;}
   .titleblock{margin-top:2vh;}
+  .map{height:170px;}
+  .olist{max-height:52vh;}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
@@ -157,15 +196,18 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
   <div id="hud" hidden>
     <div class="top">
       <div class="toprow">
-        <div id="cash"><i class="coin">kr</i><div style="min-width:0"><div id="money" class="num">0</div><div id="rate" class="num" hidden><b>0</b> kr/min utan dig</div></div></div>
+        <div id="cash"><i class="coin">kr</i><div style="min-width:0"><div id="money" class="num">0</div><div id="rate" class="num" hidden><b>0</b> kr/min av sig själv</div></div></div>
         <div id="carry"><span class="k">Bär</span><span id="carryN" class="num">0/5</span></div>
-        <button class="iconbtn" id="sndBtn" aria-label="Ljud av eller på"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z"/><path class="sndon" d="M15.5 8.5a5 5 0 0 1 0 7l-1.4-1.4a3 3 0 0 0 0-4.2zM18.3 5.7a9 9 0 0 1 0 12.6l-1.4-1.4a7 7 0 0 0 0-9.8z"/><path class="sndoff" d="m15 9.4 1.4-1.4 2.1 2.1 2.1-2.1L22 9.4l-2.1 2.1 2.1 2.1-1.4 1.4-2.1-2.1-2.1 2.1-1.4-1.4 2.1-2.1z"/></svg></button>
+        <button class="iconbtn" id="officeBtn" aria-label="Kontoret: karta, kontrakt, personal och mål"><svg viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3V5a2 2 0 0 1 2-2zm0 4h6V5H9zM2 12h20v2H2z"/></svg></button>
         <button class="iconbtn" id="menuBtn" aria-label="Meny"><svg viewBox="0 0 24 24"><path d="M3 5h18v3H3zM3 10.5h18v3H3zM3 16h18v3H3z"/></svg></button>
       </div>
-      <div id="goal"><span class="gt"><span id="gName">Nästa</span><b id="gCost" class="num"></b></span><span class="bar"><i id="gBar"></i></span></div>
+      <div id="goal"><span class="gt"><span id="gName">Nästa</span><b id="gCost" class="num"></b></span><span class="why" id="gWhy"></span><span class="bar"><i id="gBar"></i></span></div>
+      <div id="mal" role="button" aria-label="Bolagets mål, öppna kontoret"><div id="m1"></div><div id="m2"></div><div id="m3"></div><div id="m4"></div></div>
       <div id="evb" class="card" hidden><span class="ct"><span id="evT"></span><b id="evS" class="num"></b></span><span class="bar"><i id="evBar"></i></span></div>
       <div id="order" class="card" hidden><span class="ct"><span id="oT"></span><b id="oS" class="num"></b></span><span class="bar"><i id="oBar"></i></span></div>
     </div>
+    <button id="vehBtn" hidden>Till fots</button>
+    <button id="officeNear" class="btn gold" hidden>Kontoret</button>
     <div id="hint"></div>
     <div id="edge" hidden><i></i></div>
     <div id="joy" hidden><div id="knob"></div></div>
@@ -174,17 +216,25 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
   <div id="toast"></div>
 
   <div class="screen" id="start">
-    <div class="titleblock"><h1>Såg<span class="saw">verket</span></h1><p>Fäll träd, bär stockarna och betala maskin för maskin tills sågverket går av sig självt.</p></div>
+    <div class="titleblock"><h1>Såg<span class="saw">verket</span></h1><p>Fäll träd, bär stockarna och bygg ett sågverk som växer till ett helt bolag.</p></div>
     <div class="startmenu"><button class="btn buy" id="playBtn">Spela</button><small>Dra var som helst för att gå · WASD eller pilar på dator</small></div>
   </div>
 
   <div class="screen scrim" id="bonusScr" hidden>
     <div class="panel">
-      <h2>Nya Sågverket</h2>
-      <p>Sågverket är ombyggt från grunden. Nu styr du själv: fäll träd, bär virket och betala maskinerna genom att ställa dig på rutorna.</p>
-      <p>Tack för ditt gamla sågverk. Här är en startbonus:</p>
+      <h2 id="bonusH">Nya Sågverket</h2>
+      <p id="bonusP1">Nu styr du själv: fäll träd, bär virket och betala maskinerna genom att ställa dig på rutorna.</p>
+      <p id="bonusP2">Tack för ditt gamla sågverk. Här är en startbonus:</p>
       <div class="big num" id="bonusAmt">+0 kr</div>
       <button class="btn buy" id="bonusOk">Sätt igång</button>
+    </div>
+  </div>
+
+  <div class="screen scrim" id="infoScr" hidden>
+    <div class="panel">
+      <h2 id="infoH"></h2>
+      <div id="infoB" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="row" id="infoBtns"></div>
     </div>
   </div>
 
@@ -198,38 +248,27 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
     </div>
   </div>
 
+  <div class="screen scrim" id="officeScr" hidden>
+    <div class="panel wide">
+      <h2 id="offH">Kontoret</h2>
+      <div class="tabs" id="offTabs"><button data-t="mal">Mål</button><button data-t="karta">Karta</button><button data-t="kontrakt">Kontrakt</button><button data-t="personal">Personal</button><button data-t="stege">Stegen</button></div>
+      <div id="offBody" class="olist"></div>
+      <button class="btn buy" id="offClose">Tillbaka till verket</button>
+    </div>
+  </div>
+
   <div class="screen scrim" id="menuScr" hidden>
     <div class="panel">
       <h2>Sågverket</h2>
-      <div class="kv"><span>Intjänat denna omgång</span><span id="stRun" class="num">0</span></div>
-      <div class="kv"><span>Intjänat totalt</span><span id="stAll" class="num">0</span></div>
-      <div class="kv"><span>Sålda varor</span><span id="stSold" class="num">0</span></div>
-      <div class="kv"><span>Klarade beställningar</span><span id="stOrd" class="num">0</span></div>
+      <div class="kv"><span>Bolaget har tjänat</span><span id="stAll" class="num">0</span></div>
+      <div class="kv"><span>Tjänat i den här orten</span><span id="stRun" class="num">0</span></div>
+      <div class="kv"><span>Sålda varor här</span><span id="stSold" class="num">0</span></div>
+      <div class="kv"><span>Klarade beställningar här</span><span id="stOrd" class="num">0</span></div>
       <div class="kv"><span>Frön (bättre pris)</span><span id="stSeeds" class="num">0</span></div>
-      <button class="btn gold" id="menuPrest">Ny skog</button>
-      <div class="row"><button class="btn ghost" id="menuSnd">Ljud: på</button><button class="btn ghost" id="menuReset">Börja om</button></div>
+      <div class="kv"><span>Titel</span><span id="stTitle">Torpare</span></div>
+      <p style="font-size:14px">Bolaget börjar aldrig om. Det växer med nya epoker, nya orter och fler anställda.</p>
+      <button class="btn ghost" id="menuSnd">Ljud: på</button>
       <button class="btn buy" id="menuClose">Fortsätt spela</button>
-    </div>
-  </div>
-
-  <div class="screen scrim" id="prestScr" hidden>
-    <div class="panel">
-      <h2>Ny skog</h2>
-      <p>Sälj sågverket och plantera ny skog. Pengar, maskiner och medhjälpare nollställs, men du får <b>frön</b>. Varje frö ger <b>+25 % pris</b> på allt du säljer, för alltid.</p>
-      <div class="kv"><span>Intjänat denna omgång</span><span id="prRun" class="num">0</span></div>
-      <div class="kv"><span>Frön du får</span><span id="prSeeds" class="num">0</span></div>
-      <div class="kv"><span>Pris efteråt</span><span id="prMult" class="num">×1</span></div>
-      <div id="prLock"><p id="prLockT" style="margin-bottom:6px"></p><div class="pbar"><i id="prBar"></i></div></div>
-      <button class="btn buy" id="prGo">Sälj och plantera</button>
-      <button class="btn ghost" id="prBack">Tillbaka</button>
-    </div>
-  </div>
-
-  <div class="screen scrim" id="resetScr" hidden>
-    <div class="panel">
-      <h2>Börja om från noll?</h2>
-      <p>Allt nollställs, även frön och statistik. Det går inte att ångra.</p>
-      <div class="row"><button class="btn ghost" id="resetNo">Avbryt</button><button class="btn gold" id="resetYes">Nollställ</button></div>
     </div>
   </div>
 </div>
@@ -238,490 +277,7 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 window.__errs=[]; window.addEventListener('error', e => window.__errs.push(String(e.message)+' @'+e.lineno));
 setTimeout(function(){ if(!window.__sv){ var d=document.createElement('div'); d.className='screen scrim'; d.innerHTML='<div class="panel"><h2>Spelet laddade inte</h2><p>3D-motorn hämtades inte. Kontrollera nätet och ladda om sidan.</p></div>'; document.getElementById('app').appendChild(d); } }, 15000);
 </script>
-<script>
-/*ECON-START*/
-/* ================= EKONOMI: all balans som data. Justera här. ================= */
-const ECON = {
-  start: 0,                        // startpengar
-  v1BonusMax: 300,                 // högsta startbonus för den som spelat v1
-  walk: 6.2,                       // gubbens fart, meter per sekund
-  carry: [5, 8, 12, 16, 22],       // hur mycket gubben bär, per ryggsäcksnivå
-  chopHit: [0.3, 0.2, 0.13],       // sekunder per yxhugg, per yxnivå
-  treeHits: 3, logsPerTree: { main: 2, skog: 3, sjo: 2 }, regrow: 18,
-  pickGap: 0.07, dropGap: 0.05,    // sekunder per sak som plockas upp / lämnas
-  padDelay: 0.45,                   // så länge gubben står på rutan innan swischen börjar
-  pay: { minRate: 16, frac: 0.6 }, // swisch: kr per sekund = max(minRate, pris * frac)
-  value: { log: 2, barked: 5, board: 12, planed: 25, sack: 14, furn: 180 },   // kr per sak vid lastkajen
-  mach: {                          // takt i saker per sekund, per = hur många in per sak ut
-    bark: { rate: 1.0 }, sag: { rate: 0.9 }, hyvel: { rate: 0.9 },
-    press: { rate: 0.5, per: 2 }, snick: { rate: 0.3, per: 3 },
-  },
-  upMult: 1.6,                     // varje fartuppgradering
-  qcap: { intake: 60, sag: 12, hyvel: 12, press: 20, snick: 9 },
-  pcap: { main: 80, sack: 60, furn: 40 },
-  worker: { walk: 3.8, chop: 1.6, huggCarry: 6, barCarry: 6, gap: 0.12 },
-  lake: 0.5,                       // stockar per sekund från flottningen
-  kassa: { min: 300, secs: 150 },  // kassans tak: max(min, medhjälparnas intäkt på secs sekunder). Full kassa = bärarna väntar. Chauffören tar bort taket.
-  groundLife: 75,                  // sekunder innan en stock på marken ruttnar bort
-  orders: { first: 40, gap: [80, 140], T: 90, trips: 3.5, factor: 0.9, min: 5, max: 400, bonus: 2,
-            base: { barked: .3, board: .3, planed: .3, sack: .15, furn: .05 } },
-  events: { first: 150, gap: [180, 300],
-            storm: { T: 35, every: 2 }, rush: { T: 60, mult: 2 },
-            gold: { T: 60, hits: 8, secs: 90, min: 150 }, jam: { T: 45, fix: 1.5, secs: 25, min: 30 } },
-  prestige: { min: 3e5, div: 5e4, per: 0.25 },
-  offlineCapH: 8,
-  // Betalrutor i ordning. req = vad som måste vara klart innan rutan syns ("id" eller "id:nivå").
-  // lvReq = extra krav för en viss nivå (index = antal redan köpta), så att dyra nivåer dyker upp senare.
-  pads: [
-    { id: 'bark',     kind: 'machine', m: 'bark',  name: 'Barkmaskin',          at: [3.4, -12],  cost: [20] },
-    { id: 'pack',     kind: 'pack',                name: 'Större ryggsäck',     at: [7.5, -17.5], cost: [60, 1200, 7000, 20000], req: ['bark'], lvReq: { 2: ['snick'], 3: ['chauffor'] } },
-    { id: 'sag',      kind: 'machine', m: 'sag',   name: 'Såg',                 at: [3.4, -5],   cost: [120], req: ['bark'] },
-    { id: 'yxa',      kind: 'axe',                 name: 'Vassare yxa',         at: [10.8, -17.5], cost: [200, 5000], req: ['sag'], lvReq: { 1: ['press'] } },
-    { id: 'hugg',     kind: 'hire',    role: 'hugg', name: 'Huggare',           at: [-5, -17.5], cost: [300, 1600, 5000], req: ['sag'] },
-    { id: 'hyvel',    kind: 'machine', m: 'hyvel', name: 'Hyvel',               at: [3.4, 2],    cost: [600], req: ['hugg'] },
-    { id: 'barare',   kind: 'hire',    role: 'bar', name: 'Bärare',             at: [4.6, 6.4],  cost: [1000, 3000, 9000], req: ['hyvel'] },
-    { id: 'up_bark',  kind: 'up',      m: 'bark',  name: 'Snabbare barkmaskin', at: [3.4, -12],  cost: [800, 6000, 15000], req: ['hyvel'], lvReq: { 1: ['press'], 2: ['chauffor'] } },
-    { id: 'up_sag',   kind: 'up',      m: 'sag',   name: 'Snabbare såg',        at: [3.4, -5],   cost: [1300, 7000, 16000], req: ['hyvel'], lvReq: { 1: ['press'], 2: ['chauffor'] } },
-    { id: 'up_hyvel', kind: 'up',      m: 'hyvel', name: 'Snabbare hyvel',      at: [3.4, 2],    cost: [2000, 8000, 18000], req: ['barare'], lvReq: { 1: ['snick'], 2: ['chauffor'] } },
-    { id: 'press',    kind: 'machine', m: 'press', name: 'Pelletspress',        at: [-8.8, -5],  cost: [2500], req: ['barare'] },
-    { id: 'skog',     kind: 'area',    area: 'skog', name: 'Storskogen',        at: [12.2, -22], cost: [4000], req: ['hugg:2'] },
-    { id: 'up_press', kind: 'up',      m: 'press', name: 'Snabbare press',      at: [-8.8, -5],  cost: [5000, 15000], req: ['press'], lvReq: { 1: ['chauffor'] } },
-    { id: 'snick',    kind: 'machine', m: 'snick', name: 'Snickeri',            at: [-8.8, 3],   cost: [6000], req: ['press'] },
-    { id: 'up_snick', kind: 'up',      m: 'snick', name: 'Snabbare snickeri',   at: [-8.8, 3],   cost: [10000, 30000], req: ['snick'], lvReq: { 1: ['chauffor'] } },
-    { id: 'sjo',      kind: 'area',    area: 'sjo', name: 'Sjön och flottning', at: [-12.2, -12], cost: [11000], req: ['snick'] },
-    { id: 'chauffor', kind: 'hire',    role: 'chauf', name: 'Chaufför',         at: [11.8, 7],   cost: [18000], req: ['barare:3', 'hugg:3', 'snick'] },
-  ],
-};
-
-/* ================= BANA: var saker står (meter, z växer mot vägen) ================= */
-const LAY = {
-  start: [3.5, -19.5],
-  intake: [0, -17],
-  mach: { bark: [0, -12], sag: [0, -5], hyvel: [0, 2], press: [-5.5, -5], snick: [-5.5, 3] },
-  machR: { bark: 1.9, sag: 1.9, hyvel: 1.9, press: 1.7, snick: 2.0 },
-  pile: { main: [0, 7.8], sack: [-5.5, -1.2], furn: [-5.5, 7.2] },
-  dock: [5, 12], kassa: [9.6, 10.6], road: 17.6,
-  areas: { main: [-13.5, 13.5, -30.5, 14.2], skog: [13.5, 37.5, -35.5, -8.5], sjo: [-37.5, -13.5, -27.5, 1.5] },
-  lake: [-33, -19, -23, -5],
-};
-
-/* ================= Modell: hela spelet utan grafik (spelet och sim.js kör samma kod) ================= */
-const PAD = {}; ECON.pads.forEach(p => PAD[p.id] = p);
-const MACHS = ['bark', 'sag', 'hyvel', 'press', 'snick'];
-const PRODUCTS = ['barked', 'board', 'planed', 'sack', 'furn', 'log'];
-function rng32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-// Träden står alltid på samma ställen
-const TREES = (() => {
-  const r = rng32(1703), T = [];
-  for (let row = 0; row < 2; row++) for (let i = 0; i < 10; i++) T.push({ x: -12.2 + i * 2.7 + (r() - .5) * .8 + (row % 2) * 1.2, z: -24.2 - row * 2.6 + (r() - .5) * .6, area: 'main' });
-  for (let gx = 0; gx < 8; gx++) for (let gz = 0; gz < 8; gz++) { if (r() < .3) continue; T.push({ x: 16.5 + gx * 2.8 + (r() - .5), z: -33.5 + gz * 3 + (r() - .5), area: 'skog' }); }
-  for (let i = 0; i < 40 && T.filter(t => t.area === 'sjo').length < 16; i++) {
-    const x = -36 + r() * 21, z = -26.5 + r() * 27;
-    if (x > LAY.lake[0] - 1.5 && x < LAY.lake[1] + 1.5 && z > LAY.lake[2] - 1.5 && z < LAY.lake[3] + 1.5) continue;
-    if (Math.abs(z - LAY.intake[1]) < 1.6) continue;
-    T.push({ x, z, area: 'sjo' });
-  }
-  return T;
-})();
-
-function newSave(seeds = 0) {
-  return { v: 2, money: ECON.start, earnedRun: 0, seeds, lv: {}, paid: {}, stack: [], px: LAY.start[0], pz: LAY.start[1],
-           q: { intake: 0, sag: 0, hyvel: 0, press: 0, snick: 0 }, pile: { main: {}, sack: {}, furn: {} },
-           kassa: 0, sold: 0, autoRate: 0, playT: 0, divert: 0, orders: 0, firstBuy: 0 };
-}
-const lv = (S, id) => S.lv[id] || 0;
-const padMax = p => p.cost.length;
-function padReqOk(S, p) { const r = (p.req || []).concat((p.lvReq && p.lvReq[lv(S, p.id)]) || []); return r.every(x => { const [id, n] = x.split(':'); return lv(S, id) >= (+n || 1); }); }
-function padVisible(S, p) { return lv(S, p.id) < padMax(p) && padReqOk(S, p); }
-function padCost(S, p) { return p.cost[lv(S, p.id)]; }
-function padLeft(S, p) { return padCost(S, p) - (S.paid[p.id] || 0); }
-function visiblePads(S) { return ECON.pads.filter(p => padVisible(S, p)); }
-function nextGoal(S) { let b = null; for (const p of visiblePads(S)) if (!b || padLeft(S, p) < padLeft(S, b)) b = p; return b; }
-function carryCap(S) { return ECON.carry[Math.min(ECON.carry.length - 1, lv(S, 'pack'))]; }
-function machRate(S, m) { return ECON.mach[m].rate * Math.pow(ECON.upMult, lv(S, 'up_' + m)); }
-function valueMult(S) { return 1 + S.seeds * ECON.prestige.per; }
-function finalType(S) { return lv(S, 'hyvel') ? 'planed' : lv(S, 'sag') ? 'board' : 'barked'; }
-function pileN(S, k, skip) { let n = 0; for (const t in S.pile[k]) if (t !== skip) n += S.pile[k][t]; return n; }
-// Under en öppen beställning rör bärarna inte den varan: den är gubbens att bära.
-const reserved = G => G.order && G.order.st === 'open' ? G.order.type : null;
-function pileTake(S, k, skip) { let best = null; for (const t in S.pile[k]) if (t !== skip && S.pile[k][t] > 0 && (!best || ECON.value[t] > ECON.value[best])) best = t; if (best) S.pile[k][best]--; return best; }
-function automated(S) { return MACHS.every(m => lv(S, m)) && lv(S, 'hugg') >= 3 && lv(S, 'barare') >= 3 && lv(S, 'chauffor') >= 1; }
-function kassaCap(G) { return Math.max(ECON.kassa.min, G.autoEMA * ECON.kassa.secs); }
-function kassaFull(G) { return !lv(G.S, 'chauffor') && G.S.kassa >= kassaCap(G); }
-function seedsFor(S) { const P = ECON.prestige; return automated(S) && S.earnedRun >= P.min ? Math.floor(Math.sqrt(S.earnedRun / P.div)) : 0; }
-function areaOpen(S, a) { return a === 'main' || lv(S, a) > 0; }
-function walkable(S, x, z) {
-  const L = LAY.lake; if (x > L[0] && x < L[1] && z > L[2] && z < L[3]) return false;
-  for (const a in LAY.areas) { if (!areaOpen(S, a)) continue; const r = LAY.areas[a]; if (x >= r[0] && x <= r[1] && z >= r[2] && z <= r[3]) return true; }
-  return false;
-}
-const sellable = (S, t) => t !== 'log' || !lv(S, 'bark');
-const dist = (x, z, a) => Math.hypot(x - a[0], z - a[1]);
-
-function makeGame(S, seed = Date.now() % 1e9) {
-  const G = { S, t: 0, rng: rng32(seed), fx: [], noFx: false,
-    trees: TREES.map(t => ({ ...t, st: 'grown', t: 0, hits: 0, claim: null, gold: false })),
-    workers: [], ground: [], ev: null, order: null, lakeAcc: 0,
-    nextEv: Math.max(5, ECON.events.first - S.playT), nextOrder: ECON.orders.first,
-    p: { x: S.px, z: S.pz, yaw: Math.PI, moving: false, pad: null, padT: 0, coinT: 0, chopT: 0, chop: null, pickT: 0, dropT: 0, fixT: 0, sellT: 0 },
-    mach: {}, incEMA: 0, autoEMA: S.autoRate || 0, incAcc: 0, autoAcc: 0, emaT: 0, prodAcc: {}, prodEMA: {} };
-  MACHS.forEach(m => G.mach[m] = { prog: 0, busy: 0, jam: false });
-  PRODUCTS.forEach(t => { G.prodAcc[t] = 0; G.prodEMA[t] = 0; });
-  if (!walkable(S, G.p.x, G.p.z)) { G.p.x = LAY.start[0]; G.p.z = LAY.start[1]; }
-  syncWorkers(G);
-  return G;
-}
-const fx = (G, o) => { if (!G.noFx) G.fx.push(o); };
-const rr = (G, a, b) => a + G.rng() * (b - a);
-
-function syncWorkers(G) {
-  const S = G.S, want = { hugg: lv(S, 'hugg'), bar: lv(S, 'barare'), chauf: lv(S, 'chauffor') }, from = { hugg: 'hugg', bar: 'barare', chauf: 'chauffor' };
-  for (const role in want) {
-    let have = G.workers.filter(w => w.role === role).length;
-    while (have < want[role]) { const at = PAD[from[role]].at; G.workers.push({ role, i: have, x: at[0], z: at[1], yaw: 0, st: 'seek', t: 0, stack: [], tree: null, pile: null, moving: false, ph: 0 }); have++; }
-  }
-}
-function obstacles(G) {
-  const S = G.S, o = [];
-  for (const m of MACHS) if (lv(S, m)) o.push([LAY.mach[m][0], LAY.mach[m][1], LAY.machR[m]]);
-  if (lv(S, 'bark')) o.push([LAY.intake[0], LAY.intake[1], 1.0]);
-  for (const t of G.trees) if (t.st === 'grown' && areaOpen(S, t.area)) o.push([t.x, t.z, .45]);
-  return o;
-}
-function movePlayer(G, nx, nz) {
-  const p = G.p, S = G.S, obs = obstacles(G);
-  for (let it = 0; it < 2; it++) for (const o of obs) {
-    const dx = nx - o[0], dz = nz - o[1], d = Math.hypot(dx, dz), r = o[2] + .35;
-    if (d < r && d > 1e-6) { nx = o[0] + dx / d * r; nz = o[1] + dz / d * r; }
-  }
-  if (walkable(S, nx, nz)) { p.x = nx; p.z = nz; }
-  else if (walkable(S, nx, p.z)) p.x = nx;
-  else if (walkable(S, p.x, nz)) p.z = nz;
-}
-function nearestTree(G, x, z, maxD, ok) {
-  let b = null, bd = maxD;
-  for (const t of G.trees) { if (!areaOpen(G.S, t.area) || !ok(t)) continue; const d = Math.hypot(t.x - x, t.z - z); if (d < bd) { bd = d; b = t; } }
-  return b;
-}
-function padAt(S, x, z) {
-  for (const p of ECON.pads) if (Math.abs(x - p.at[0]) < 1.15 && Math.abs(z - p.at[1]) < 1.15 && padVisible(S, p)) return p;
-  // står han där maskinen ska byggas räknas det också
-  for (const p of ECON.pads) if (p.kind === 'machine' && padVisible(S, p) && Math.hypot(x - LAY.mach[p.m][0], z - LAY.mach[p.m][1]) < 1.7) return p;
-  return null;
-}
-function incomeRate(G) { return Math.max(G.incEMA, 0.5); }
-
-function completePad(G, pad) {
-  const S = G.S;
-  S.lv[pad.id] = lv(S, pad.id) + 1; S.paid[pad.id] = 0;
-  if (!S.firstBuy) S.firstBuy = S.playT;
-  if (pad.kind === 'hire') syncWorkers(G);
-  fx(G, { k: 'built', id: pad.id });
-}
-function fell(G, t, by) {
-  const S = G.S;
-  t.st = 'falling'; t.t = 0; t.hits = 0;
-  if (t.claim && t.claim !== by) { t.claim.tree = null; t.claim.st = 'seek'; }
-  t.claim = null;
-  if (t.gold) {
-    t.gold = false;
-    const amt = Math.round(Math.max(ECON.events.gold.min, incomeRate(G) * ECON.events.gold.secs) * valueMult(S));
-    S.money += amt; S.earnedRun += amt; fx(G, { k: 'gold', amt, x: t.x, z: t.z });
-  }
-  if (by === 'player' || by === 'storm') {
-    for (let k = 0; k < ECON.logsPerTree[t.area]; k++) {
-      if (G.ground.length >= 140) G.ground.shift();
-      const a = rr(G, 0, 6.28), r = rr(G, .6, 1.3);
-      G.ground.push({ x: t.x + Math.cos(a) * r, z: t.z + Math.abs(Math.sin(a)) * r + .3, type: 'log', t: 0 });
-    }
-  }
-  fx(G, { k: 'fall', x: t.x, z: t.z, by: by === 'player' ? 'p' : by === 'storm' ? 's' : 'w' });
-}
-function priceOf(G, type) { return ECON.value[type] * valueMult(G.S) * (G.ev && G.ev.kind === 'rush' ? ECON.events.rush.mult : 1); }
-function sell(G, type, who, w) {
-  const S = G.S, v = priceOf(G, type);
-  S.earnedRun += v; S.sold++; G.incAcc += v;
-  if (who === 'p') S.money += v;
-  else { G.autoAcc += v; if (lv(S, 'chauffor')) S.money += v; else S.kassa += v; }
-  fx(G, { k: 'sell', type, who, v, w });
-  const o = G.order;
-  if (who === 'p' && o && o.st === 'open' && o.type === type) { o.got++; if (o.got >= o.need) finishOrder(G, true); }
-}
-function finishOrder(G, ok) {
-  const S = G.S, o = G.order; o.st = 'leave'; o.a = 0; o.ok = ok;
-  if (ok) { const b = Math.round(o.need * ECON.value[o.type] * valueMult(S) * ECON.orders.bonus); o.bonus = b; S.money += b; S.earnedRun += b; S.orders++; }
-  fx(G, { k: 'order', st: ok ? 'ok' : 'miss', bonus: o.bonus || 0 });
-}
-function pileAdd(G, k, type) { const S = G.S; if (pileN(S, k) >= ECON.pcap[k]) return false; S.pile[k][type] = (S.pile[k][type] || 0) + 1; G.prodAcc[type]++; return true; }
-function output(G, m) {
-  const S = G.S, q = S.q, C = ECON.qcap;
-  if (m === 'bark') {
-    if (lv(S, 'sag')) { if (q.sag >= C.sag) return false; q.sag++; fx(G, { k: 'proc', m, to: 'sag' }); return true; }
-    if (!pileAdd(G, 'main', 'barked')) return false; fx(G, { k: 'proc', m, to: 'main' }); return true;
-  }
-  if (m === 'sag') {
-    if (lv(S, 'hyvel')) { if (q.hyvel >= C.hyvel) return false; q.hyvel++; fx(G, { k: 'proc', m, to: 'hyvel' }); }
-    else { if (!pileAdd(G, 'main', 'board')) return false; fx(G, { k: 'proc', m, to: 'main' }); }
-    if (lv(S, 'press') && q.press < C.press) { q.press++; fx(G, { k: 'proc', m: 'spill', to: 'press' }); }
-    return true;
-  }
-  if (m === 'hyvel') {
-    const snOk = lv(S, 'snick') && q.snick < C.snick, prefer = snOk && (S.divert++ % 2 === 0);
-    if (prefer) { q.snick++; fx(G, { k: 'proc', m, to: 'snick' }); return true; }
-    if (pileAdd(G, 'main', 'planed')) { fx(G, { k: 'proc', m, to: 'main' }); return true; }
-    if (snOk) { q.snick++; fx(G, { k: 'proc', m, to: 'snick' }); return true; }
-    return false;
-  }
-  if (m === 'press') { if (!pileAdd(G, 'sack', 'sack')) return false; fx(G, { k: 'proc', m, to: 'sack' }); return true; }
-  if (m === 'snick') { if (!pileAdd(G, 'furn', 'furn')) return false; fx(G, { k: 'proc', m, to: 'furn' }); return true; }
-  return false;
-}
-function stepMachines(G, dt) {
-  const S = G.S, q = S.q;
-  for (const m of MACHS) {
-    if (!lv(S, m)) continue;
-    const M = G.mach[m]; M.busy = Math.max(0, M.busy - dt);
-    if (M.jam) continue;
-    const per = ECON.mach[m].per || 1, inQ = m === 'bark' ? 'intake' : m;
-    M.prog = Math.min(M.prog + machRate(S, m) * dt, q[inQ] >= per ? 50 : 1);
-    while (M.prog >= 1 && q[inQ] >= per) {
-      if (!output(G, m)) { M.prog = 1; break; }
-      q[inQ] -= per; M.prog -= 1; M.busy = .7;
-    }
-  }
-}
-function stepTrees(G, dt) {
-  for (const t of G.trees) {
-    if (t.st === 'grown') continue;
-    t.t += dt;
-    if (t.st === 'falling' && t.t > .8) { t.st = 'gone'; t.t = 0; }
-    else if (t.st === 'gone' && t.t > 1.5) { t.st = 'regrow'; t.t = 0; }
-    else if (t.st === 'regrow' && t.t > ECON.regrow) { t.st = 'grown'; t.t = 0; t.hits = 0; }
-  }
-  for (const g of G.ground) g.t += dt;
-  if (G.ground.length && G.ground[0].t > ECON.groundLife) G.ground = G.ground.filter(g => g.t <= ECON.groundLife);
-}
-function interact(G, dt) {
-  const S = G.S, p = G.p, cap = carryCap(S);
-  // 1. Betalruta: swischa
-  let pad = padAt(S, p.x, p.z);
-  const spot = pad && pad.at.join(',');
-  if (p.padLock && spot !== p.padLock) p.padLock = null;   // efter ett köp: spärrat tills han kliver av rutan
-  if (pad && spot === p.padLock) pad = null;
-  if (pad !== p.pad) { p.pad = pad; p.padT = 0; }
-  if (pad) {
-    p.padT += dt;
-    if (p.padT > ECON.padDelay && S.money > 1e-6) {
-      const cost = padCost(S, pad), rem = cost - (S.paid[pad.id] || 0);
-      let a = Math.min(Math.max(ECON.pay.minRate, cost * ECON.pay.frac) * dt, S.money, rem);
-      if (rem - a < .01 && S.money >= rem) a = rem;
-      S.money -= a; S.paid[pad.id] = (S.paid[pad.id] || 0) + a;
-      p.coinT -= dt; if (p.coinT <= 0) { p.coinT = .045; fx(G, { k: 'pay', id: pad.id }); }
-      if (S.paid[pad.id] >= cost - 1e-6) { completePad(G, pad); p.padLock = pad.at.join(','); p.pad = null; }
-      return;
-    }
-  }
-  // 2. Maskinstopp: knacka loss
-  if (G.ev && G.ev.kind === 'jam' && G.mach[G.ev.m].jam && dist(p.x, p.z, LAY.mach[G.ev.m]) < LAY.machR[G.ev.m] + 1.6) {
-    p.fixT += dt; if (Math.floor(p.fixT / .25) !== Math.floor((p.fixT - dt) / .25)) fx(G, { k: 'knock', m: G.ev.m });
-    if (p.fixT >= ECON.events.jam.fix) {
-      G.mach[G.ev.m].jam = false; p.fixT = 0;
-      const amt = Math.round(Math.max(ECON.events.jam.min, incomeRate(G) * ECON.events.jam.secs) * valueMult(S));
-      S.money += amt; S.earnedRun += amt; fx(G, { k: 'fixed', m: G.ev.m, amt });
-    }
-  } else p.fixT = 0;
-  // 3. Hugga
-  const room = cap - S.stack.length;
-  const tr = nearestTree(G, p.x, p.z, 2.1, t => t.st === 'grown');
-  if (tr && (room > 0 || tr.gold)) {
-    if (p.chop !== tr) p.chopT = 0;
-    p.chop = tr; p.chopT += dt * (p.moving ? .6 : 1);   // går han förbi hugger han långsammare
-    const hit = ECON.chopHit[Math.min(ECON.chopHit.length - 1, lv(S, 'yxa'))];
-    if (p.chopT >= hit) {
-      p.chopT -= hit; tr.hits++; fx(G, { k: 'hit', x: tr.x, z: tr.z, gold: tr.gold });
-      if (tr.hits >= (tr.gold ? ECON.events.gold.hits : ECON.treeHits)) { fell(G, tr, 'player'); p.chop = null; p.chopT = 0; }
-    }
-  } else { p.chop = null; p.chopT = 0; }
-  // 4. Plocka upp: stockar på marken och högar
-  p.pickT = Math.max(0, p.pickT - dt);
-  while (p.pickT <= 0 && S.stack.length < cap) {
-    let got = null;
-    for (let i = 0; i < G.ground.length; i++) { const g = G.ground[i]; if (g.t > .25 && Math.hypot(g.x - p.x, g.z - p.z) < 2.0) { got = g.type; fx(G, { k: 'pick', type: g.type, x: g.x, z: g.z }); G.ground.splice(i, 1); break; } }
-    if (!got) for (const k of ['main', 'sack', 'furn']) {
-      if (pileN(S, k) > 0 && dist(p.x, p.z, LAY.pile[k]) < 2.1) { got = pileTake(S, k); fx(G, { k: 'pick', type: got, pile: k }); break; }
-    }
-    if (!got) break;
-    S.stack.push(got); p.pickT += ECON.pickGap;
-  }
-  // 5. Lämna: stockar vid inlastningen, varor vid lastkajen, pengar i kassan
-  p.dropT = Math.max(0, p.dropT - dt);
-  while (p.dropT <= 0 && S.stack.length) {
-    let i = -1, where = null;
-    if (lv(S, 'bark') && dist(p.x, p.z, LAY.intake) < 2.4 && S.q.intake < ECON.qcap.intake) { i = S.stack.lastIndexOf('log'); where = 'intake'; }
-    if (i < 0 && dist(p.x, p.z, LAY.dock) < 2.8) { for (let j = S.stack.length - 1; j >= 0; j--) if (sellable(S, S.stack[j])) { i = j; break; } where = 'dock'; }
-    if (i < 0) break;
-    const t = S.stack.splice(i, 1)[0];
-    if (where === 'intake') { S.q.intake++; fx(G, { k: 'feed', who: 'p' }); } else sell(G, t, 'p');
-    p.dropT += ECON.dropGap;
-  }
-  if (S.kassa >= 1 && dist(p.x, p.z, LAY.kassa) < 2.2) { const a = S.kassa; S.money += a; S.kassa = 0; fx(G, { k: 'kassa', amt: a }); }
-}
-function moveTo(w, tx, tz, sp, dt) {
-  const dx = tx - w.x, dz = tz - w.z, d = Math.hypot(dx, dz), s = sp * dt;
-  if (d <= s) { w.x = tx; w.z = tz; w.moving = false; return true; }
-  w.x += dx / d * s; w.z += dz / d * s; w.yaw = Math.atan2(dx, dz); w.moving = true; return false;
-}
-function stepWorker(G, w, dt) {
-  const S = G.S, W = ECON.worker;
-  if (w.role === 'hugg') {
-    if (w.st === 'seek') {
-      if (w.stack.length >= W.huggCarry) { w.st = 'deliver'; return; }
-      let gl = null, gd = 14;
-      for (const g of G.ground) { const d = Math.hypot(g.x - w.x, g.z - w.z); if (d < gd && !g.claim) { gd = d; gl = g; } }
-      if (gl) { gl.claim = w; w.gl = gl; w.st = 'pickup'; return; }
-      const tr = nearestTree(G, w.x, w.z, 999, t => t.st === 'grown' && !t.claim && !t.gold);
-      if (!tr) { w.moving = false; if (w.stack.length) w.st = 'deliver'; return; }
-      tr.claim = w; w.tree = tr; w.st = 'walk';
-    } else if (w.st === 'pickup') {
-      const i = G.ground.indexOf(w.gl);
-      if (i < 0) { w.gl = null; w.st = 'seek'; return; }
-      if (moveTo(w, w.gl.x, w.gl.z + .4, W.walk, dt)) { G.ground.splice(i, 1); w.stack.push('log'); w.gl = null; w.st = 'seek'; }
-    } else if (w.st === 'walk') {
-      if (!w.tree || w.tree.st !== 'grown') { if (w.tree) w.tree.claim = null; w.tree = null; w.st = 'seek'; return; }
-      if (moveTo(w, w.tree.x + .2, w.tree.z + .9, W.walk, dt)) { w.st = 'chop'; w.t = W.chop; w.yaw = Math.PI; }
-    } else if (w.st === 'chop') {
-      w.moving = false;
-      if (!w.tree || w.tree.st !== 'grown') { w.tree = null; w.st = 'seek'; return; }
-      w.t -= dt; w.ph += dt;
-      if (w.t <= 0) { fell(G, w.tree, w); for (let k = 0; k < ECON.logsPerTree[w.tree.area]; k++) w.stack.push('log'); w.tree = null; w.st = 'seek'; }
-    } else if (w.st === 'deliver') {
-      if (moveTo(w, LAY.intake[0] - 1.6 + w.i * .25, LAY.intake[1] - 1.2 - w.i * .3, W.walk, dt)) {
-        w.t -= dt;
-        if (w.t <= 0 && w.stack.length && S.q.intake < ECON.qcap.intake) { w.stack.pop(); S.q.intake++; w.t = W.gap; fx(G, { k: 'feed', who: 'w' }); }
-        if (!w.stack.length) w.st = 'seek';
-      }
-    }
-  } else if (w.role === 'bar') {
-    if (w.st === 'seek') {
-      if (w.stack.length) { w.st = 'deliver'; return; }
-      let best = null, bn = 0;
-      for (const k of ['main', 'sack', 'furn']) { const n = pileN(S, k, reserved(G)) - G.workers.filter(o => o !== w && o.role === 'bar' && o.st === 'walk' && o.pile === k).length * W.barCarry; if (n > bn) { bn = n; best = k; } }
-      if (!best) { moveTo(w, PAD.barare.at[0] + 1.5 + w.i, PAD.barare.at[1] + 1.5, W.walk, dt); return; }
-      w.pile = best; w.st = 'walk';
-    } else if (w.st === 'walk') {
-      const at = LAY.pile[w.pile];
-      if (moveTo(w, at[0] + 1.3 - w.i * .4, at[1] + 1.2, W.walk, dt)) { w.st = 'load'; w.t = 0; }
-    } else if (w.st === 'load') {
-      w.t -= dt;
-      if (w.t <= 0) { if (w.stack.length < W.barCarry && pileN(S, w.pile, reserved(G)) > 0) { w.stack.push(pileTake(S, w.pile, reserved(G))); w.t = W.gap; } else w.st = w.stack.length ? 'deliver' : 'seek'; }
-    } else if (w.st === 'deliver') {
-      if (moveTo(w, LAY.dock[0] - 1.2 + w.i * .9, LAY.dock[1] - .2, W.walk, dt)) {
-        w.t -= dt;
-        if (w.t <= 0) { if (!w.stack.length) w.st = 'seek'; else if (!kassaFull(G)) { sell(G, w.stack.pop(), 'w', w); w.t = W.gap; } }
-      }
-    }
-  } else if (w.role === 'chauf') { moveTo(w, LAY.dock[0] + 2.6, LAY.dock[1] + 1.6, W.walk, dt); }
-}
-function startEvent(G) {
-  const S = G.S, E = ECON.events;
-  const owned = MACHS.filter(m => lv(S, m));
-  const kinds = ['storm', 'gold'];
-  if (lv(S, 'sag')) kinds.push('rush');
-  if (owned.length) kinds.push('jam');
-  if (!G.evBag || !G.evBag.some(k => kinds.includes(k))) G.evBag = ['storm', 'gold', 'rush', 'jam'];   // alla sorter i tur och ordning
-  const pick = G.evBag.filter(k => kinds.includes(k) && k !== G.lastEv);
-  const kind = pick.length ? pick[G.rng() * pick.length | 0] : kinds[G.rng() * kinds.length | 0];
-  G.evBag = G.evBag.filter(k => k !== kind);
-  const ev = { kind, T: E[kind].T, t: E[kind].T, acc: 0 };
-  if (kind === 'gold') {
-    const c = G.trees.filter(t => t.st === 'grown' && !t.claim && areaOpen(S, t.area));
-    if (!c.length) { G.nextEv = 20; return; }
-    ev.tree = c[G.rng() * c.length | 0]; ev.tree.gold = true;
-  }
-  if (kind === 'jam') { ev.m = owned[G.rng() * owned.length | 0]; G.mach[ev.m].jam = true; }
-  G.ev = ev; G.lastEv = kind; fx(G, { k: 'ev', kind, on: true });
-}
-function endEvent(G, why) {
-  const ev = G.ev; if (!ev) return;
-  if (ev.kind === 'gold' && ev.tree) ev.tree.gold = false;
-  if (ev.kind === 'jam') G.mach[ev.m].jam = false;
-  G.ev = null; G.nextEv = rr(G, ECON.events.gap[0], ECON.events.gap[1]);
-  fx(G, { k: 'ev', kind: ev.kind, on: false, why });
-}
-function stepEvents(G, dt) {
-  const S = G.S, E = ECON.events;
-  if (!G.ev) { G.nextEv -= dt; if (G.nextEv <= 0) startEvent(G); return; }
-  const ev = G.ev; ev.t -= dt;
-  if (ev.kind === 'storm') {
-    ev.acc += dt;
-    while (ev.acc >= E.storm.every) {
-      ev.acc -= E.storm.every;
-      const c = G.trees.filter(t => t.st === 'grown' && !t.gold && areaOpen(S, t.area));
-      if (c.length) fell(G, c[G.rng() * c.length | 0], 'storm');
-    }
-  }
-  if (ev.kind === 'gold' && !ev.tree.gold) { G.ev.tree = null; endEvent(G, 'done'); return; }
-  if (ev.kind === 'jam' && !G.mach[ev.m].jam) { endEvent(G, 'done'); return; }
-  if (ev.t <= 0) endEvent(G, 'time');
-}
-function startOrder(G) {
-  const S = G.S, O = ECON.orders, types = [finalType(S)];
-  if (lv(S, 'press')) types.push('sack');
-  if (lv(S, 'snick')) types.push('furn');
-  const type = types[G.rng() * types.length | 0];
-  // Bara gubbens egna leveranser räknas: ungefär trips vändor med full ryggsäck, men aldrig mer än det som finns och hinner tillverkas.
-  const pk = type === 'sack' ? 'sack' : type === 'furn' ? 'furn' : 'main';
-  const avail = (S.pile[pk][type] || 0) + Math.max(G.prodEMA[type] || 0, O.base[type]) * O.T * O.factor;
-  const need = Math.max(O.min, Math.min(O.max, Math.round(Math.min(carryCap(S) * O.trips, avail))));
-  G.order = { type, need, got: 0, T: O.T, t: O.T, st: 'arrive', a: 0 };
-  fx(G, { k: 'order', st: 'new' });
-}
-function stepOrder(G, dt) {
-  const S = G.S, O = ECON.orders, o = G.order;
-  if (!o) { if (lv(S, 'sag')) { G.nextOrder -= dt; if (G.nextOrder <= 0) startOrder(G); } return; }
-  o.a += dt;
-  if (o.st === 'arrive' && o.a >= 2.5) { o.st = 'open'; o.a = 0; }
-  else if (o.st === 'open') { o.t -= dt; if (o.t <= 0) finishOrder(G, false); }
-  else if (o.st === 'leave' && o.a >= 3) { G.order = null; G.nextOrder = rr(G, O.gap[0], O.gap[1]); }
-}
-function step(G, dt, ix = 0, iz = 0) {
-  const S = G.S, p = G.p;
-  G.t += dt; S.playT += dt;
-  let m = Math.hypot(ix, iz); if (m > 1) { ix /= m; iz /= m; m = 1; }
-  p.moving = m > .08;
-  if (p.moving) { movePlayer(G, p.x + ix * ECON.walk * dt, p.z + iz * ECON.walk * dt); p.yaw = Math.atan2(ix, iz); }
-  interact(G, dt);
-  stepTrees(G, dt); stepMachines(G, dt);
-  for (const w of G.workers) stepWorker(G, w, dt);
-  if (lv(S, 'sjo')) { G.lakeAcc += ECON.lake * dt; while (G.lakeAcc >= 1) { G.lakeAcc -= 1; if (S.q.intake < ECON.qcap.intake) { S.q.intake++; fx(G, { k: 'feed', who: 'lake' }); } } }
-  stepEvents(G, dt); stepOrder(G, dt);
-  G.emaT += dt;
-  if (G.emaT >= 1) {
-    const a = 1 - Math.exp(-G.emaT / 30);
-    G.incEMA += (G.incAcc / G.emaT - G.incEMA) * a; G.autoEMA += (G.autoAcc / G.emaT - G.autoEMA) * a;
-    for (const k of PRODUCTS) { G.prodEMA[k] += (G.prodAcc[k] / G.emaT - G.prodEMA[k]) * a; G.prodAcc[k] = 0; }
-    G.incAcc = 0; G.autoAcc = 0; G.emaT = 0; S.autoRate = G.autoEMA;
-  }
-  S.px = p.x; S.pz = p.z;
-}
-// Intäkt medan spelet var stängt: medhjälparnas takt, max 8 timmar. Hamnar i kassan (eller direkt hos chauffören).
-function applyAway(S, sec) {
-  const s = Math.min(sec, ECON.offlineCapH * 3600), amt = (S.autoRate || 0) * s;
-  if (!(amt >= 1) || sec < 30) return 0;
-  if (lv(S, 'chauffor')) S.money += amt; else S.kassa += amt;
-  S.earnedRun += amt;
-  return amt;
-}
-const UNITS = ['', 'k', 'M', 'B', 'T'];
-function fmt(n) {
-  if (!isFinite(n)) return '∞';
-  if (n < 0) return '−' + fmt(-n);
-  if (n < 1e6) return Math.floor(n).toLocaleString('sv-SE');
-  let i = 0; while (n >= 1000 && i < UNITS.length - 1) { n /= 1000; i++; }
-  return (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2)).replace('.', ',') + ' ' + UNITS[i];
-}
-/*ECON-END*/
-</script>
+<script src="modell.js?v=3.1"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -733,34 +289,46 @@ const clamp = (v,a,b) => v<a?a:v>b?b:v;
 const lerp = (a,b,t) => a+(b-a)*t;
 
 /* ================= Sparning ================= */
-const SAVE_KEY = 'sagverket.v2', V1_KEY = 'sagverket.v1';
-let S = newSave(0);
-let meta = { earnedAll:0, mute:false, t:Date.now(), started:false, v1done:false };
+// v3 sparar hela bolaget under sagverket.v3. Finns bara v2 flyttas den till Gläntan, och v2-nyckeln lämnas orörd.
+const SAVE_KEY = 'sagverket.v3', V2_KEY = 'sagverket.v2', V1_KEY = 'sagverket.v1';
+let B = newBolag(0), S = B.orter[0];
+let meta = { earnedAll:0, mute:false, t:Date.now(), started:false, v1done:false, v3seen:false };
+let loadedFrom = null;
+const num = (v, d=0) => isFinite(+v) ? +v : d;
+function reviveB(r){
+  const d = newBolag(0), b = {...d, ...r};
+  b.money = Math.max(0, num(r.money)); b.seeds = Math.max(0, num(r.seeds)); b.ep = clamp(Math.round(num(r.ep,1)), 1, EPOKER.length); b.earnedAll = num(r.earnedAll);
+  b.orter = Array.isArray(r.orter) && r.orter.length ? r.orter.map((o,i) => { const f = fixOrt({...o}, i); f.stack = Array.isArray(f.stack) ? f.stack.slice(0, 80) : []; return f; }) : d.orter;
+  b.ort = clamp(Math.round(num(r.ort)), 0, b.orter.length-1);
+  b.kontrakt = {...d.kontrakt, ...(r.kontrakt||{})}; if(!Array.isArray(b.kontrakt.offers)) b.kontrakt.offers = [];
+  return b;
+}
 function loadSave(){
   try{
     const raw = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if(raw && raw.S && raw.S.v === 2){
-      const d = newSave(raw.S.seeds||0), r = raw.S, pl = r.pile || {};
-      S = {...d, ...r, lv:{...r.lv}, paid:{...r.paid}, q:{...d.q, ...r.q}, pile:{main:{...pl.main}, sack:{...pl.sack}, furn:{...pl.furn}}, stack:Array.isArray(r.stack) ? r.stack.slice(0, 30) : []};
-      meta = {...meta, ...raw.meta};
-      return true;
-    }
+    if(raw && raw.B && raw.B.v === 3){ B = reviveB(raw.B); meta = {...meta, ...raw.meta}; return 'v3'; }
   }catch(e){}
-  return false;
+  try{
+    const raw = JSON.parse(localStorage.getItem(V2_KEY));
+    if(raw && raw.S && raw.S.v === 2){ B = migrateV2(raw); meta = {...meta, ...(raw.meta||{}), v1done:true, v3seen:false}; return 'v2'; }
+  }catch(e){}
+  return null;
 }
-function persist(){ meta.t = Date.now(); try{ localStorage.setItem(SAVE_KEY, JSON.stringify({S, meta})); }catch(e){} }
+let noSave = false;   // bara för test: nollställning via testkroken, finns inte i spelet
+function persist(){ if(noSave) return; meta.t = Date.now(); try{ localStorage.setItem(SAVE_KEY, JSON.stringify({B, meta})); }catch(e){} }
 // Startbonus efter framstegen i v1 (läses en gång, v1-sparningen lämnas orörd)
 function v1Bonus(){
   try{
     const raw = JSON.parse(localStorage.getItem(V1_KEY)); if(!raw || !raw.meta) return 0;
     const e = +raw.meta.earnedAll || 0, seeds = +(raw.S && raw.S.seeds) || 0;
     if(e < 100 && !seeds) return 0;
-    return Math.round(Math.min(ECON.v1BonusMax, 50 + 40*Math.log10(1 + e/1000) + 40*seeds)/10)*10;   // högst ett par maskiner, så att handarbetet i början blir kvar
+    return Math.round(Math.min(ECON.v1BonusMax, 50 + 40*Math.log10(1 + e/1000) + 40*seeds)/10)*10;
   }catch(e){ return 0; }
 }
-const hadSave = loadSave();
-const awaySec = hadSave ? Math.max(0, (Date.now() - meta.t)/1000) : 0;
-let G = makeGame(S);
+loadedFrom = loadSave();
+const hadSave = !!loadedFrom;
+const awaySec = hadSave ? Math.max(0, (Date.now() - (meta.t||Date.now()))/1000) : 0;
+let G = makeGame(B); S = G.S;
 
 /* ================= Ljud (WebAudio-syntes) ================= */
 const Snd = {
@@ -816,6 +384,9 @@ function setMute(m){
   document.querySelectorAll('.sndoff').forEach(p => p.style.display = m ? '' : 'none');
   $('menuSnd').textContent = m ? 'Ljud: av' : 'Ljud: på';
 }
+Snd.whistle = function(){ if(!this.ok('whistle',1)) return; this.tone(880,.9,'sine',.12,900); this.tone(1320,.9,'sine',.07,1340); this.noise(.9,.08,3000,0,1.5); };
+Snd.steam = function(){ if(!this.ok('steam',.25)) return; this.noise(.35,.12,2500,0,.8,'highpass'); };
+Snd.engine = function(){ if(!this.ok('engine',.4)) return; this.tone(70,.35,'sawtooth',.05,90); };
 
 /* ================= Renderare och scen ================= */
 const canvas = $('c');
@@ -877,20 +448,37 @@ function canvasTex(w,h,draw,rep){
 }
 const inRect = (x,z,r,m=0) => x > r[0]-m && x < r[1]+m && z > r[2]-m && z < r[3]+m;
 
-/* ================= Värld ================= */
-const GRAY = 0x9aa4ae, DARK = 0x58616b, CONC = 0xdcdfe2, WOOD = 0x8a5a32;
+/* ================= Terräng per ort ================= */
+const TERR = {
+  grass:  { ground:'#5fb54e', hue:[88,120], sat:[40,62], lit:[34,54], dots:['rgba(255,255,255,.7)','rgba(255,220,90,.75)'], yard:'#9a9f93', tree:[0x2e8a44,0x3aa452,0x52bd60], trunk:0x7a5230, sky:0xa9d6ee, bush:0x3d9d48 },
+  valley: { ground:'#62b85a', hue:[95,135], sat:[38,58], lit:[32,50], dots:['rgba(200,160,255,.7)','rgba(255,255,255,.7)'], yard:'#a39d8c', tree:[0x24704a,0x2f8a58,0x46a36a], trunk:0x6b4426, sky:0xb7dcef, bush:0x2f8a4e },
+  snow:   { ground:'#e8eff3', hue:[195,215], sat:[12,28], lit:[82,94], dots:['rgba(255,255,255,.9)','rgba(200,220,240,.8)'], yard:'#b3babf', tree:[0x2b6047,0x376f52,0xf2f7fa], trunk:0x5d4330, sky:0xd2e3ee, bush:0xdfe9ef, snow:true },
+  coast:  { ground:'#86c060', hue:[70,100], sat:[35,55], lit:[40,58], dots:['rgba(255,255,255,.7)','rgba(255,240,180,.8)'], yard:'#b4ab92', tree:[0x356e3e,0x41824a,0x5a9a5a], trunk:0x8a6a45, sky:0x96d0f2, bush:0x5a9a4a, sea:true },
+  heath:  { ground:'#8c8f58', hue:[55,80], sat:[25,40], lit:[34,48], dots:['rgba(190,110,200,.8)','rgba(220,150,230,.7)'], yard:'#a29a86', tree:[0x3c6b3a,0x4a7d44,0x5e9150], trunk:0x6b4a2e, sky:0xc0d4dd, bush:0x8a5a8e },
+  birch:  { ground:'#79c95a', hue:[90,115], sat:[45,65], lit:[42,58], dots:['rgba(255,255,255,.8)','rgba(255,230,90,.8)'], yard:'#a0a493', tree:[0x7fc04e,0x95d160,0xaee27a], trunk:0xf2efe6, sky:0xb3e0f5, bush:0x6fb84a, round:true },
+  autumn: { ground:'#9aa94c', hue:[45,75], sat:[40,60], lit:[36,50], dots:['rgba(240,120,40,.8)','rgba(255,200,60,.8)'], yard:'#a59b88', tree:[0xc9561f,0xe0892c,0xf0b43a], trunk:0x5d3a22, sky:0xc6dcea, bush:0xb5652a, round:true },
+};
+function treeGeo(T, big=1){
+  if(T.round) return merge([part(Cyl(.12,.18,1.6,6),T.trunk,0,.8,0), part(new THREE.IcosahedronGeometry(1.15,0),T.tree[0],0,2.2,0), part(new THREE.IcosahedronGeometry(.85,0),T.tree[1],.35,2.9,.1), part(new THREE.IcosahedronGeometry(.6,0),T.tree[2],-.2,3.4,-.1)]);
+  return merge([
+    part(Cyl(.16,.24,1.1,6),T.trunk,0,.55,0),
+    part(Cone(1.25,1.9,7),T.tree[0],0,1.8,0),
+    part(Cone(.98,1.6,7),T.tree[1],0,2.7,0),
+    part(Cone(.62,1.25,7),T.tree[2],0,3.5,0),
+  ]);
+}
+
+/* ================= Värld: det som är lika i alla orter ================= */
+const CONC = 0xdcdfe2, WOOD = 0x8a5a32;
 const TIER_COL = [0xffc93c, 0xff8a3d, 0x2ec4b6, 0xe5484d, 0x9b6bff];
+// Maskinernas utseende per epok: stomme, mörka delar och påbyggnader
+const EPL = [
+  { body:0x9aa4ae, dark:0x58616b },                       // Handkraft: grått och gult
+  { body:0x6e5a4a, dark:0x3a2e27, brass:0xc8a24a },        // Ångan: järn, mässing och skorstenar
+  { body:0x4f8a5c, dark:0x2e3a33, motor:0xe0a030 },        // Motorn: grönlackerat med motorer
+  { body:0xdfe6ec, dark:0x2c6bb3, panel:0x3f86f0 },        // Skördaren: vitt och blått med paneler och lampor
+];
 const world = new THREE.Group(); scene.add(world);
-const A = LAY.areas;
-const grassTex = canvasTex(256,256,(g,w,h)=>{
-  g.fillStyle='#5fb54e'; g.fillRect(0,0,w,h);
-  for(let i=0;i<1500;i++){ const s=rand(2,7); g.fillStyle=`hsla(${rand(88,120)},${rand(40,62)}%,${rand(34,54)}%,${rand(.25,.6)})`; g.fillRect(rand(0,w),rand(0,h),s*.5,s); }
-  for(let i=0;i<30;i++){ g.fillStyle=Math.random()<.5?'rgba(255,255,255,.7)':'rgba(255,220,90,.75)'; g.beginPath(); g.arc(rand(0,w),rand(0,h),1.6,0,7); g.fill(); }
-},[50,50]);
-const yardTex = canvasTex(256,256,(g,w,h)=>{
-  g.fillStyle='#9a9f93'; g.fillRect(0,0,w,h);
-  for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?50:255},${rand(.03,.08)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); }
-},[7,11]);
 const roadTex = canvasTex(64,256,(g,w,h)=>{
   g.fillStyle='#4f555c'; g.fillRect(0,0,w,h);
   for(let i=0;i<500;i++){ g.fillStyle=`rgba(255,255,255,${rand(.02,.07)})`; g.fillRect(rand(0,w),rand(0,h),2,2); }
@@ -907,61 +495,133 @@ const beltTexBase = canvasTex(64,64,(g,w,h)=>{
   g.fillStyle='#3f86f0'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,8); }
   g.fillStyle='rgba(255,255,255,.18)'; for(let y=0;y<h;y+=16){ g.fillRect(0,y,w,2); }
 },[1,1]);
-function plane(w,d,mat,x,y,z){ const m = new THREE.Mesh(new THREE.PlaneGeometry(w,d), mat); m.rotation.x = -Math.PI/2; m.position.set(x,y,z); m.receiveShadow = true; world.add(m); return m; }
-plane(400,400,new THREE.MeshLambertMaterial({map:grassTex}),0,0,0);
-plane(A.main[1]-A.main[0], A.main[3]+19.5, new THREE.MeshLambertMaterial({map:yardTex}), 0, .02, (A.main[3]-19.5)/2);
+function plane(w,d,mat,x,y,z,parent=world){ const m = new THREE.Mesh(new THREE.PlaneGeometry(w,d), mat); m.rotation.x = -Math.PI/2; m.position.set(x,y,z); m.receiveShadow = true; parent.add(m); return m; }
 plane(4.6,240,new THREE.MeshLambertMaterial({map:roadTex}),0,.03,LAY.road).rotation.z = Math.PI/2;
 const waterMat = new THREE.MeshLambertMaterial({map:waterTex, color:0xbfe6ff});
-const L = LAY.lake;
-plane(L[1]-L[0]+1.2, L[3]-L[2]+1.2, new THREE.MeshLambertMaterial({color:0xd9c58f}), (L[0]+L[1])/2, .025, (L[2]+L[3])/2);
-plane(L[1]-L[0], L[3]-L[2], waterMat, (L[0]+L[1])/2, .05, (L[2]+L[3])/2);
-// flottningsrännan från sjön till inlastningen
-const CH_Z = -15.2, CH_X0 = L[1], CH_X1 = -1.6;
-const chanG = new THREE.Group(); world.add(chanG);
-{ const m = new THREE.Mesh(new THREE.PlaneGeometry(CH_X1-CH_X0, 1.1), waterMat); m.rotation.x = -Math.PI/2; m.position.set((CH_X0+CH_X1)/2, .06, CH_Z); chanG.add(m);
-  const P2 = []; for(const sz of [-1,1]) P2.push(part(Box(CH_X1-CH_X0,.25,.18), WOOD, (CH_X0+CH_X1)/2, .12, CH_Z+sz*.64));
-  chanG.add(mesh(merge(P2), false)); }
-// staket: ett segment per kant, grindarna mot nya områden tas bort när de köps
-const fences = {};
-function fenceSeg(key, x0,z0,x1,z1, gate=false){
-  const P2 = [], len = Math.hypot(x1-x0, z1-z0), n = Math.max(1, Math.round(len/1.5)), dx=(x1-x0)/len, dz=(z1-z0)/len, yaw = Math.atan2(dx,dz);
+const iceMat = new THREE.MeshLambertMaterial({color:0xdff1fb});
+/* ================= Orten: mark, skog, vatten och staket byggs om vid varje resa ================= */
+let ortG = null, curTerr = TERR.grass, fenceG = null, fenceSig = '', ostG = null;
+let ctIM = null, stumpIM = null, goldTree = null, NT = 0, TREE_S = [], TREE_R = [], wob = new Float32Array(1), fallDir = new Float32Array(1), treeIdx = new Map();
+let curTreeGeo = null, river = null, iceMesh = null, sea = null, ship = null, chanG = null, CH = null;
+const goldMat = new THREE.MeshLambertMaterial({color:0xffd23f, emissive:0x8a5a00});
+const borreMat = new THREE.MeshLambertMaterial({color:0xb5651d, emissive:0x3a1a00});
+function disposeGroup(g){ g.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material && o.material.map && o.material.map !== waterTex) o.material.map.dispose(); }); }
+function buildOrt(){
+  if(ortG){ world.remove(ortG); disposeGroup(ortG); }
+  ortG = new THREE.Group(); world.add(ortG);
+  const def = G.def, T0 = TERR[def.terr] || TERR.grass;
+  // genererade orter får en egen ton på mark och träd ur sitt frö
+  const T = curTerr = def.tint === undefined ? T0 : {...T0, hue:[T0.hue[0] + (def.tint-.5)*30, T0.hue[1] + (def.tint-.5)*30], lit:[T0.lit[0] + (def.tint-.5)*10, T0.lit[1] + (def.tint-.5)*10],
+    ground:'#' + new THREE.Color(T0.ground).offsetHSL((def.tint-.5)*.08, 0, (def.tint-.5)*.1).getHexString(), tree:T0.tree.map(c => new THREE.Color(c).offsetHSL((def.tint-.5)*.06, 0, (def.tint-.5)*.08).getHex())};
+  SKY.set(T.sky); scene.background.copy(SKY); scene.fog.color.copy(SKY);
+  const grass = canvasTex(256,256,(g,w,h)=>{
+    g.fillStyle=T.ground; g.fillRect(0,0,w,h);
+    for(let i=0;i<1500;i++){ const s=rand(2,7); g.fillStyle=`hsla(${rand(T.hue[0],T.hue[1])},${rand(T.sat[0],T.sat[1])}%,${rand(T.lit[0],T.lit[1])}%,${rand(.25,.6)})`; g.fillRect(rand(0,w),rand(0,h),s*.5,s); }
+    for(let i=0;i<30;i++){ g.fillStyle=T.dots[i%2]; g.beginPath(); g.arc(rand(0,w),rand(0,h),1.6,0,7); g.fill(); }
+  },[50,50]);
+  plane(400,400,new THREE.MeshLambertMaterial({map:grass}),0,0,0,ortG);
+  const yardTex = canvasTex(256,256,(g,w,h)=>{ g.fillStyle=T.yard; g.fillRect(0,0,w,h); for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?50:255},${rand(.03,.08)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); } },[7,11]);
+  const M = LAY.yard.main;
+  plane(M[1]-M[0], M[3]+19.5, new THREE.MeshLambertMaterial({map:yardTex}), 0, .02, (M[3]-19.5)/2, ortG);
+  ostG = new THREE.Group(); ortG.add(ostG);
+  const O = LAY.yard.ost; plane(O[1]-O[0], O[3]-O[2], new THREE.MeshLambertMaterial({map:yardTex}), (O[0]+O[1])/2, .021, (O[2]+O[3])/2, ostG);
+  // vatten: sjöar, älv med bro, is och hav
+  river = null; iceMesh = null; sea = null; ship = null; CH = null;
+  for(const a of def.areas){
+    if(a.lake){ const L = a.lake; plane(L[1]-L[0]+1.2, L[3]-L[2]+1.2, new THREE.MeshLambertMaterial({color:0xd9c58f}), (L[0]+L[1])/2, .025, (L[2]+L[3])/2, ortG); plane(L[1]-L[0], L[3]-L[2], waterMat, (L[0]+L[1])/2, .05, (L[2]+L[3])/2, ortG); CH = {x0:L[1], x1:-1.6, z:-15.2, kind:'lake'}; }
+    if(a.river){ const R = a.river; river = plane(R[1]-R[0], R[3]-R[2], waterMat, (R[0]+R[1])/2, .05, (R[2]+R[3])/2, ortG);
+      plane(R[1]-R[0], 1.0, new THREE.MeshLambertMaterial({color:0xcdb98a}), (R[0]+R[1])/2, .03, R[3]+.4, ortG); plane(R[1]-R[0], 1.0, new THREE.MeshLambertMaterial({color:0xcdb98a}), (R[0]+R[1])/2, .03, R[2]-.4, ortG);
+      const br = a.bridge, BP = [part(Box(br[1]-br[0]+.6,.22,R[3]-R[2]+2.2), WOOD, 0,.35,0)];
+      for(const sx of [-1,1]){ BP.push(part(Box(.14,.7,R[3]-R[2]+2.2), 0x6b4426, sx*(br[1]-br[0]+.4)/2,.75,0)); for(let k=0;k<5;k++) BP.push(part(Box(.18,.9,.18), 0x6b4426, sx*(br[1]-br[0]+.4)/2,.5,-(R[3]-R[2])/2-1+k*(R[3]-R[2]+2)/4)); }
+      for(const fz of [-1.4,0,1.4]) BP.push(part(Box(.5,.6,.5),0x9a9a9a,(br[0]+br[1])/2 + 3.5, .15, (R[2]+R[3])/2+fz), part(Box(.4,.4,.4),0xb0b0b0,(br[0]+br[1])/2 - 4 + fz, .12, (R[2]+R[3])/2+fz*.6));
+      const bm = mesh(merge(BP)); bm.position.set((br[0]+br[1])/2, 0, (R[2]+R[3])/2); bm.userData.area = a.id; ortG.add(bm); bm.visible = false; ortG.userData.bridge = bm;
+      CH = {x0:-24, x1:-4, z:R[3]-1.6, kind:'river'}; }
+    if(a.ice){ const I = a.ice; iceMesh = plane(I[1]-I[0], I[3]-I[2], iceMat.clone(), (I[0]+I[1])/2, .05, (I[2]+I[3])/2, ortG); }
+  }
+  if(def.hamn || T.sea){ sea = plane(400, 120, waterMat, 0, .04, LAY.road + 64, ortG);
+    plane(400, 2.6, new THREE.MeshLambertMaterial({color:0xe3d3a0}), 0, .03, LAY.road + 3.6, ortG);
+    const Q = mesh(merge([part(Box(10,.6,5),CONC,0,.3,0), ...[-4,-2,0,2,4].map(x=>part(Box(.4,.8,.4),0x3a3f45,x,.4,2.3))])); Q.position.set(-16, 0, LAY.road+5.5); ortG.add(Q);
+    const crane = mesh(merge([part(Box(.6,6,.6),0xe5484d,0,3,0), part(Box(5,.5,.5),0xe5484d,1.8,6,0), part(Cyl(.05,.05,2.4,4),0x333333,4,4.7,0), part(Box(.8,.6,.8),0x34373b,0,.3,0)])); crane.position.set(-19.5, .6, LAY.road+5.5); ortG.add(crane);
+    ship = new THREE.Group(); ship.add(mesh(merge([part(Box(14,2.2,4),0x2b4a6e,0,1.1,0), part(Box(14.2,.3,4.2),0xe5484d,0,.2,0), part(Box(3,2.4,3.2),0xf2efe6,-4.5,3.3,0), part(Box(1,.4,3.4),0x2b2b2b,-4.5,4.7,0), part(Box(8,.8,3.2),0xc89a5e,2,2.6,0), part(Cyl(.3,.3,2,8),0xe5484d,-4.5,5.4,0)])));
+    ship.position.set(-90, 0, LAY.road+9); ortG.add(ship); }
+  // flottningsränna från sjön eller älven till inlastningen
+  chanG = null;
+  if(CH){ chanG = new THREE.Group(); ortG.add(chanG);
+    if(CH.kind==='lake'){ const m = new THREE.Mesh(new THREE.PlaneGeometry(CH.x1-CH.x0, 1.1), waterMat); m.rotation.x = -Math.PI/2; m.position.set((CH.x0+CH.x1)/2, .06, CH.z); chanG.add(m);
+      const P2 = []; for(const sz of [-1,1]) P2.push(part(Box(CH.x1-CH.x0,.25,.18), WOOD, (CH.x0+CH.x1)/2, .12, CH.z+sz*.64)); chanG.add(mesh(merge(P2), false)); }
+    else { const P2 = [part(Box(.9,.2,LAY.intake[1]-CH.z-1),0x6b4426,-4,.35,(CH.z+LAY.intake[1]-1)/2)]; const m = new THREE.Mesh(new THREE.PlaneGeometry(.7, LAY.intake[1]-CH.z-1), waterMat); m.rotation.x = -Math.PI/2; m.position.set(-4,.47,(CH.z+LAY.intake[1]-1)/2); chanG.add(m); chanG.add(mesh(merge(P2), false)); }
+  }
+  // skog runt omkring (pynt, kan inte fällas)
+  curTreeGeo = treeGeo(T);
+  const regs = [LAY.yard.main, LAY.yard.ost, ...def.areas.map(a=>a.rect)];
+  const r = rng32(def.seed + 5), Tr = [];
+  for(let i=0;i<5000 && Tr.length<560;i++){
+    const x = -75 + r()*150, z = -85 + r()*133;
+    if(regs.some(R => inRect(x,z,R,2))) continue;
+    if(Math.abs(z-LAY.road)<3.6) continue;
+    if(sea && z > LAY.road + 2) continue;
+    if(river && inRect(x,z,def.areas.find(a=>a.river).river,1.5)) continue;
+    Tr.push([x,z,.85+r()*.75,r()*6.28]);
+  }
+  const im = new THREE.InstancedMesh(curTreeGeo, vcMat, Tr.length);
+  Tr.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*(.9+r()*.3),t[2])); im.setMatrixAt(i,_m4); });
+  im.castShadow = true; im.receiveShadow = true; ortG.add(im);
+  const rockG = merge([part(new THREE.DodecahedronGeometry(.6,0),T.snow?0xe8eef2:0x9a9a9a)]);
+  const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),T.bush,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),T.bush,.5,.3,.2)]);
+  for(const [geo,count] of [[rockG,30],[bushG,46]]){
+    const im2 = new THREE.InstancedMesh(geo, vcMat, count); let k = 0;
+    for(let i=0;i<400 && k<count;i++){ const x=-40+r()*80, z=-40+r()*66; if(regs.slice(0,2).some(R=>inRect(x,z,R,.5)) || def.areas.some(a => a.lake && inRect(x,z,a.lake,1) || a.river && inRect(x,z,a.river,1) || a.ice && inRect(x,z,a.ice,1)) || Math.abs(z-LAY.road)<3 || sea && z > LAY.road) continue; _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,r()*6,0)), _one.clone().multiplyScalar(.6+r()*.7)); im2.setMatrixAt(k++,_m4); }
+    im2.count = k; im2.castShadow = true; ortG.add(im2);
+  }
+  // träd att fälla
+  NT = G.trees.length;
+  ctIM = new THREE.InstancedMesh(curTreeGeo, vcMat, NT); ctIM.castShadow = true; ctIM.receiveShadow = true; ortG.add(ctIM);
+  stumpIM = new THREE.InstancedMesh(merge([part(Cyl(.24,.28,.28,8),T.trunk===0xf2efe6?0xd9d4c4:0x7a5230,0,.14,0), part(Cyl(.2,.2,.02,8),0xe2bf86,0,.29,0)]), vcMat, NT);
+  TREE_S = G.trees.map(t => (t.big ? 1.3 : 1) * (0.92 + ((t.x*7.3+t.z*3.1)%1+1)%1*.25));
+  TREE_R = G.trees.map(t => ((t.x*13.1+t.z*5.7)%6.28+6.28)%6.28);
+  G.trees.forEach((t,i)=>{ _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(0,TREE_R[i],0)), _s.set(TREE_S[i],TREE_S[i],TREE_S[i])); stumpIM.setMatrixAt(i,_m4); }); ortG.add(stumpIM);
+  wob = new Float32Array(NT); fallDir = new Float32Array(NT);
+  goldTree = new THREE.Mesh(curTreeGeo, goldMat); goldTree.castShadow = true; goldTree.visible = false; ortG.add(goldTree);
+  treeIdx = new Map(); G.trees.forEach((t,i)=>treeIdx.set(t,i));
+  fenceSig = ''; fenceG = null;
+  buildPads();
+}
+// Staket: runt gården och varje område. Där ett område möter gården står en rödvit grind tills det är köpt.
+function rectEdges(r){ return [{h:true,c:r[2],a:r[0],b:r[1]},{h:true,c:r[3],a:r[0],b:r[1]},{h:false,c:r[0],a:r[2],b:r[3]},{h:false,c:r[1],a:r[2],b:r[3]}]; }
+function edgeOverlap(e, r){ for(const f of rectEdges(r)) if(f.h===e.h && Math.abs(f.c-e.c)<.01){ const a=Math.max(e.a,f.a), b=Math.min(e.b,f.b); if(b-a>.05) return [a,b]; } return null; }
+function cutInt(ints, c){ const out=[]; for(const [a,b] of ints){ if(c[1]<=a||c[0]>=b){ out.push([a,b]); continue; } if(c[0]>a) out.push([a,c[0]]); if(c[1]<b) out.push([c[1],b]); } return out; }
+function fenceParts(P2, e, a, b, gate){
+  const x0 = e.h ? a : e.c, z0 = e.h ? e.c : a, x1 = e.h ? b : e.c, z1 = e.h ? e.c : b;
+  const len = Math.hypot(x1-x0, z1-z0); if(len < .3) return;
+  const n = Math.max(1, Math.round(len/1.5)), dx=(x1-x0)/len, dz=(z1-z0)/len, yaw = Math.atan2(dx,dz);
   const col = gate ? 0xe5484d : 0xf2efe6, rail = gate ? 0xffffff : 0xffc93c;
   for(let i=0;i<=n;i++){ const t=i/n; P2.push(part(Box(.14,.95,.14), col, lerp(x0,x1,t),.47,lerp(z0,z1,t))); }
   for(const y of [.42,.78]) P2.push(part(Box(.08,.1,len), gate && y>.5 ? 0xe5484d : rail, (x0+x1)/2, y, (z0+z1)/2, 0, yaw, 0));
   if(gate) for(let i=0;i<n;i++){ const t=(i+.5)/n; P2.push(part(Box(.06,.5,.7), i%2?0xe5484d:0xffffff, lerp(x0,x1,t),.6,lerp(z0,z1,t), 0,yaw,0)); }
-  const m = mesh(merge(P2)); world.add(m); fences[key] = m; return m;
 }
-fenceSeg('mn', A.main[0],A.main[2], A.main[1],A.main[2]);
-fenceSeg('ms1', A.main[0],A.main[3]+.3, 1.4,A.main[3]+.3); fenceSeg('ms2', 9,A.main[3]+.3, A.main[1],A.main[3]+.3);
-fenceSeg('me1', A.main[1],A.skog[3], A.main[1],A.main[3]+.3); fenceSeg('gate-skog', A.main[1],A.main[2], A.main[1],A.skog[3], true);
-fenceSeg('mw1', A.main[0],A.main[2], A.main[0],A.sjo[2]); fenceSeg('gate-sjo', A.main[0],A.sjo[2], A.main[0],A.sjo[3], true); fenceSeg('mw2', A.main[0],A.sjo[3], A.main[0],A.main[3]+.3);
-fenceSeg('sk1', A.skog[0],A.skog[2], A.skog[1],A.skog[2]); fenceSeg('sk2', A.skog[1],A.skog[2], A.skog[1],A.skog[3]); fenceSeg('sk3', A.skog[0],A.skog[3], A.skog[1],A.skog[3]); fenceSeg('sk4', A.skog[0],A.skog[2], A.skog[0],A.main[2]);
-fenceSeg('sj1', A.sjo[0],A.sjo[2], A.sjo[1],A.sjo[2]); fenceSeg('sj2', A.sjo[0],A.sjo[2], A.sjo[0],A.sjo[3]); fenceSeg('sj3', A.sjo[0],A.sjo[3], A.sjo[1],A.sjo[3]);
-// skog runt omkring (pynt, kan inte fällas)
-const treeG = merge([
-  part(Cyl(.16,.24,1.1,6),0x7a5230,0,.55,0),
-  part(Cone(1.25,1.9,7),0x2e8a44,0,1.8,0),
-  part(Cone(.98,1.6,7),0x3aa452,0,2.7,0),
-  part(Cone(.62,1.25,7),0x52bd60,0,3.5,0),
-]);
-{
-  const T = [];
-  for(let i=0;i<4000 && T.length<560;i++){
-    const x = rand(-75,75), z = rand(-85,48);
-    if(inRect(x,z,A.main,2) || inRect(x,z,A.skog,2) || inRect(x,z,A.sjo,2)) continue;
-    if(Math.abs(z-LAY.road)<3.6) continue;
-    T.push([x,z,rand(.85,1.6),rand(0,6.28)]);
-  }
-  const im = new THREE.InstancedMesh(treeG, vcMat, T.length);
-  T.forEach((t,i)=>{ _m4.compose(_v.set(t[0],0,t[1]), _q.setFromEuler(_e.set(0,t[3],0)), _s.set(t[2],t[2]*rand(.9,1.2),t[2])); im.setMatrixAt(i,_m4); });
-  im.castShadow = true; im.receiveShadow = true; world.add(im);
-  const rockG = merge([part(new THREE.DodecahedronGeometry(.6,0),0x9a9a9a)]);
-  const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),0x3d9d48,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),0x4fb257,.5,.3,.2)]);
-  for(const [geo,count] of [[rockG,30],[bushG,46]]){
-    const im2 = new THREE.InstancedMesh(geo, vcMat, count); let k = 0;
-    for(let i=0;i<400 && k<count;i++){ const x=rand(-40,40), z=rand(-40,26); if(inRect(x,z,A.main,.5) || inRect(x,z,A.skog,-.5) && Math.random()<.7 || inRect(x,z,LAY.lake,1) || Math.abs(z-LAY.road)<3) continue; _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,rand(0,6),0)), _one.clone().multiplyScalar(rand(.6,1.3))); im2.setMatrixAt(k++,_m4); }
-    im2.count = k; im2.castShadow = true; world.add(im2);
-  }
+function buildFences(){
+  const regs = [{id:'main', r:LAY.yard.main, open:true}];
+  if(areaOpen(G,'ost')) regs.push({id:'ost', r:LAY.yard.ost, open:true});
+  for(const a of G.def.areas) regs.push({id:a.id, r:a.rect, open:areaOpen(G,a.id), area:true});
+  const sig = regs.map(x=>x.id+(x.open?1:0)).join(',');
+  if(sig === fenceSig) return; fenceSig = sig;
+  if(fenceG){ ortG.remove(fenceG); fenceG.geometry.dispose(); }
+  const P2 = [];
+  regs.forEach((R,i) => {
+    for(const e of rectEdges(R.r)){
+      let ints = [[e.a,e.b]];
+      regs.forEach((Q,j) => {
+        if(i === j) return; const ov = edgeOverlap(e, Q.r); if(!ov) return;
+        ints = cutInt(ints, ov);
+        if(j < i) return;                         // den gemensamma kanten ritas bara en gång
+        if(R.open && Q.open) return;              // båda öppna: ingen gräns
+        const gate = (R.open !== Q.open) && (R.area || Q.area);
+        fenceParts(P2, e, ov[0], ov[1], gate);
+      });
+      for(const [a,b] of ints) fenceParts(P2, e, a, b, false);
+    }
+  });
+  fenceG = mesh(merge(P2)); ortG.add(fenceG);
 }
 
 /* ---------- partiklar ---------- */
@@ -993,8 +653,11 @@ function updateParticles(dt){
 const RAIN = 160;
 const rainIM = new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.7,.03), new THREE.MeshBasicMaterial({color:0xcfe3f5, transparent:true, opacity:.55}), RAIN); rainIM.count = 0; rainIM.frustumCulled = false; world.add(rainIM);
 const rain = Array.from({length:RAIN}, () => ({x:rand(-18,18), y:rand(0,16), z:rand(-18,18)}));
+const SNOW = 140;
+const snowIM = new THREE.InstancedMesh(new THREE.BoxGeometry(.09,.09,.09), new THREE.MeshBasicMaterial({color:0xffffff}), SNOW); snowIM.count = 0; snowIM.frustumCulled = false; world.add(snowIM);
+const snow = Array.from({length:SNOW}, () => ({x:rand(-18,18), y:rand(0,16), z:rand(-18,18), p:rand(0,6)}));
 
-/* ================= Saker: stockar, brädor, säckar, möbler, mynt ================= */
+/* ================= Saker: stockar, brädor, säckar, möbler, torkat virke, limträ, fönster, mynt ================= */
 const ITEM = {
   log:   {h:.4,  geo:merge([part(Cyl(.2,.2,1.1,8),0x6b4426,0,0,0,0,0,Math.PI/2), part(Cyl(.17,.17,1.12,8),0xd9b27c,0,0,0,0,0,Math.PI/2)])},
   barked:{h:.36, geo:merge([part(Cyl(.18,.18,1.1,8),0xd8b57a,0,0,0,0,0,Math.PI/2), part(Cyl(.15,.15,1.12,8),0xf0d6a2,0,0,0,0,0,Math.PI/2)])},
@@ -1003,17 +666,26 @@ const ITEM = {
   chip:  {h:.12, geo:merge([part(Box(.18,.1,.18),0xe8c98a,-.15,0,0,0,.4,0), part(Box(.16,.1,.16),0xd9b06a,.12,0,.05,0,.9,0), part(Box(.14,.1,.14),0xf0d6a2,0,.08,-.05,0,.2,0)])},
   sack:  {h:.3,  geo:merge([part(Box(.6,.3,.44),0xf2efe6,0,0,0), part(Box(.62,.1,.46),0x4f9e3a,0,.02,0)])},
   furn:  {h:.72, geo:merge([part(Box(.55,.08,.55),0xb8763e,0,.32,0), part(Box(.55,.55,.08),0xb8763e,0,.6,-.24), ...[[-1,-1],[1,-1],[-1,1],[1,1]].map(([a,b])=>part(Box(.07,.32,.07),0x8a5a32,a*.22,.16,b*.22))])},
+  torr:  {h:.3,  geo:merge([part(Box(1.05,.08,.28),0xd9a85a,0,0,0), part(Box(.06,.05,.3),0x6b4426,-.4,.065,0), part(Box(.06,.05,.3),0x6b4426,.4,.065,0), part(Box(1.05,.08,.28),0xe0b468,0,.13,0), part(Box(.3,.02,.29),0xff8a3d,0,.18,0)])},
+  limtra:{h:.32, geo:merge([part(Box(1.3,.3,.3),0xe8c27a,0,0,0), ...[-.1,0,.1].map(y=>part(Box(1.31,.015,.31),0xa8743a,0,y,0))])},
+  fonster:{h:.2, geo:merge([part(Box(.7,.12,.8),0xf6f4ee,0,0,0), part(Box(.56,.13,.3),0x7fc6ef,0,.005,-.18), part(Box(.56,.13,.3),0x7fc6ef,0,.005,.18)])},
 };
-const NAME = { log:'stockar', barked:'barkade stockar', board:'brädor', planed:'hyvlade brädor', sack:'pelletssäckar', furn:'möbler' };
-const NAME1 = { log:'Stock', barked:'Barkad stock', board:'Bräda', planed:'Hyvlad bräda', sack:'Pelletssäck', furn:'Möbel' };
+const NAME = { log:'stockar', barked:'barkade stockar', board:'brädor', planed:'hyvlade brädor', sack:'pelletssäckar', furn:'möbler', torr:'torkat virke', limtra:'limträbalkar', fonster:'fönster' };
 const itemIM = {};
-for(const k in ITEM){ const im = new THREE.InstancedMesh(ITEM[k].geo, vcMat, k==='log' ? 700 : 420); im.count = 0; im.castShadow = true; im.frustumCulled = false; world.add(im); itemIM[k] = im; ITEM[k].n = 0; ITEM[k].max = k==='log' ? 700 : 420; }
+for(const k in ITEM){ const mx = k==='log' ? 700 : 420; const im = new THREE.InstancedMesh(ITEM[k].geo, vcMat, mx); im.count = 0; im.castShadow = true; im.frustumCulled = false; world.add(im); itemIM[k] = im; ITEM[k].n = 0; ITEM[k].max = mx; }
 function setItem(kind, x, y, z, yaw=0, s=1, rx=0){
   const it = ITEM[kind]; if(!it || it.n >= it.max) return;
   _m4.compose(_v.set(x,y,z), _q.setFromEuler(_e.set(rx,yaw,0)), _s.set(s,s,s)); itemIM[kind].setMatrixAt(it.n++, _m4);
 }
 const coinGeo = merge([part(Cyl(.2,.2,.06,14),0xffc93c,0,0,0,Math.PI/2,0,0), part(Cyl(.13,.13,.07,12),0xffe58a,0,0,0,Math.PI/2,0,0)]);
 const coinIM = new THREE.InstancedMesh(coinGeo, new THREE.MeshLambertMaterial({vertexColors:true, emissive:0x553300}), 400); coinIM.count = 0; coinIM.frustumCulled = false; world.add(coinIM);
+
+/* ================= Fordon ================= */
+const VEH_GEO = {
+  truck: merge([part(Box(1.3,.6,1.9),0xffc93c,0,.5,0), part(Box(1.2,.08,1.2),0x34373b,0,1.6,.2), ...[-1,1].map(s=>part(Box(.08,1.4,.08),0x34373b,s*.55,1.0,.75)), part(Box(1.1,1.5,.12),0x58616b,0,1.05,1.0), ...[-1,1].map(s=>part(Box(.14,.06,1.1),0xb0b8c0,s*.35,.18,1.6)), ...[[-1,-.6],[1,-.6],[-1,.6],[1,.6]].map(([a,b])=>part(Cyl(.25,.25,.2,10),0x2b2b2b,a*.65,.25,b,0,0,Math.PI/2))]),
+  skord: merge([part(Box(1.6,.7,2.8),0x4f9e3a,0,.75,0), part(Box(1.3,1.1,1.1),0xffc93c,0,1.6,.5), part(Box(1.32,.55,1.12),0xbfe3ff,0,1.8,.5), part(Box(.25,.25,2.2),0x34373b,.5,2.0,-.9,.5,0,0), part(Box(.5,.5,.5),0xe5484d,.5,2.7,-1.9), ...[[-1,-.9],[1,-.9],[-1,.9],[1,.9]].map(([a,b])=>part(Cyl(.42,.42,.35,10),0x2b2b2b,a*.85,.42,b,0,0,Math.PI/2))]),
+  sled: merge([part(Box(.9,.35,1.6),0xe5484d,0,.4,0), part(Box(.8,.4,.5),0x34373b,0,.75,-.35), ...[-1,1].map(s=>part(Box(.1,.08,1.9),0xd7dde3,s*.4,.06,.1)), part(Box(.7,.3,.08),0xbfe3ff,0,.9,.55)]),
+};
 
 /* ================= Gubbar ================= */
 function makeFigure(o){
@@ -1035,23 +707,40 @@ function makeFigure(o){
   legL.add(mesh(legGeo)); legR.add(mesh(legGeo)); armL.add(mesh(armGeo)); armR.add(mesh(armGeo));
   inner.add(legL, legR, armL, armR);
   let axe = null;
-  if(o.axe){ axe = mesh(merge([part(Cyl(.03,.03,.8,5),0x8a5a32,0,0,0), part(Box(.06,.22,.3),0xb0b8c0,0,.32,.13)])); axe.position.set(0,-.5,.15); axe.rotation.x = Math.PI/2; armR.add(axe); }
+  if(o.axe){ axe = mesh(merge([part(Cyl(.03,.03,.8,5),0x8a5a32,0,0,0), part(Box(.06,.22,.3),o.saw?0xe5484d:0xb0b8c0,0,.32,.13)])); axe.position.set(0,-.5,.15); axe.rotation.x = Math.PI/2; armR.add(axe); }
+  if(o.tool){ const t = mesh(merge([part(Cyl(.03,.03,o.tool==='pole'?2.4:.6,5),o.tool==='pole'?0x8a5a32:0x9aa4ae,0,0,0), part(Box(.1,.12,.1),o.tool==='plant'?0x52bd60:0x58616b,0,o.tool==='pole'?1.2:.3,0)])); t.position.set(0,-.5,.1); t.rotation.x = Math.PI/2; armR.add(t); }
+  const veh = {};
+  for(const k of (o.vehs||[])){ const m = mesh(VEH_GEO[k]); m.visible = false; g.add(m); veh[k] = m; }
   g.scale.setScalar(o.scale || 1);
   world.add(g);
-  return {g, inner, legL, legR, armL, armR, axe, ph:0, chopPh:0};
+  const f = {g, inner, legL, legR, armL, armR, axe, ph:0, chopPh:0, veh, cur:null};
+  if(o.veh) setFigVeh(f, o.veh);
+  return f;
+}
+function setFigVeh(f, v){
+  if(f.cur === v) return; f.cur = v;
+  for(const k in f.veh) f.veh[k].visible = k === v;
+  const on = !!(v && f.veh[v]);
+  f.inner.position.y = on ? (v==='skord' ? 1.0 : v==='sled' ? .35 : .55) : 0;
+  f.legL.visible = f.legR.visible = !on;
 }
 function animFigure(f, x, z, yaw, moving, sp, dt, carrying, chopping, time){
   f.g.position.set(x, 0, z);
   let dy = yaw - f.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); f.g.rotation.y += dy * Math.min(1, dt*14);
   if(moving) f.ph += dt * sp * 2.3; else f.ph *= Math.pow(.02, dt);
-  const sw = moving ? Math.sin(f.ph) * .75 : 0;
+  const sw = moving && !f.cur ? Math.sin(f.ph) * .75 : 0;
   f.legL.rotation.x = sw; f.legR.rotation.x = -sw;
-  f.inner.position.y = moving ? Math.abs(Math.sin(f.ph)) * .07 : 0;
+  const base = f.cur ? f.inner.position.y : 0;
+  if(!f.cur) f.inner.position.y = moving ? Math.abs(Math.sin(f.ph)) * .07 : 0; else f.inner.position.y = base;
   if(chopping){ f.chopPh += dt; const a = Math.sin(f.chopPh*12); f.armR.rotation.x = -2.2 + Math.max(0,a)*1.9; f.armL.rotation.x = -.4; if(f.axe) f.axe.visible = true; }
   else if(carrying){ f.armL.rotation.x = f.armR.rotation.x = -2.6; f.armL.rotation.z = .2; f.armR.rotation.z = -.2; if(f.axe) f.axe.visible = false; }
   else { f.armL.rotation.x = -sw*.8; f.armR.rotation.x = sw*.8; f.armL.rotation.z = f.armR.rotation.z = 0; if(f.axe) f.axe.visible = true; }
 }
-const player = makeFigure({shirt:0x2f6fd6, pants:0x23447a, hat:0xffc93c, hatBrim:true, vest:0xff8a3d, axe:true, scale:1.18});
+const player = makeFigure({shirt:0x2f6fd6, pants:0x23447a, hat:0xffc93c, hatBrim:true, vest:0xff8a3d, axe:true, scale:1.18, vehs:['truck','skord','sled']});
+// Gubben syns genom träd och maskiner som en skugga, så att han aldrig försvinner bakom något
+{ const xray = new THREE.MeshBasicMaterial({color:0x2f6fd6, transparent:true, opacity:.45, depthFunc:THREE.GreaterDepth, depthWrite:false});
+  const add = []; player.g.traverse(o => { if(o.isMesh) add.push(o); });
+  for(const o of add){ const c = new THREE.Mesh(o.geometry, xray); c.renderOrder = 10; c.castShadow = false; c.receiveShadow = false; o.add(c); } }
 const ringMesh = new THREE.Mesh(new THREE.RingGeometry(.62,.8,28), new THREE.MeshBasicMaterial({color:0xffe066, transparent:true, opacity:.75}));
 ringMesh.rotation.x = -Math.PI/2; ringMesh.position.y = .05; world.add(ringMesh);
 const workerFigs = [];
@@ -1059,59 +748,71 @@ const ROLE_LOOK = {
   hugg: {shirt:0xc0392b, pants:0x2f4a7a, hat:0xffc93c, axe:true},
   bar:  {shirt:0x3f9c3a, pants:0x5a4632, hat:0xf2efe6, hatBrim:true},
   chauf:{shirt:0x34373b, pants:0x23272b, hat:0x2257b3, hatBrim:true, vest:0xffe066},
+  flott:{shirt:0x884ea0, pants:0x4a235a, hat:0xf5b041, hatBrim:true, tool:'pole'},
+  mask: {shirt:0x34495e, pants:0x2c3e50, hat:0x7f8c8d, hatBrim:true, tool:'oil'},
+  eld:  {shirt:0x5d4037, pants:0x3e2723, hat:0x212121, vest:0xd35400},
+  truck:{shirt:0xf39c12, pants:0x34495e, hat:0xffc93c, hatBrim:true, vehs:['truck'], veh:'truck'},
+  mek:  {shirt:0x2e86c1, pants:0x1b4f72, hat:0xe74c3c, tool:'oil'},
+  skord:{shirt:0x27ae60, pants:0x1e8449, hat:0xf1c40f, vehs:['skord'], veh:'skord'},
+  plant:{shirt:0x58d68d, pants:0x6e2c00, hat:0xa9cce3, hatBrim:true, tool:'plant'},
+  salj: {shirt:0xfdfefe, pants:0x2c3e50, hat:0x2c3e50, vest:0x922b21},
 };
 function syncWorkerFigs(){
   while(workerFigs.length > G.workers.length){ const f = workerFigs.pop(); world.remove(f.g); }
-  while(workerFigs.length < G.workers.length){ const w = G.workers[workerFigs.length]; const f = makeFigure(ROLE_LOOK[w.role]); f.role = w.role; f.g.position.set(w.x,0,w.z); workerFigs.push(f); burst(w.x,1,w.z,[0xffc93c,0xffffff,0x8fe06f],24,3,1,1,5); }
+  for(let i=0;i<workerFigs.length;i++) if(workerFigs[i].role !== G.workers[i].role){ for(const f of workerFigs.splice(i)) world.remove(f.g); break; }
+  while(workerFigs.length < G.workers.length){ const w = G.workers[workerFigs.length]; const lk = {...ROLE_LOOK[w.role]}; if(w.role==='hugg' && B.ep>=3) lk.saw = true; const f = makeFigure(lk); f.role = w.role; f.g.position.set(w.x,0,w.z); workerFigs.push(f); burst(w.x,1,w.z,[0xffc93c,0xffffff,0x8fe06f],24,3,1,1,5); }
 }
 
 /* ================= Träd att fälla ================= */
-const NT = TREES.length;
-const ctIM = new THREE.InstancedMesh(treeG, vcMat, NT); ctIM.castShadow = true; ctIM.receiveShadow = true; world.add(ctIM);
-const stumpIM = new THREE.InstancedMesh(merge([part(Cyl(.24,.28,.28,8),0x7a5230,0,.14,0), part(Cyl(.2,.2,.02,8),0xe2bf86,0,.29,0)]), vcMat, NT);
-const TREE_S = TREES.map(t => (t.area==='skog' ? 1.3 : 1) * (0.92 + ((t.x*7.3+t.z*3.1)%1+1)%1*.25));
-const TREE_R = TREES.map(t => ((t.x*13.1+t.z*5.7)%6.28+6.28)%6.28);
-TREES.forEach((t,i)=>{ _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(0,TREE_R[i],0)), _s.set(TREE_S[i],TREE_S[i],TREE_S[i])); stumpIM.setMatrixAt(i,_m4); }); world.add(stumpIM);
-const wob = new Float32Array(NT), fallDir = new Float32Array(NT);
-const goldMat = new THREE.MeshLambertMaterial({color:0xffd23f, emissive:0x8a5a00});
-const goldTree = new THREE.Mesh(treeG, goldMat); goldTree.castShadow = true; goldTree.visible = false; world.add(goldTree);
-const treeIdx = new Map(); G.trees.forEach((t,i)=>treeIdx.set(t,i));
 function updateTrees(dt, time){
+  if(!ctIM) return;
   const storm = G.ev && G.ev.kind==='storm';
   for(let i=0;i<NT;i++){
     const t = G.trees[i], s0 = TREE_S[i];
     let rx = 0, rz = 0, s = s0;
     wob[i] = Math.max(0, wob[i]-dt);
-    if(t.st==='grown'){ if(storm) rz = Math.sin(time*2.3 + i)*.08; if(wob[i]>0) rz += Math.sin(wob[i]*50)*.05; if(t.gold){ s = .0001; } }
+    if(t.st==='grown'){ if(!treeOk(G,t) && t.ice) s = s0; if(storm) rz = Math.sin(time*2.3 + i)*.08; if(wob[i]>0) rz += Math.sin(wob[i]*50)*.05; if(t.gold || t.borre){ s = .0001; } }
     else if(t.st==='falling'){ const k = Math.min(1,t.t/.8); rx = Math.cos(fallDir[i])*k*k*Math.PI/2; rz = Math.sin(fallDir[i])*k*k*Math.PI/2; }
     else if(t.st==='gone') s = .0001;
-    else if(t.st==='regrow') s = s0*Math.max(.0001, Math.min(1, t.t/ECON.regrow));
-    _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(rx,TREE_R[i]*.0,rz)), _s.set(s,s,s)); ctIM.setMatrixAt(i,_m4);
+    else if(t.st==='regrow') s = s0*Math.max(.0001, Math.min(1, t.t/regrowTime(G)));
+    _m4.compose(_v.set(t.x,0,t.z), _q.setFromEuler(_e.set(rx,0,rz)), _s.set(s,s,s)); ctIM.setMatrixAt(i,_m4);
   }
   ctIM.instanceMatrix.needsUpdate = true;
   const gt = G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold ? G.ev.tree : null;
   goldTree.visible = !!gt;
   if(gt){ const i = treeIdx.get(gt), s = TREE_S[i]*1.12, w = wob[i]>0 ? Math.sin(wob[i]*50)*.05 : 0; goldTree.position.set(gt.x,0,gt.z); goldTree.scale.set(s,s*(1+Math.sin(time*3)*.03),s); goldTree.rotation.z = w; if(Math.random() < dt*10) burst(gt.x+rand(-1,1), rand(1,4), gt.z+rand(-1,1), [0xfff2b0,0xffe066,0xffffff], 1, .4, .8, .9, .6, -.5); }
+  // barkborreträd: bruna, med små svärmar
+  const bt = G.ev && G.ev.kind==='borre' ? G.ev.trees.filter(t => t.borre) : [];
+  while(borreM.length < bt.length){ const m = new THREE.Mesh(curTreeGeo, borreMat); m.castShadow = true; ortG.add(m); borreM.push(m); }
+  borreM.forEach((m,k) => { const t = bt[k]; m.visible = !!t && m.parent === ortG; if(t){ const i = treeIdx.get(t), s = TREE_S[i]; m.position.set(t.x,0,t.z); m.scale.set(s,s,s); m.rotation.z = wob[i]>0 ? Math.sin(wob[i]*50)*.05 : 0; if(Math.random() < dt*6) burst(t.x+rand(-.8,.8), rand(1.5,3.5), t.z+rand(-.8,.8), [0x222222,0x553311], 1, .6, .5, .6, .4, 0); } });
 }
+let borreM = [];
 
-/* ================= Maskiner ================= */
-function pad(P2, w=4.4, d=4.2){ P2.push(part(Box(w,.24,d), CONC, 0,.12,0)); for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.6,.05,.18), 0xffc93c, sx*(w/2-.4),.26,sz*(d/2-.12))); }
-function buildStation(id, tier){
+/* ================= Maskiner: utseende efter epok och nivå ================= */
+function padBase(P2, w=4.4, d=4.2){ P2.push(part(Box(w,.24,d), CONC, 0,.12,0)); for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.6,.05,.18), 0xffc93c, sx*(w/2-.4),.26,sz*(d/2-.12))); }
+function epochExtras(P2, ep, top, out){
+  const L = EPL[ep-1];
+  if(ep === 2){ P2.push(part(Cyl(.22,.26,1.8,8), L.dark, 1.3,top+.6,-1.1), part(Cyl(.3,.3,.18,8), L.brass, 1.3,top+1.5,-1.1), part(Box(2.6,.12,.12), L.brass, 0,top-.4,1.45)); out.smoke2 = [1.3, top+1.7, -1.1]; }
+  if(ep === 3){ P2.push(part(Box(1.0,.8,.9), L.motor, -1.25,top-.5,1.0), part(Cyl(.08,.08,.8,6), 0x34373b, -1.55,top+.2,1.2), part(Box(.6,.1,.6), 0x34373b, -1.25,top-.05,1.0)); out.exhaust = [-1.55, top+.65, 1.2]; }
+  if(ep >= 4){ P2.push(part(Box(.12,1.2,3.1), L.panel, -1.62,1.3,0), part(Box(.12,1.2,3.1), L.panel, 1.62,1.3,0), part(Cyl(.12,.12,.5,6), 0xd7dde3, 1.2,top+.25,1.2)); out.lamp = [1.2, top+.6, 1.2]; }
+}
+function buildStation(id, tier, ep){
   const g = new THREE.Group(), acc = TIER_COL[tier], spin = [], bob = [], P2 = [];
+  const L = EPL[Math.min(EPL.length, ep)-1], GRAY = L.body, DARK = L.dark;
   const out = { g, spin, bob, emit:new THREE.Vector3(0,1.5,0), top:2.8 };
   const add = (geo, shadow=true) => { const m = mesh(geo, shadow); g.add(m); return m; };
   if(id==='bark'){
-    pad(P2);
+    padBase(P2);
     P2.push(part(Box(3,1.1,2.8), GRAY, 0,.79,0), part(Box(3.1,.14,2.9), acc, 0,1.4,0));
     P2.push(part(Box(.25,1.6,.25), DARK, -1.35,1.9,0), part(Box(.25,1.6,.25), DARK, 1.35,1.9,0));
-    const drumP = [part(Cyl(.85,.85,2.6,14), 0x6d7680, 0,0,0, Math.PI/2,0,0)];
+    const drumP = [part(Cyl(.85,.85,2.6,14), ep>=2 ? DARK : 0x6d7680, 0,0,0, Math.PI/2,0,0)];
     const rings = 2 + Math.min(4,tier);
     for(let k=0;k<rings;k++) drumP.push(part(Cyl(.93,.93,.16,14), acc, 0,0,-1.1+k*(2.2/(rings-1)), Math.PI/2,0,0));
     for(let k=0;k<6;k++){ const a=k/6*Math.PI*2; drumP.push(part(Box(.12,.12,2.5), DARK, Math.cos(a)*.86,Math.sin(a)*.86,0)); }
     const drum = add(merge(drumP)); drum.position.set(0,2.15,0); spin.push({m:drum, ax:'z', sp:3});
     out.emit.set(0,2.2,-1.3); out.top = 3.4;
   } else if(id==='sag'){
-    pad(P2);
+    padBase(P2);
     P2.push(part(Box(3.2,.9,3.0), DARK, 0,.69,0), part(Box(3.3,.12,3.1), acc, 0,1.18,0));
     for(const sx of [-1,1]) P2.push(part(Box(.32,2.6,.32), acc, sx*1.5,2.4,.2), part(Box(.7,.18,.7), 0x3a3a3a, sx*1.5,1.28,.2));
     P2.push(part(Box(3.4,.38,.42), acc, 0,3.7,.2), part(Box(.9,.6,.6), GRAY, 0,3.45,.2));
@@ -1123,32 +824,53 @@ function buildStation(id, tier){
     }
     out.emit.set(0,1.5,1.1); out.top = 4.3;
   } else if(id==='hyvel'){
-    pad(P2);
+    padBase(P2);
     P2.push(part(Box(2.8,1.2,3.2), GRAY, 0,.84,0), part(Box(2.9,.5,1.4), acc, 0,1.7,-.5), part(Box(2.9,.08,3.3), DARK, 0,1.46,0));
     P2.push(part(Cyl(.22,.22,2.2,8), acc, 1.1,2.5,-.5), part(Cyl(.22,.22,1.4,8), acc, 1.1,3.6,-1.2, Math.PI/2,0,0), part(Cyl(.35,.25,.5,8), DARK, 1.1,3.6,-1.95, Math.PI/2,0,0));
     const nr = 2 + Math.min(3,tier);
     for(let k=0;k<nr;k++){ const r = add(merge([part(Cyl(.2,.2,2.6,10), 0xd7dde3, 0,0,0, 0,0,Math.PI/2), part(Box(2.62,.06,.42), DARK, 0,0,0)])); r.position.set(0,1.62,.5+k*.38-(nr-1)*.19+.3); spin.push({m:r, ax:'x', sp:-9}); }
     out.emit.set(1.1,4.0,-2.1); out.top = 4.2;
   } else if(id==='press'){
-    pad(P2);
-    P2.push(part(Cyl(1.1,1.1,3.2,14), 0xd7dde3, -.8,1.84,-.6), part(Cone(1.1,.8,14), acc, -.8,3.84,-.6), part(Cyl(1.14,1.14,.16,14), acc, -.8,1.0,-.6));
+    padBase(P2);
+    P2.push(part(Cyl(1.1,1.1,3.2,14), ep>=4 ? 0xf2f5f8 : 0xd7dde3, -.8,1.84,-.6), part(Cone(1.1,.8,14), acc, -.8,3.84,-.6), part(Cyl(1.14,1.14,.16,14), acc, -.8,1.0,-.6));
     if(tier>=1) P2.push(part(Cyl(.8,.8,2.4,12), 0xd7dde3, 1.2,1.44,-1.1), part(Cone(.8,.6,12), acc, 1.2,2.94,-1.1));
     P2.push(part(Box(1.6,1.3,1.6), GRAY, .9,.89,.6), part(Box(1.7,.18,1.7), acc, .9,2.4,.6), part(Box(.2,1,.2), DARK, .3,1.9,.1), part(Box(.2,1,.2), DARK, 1.5,1.9,1.1));
     const pis = add(merge([part(Box(1.0,.5,1.0), acc, 0,0,0), part(Cyl(.12,.12,1,6), 0xd7dde3, 0,.6,0)])); pis.position.set(.9,1.9,.6); bob.push({m:pis, base:1.9, amp:.25, sp:5});
     out.emit.set(.9,1.7,1.4); out.top = 4.5;
   } else if(id==='snick'){
-    pad(P2, 4.6, 4.2);
-    P2.push(part(Box(3.4,2.1,2.8), 0x9e2b25, 0,1.29,-.2));
+    padBase(P2, 4.6, 4.2);
+    P2.push(part(Box(3.4,2.1,2.8), ep>=4 ? 0xdfe6ec : 0x9e2b25, 0,1.29,-.2));
     for(const sx of [-1,1]) for(const sz of [-1,1]) P2.push(part(Box(.12,2.1,.12), 0xf2efe6, sx*1.7,1.29,-.2+sz*1.4));
-    P2.push(part(Box(3.8,.14,1.8), 0x34373b, 0,2.75,-1.0, .58,0,0), part(Box(3.8,.14,1.8), 0x34373b, 0,2.75,.6, -.58,0,0));
+    P2.push(part(Box(3.8,.14,1.8), ep>=3 ? DARK : 0x34373b, 0,2.75,-1.0, .58,0,0), part(Box(3.8,.14,1.8), ep>=3 ? DARK : 0x34373b, 0,2.75,.6, -.58,0,0));
     P2.push(part(Box(1.1,1.4,.08), 0x6b4426, 0,.94,1.22), part(Box(.7,.55,.07), 0xffe7a0, -1.1,1.5,1.22), part(Box(.7,.55,.07), 0xffe7a0, 1.1,1.5,1.22));
     P2.push(part(Box(.4,1.2,.4), 0x7c3a2b, 1.0,3.3,-.8), part(Box(1.6,.5,.1), acc, 0,2.3,1.27));
     out.emit.set(1.0,4.0,-.8); out.top = 4.3; out.smoke = true;
+  } else if(id==='ugn'){            // torkugn: lång tegelugn med välvt tak och skorsten
+    padBase(P2, 4.6, 4.2);
+    P2.push(part(Box(3.6,1.6,2.8), 0xa8452e, 0,1.04,0), part(Cyl(1.4,1.4,3.6,12,1,false), 0x8e3a26, 0,1.84,0, 0,0,Math.PI/2));
+    P2.push(part(Box(.5,2.6,.5), 0x7c3a2b, 1.3,3.0,-.9), part(Box(.6,.2,.6), acc, 1.3,4.35,-.9), part(Box(1.1,1.2,.1), DARK, -.8,1.0,1.42), part(Box(3.7,.16,2.9), acc, 0,.32,0));
+    for(let k=0;k<Math.min(4,tier+1);k++) P2.push(part(Box(.4,.25,.1), 0xffb347, -.2+k*.5,1.5,1.42));
+    out.emit.set(1.3,4.6,-.9); out.top = 4.4; out.smoke = true; out.glow = true;
+  } else if(id==='lim'){            // limträpress: pressbädd med balkar och kolvar
+    padBase(P2, 4.6, 4.2);
+    P2.push(part(Box(3.8,.9,2.2), GRAY, 0,.69,0), part(Box(3.9,.12,2.3), acc, 0,1.18,0));
+    for(const sx of [-1.4,0,1.4]) P2.push(part(Box(.3,2.4,.3), DARK, sx,2.3,-.95), part(Box(.3,2.4,.3), DARK, sx,2.3,.95));
+    P2.push(part(Box(3.9,.35,2.3), acc, 0,3.5,0), part(Box(3.4,.5,.9), 0xe8c27a, 0,1.5,0));
+    for(const sx of [-1.4,0,1.4]){ const pis = add(merge([part(Cyl(.16,.16,1.2,8), 0xd7dde3, 0,0,0), part(Box(.6,.2,1.2), DARK, 0,-.6,0)])); pis.position.set(sx,2.6,0); bob.push({m:pis, base:2.6, amp:.35, sp:2.5}); }
+    out.emit.set(0,1.8,1.2); out.top = 4.0;
+  } else if(id==='list'){           // hyvleri för fönster och listverk
+    padBase(P2, 4.2, 4.2);
+    P2.push(part(Box(3.0,1.6,3.0), GRAY, 0,1.04,0), part(Box(3.1,.14,3.1), acc, 0,1.9,0));
+    P2.push(part(Box(1.2,1.3,.1), 0xf6f4ee, -.7,2.65,1.2), part(Box(1.0,1.1,.11), 0x7fc6ef, -.7,2.65,1.2), part(Box(.06,1.1,.12), 0xf6f4ee, -.7,2.65,1.2));
+    P2.push(part(Box(.9,.9,.9), DARK, .8,2.4,-.6));
+    const cut = add(merge([part(Cyl(.45,.45,.2,12), 0xd7dde3, 0,0,0, Math.PI/2,0,0), ...[0,1,2,3].map(k=>part(Box(.1,.95,.12),0xaab3bc,0,0,0,0,0,k*Math.PI/4))])); cut.position.set(.8,2.4,-.04); spin.push({m:cut, ax:'z', sp:10});
+    out.emit.set(.8,2.4,.3); out.top = 3.6;
   }
+  epochExtras(P2, ep, out.top - .6, out);
   add(merge(P2));
   return out;
 }
-const MNAME = { bark:'Barkmaskinen', sag:'Sågen', hyvel:'Hyveln', press:'Pelletspressen', snick:'Snickeriet' };
+const MNAME = { bark:'Barkmaskinen', sag:'Sågen', hyvel:'Hyveln', press:'Pelletspressen', snick:'Snickeriet', ugn:'Torkugnen', lim:'Limträpressen', list:'Hyvleriet', anga:'Ångmaskinen' };
 const stations = {};
 const ghostMat = new THREE.MeshLambertMaterial({color:0xfff2c0, transparent:true, opacity:.13, depthWrite:false});
 for(const m of MACHS){
@@ -1158,7 +880,7 @@ for(const m of MACHS){
   const gb = new THREE.Mesh(new THREE.BoxGeometry(3,1.6,3), ghostMat); gb.position.y = .8; ghost.add(gb);
   const P2 = []; for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]]) P2.push(part(Box(.9,.06,.2), 0xffc93c, sx*1.6,.05,sz*1.6), part(Box(.2,.06,.9), 0xffc93c, sx*1.6,.05,sz*1.6));
   ghost.add(mesh(merge(P2), false)); ghost.visible = false; root.add(ghost);
-  stations[m] = { root, ghost, built:null, tier:-1, pop:0, shake:0, act:0, smokeT:0 };
+  stations[m] = { root, ghost, built:null, tier:-1, ep:0, pop:0, shake:0, act:0, smokeT:0 };
 }
 // inlastning (stockbord), högar, lastkaj och kassa
 const intakeG = new THREE.Group(); intakeG.position.set(LAY.intake[0],0,LAY.intake[1]); world.add(intakeG);
@@ -1169,7 +891,7 @@ intakeG.add(mesh(merge([
 ])));
 intakeG.visible = false;
 const pileBase = {};
-for(const k of ['main','sack','furn']){
+for(const k of PILES){
   const g = mesh(merge([part(Box(2.3,.14,2.3), WOOD, 0,.07,0), ...[-1,0,1].map(s=>part(Box(2.3,.1,.3), 0x6b4426, 0,.16,s*.9))]));
   g.position.set(LAY.pile[k][0],0,LAY.pile[k][1]); g.visible = false; world.add(g); pileBase[k] = g;
 }
@@ -1183,6 +905,39 @@ const kassaG = new THREE.Group(); kassaG.position.set(LAY.kassa[0],0,LAY.kassa[1
 kassaG.add(mesh(merge([part(Box(1.5,.9,1),0x9e2b25,0,.45,0), part(Box(1.6,.08,1.1),0xf2efe6,0,.92,0), part(Box(.6,.35,.5),0x3a3f45,-.3,1.12,0), part(Box(.4,.05,.3),0x9be27f,-.3,1.31,.05)])));
 kassaG.visible = false;
 
+/* ================= Byggnader: kontoret, personalboden, ångmaskinen, lampor, sorteringsverk ================= */
+const signTex = (txt, bg='#14241d', fg='#ffc93c') => canvasTex(256,64,(c,w,h)=>{ c.fillStyle=bg; c.fillRect(0,0,w,h); c.fillStyle=fg; c.font='bold 38px "Baloo 2",sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(txt,w/2,h/2+3); });
+const kontorG = new THREE.Group(); kontorG.position.set(LAY.kontor[0],0,LAY.kontor[1]); world.add(kontorG);
+let kontorLv = -1;
+function buildKontor(){
+  const k = lv(S,'hk') ? 2 : lv(S,'kontor') ? 1 : 0; if(k === kontorLv) return; kontorLv = k;
+  while(kontorG.children.length){ const c = kontorG.children.pop(); disposeGroup(c); }
+  const P2 = [];
+  if(k === 0){ P2.push(part(Box(3.6,2.2,3.0),0xb33a2b,0,1.1,0), part(Box(3.9,.12,3.3),0xf2efe6,0,.1,0), part(Box(4.0,.16,1.9),0x34373b,0,2.7,-.7,.62,0,0), part(Box(4.0,.16,1.9),0x34373b,0,2.7,.7,-.62,0,0), part(Box(.9,1.5,.08),0x6b4426,1.82,.75,0,0,Math.PI/2,0), part(Box(.08,.6,.7),0xffe7a0,1.82,1.4,-1.0)); }
+  else if(k === 1){ P2.push(part(Box(3.8,4.0,3.2),0xe8d9b5,0,2.0,0), part(Box(4.0,.2,3.4),0x34373b,0,4.1,0), part(Box(.9,1.6,.08),0x6b4426,1.92,.8,0,0,Math.PI/2,0)); for(const y of [1.6,3.1]) for(const z of [-1,0,1]) P2.push(part(Box(.08,.7,.6),0x7fc6ef,1.92,y,z*.9)); }
+  else { P2.push(part(Box(3.8,6.2,3.2),0x9fb4c4,0,3.1,0), part(Box(4.0,.2,3.4),0x2c6bb3,0,6.3,0), part(Box(.9,1.8,.08),0x34373b,1.92,.9,0,0,Math.PI/2,0)); for(let y=1.4;y<6;y+=1.2) P2.push(part(Box(.08,.8,2.9),0x7fc6ef,1.92,y,0)); }
+  const m = mesh(merge(P2)); kontorG.add(m);
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.8,.45), new THREE.MeshBasicMaterial({map:signTex(k===2?'Huvudkontor':'Kontor')})); sign.position.set(1.98, k===0?2.05:k===1?3.6:5.6, 0); sign.rotation.y = Math.PI/2; kontorG.add(sign);
+  if(k===0) kontorG.scale.setScalar(1);
+}
+const bodG = mesh(merge([part(Box(2.8,1.9,2.2),0x9e2b25,0,.95,0), part(Box(3.1,.14,2.5),0x34373b,0,1.95,0), part(Box(.7,1.3,.08),0x6b4426,.5,.65,1.11), part(Box(.6,.5,.08),0xffe7a0,-.7,1.2,1.11)]));
+bodG.position.set(LAY.bod[0],0,LAY.bod[1]); bodG.visible = false; world.add(bodG);
+const angaG = new THREE.Group(); angaG.position.set(LAY.anga[0],0,LAY.anga[1]); angaG.visible = false; world.add(angaG);
+angaG.add(mesh(merge([part(Box(3.4,.3,3.0),CONC,0,.15,0), part(Cyl(.9,.9,2.6,14),0x3a2e27,-.2,1.2,0,0,0,Math.PI/2), part(Cyl(.95,.95,.12,14),0xc8a24a,-1.4,1.2,0,0,0,Math.PI/2), part(Cyl(.95,.95,.12,14),0xc8a24a,1.0,1.2,0,0,0,Math.PI/2), part(Cyl(.3,.38,3.4,10),0x2b2b2b,-.9,3.2,-.5), part(Cyl(.4,.4,.2,10),0xc8a24a,-.9,4.9,-.5), part(Box(.6,.5,.6),0xe5484d,-.9,.6,1.0)])));
+const flywheel = mesh(merge([part(Cyl(1.0,1.0,.16,18),0x34373b,0,0,0,Math.PI/2,0,0), part(Box(.14,1.9,.18),0xc8a24a,0,0,0), part(Box(1.9,.14,.18),0xc8a24a,0,0,0)])); flywheel.position.set(1.5,1.3,.9); angaG.add(flywheel);
+// remmar från svänghjulet till maskinerna
+const remG = new THREE.Group(); world.add(remG); remG.visible = false;
+{ const P2 = []; for(const m of ['bark','sag','hyvel']){ const [mx,mz] = LAY.mach[m], ax = LAY.anga[0]+1.5, az = LAY.anga[1]+.9, len = Math.hypot(mx+1.6-ax, mz-az), yaw = Math.atan2(mx+1.6-ax, mz-az); P2.push(part(Box(.08,.08,len),0x3a2a1c,(ax+mx+1.6)/2,3.4,(az+mz)/2,0,yaw,0)); P2.push(part(Box(.16,3.4,.16),0x6b4426,mx+1.6,1.7,mz)); } remG.add(mesh(merge(P2), false)); }
+const visslaG = new THREE.Group(); visslaG.position.set(LAY.vissla[0],0,LAY.vissla[1]); visslaG.visible = false; world.add(visslaG);
+visslaG.add(mesh(merge([part(Cyl(.12,.12,2.2,8),0xc8a24a,0,1.1,0), part(Cyl(.22,.18,.5,10),0xc8a24a,0,2.35,0), part(Box(.06,.6,.06),0x34373b,.25,1.6,0)])));
+const visslaRing = new THREE.Mesh(new THREE.RingGeometry(1.1,1.4,28), new THREE.MeshBasicMaterial({color:0xc8a24a, transparent:true, opacity:.8})); visslaRing.rotation.x = -Math.PI/2; visslaRing.position.y = .06; visslaG.add(visslaRing);
+const lampG = new THREE.Group(); world.add(lampG); lampG.visible = false;
+const bulbMat = new THREE.MeshLambertMaterial({color:0xfff2b0, emissive:0xffc93c});
+for(const [x,z] of [[-12.5,-14],[-12.5,5],[12.5,-14],[12.5,0],[-3,13.5],[8,-21]]){ const l = mesh(merge([part(Cyl(.07,.09,3.4,6),0x34373b,0,1.7,0), part(Box(.6,.08,.08),0x34373b,.25,3.35,0)])); l.position.set(x,0,z); lampG.add(l); const b = new THREE.Mesh(new THREE.SphereGeometry(.16,8,6), bulbMat); b.position.set(x+.5,3.2,z); lampG.add(b); }
+const sortG = mesh(merge([part(Box(2.2,1.6,1.8),0xdfe6ec,0,.8,0), part(Box(2.3,.12,1.9),0x2c6bb3,0,1.66,0), part(Box(1.4,.08,.5),0x2f6fd6,0,1.0,1.1), ...[-.6,0,.6].map(x=>part(Box(.3,.3,.08),0xffc93c,x,1.2,.91))]));
+sortG.position.set(4.4,0,-15.6); sortG.visible = false; world.add(sortG);
+const solarG = new THREE.Group(); world.add(solarG);
+
 /* ================= Transportband ================= */
 const BELT_Y = .62, BELT_V = 2.2;
 const BELTS = [
@@ -1191,11 +946,17 @@ const BELTS = [
   {id:'sackb', a:[-5.5,-3.3], b:[-5.5,-2.3], need:'press'},
   {id:'snb',   a:[-1.6,2.3], b:[-3.5,2.8], need:'snick'},
   {id:'furnb', a:[-5.5,5.0], b:[-5.5,6.1], need:'snick'},
+  {id:'ugnb',  a:[2.0,-0.8], b:[15.6,-0.8], need:'ugn'},
+  {id:'torrb', a:[18.7,-2.5], b:[20.1,-4.2], need:'ugn'},
+  {id:'limb',  a:[17.5,1.1], b:[17.5,4.3], need:'lim'},
+  {id:'limp',  a:[19.4,6.2], b:[20.6,6.2], need:'lim'},
+  {id:'listb', a:[19.4,-0.8], b:[21.2,-0.8], need:'list'},
+  {id:'listp', a:[23.5,-2.6], b:[24.0,-4.2], need:'list'},
 ];
 for(const b of BELTS){
   const ax = b.b[0]-b.a[0], az = b.b[1]-b.a[1]; b.len = Math.hypot(ax,az); b.yaw = Math.atan2(ax/b.len, az/b.len);
   const g = new THREE.Group(); g.position.set(b.a[0],0,b.a[1]); g.rotation.y = b.yaw;
-  const P2 = [part(Box(1.5,.5,b.len+.3), DARK, 0,.3,b.len/2)];
+  const P2 = [part(Box(1.5,.5,b.len+.3), 0x58616b, 0,.3,b.len/2)];
   for(const sx of [-1,1]) P2.push(part(Box(.12,.2,b.len+.3), 0xffc93c, sx*.72,.62,b.len/2));
   for(let z=.4;z<b.len;z+=1.4) for(const sx of [-1,1]) P2.push(part(Box(.12,.3,.12), 0x3a3f45, sx*.6,.15,z));
   g.add(mesh(merge(P2)));
@@ -1204,44 +965,53 @@ for(const b of BELTS){
   top.rotation.x = -Math.PI/2; top.position.set(0,.56,b.len/2); top.receiveShadow = true; g.add(top);
   b.tex = tex; b.g = g; g.visible = false; world.add(g);
 }
-// saker som åker på banden (bara utseende: modellen har redan flyttat dem)
 const moving = [];
 const ROUTE = {
   'bark>sag':[[0,-12],[0,-5]], 'bark>main':[[0,-12],[0,6.6]], 'sag>hyvel':[[0,-5],[0,2]], 'sag>main':[[0,-5],[0,6.6]],
   'hyvel>main':[[0,2],[0,6.6]], 'hyvel>snick':[[0,2],[-1.4,2.2],[-5.5,3]], 'spill>press':[[0,-5],[-5.5,-5]],
   'press>sack':[[-5.5,-5],[-5.5,-2.2]], 'snick>furn':[[-5.5,3],[-5.5,6.2]], 'in':[[0,-16],[0,-12]],
+  'hyvel>ugn':[[0,2],[2,-0.8],[17.5,-0.8]], 'ugn>torr':[[17.5,-0.8],[18.7,-2.5],[20.6,-5.3]], 'ugn>lim':[[17.5,-0.8],[17.5,6.2]], 'ugn>list':[[17.5,-0.8],[23,-0.8]],
+  'lim>lim':[[17.5,6.2],[21.7,6.2]], 'list>list':[[23,-0.8],[24.2,-5.3]],
 };
-const ROUTE_TYPE = { 'bark':'barked', 'sag':'board', 'hyvel':'planed', 'spill':'chip', 'press':'sack', 'snick':'furn' };
+const ROUTE_TYPE = { 'bark':'barked', 'sag':'board', 'hyvel':'planed', 'spill':'chip', 'press':'sack', 'snick':'furn', 'ugn':'torr', 'lim':'limtra', 'list':'fonster' };
 function addMover(route, type){ const pts = ROUTE[route]; if(!pts || moving.length > 240) return; let len = 0; for(let i=1;i<pts.length;i++) len += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); moving.push({pts, len, s:0, type}); }
-const floaters = [];   // stockar i flottningsrännan
+const floaters = [];   // stockar i rännan
 function updateBelts(dt){
-  for(const b of BELTS){ b.g.visible = lv(S, b.need) > 0; if(b.g.visible && (b.id!=='main' || G.mach.bark.busy > 0 || moving.length)) b.tex.offset.y -= BELT_V/1.1*dt; }
+  for(const b of BELTS){ b.g.visible = lv(S, b.need) > 0; if(b.g.visible && (b.id!=='main' || G.mach.bark.busy > 0 || moving.length)) b.tex.offset.y -= BELT_V/1.1*dt*(G.vissla>0?2:1); }
   for(let i=moving.length-1;i>=0;i--){
-    const mv = moving[i]; mv.s += BELT_V*dt; if(mv.s >= mv.len){ moving.splice(i,1); continue; }
+    const mv = moving[i]; mv.s += BELT_V*dt*(G.vissla>0?2:1); if(mv.s >= mv.len){ moving.splice(i,1); continue; }
     let s = mv.s, k = 1; while(k < mv.pts.length-1){ const l = Math.hypot(mv.pts[k][0]-mv.pts[k-1][0], mv.pts[k][1]-mv.pts[k-1][1]); if(s <= l) break; s -= l; k++; }
     const a = mv.pts[k-1], b2 = mv.pts[k], l = Math.hypot(b2[0]-a[0], b2[1]-a[1]) || 1, t = s/l;
     setItem(mv.type, lerp(a[0],b2[0],t), BELT_Y + ITEM[mv.type].h*.6, lerp(a[1],b2[1],t), Math.atan2(b2[0]-a[0], b2[1]-a[1]) + Math.PI/2);
   }
-  chanG.visible = lv(S,'sjo') > 0;
-  for(let i=floaters.length-1;i>=0;i--){ const f = floaters[i]; f.x += 2.6*dt; if(f.x >= CH_X1+.6){ floaters.splice(i,1); continue; } setItem('log', f.x, .12 + Math.sin(f.x*2)*.03, CH_Z + Math.sin(f.x)*.1, Math.PI/2 + Math.sin(f.x*.7)*.15); }
+  if(chanG) chanG.visible = !!CH && (CH.kind==='lake' ? G.def.areas.some(a=>a.lake && areaOpen(G,a.id)) : roleN(S,'flott') > 0);
+  for(let i=floaters.length-1;i>=0;i--){
+    const f = floaters[i];
+    if(f.kind==='lake'){ f.x += 2.6*dt; if(f.x >= CH.x1+.6){ floaters.splice(i,1); continue; } setItem('log', f.x, .12 + Math.sin(f.x*2)*.03, CH.z + Math.sin(f.x)*.1, Math.PI/2 + Math.sin(f.x*.7)*.15); }
+    else { if(f.x < -4){ f.x += 2.8*dt; setItem('log', f.x, .1, CH.z + Math.sin(f.x)*.2, Math.PI/2); } else { f.z += 3*dt; if(f.z >= LAY.intake[1]-1){ floaters.splice(i,1); continue; } setItem('log', -4, .55, f.z, 0); } }
+  }
 }
 
-/* ================= Lastbilar ================= */
-function makeTruck(color, cargoColor){
+/* ================= Lastbilar, fartyg och timmerbil ================= */
+function makeTruck(color, cargoColor, logs=false){
   const g = new THREE.Group();
-  g.add(mesh(merge([
+  const body = mesh(merge([
     part(Box(1.6,1.4,1.7), color, 2.1,1.15,0), part(Box(1.62,.5,1.5), 0xbfe3ff, 2.35,1.45,0), part(Box(.1,.3,1.3), 0xf2efe6, 2.92,.75,0),
-    part(Box(4.0,.25,1.8), DARK, -.6,.55,0), part(Box(3.8,.1,1.7), 0x8a5a32, -.6,.72,0),
+    part(Box(4.0,.25,1.8), 0x58616b, -.6,.55,0), part(Box(3.8,.1,1.7), 0x8a5a32, -.6,.72,0),
     ...[[2.1,1],[2.1,-1],[-1.6,1],[-1.6,-1],[-.6,1],[-.6,-1]].map(([x,z])=>part(Cyl(.38,.38,.3,12),0x2b2b2b,x,.38,z*.8,Math.PI/2,0,0)),
-  ])));
-  const cargo = mesh(merge([part(Box(3.6,1,1.5),cargoColor,0,.5,0), part(Box(3.62,.08,1.52),0x6b4426,0,.7,0)])); cargo.position.set(-.6,.77,0); g.add(cargo);
+  ])); g.add(body);
+  const cargo = mesh(logs ? merge([...[0,1,2].flatMap(r=>[-.5,0,.5].map(z=>part(Cyl(.24,.24,3.6,8),0x6b4426,0,.25+r*.42,z,0,0,Math.PI/2)))]) : merge([part(Box(3.6,1,1.5),cargoColor,0,.5,0), part(Box(3.62,.08,1.52),0x6b4426,0,.7,0)])); cargo.position.set(-.6,.77,0); g.add(cargo);
   g.position.set(-60,0,LAY.road-.9); world.add(g);
-  return {g, cargo, x:-60, st:'arrive', t:0, n:0};
+  return {g, body, cargo, x:-60, st:'arrive', t:0, n:0, color};
 }
 const dockTruck = makeTruck(0x2f6fd6, 0xf0d39a);
 const orderTruck = makeTruck(0xe5484d, 0xf2d7a2);
+const timmerBil = makeTruck(0x3f9c3a, 0, true); timmerBil.g.visible = false; timmerBil.g.position.z = LAY.road + .9; timmerBil.g.rotation.y = Math.PI;
 const TRUCK_CAP = 24;
+const TRUCK_COL = [0x2f6fd6, 0x34373b, 0x2e8b57, 0xf2f5f8];
+let truckEp = 0;
 function updateTrucks(dt){
+  if(truckEp !== B.ep){ truckEp = B.ep; dockTruck.g.remove(dockTruck.body); dockTruck.body = mesh(merge([part(Box(1.6,1.4,1.7), TRUCK_COL[B.ep-1]||0x2f6fd6, 2.1,1.15,0), part(Box(1.62,.5,1.5), 0xbfe3ff, 2.35,1.45,0), part(Box(4.0,.25,1.8), 0x58616b, -.6,.55,0), part(Box(3.8,.1,1.7), 0x8a5a32, -.6,.72,0), ...[[2.1,1],[2.1,-1],[-1.6,1],[-1.6,-1],[-.6,1],[-.6,-1]].map(([x,z])=>part(Cyl(.38,.38,.3,12),0x2b2b2b,x,.38,z*.8,Math.PI/2,0,0)), ...(B.ep>=4?[part(Box(.5,.12,1.2),0x2ec4b6,2.1,1.9,0)]:[])])); dockTruck.g.add(dockTruck.body); }
   const dx = LAY.dock[0] - .4, tr = dockTruck; tr.t += dt;
   if(tr.st==='arrive'){ const k = Math.min(1, tr.t/2.2), e = 1-Math.pow(1-k,3); tr.x = lerp(-60, dx, e); if(k>=1){ tr.st='load'; tr.t=0; } }
   else if(tr.st==='load'){ if(tr.n >= TRUCK_CAP){ tr.st='leave'; tr.t=0; tr.n = 0; } }
@@ -1249,10 +1019,11 @@ function updateTrucks(dt){
   tr.g.position.x = tr.x;
   const f = tr.st==='leave' ? 1 : tr.st==='load' ? tr.n/TRUCK_CAP : 0;
   tr.cargo.scale.set(1, Math.max(.001, f), 1); tr.cargo.visible = f > .02;
-  // beställningsbil
+  // beställningsbil eller fartyg
   const o = G.order, ot = orderTruck, ox = LAY.dock[0] + 6.6;
-  if(!o){ ot.g.visible = false; ot.x = -60; }
-  else {
+  const useShip = o && o.ship && ship;
+  if(!o || useShip){ ot.g.visible = false; ot.x = -60; }
+  if(o && !useShip){
     ot.g.visible = true;
     if(o.st==='arrive'){ const k = Math.min(1, o.a/2.5), e = 1-Math.pow(1-k,3); ot.x = lerp(-60, ox, e); }
     else if(o.st==='open') ot.x = ox;
@@ -1261,35 +1032,48 @@ function updateTrucks(dt){
     const f2 = o.st==='leave' && o.ok ? 1 : Math.min(1, o.got/o.need);
     ot.cargo.scale.set(1, Math.max(.001, f2), 1); ot.cargo.visible = f2 > .02;
   }
+  if(ship){ let sx = -90; if(useShip){ if(o.st==='arrive') sx = lerp(-90, -14, 1-Math.pow(1-Math.min(1,o.a/2.5),3)); else if(o.st==='open') sx = -14; else sx = lerp(-14, 90, Math.min(1,o.a/3)**2); } else sx = ship.position.x < -14 ? -90 : lerp(ship.position.x, 90, Math.min(1, dt)); ship.position.x = sx; ship.position.y = Math.sin(performance.now()/900)*.08; }
+  // timmerbilen (från Motorn) kör in timmer av sig själv
+  const tb = timmerBil, tbOn = B.ep >= 3 && lv(S,'chauffor') > 0; tb.g.visible = tbOn;
+  if(tbOn){ tb.t += dt; const T2 = 16, k = (tb.t % T2)/T2; tb.x = k < .35 ? lerp(80, -1.5, k/.35) : k < .6 ? -1.5 : lerp(-1.5, -80, (k-.6)/.4); tb.g.position.x = tb.x; tb.cargo.visible = k < .45; }
 }
 
 /* ================= Betalrutor ================= */
-const ICON = { machine:'⚙️', pack:'🎒', axe:'🪓', hire:'👷', area:'🌲', up:'⏫' };
-const ICON_ID = { chauffor:'🚚', sjo:'🛶', press:'⚙️', snick:'🪑' };
-const pads = {};
+const ICON = { machine:'⚙️', pack:'🎒', axe:'🪓', hire:'👷', area:'🌲', up:'⏫', build:'🏠', train:'🎓', epoch:'🏭', veh:'🚜' };
+const ICON_ID = { chauffor:'🚚', sjo:'🛶', press:'⚙️', snick:'🪑', ugn:'🔥', lim:'🪵', list:'🪟', mask:'🔧', eldare:'🔥', truckf:'🚜', mek:'🛠️', gtruck:'🚜', skord:'🌲', gskord:'🌲', plant:'🌱', salj:'📞', hk:'🏢', kontor:'🏢', bod:'🛖', flott:'🛶', epok:'🏭' };
+const padIconTex = {};
+let pads = {};
 const padBaseG = new THREE.PlaneGeometry(2.3,2.3);
-for(const p of ECON.pads){
-  const g = new THREE.Group(); g.position.set(p.at[0], 0, p.at[1]); world.add(g);
-  const base = new THREE.Mesh(padBaseG, new THREE.MeshBasicMaterial({color:0x14241d, transparent:true, opacity:.72, depthWrite:false})); base.rotation.x = -Math.PI/2; base.position.y = .04; g.add(base);
-  const fill = new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3), new THREE.MeshBasicMaterial({color:0x5fbf4a, transparent:true, opacity:.85, depthWrite:false})); fill.rotation.x = -Math.PI/2; fill.position.y = .05; g.add(fill);
-  const BP = []; for(let i=0;i<4;i++){ const a = i*Math.PI/2; for(let k=-2;k<=2;k++) BP.push(part(Box(.32,.06,.12), 0xffc93c, Math.cos(a)*1.15 + -Math.sin(a)*k*.46, .06, Math.sin(a)*1.15 + Math.cos(a)*k*.46, 0, -a + Math.PI/2, 0)); }
-  const border = mesh(merge(BP), false); g.add(border);
-  const icon = new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.4), new THREE.MeshBasicMaterial({transparent:true, depthWrite:false, map:canvasTex(128,128,(c,w,h)=>{ c.font='84px serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(ICON_ID[p.id] || ICON[p.kind] || '⭐', w/2, h/2+6); })}));
-  icon.rotation.x = -Math.PI/2; icon.position.y = .07; g.add(icon);
-  g.visible = false;
-  pads[p.id] = { g, fill, border, icon, pop:0, shown:false };
+function buildPads(){
+  for(const id in pads){ world.remove(pads[id].g); }
+  pads = {};
+  for(const p of G.pads){
+    const g = new THREE.Group(); g.position.set(p.at[0], 0, p.at[1]); world.add(g);
+    const big = p.kind === 'epoch';
+    const base = new THREE.Mesh(padBaseG, new THREE.MeshBasicMaterial({color:big?0x3a2560:0x14241d, transparent:true, opacity:.72, depthWrite:false})); base.rotation.x = -Math.PI/2; base.position.y = .04; g.add(base);
+    const fill = new THREE.Mesh(new THREE.PlaneGeometry(2.3,2.3), new THREE.MeshBasicMaterial({color:big?0xb18cff:0x5fbf4a, transparent:true, opacity:.85, depthWrite:false})); fill.rotation.x = -Math.PI/2; fill.position.y = .05; g.add(fill);
+    const BP = []; for(let i=0;i<4;i++){ const a = i*Math.PI/2; for(let k=-2;k<=2;k++) BP.push(part(Box(.32,.06,.12), big?0xb18cff:0xffc93c, Math.cos(a)*1.15 + -Math.sin(a)*k*.46, .06, Math.sin(a)*1.15 + Math.cos(a)*k*.46, 0, -a + Math.PI/2, 0)); }
+    const border = mesh(merge(BP), false); g.add(border);
+    const ic = p.icon || ICON_ID[p.id] || ICON[p.kind] || '⭐';
+    if(!padIconTex[ic]) padIconTex[ic] = canvasTex(128,128,(c,w,h)=>{ c.font='84px serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(ic, w/2, h/2+6); });
+    const icon = new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.4), new THREE.MeshBasicMaterial({transparent:true, depthWrite:false, map:padIconTex[ic]}));
+    icon.rotation.x = -Math.PI/2; icon.position.y = .07; g.add(icon);
+    if(big) g.scale.setScalar(1.25);
+    g.visible = false;
+    pads[p.id] = { g, fill, border, icon, pop:0, shown:false, big };
+  }
 }
 function updatePads(dt, time){
-  for(const p of ECON.pads){
-    const v = padVisible(S, p), P2 = pads[p.id];
+  for(const p of G.pads){
+    const v = padVisible(G, p), P2 = pads[p.id]; if(!P2) continue;
     if(v && !P2.shown){ P2.shown = true; P2.pop = 1; }
     if(!v && P2.shown){ P2.shown = false; }
     P2.g.visible = v;
     if(!v) continue;
-    const cost = padCost(S,p), f = clamp((S.paid[p.id]||0)/cost, 0, 1);
+    const cost = padCost(G,p), f = clamp((S.paid[p.id]||0)/cost, 0, 1);
     P2.fill.scale.set(1, Math.max(.001,f), 1); P2.fill.position.z = (1-f)*1.15; P2.fill.visible = f > .001;
-    const can = S.money >= padLeft(S,p), on = G.p.pad === p;
-    let sc = 1; if(P2.pop > 0){ P2.pop = Math.max(0, P2.pop - dt*2.5); sc = 1 + Math.sin(P2.pop*Math.PI)*.4 - P2.pop*.3; }
+    const can = S.money >= padLeft(G,p), on = G.p.pad === p;
+    let sc = P2.big ? 1.25 : 1; if(P2.pop > 0){ P2.pop = Math.max(0, P2.pop - dt*2.5); sc *= 1 + Math.sin(P2.pop*Math.PI)*.4 - P2.pop*.3; }
     if(can && !on) sc *= 1 + Math.sin(time*6)*.05;
     if(on) sc *= 1.06;
     P2.g.scale.set(sc,1,sc);
@@ -1384,6 +1168,7 @@ function drawStack(stack, x, z, yaw, hide=0, moving=false, time=0){
 }
 const PILE_LAYOUT = { // per lager: [kolumner x, rader z, steg x, steg z]
   log:[1,5,0,.44], barked:[1,5,0,.4], board:[2,4,1.08,.3], planed:[2,4,1.08,.3], sack:[3,4,.64,.48], furn:[3,3,.62,.62],
+  torr:[2,4,1.08,.3], limtra:[1,6,0,.34], fonster:[2,3,.75,.7],
 };
 function drawPile(cx, cz, counts, order){
   let i = 0, h = .2, layerH = 0, perLayerIdx = 0;
@@ -1397,18 +1182,14 @@ function drawPile(cx, cz, counts, order){
     }
   }
 }
+const PILE_ORDER = { main:['barked','board','planed'], sack:['sack'], furn:['furn'], torr:['torr'], lim:['limtra'], list:['fonster'] };
 function drawWorld(dt, time){
   for(const k in ITEM) ITEM[k].n = 0;
-  // stackar
   drawStack(S.stack, G.p.x, G.p.z, player.g.rotation.y, incoming, G.p.moving, time);
   G.workers.forEach((w,i) => { const f = workerFigs[i]; if(f && w.stack.length) drawStack(w.stack, w.x, w.z, f.g.rotation.y, 0, w.moving, time); });
-  // stockar på marken
-  for(const g of G.ground){ const k = Math.min(1, g.t/.25); setItem('log', g.x, .2 + (1-k)*1.2, g.z, (g.x*3+g.z)%3.14, 1); }
-  // inlastning, högar
+  for(const g of G.ground){ const k = Math.min(1, g.t/.25); setItem(g.type || 'log', g.x, .2 + (1-k)*1.2, g.z, (g.x*3+g.z)%3.14, 1); }
   if(lv(S,'bark')) drawPile(LAY.intake[0], LAY.intake[1]-.1, {log:Math.min(S.q.intake, 40)}, ['log']);
-  drawPile(LAY.pile.main[0], LAY.pile.main[1], S.pile.main, ['barked','board','planed']);
-  drawPile(LAY.pile.sack[0], LAY.pile.sack[1], S.pile.sack, ['sack']);
-  drawPile(LAY.pile.furn[0], LAY.pile.furn[1], S.pile.furn, ['furn']);
+  for(const k of PILES) drawPile(LAY.pile[k][0], LAY.pile[k][1], S.pile[k], PILE_ORDER[k]);
   updateBelts(dt);
   updateFlights(dt);
   for(const k in ITEM){ itemIM[k].count = ITEM[k].n; itemIM[k].instanceMatrix.needsUpdate = true; }
@@ -1417,40 +1198,49 @@ function drawWorld(dt, time){
 /* ================= Synka världen mot modellen ================= */
 function syncWorld(celebrate=null){
   for(const m of MACHS){
-    const st = stations[m], owned = lv(S,m) > 0, tier = Math.min(TIER_COL.length-1, lv(S,'up_'+m));
-    st.ghost.visible = !owned && padVisible(S, PAD[m]);
-    if(owned && st.tier !== tier){
+    const st = stations[m], owned = lv(S,m) > 0, tier = Math.min(TIER_COL.length-1, lv(S,'up_'+m)), ep = Math.min(EPL.length, B.ep);
+    st.ghost.visible = !owned && !!G.PAD[m] && padVisible(G, G.PAD[m]);
+    if(owned && (st.tier !== tier || st.ep !== ep)){
       if(st.built){ st.root.remove(st.built.g); st.built.g.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
-      st.built = buildStation(m, tier); st.root.add(st.built.g); st.tier = tier;
+      st.built = buildStation(m, tier, ep); st.root.add(st.built.g); st.tier = tier;
       st.built.g.scale.setScalar(1 + .06*tier);
-      if(celebrate === m || celebrate === 'up_'+m){ st.pop = 1; }
+      if(celebrate === m || celebrate === 'up_'+m || (celebrate === 'epoch' && st.ep)){ st.pop = 1; }
+      st.ep = ep;
     }
-    if(!owned && st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; }
+    if(!owned && st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; st.ep = 0; }
   }
   intakeG.visible = lv(S,'bark') > 0;
-  pileBase.main.visible = lv(S,'bark') > 0; pileBase.sack.visible = lv(S,'press') > 0; pileBase.furn.visible = lv(S,'snick') > 0;
+  for(const k of PILES){ const m = { main:'bark', sack:'press', furn:'snick', torr:'ugn', lim:'lim', list:'list' }[k]; pileBase[k].visible = lv(S,m) > 0; }
   kassaG.visible = lv(S,'barare') > 0;
-  fences['gate-skog'].visible = !lv(S,'skog'); fences['gate-sjo'].visible = !lv(S,'sjo');
+  bodG.visible = lv(S,'bod') > 0;
+  angaG.visible = B.ep >= 2; remG.visible = B.ep >= 2 && lv(S,'bark') > 0; visslaG.visible = B.ep >= 2; lampG.visible = B.ep >= 2; sortG.visible = B.ep >= 4 && lv(S,'bark') > 0;
+  if(ostG) ostG.visible = B.ep >= 2;
+  if(ortG && ortG.userData.bridge) ortG.userData.bridge.visible = lv(S,'alv') > 0;
+  buildKontor(); buildFences();
   syncWorkerFigs();
 }
 function updateMachines(dt, time){
   for(const m of MACHS){
     const st = stations[m]; if(!st.built) continue;
-    const M = G.mach[m], active = M.jam ? 0 : M.busy > 0 ? 1 : 0;
+    const M = G.mach[m], active = M.jam ? 0 : M.busy > 0 ? 1 : 0, boost = G.vissla > 0 ? 2 : 1;
     st.act = lerp(st.act, active, 1-Math.exp(-4*dt));
-    for(const s of st.built.spin) s.m.rotation[s.ax] += s.sp*(.05 + st.act)*dt;
-    for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.2+st.act)))*b.amp*st.act;
+    for(const s of st.built.spin) s.m.rotation[s.ax] += s.sp*(.05 + st.act)*dt*boost;
+    for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.2+st.act)*boost))*b.amp*st.act;
     let sc = 1; if(st.pop > 0){ st.pop = Math.max(0, st.pop - dt*1.8); const k = 1-st.pop; sc = k < .5 ? k*2*1.15 : 1.15 - (k-.5)*.3; }
     let sh = 0; if(M.jam) sh = Math.sin(time*40)*.04; if(st.shake > 0){ st.shake = Math.max(0, st.shake-dt); sh += Math.sin(time*60)*.08*st.shake/.25; }
     st.root.scale.setScalar(Math.max(.001, sc)); st.root.position.x = LAY.mach[m][0] + sh;
     const e = st.built.emit, p = st.root.position;
     if(m==='sag' && st.act > .1 && Math.random() < dt*14*st.act) burst(p.x+e.x+rand(-.6,.6), e.y, p.z+e.z, [0xf3d9a4,0xe8c98a,0xffffff], 2, 2.6, .7, .6, 3.5);
-    if(m==='hyvel' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
+    if((m==='hyvel' || m==='list') && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
     if(m==='bark' && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x+rand(-.5,.5), e.y, p.z+e.z, [0x6b4426,0x4a2e18], 1, 1.5, .8, .6, 2);
     if(m==='press' && st.act > .1 && Math.random() < dt*3*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xd9b06a,0xc4964f], 2, 1.2, .6, .6, 2);
     if(st.built.smoke && Math.random() < dt*2.5) burst(p.x+e.x, e.y, p.z+e.z, [0xdfe3e6,0xc9ced3], 1, .3, 2.6, 2.2, .8, -0.2);
+    if(st.built.smoke2 && Math.random() < dt*3*(.3+st.act)){ const q = st.built.smoke2; burst(p.x+q[0], q[1], p.z+q[2], [0xffffff,0xe8eef2], 1, .3, 2.2, 1.8, 1.2, -0.3); }
+    if(st.built.exhaust && st.act > .1 && Math.random() < dt*4){ const q = st.built.exhaust; burst(p.x+q[0], q[1], p.z+q[2], [0x777777,0x999999], 1, .2, 1.2, 1.2, 1, -0.2); }
+    if(st.built.lamp && Math.random() < dt*1.5){ const q = st.built.lamp; burst(p.x+q[0], q[1], p.z+q[2], [M.jam?0xe5484d:0x8fe06f], 1, .05, .8, .5, .1, 0); }
     if(M.jam && Math.random() < dt*14) burst(p.x+rand(-1,1), 2.6, p.z+rand(-1,1), [0x3a3a3a,0x5a5a5a,0x777777], 1, .5, 2.6, 2, 1.5, -.6);
   }
+  if(angaG.visible){ flywheel.rotation.z -= dt*(2 + (G.vissla>0?6:0)); if(Math.random() < dt*(G.vissla>0?14:4)) burst(LAY.anga[0]-.9, 5.1, LAY.anga[1]-.5, [0xffffff,0xe8eef2,0xd0d6da], 1, .4, 2.6, 2.2, 1.5, -.3); if(G.ev && G.ev.kind==='panna' && Math.random() < dt*20) burst(LAY.anga[0]+rand(-1,1), 2.2, LAY.anga[1]+rand(-1,1), [0xffffff,0xff8a3d], 1, 2, 1, .7, 2, -.5); visslaRing.material.opacity = G.visslaCd > 0 ? .25 : .6 + Math.sin(time*5)*.3; }
 }
 
 /* ================= Händelser från modellen: ljud och effekter ================= */
@@ -1460,36 +1250,74 @@ const DONE_TXT = {
   sag:['Sågen är byggd!','Nu blir stockarna brädor.'],
   hyvel:['Hyveln är byggd!','Hyvlade brädor ger mest.'],
   press:['Pelletspressen är byggd!','Spånet från sågen blir pelletssäckar.'],
-  snick:['Snickeriet är byggt!','Hälften av brädorna blir möbler.'],
+  snick:['Snickeriet är byggt!','En del av brädorna blir möbler.'],
+  ugn:['Torkugnen är byggd!','Hyvlade brädor torkas och blir torkat virke.'],
+  lim:['Limträpressen är byggd!','Torkat virke limmas till limträbalkar.'],
+  list:['Hyvleriet är byggt!','Torkat virke blir fönster och listverk.'],
   pack:['Större ryggsäck!', n => `Nu bär du ${n} saker.`],
   yxa:['Vassare yxa!','Träden faller fortare.'],
   hugg:['Huggare anställd!','Fäller träd och bär till inlastningen.'],
   barare:['Bärare anställd!','Bär virket till lastkajen. Pengarna hamnar i kassan.'],
-  chauffor:['Chaufför anställd!','Pengarna går direkt in. Sågverket sköter sig självt!'],
-  skog:['Storskogen är öppen!','Stora träd som ger tre stockar var.'],
-  sjo:['Sjön är öppen!','Stockar flyter in till inlastningen av sig själva.'],
+  chauffor:['Chaufför anställd!','Pengarna går direkt in. Verket sköter sig självt!'],
+  bod:['Personalboden är byggd!','Plats för fler anställda.'],
+  kontor:['Kontorshuset är byggt!','Plats för ännu fler anställda.'],
+  hk:['Huvudkontoret är byggt!','Plats för många fler anställda.'],
+  mask:['Maskinist anställd!','Smörjer maskinerna så att de går fortare.'],
+  eldare:['Eldare anställd!','Ångmaskinen går varm: alla maskiner går fortare.'],
+  truckf:['Truckförare anställd!','Kör hela pallar till lastkajen.'],
+  mek:['Mekaniker anställd!','Lagar maskinstopp av sig själv.'],
+  gtruck:['Gaffeltruck!','Du kör den nu. Byt med knappen nere till vänster.'],
+  skord:['Skördarförare anställd!','Fäller träd med skördaren.'],
+  plant:['Plantör anställd!','Skogen växer upp fortare.'],
+  salj:['Säljare anställd!','Fler och större beställningar.'],
+  gskord:['Skördare!','Du kör den nu. Ett grepp fäller ett träd.'],
+  flott:['Flottare anställd!','Timret flyter längs älven till verket.'],
 };
+let infoQueue = [];
 function handleFx(){
   const p = G.p;
   for(const f of G.fx){
     switch(f.k){
-      case 'pay': { const pd = PAD[f.id]; fly('coin', playerChest(), [pd.at[0], .2, pd.at[1]], .32, 1.2); const c = padCost(S,pd); Snd.coin(c ? (S.paid[f.id]||0)/c : 0); coinPulse = .15; break; }
+      case 'pay': { const pd = G.PAD[f.id]; fly('coin', playerChest(), [pd.at[0], .2, pd.at[1]], .32, 1.2); const c = padCost(G,pd); Snd.coin(c ? (S.paid[f.id]||0)/c : 0); coinPulse = .15; break; }
       case 'built': {
-        const pd = PAD[f.id], id = f.id, T = DONE_TXT[id] || (pd.kind==='up' ? [pd.name + '!', `${MNAME[pd.m]} går fortare. Nivå ${lv(S,id)+1}.`] : [pd.name + '!', '']);
+        const pd = G.PAD[f.id], id = f.id;
+        let T = DONE_TXT[id] || (pd.kind==='up' ? [pd.name + '!', `${MNAME[pd.m]} går fortare. Nivå ${lv(S,id)+1}.`] : pd.kind==='area' ? [pd.name + ' är öppen!', pd.why ? pd.why[0].toUpperCase() + pd.why.slice(1) + '.' : ''] : [pd.name + '!', '']);
+        if(pd.kind==='train') T = [`${YRKEN[f.role].namn} nivå ${lv(S,'utb_'+f.role)+1}!`, `${YRKEN[f.role].namn} jobbar fortare.`];
         syncWorld(id);
         if(pd.kind==='hire') Snd.hire(); else Snd.build();
         cam.shake = .35; burst(pd.at[0], 1, pd.at[1], TIER_COL.concat([0xffffff]), 50, 6, 1.2, 1.3, 8);
         if(pd.m){ const q = LAY.mach[pd.m]; burst(q[0], 2.5, q[1], TIER_COL, 40, 5, 1.2, 1.2, 7); }
         toast(T[0], typeof T[1] === 'function' ? T[1](carryCap(S)) : T[1]);
-        if(id==='chauffor') setTimeout(()=>{ if(seedsFor(S)===0) toast('Helt automatiserat!', 'Nu kan du luta dig tillbaka eller jaga beställningar'); }, 2600);
+        if(id==='chauffor') setTimeout(()=>{ toast('Helt automatiserat!', 'Nu väntar nästa epok, nästa ort och kontrakten. Se målen överst'); }, 2600);
         persist();
         break;
       }
+      case 'epoch': {
+        const E = EPOKER[f.ep-1]; syncWorld('epoch'); for(const m of MACHS) if(stations[m].built) stations[m].pop = 1;
+        cam.shake = .6; Snd.fanfare(); Snd.build(); for(const m of MACHS) if(lv(S,m)){ const q = LAY.mach[m]; burst(q[0], 3, q[1], TIER_COL.concat([0xb18cff]), 40, 6, 1.2, 1.3, 8); }
+        const pr = EPOKER[f.ep-1];
+        infoQueue.push({h:`Ny epok: ${E.namn} (${E.ar})`, body:[`<p>Hela bolaget är moderniserat. Alla maskiner är ombyggda och nivåerna följer med.</p>`,
+          `<div class="orow"><span>🏭 <b>Nytt i verket:</b> ${E.nytt}.</span><span>⚙️ <b>Ny maskin:</b> ${(ECON.pads.find(x=>x.id===E.maskin)||{}).name} som gör <b>${NAME[E.produkt]}</b>.</span><span>👷 <b>Nya yrken:</b> ${E.yrken.map(r=>YRKEN[r].namn.toLowerCase()).join(', ')}.</span><span>🙋 <b>Nytt för dig:</b> ${E.gubbe}.</span><span>💰 Allt säljs för ${Math.round((pr.pris-1)*100)} % mer än i Handkraft, och maskinerna går fortare.</span></div>`].join(''), btns:[['Bygg vidare','buy',null]]});
+        persist(); break;
+      }
+      case 'mal': floatText('Mål klart: ' + f.txt, p.x, 3, p.z, false); Snd.sparkle(); break;
+      case 'master': {
+        Snd.fanfare(); cam.shake = .4; burst(p.x, 2, p.z, [0xffe066,0xfff2b0,0xffffff,0xb18cff], 70, 6, 1.3, 1.4, 8);
+        infoQueue.push({h:`Mästarbrev i ${ortDef(f.ort).namn}!`, body:`<p>Alla fem mål är klara. <b>${f.next}</b> är öppen på kartan.</p><p>${ortDef(f.ort).namn} fortsätter av sig själv och skickar <b>koncernintäkt</b> till dig medan du är någon annanstans. Du kan resa tillbaka när du vill.</p>`, btns:[['Öppna kartan','buy',()=>openOffice('karta')],['Stanna här','ghost',null]]});
+        persist(); break;
+      }
+      case 'steg': toast('Ny titel: ' + f.t, f.fro ? `+${f.fro} frö${f.fro>1?'n':''}: allt säljs dyrare för alltid` : ''); Snd.fanfare(); persist(); break;
+      case 'kontrakt': {
+        if(f.st==='tagen'){ Snd.click(); toast('Kontraktet är ditt!', 'Bär varorna själv till lastkajen'); }
+        if(f.st==='ok'){ Snd.fanfare(); toast('Kontraktet klart!', '+' + fmt(f.reward) + ' kr' + (f.fro ? ' och 1 frö' : '')); for(let i=0;i<24;i++) fly('coin', [LAY.dock[0], 2, LAY.dock[1]], playerChest, .6, 2.4, null, i*.03); }
+        if(f.st==='miss') toast('Kontraktet gick ut', 'Nya kontrakt kommer strax på tavlan');
+        persist(); break;
+      }
       case 'hit': { const i = G.trees.findIndex(t => t.x===f.x && t.z===f.z); if(i>=0) wob[i] = .25; burst(f.x, 1, f.z+.4, f.gold ? [0xffe066,0xfff2b0] : [0xe2bf86,0xc89a5e], 4, 2, .7, .4, 3); Snd.chop(); break; }
       case 'fall': { const i = G.trees.findIndex(t => t.x===f.x && t.z===f.z); if(i>=0){ const dx = f.x - p.x, dz = f.z - p.z; fallDir[i] = f.by==='p' ? Math.atan2(dx, -dz) : rand(0,6.28); }
-        const near = Math.hypot(f.x-p.x, f.z-p.z) < 14; if(near) Snd.thud(f.by==='p' ? 1 : .5); burst(f.x, .5, f.z, [0x3aa452,0x52bd60,0x7a5230], 8, 2.5, 1, .8, 3); break; }
+        const near = Math.hypot(f.x-p.x, f.z-p.z) < 14; if(near) Snd.thud(f.by==='p' ? 1 : .5); burst(f.x, .5, f.z, [curTerr.tree[0],curTerr.tree[1],0x7a5230], 8, 2.5, 1, .8, 3); break; }
       case 'pick': { const from = f.pile ? [LAY.pile[f.pile][0], 1, LAY.pile[f.pile][1]] : [f.x, .3, f.z]; incoming++; fly(f.type, from, stackTop, .22, .8, () => { incoming = Math.max(0, incoming-1); }); Snd.pop(S.stack.length); break; }
-      case 'feed': if(f.who==='p'){ fly('log', stackTop(), [LAY.intake[0]+rand(-.6,.6), .9, LAY.intake[1]], .25, .8); Snd.drop(); } else if(f.who==='lake') floaters.push({x:CH_X0 + .5}); break;
+      case 'feed': if(f.who==='p'){ fly('log', stackTop(), [LAY.intake[0]+rand(-.6,.6), .9, LAY.intake[1]], .25, .8); Snd.drop(); } else if(f.who==='lake' && CH && chanG && chanG.visible) floaters.push(CH.kind==='lake' ? {kind:'lake', x:CH.x0 + .5} : {kind:'river', x:CH.x0, z:CH.z}); break;
       case 'proc': { const type = ROUTE_TYPE[f.m]; if(f.m==='bark') addMover('in','log'); addMover(f.m + '>' + f.to, type); if(f.m==='sag' && Math.hypot(LAY.mach.sag[0]-p.x, LAY.mach.sag[1]-p.z) < 16) Snd.saw(.7); break; }
       case 'sell': {
         dockTruck.n = Math.min(TRUCK_CAP, dockTruck.n + 1);
@@ -1501,14 +1329,28 @@ function handleFx(){
       }
       case 'kassa': { const n = clamp(Math.round(f.amt/8), 3, 24); for(let i=0;i<n;i++) fly('coin', [LAY.kassa[0]+rand(-.4,.4), 1.2, LAY.kassa[1]], playerChest, .45, 1.8, null, i*.03); Snd.fanfare(); floatText('+' + fmt(f.amt) + ' kr', LAY.kassa[0], 2.6, LAY.kassa[1], true); break; }
       case 'gold': { for(let i=0;i<30;i++) fly('coin', [f.x+rand(-1,1), rand(1,4), f.z+rand(-1,1)], playerChest, .6, 2.5, null, i*.025); burst(f.x, 2, f.z, [0xffe066,0xfff2b0,0xffffff], 60, 6, 1.3, 1.4, 8); Snd.fanfare(); Snd.sparkle(); toast('Guldträd!', '+' + fmt(f.amt) + ' kr'); cam.shake = .3; break; }
+      case 'borre': { for(let i=0;i<12;i++) fly('coin', [f.x+rand(-1,1), rand(1,3), f.z+rand(-1,1)], playerChest, .6, 2, null, i*.03); Snd.hire(); floatText('+' + fmt(f.amt) + ' kr', f.x, 3, f.z, true); break; }
       case 'knock': { const q = LAY.mach[f.m]; burst(q[0]+rand(-.8,.8), 1.6, q[1]+rand(-.8,.8), [0xffe066,0xffffff], 5, 3, .7, .4, 4); Snd.knock(); stations[f.m].shake = .25; break; }
-      case 'fixed': { toast('Lagad!', `${MNAME[f.m]} går igen · +${fmt(f.amt)} kr`); Snd.hire(); const q = LAY.mach[f.m]; burst(q[0], 2.5, q[1], [0x8fe06f,0xffffff], 30, 4, 1, 1, 6); for(let i=0;i<10;i++) fly('coin', [q[0], 2.5, q[1]], playerChest, .5, 2, null, i*.04); break; }
+      case 'steam': { burst(LAY.vissla[0], 2.4, LAY.vissla[1], [0xffffff,0xe8eef2], 8, 2, 1, .8, 3, -.5); Snd.steam(); break; }
+      case 'fixed': {
+        const q = f.m==='anga' ? LAY.anga : LAY.mach[f.m];
+        if(f.who==='w'){ toast('Mekanikern lagade ' + MNAME[f.m].toLowerCase()); Snd.knock(); }
+        else { toast(f.m==='anga' ? 'Ångan släppt!' : 'Lagad!', `${f.m==='anga' ? 'Pannan är lugn' : MNAME[f.m] + ' går igen'} · +${fmt(f.amt)} kr`); Snd.hire(); for(let i=0;i<10;i++) fly('coin', [q[0], 2.5, q[1]], playerChest, .5, 2, null, i*.04); }
+        burst(q[0], 2.5, q[1], [0x8fe06f,0xffffff], 30, 4, 1, 1, 6); break;
+      }
+      case 'vissla': { Snd.whistle(); toast('Ångvisslan!', 'Alla maskiner går dubbelt så fort i 20 s'); for(let i=0;i<30;i++) burst(LAY.vissla[0], 2.6, LAY.vissla[1], [0xffffff,0xe8eef2], 1, 2.5, 1.3, 1.2, 4, -.5); break; }
+      case 'fire': if(Math.hypot(LAY.anga[0]-p.x, LAY.anga[1]-p.z) < 14) burst(LAY.anga[0]-1.4, 1, LAY.anga[1]+.8, [0xff8a3d,0xffc93c,0xe5484d], 8, 1.5, .8, .5, 2.5); break;
+      case 'thaw': toast(f.on ? 'Töväder!' : 'Kallt igen', f.on ? 'Isvägen bär inte just nu' : 'Isvägen bär igen'); break;
+      case 'veh': Snd.engine(); break;
       case 'ev': {
         if(f.on){
           if(f.kind==='storm'){ toast('Storm!', 'Träden blåser omkull. Samla stockarna!'); Snd.windOn(); }
           if(f.kind==='rush'){ toast('Rusningstimme!', 'Dubbelt pris i 60 sekunder'); Snd.rush(); }
           if(f.kind==='gold'){ toast('Ett guldträd!', 'Hugg det innan det försvinner'); Snd.sparkle(); }
-          if(f.kind==='jam'){ toast('Maskinstopp!', MNAME[G.ev.m] + ' ryker. Spring dit och knacka loss den'); Snd.alarm(); }
+          if(f.kind==='jam'){ toast('Maskinstopp!', MNAME[G.ev.m] + (lv(S,'mek') ? ' ryker. Mekanikern är på väg' : ' ryker. Spring dit och knacka loss den')); Snd.alarm(); }
+          if(f.kind==='panna'){ toast('Trycket stiger!', 'Spring till ångvisslan och släpp ut ångan'); Snd.alarm(); }
+          if(f.kind==='tappat'){ toast('Timmerbilen tappade lasset!', 'Stockar ligger vid vägen. Plocka dem'); Snd.thud(1); }
+          if(f.kind==='borre'){ toast('Barkborrar!', 'Fäll de bruna träden innan de smittar'); Snd.alarm(); }
           $('evb').classList.remove('pop'); void $('evb').offsetWidth; $('evb').classList.add('pop');
         } else if(f.kind==='storm') Snd.windOff();
         break;
@@ -1516,13 +1358,14 @@ function handleFx(){
       case 'order': {
         if(f.st==='new') Snd.horn();
         if(f.st==='ok'){ Snd.fanfare(); toast('Beställningen klar!', '+' + fmt(f.bonus) + ' kr i bonus'); const ox = LAY.dock[0]+6.6; for(let i=0;i<20;i++) fly('coin', [ox, 2, LAY.road-.9], playerChest, .6, 2.4, null, i*.03); orderFlash = 3; }
-        if(f.st==='miss'){ orderFlash = 3; toast('Lastbilen åkte', 'Nästa beställning kommer snart'); }
+        if(f.st==='miss'){ orderFlash = 3; toast(G.order && G.order.ship ? 'Fartyget lade ut' : 'Lastbilen åkte', 'Nästa beställning kommer snart'); }
         $('order').classList.remove('pop'); void $('order').offsetWidth; $('order').classList.add('pop');
         break;
       }
     }
   }
   G.fx.length = 0;
+  if(infoQueue.length && mode === 'play') showInfo(infoQueue.shift());
 }
 let orderFlash = 0;
 
@@ -1557,56 +1400,74 @@ function updateLabels(){
   hudT -= 1; if(hudT <= 0){ hudT = 20; const r = document.querySelector('.top').getBoundingClientRect(); hudBottom = $('hud').hidden ? 0 : r.bottom; }
   for(const L2 of LBL.values()) L2.used = false;
   if(mode === 'play' || mode === 'away'){
-    const ng = nextGoal(S);
-    for(const p of ECON.pads){
-      if(!padVisible(S,p)) continue;
-      if(p !== ng && Math.hypot(p.at[0]-G.p.x, p.at[1]-G.p.z) > 15 && S.money < padLeft(S,p)) continue;
-      const left = padLeft(S,p), on = G.p.pad === p, can = S.money >= left;
+    const ng = nextGoal(G), gp = goalPad();
+    for(const p of G.pads){
+      if(!padVisible(G,p)) continue;
+      if(p !== ng && p !== gp && p.kind !== 'epoch' && Math.hypot(p.at[0]-G.p.x, p.at[1]-G.p.z) > 15 && S.money < padLeft(G,p)) continue;
+      const left = padLeft(G,p), on = G.p.pad === p, can = S.money >= left;
       const n = padMax(p) > 1 ? ` <span style="opacity:.75">${lv(S,p.id)+1}/${padMax(p)}</span>` : '';
-      label('pad:'+p.id, p.at[0], 1.0, p.at[1], `<span class="pill">${p.name}${n} ${coinI}<span class="num">${fmt(Math.ceil(left))}</span></span>`, on ? 'pay' : can ? 'can' : '');
+      const nm = p.kind==='train' ? padName(G,p).replace('Utbilda ','') : padName(G,p);
+      label('pad:'+p.id, p.at[0], p.kind==='epoch' ? 1.6 : 1.0, p.at[1], `<span class="pill">${nm}${n} ${coinI}<span class="num">${fmt(Math.ceil(left))}</span></span>${p.kind==='epoch' ? '<span class="sub">Ny epok</span>' : ''}`, on ? 'pay' : can ? 'can' : '');
     }
     if(lv(S,'bark')) label('intake', LAY.intake[0], 2.3, LAY.intake[1], `<span class="sub">Inlastning ${S.q.intake}/${ECON.qcap.intake}</span>`, 'info');
-    for(const k of ['main','sack','furn']){ const n = pileN(S,k); if(n > 0) label('pile:'+k, LAY.pile[k][0], 1.6 + Math.min(4, n/12), LAY.pile[k][1], `<span class="pill">${n}</span>`, 'info'); }
+    for(const k of PILES){ const n = pileN(S,k); if(n > 0) label('pile:'+k, LAY.pile[k][0], 1.6 + Math.min(4, n/12), LAY.pile[k][1], `<span class="pill">${n}</span>`, 'info'); }
     label('dock', LAY.dock[0], 2.2, LAY.dock[1], `<span class="sub">Lastkaj${G.ev && G.ev.kind==='rush' ? ' · dubbelt pris' : ''}</span>`, G.ev && G.ev.kind==='rush' ? 'gold' : 'info');
+    label('kontor', LAY.kontor[0], kontorLv===2?7:kontorLv===1?5:3.6, LAY.kontor[1], `<span class="pill">Kontoret${B.kontrakt.offers.length && !B.kontrakt.active ? ' · nya kontrakt' : ''}</span>`, Math.hypot(G.p.x-LAY.kontor[0], G.p.z-LAY.kontor[1]) < 5 ? 'can' : 'info');
+    if(B.ep >= 2) label('vissla', LAY.vissla[0], 3, LAY.vissla[1], `<span class="pill">${G.ev && G.ev.kind==='panna' ? 'Släpp ångan!' : G.vissla > 0 ? 'Full fart! ' + Math.ceil(G.vissla) + ' s' : G.visslaCd > 0 ? 'Ångvissla · ' + Math.ceil(G.visslaCd) + ' s' : 'Ångvissla · ställ dig här'}</span>`, G.ev && G.ev.kind==='panna' ? 'warn' : G.vissla > 0 ? 'gold' : G.visslaCd > 0 ? 'info' : 'can');
     if(lv(S,'barare') && !lv(S,'chauffor')) label('kassa', LAY.kassa[0], 2.1, LAY.kassa[1], `<span class="pill">${kassaFull(G) ? 'Full kassa!' : 'Kassa'} ${coinI}<span class="num">${fmt(S.kassa)}</span></span>`, kassaFull(G) ? 'warn' : S.kassa >= 1 ? 'can' : 'info');
-    if(G.order && G.order.st==='open') label('order', LAY.dock[0]+6.2, 3.6, LAY.road-.9, `<span class="pill">${G.order.got}/${G.order.need} · ${Math.ceil(G.order.t)} s</span>`, 'pay');
+    if(G.order && G.order.st==='open') label('order', G.order.ship ? -14 : LAY.dock[0]+6.2, 3.6, G.order.ship ? LAY.road+8 : LAY.road-.9, `<span class="pill">${G.order.got}/${G.order.need} · ${Math.ceil(G.order.t)} s</span>`, 'pay');
     if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam){ const q = LAY.mach[G.ev.m]; label('jam', q[0], 4.6, q[1], `<span class="pill">Stopp! Knacka loss</span>`, 'warn'); }
     if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) label('gold', G.ev.tree.x, 5.4, G.ev.tree.z, `<span class="pill">Guldträd ${G.ev.tree.hits}/${ECON.events.gold.hits}</span>`, 'gold');
-    if(S.stack.length >= carryCap(S)) label('full', G.p.x, 2.2 + S.stack.length*.3*.85, G.p.z, `<span class="pill">FULLT</span>`, 'full');
+    if(G.ev && G.ev.kind==='borre') G.ev.trees.forEach((t,k) => { if(t.borre) label('borre'+k, t.x, 5, t.z, `<span class="pill">Barkborrar</span>`, 'warn'); });
+    if(G.thaw && iceMesh){ const a = G.def.areas.find(a=>a.ice); label('thaw', (a.ice[0]+a.ice[1])/2, 1.5, (a.ice[2]+a.ice[3])/2, `<span class="pill">Töväder: isen bär inte</span>`, 'warn'); }
+    if(S.stack.length >= carryCap(S)) label('full', G.p.x, 2.2 + Math.min(S.stack.length,24)*.3*.85, G.p.z, `<span class="pill">FULLT</span>`, 'full');
   }
   for(const L2 of LBL.values()) if(!L2.used && L2.el.style.display !== 'none') L2.el.style.display = 'none';
 }
-// tips längst ner och pil mot målet
-// Samma mål för målraden och tipset: närmaste ruta du har råd med, annars den billigaste.
-function goalPad(){ let aff = null, ad = 1e9; for(const pd of visiblePads(S)){ if(S.money >= padLeft(S,pd)){ const d = Math.hypot(pd.at[0]-G.p.x, pd.at[1]-G.p.z); if(d < ad){ ad = d; aff = pd; } } } return aff || nextGoal(S); }
-function nearestTreeTo(x, z){ let b = null, bd = 1e9; for(const t of G.trees){ if(t.st!=='grown' || !areaOpen(S,t.area)) continue; const d = Math.hypot(t.x-x, t.z-z); if(d < bd){ bd = d; b = t; } } return b; }
+// Samma mål för målraden och tipset: närmaste ruta du har råd med, annars den billigaste. Moderniseringen går först när den är redo.
+function goalPad(){
+  const vp = visiblePads(G), ep = vp.find(p => p.kind==='epoch');
+  if(ep && S.money >= padLeft(G,ep)) return ep;
+  let aff = null, ad = 1e9; for(const pd of vp){ if(S.money >= padLeft(G,pd)){ const d = Math.hypot(pd.at[0]-G.p.x, pd.at[1]-G.p.z); if(d < ad){ ad = d; aff = pd; } } }
+  if(aff) return aff;
+  if(ep && padLeft(G,ep) < (nextGoal(G) ? padLeft(G,nextGoal(G))*4 : 1e18)) return ep;
+  return nextGoal(G);
+}
+function nearestTreeTo(x, z){ let b = null, bd = 1e9; for(const t of G.trees){ if(t.st!=='grown' || !treeOk(G,t)) continue; const d = Math.hypot(t.x-x, t.z-z); if(d < bd){ bd = d; b = t; } } return b; }
+function contractHere(){ const c = B.kontrakt.active; return c && c.ort === S.i ? c : null; }
 function hintNow(){
   const p = G.p, cap = carryCap(S), st = S.stack, n = st.length, room = cap - n, bark = lv(S,'bark');
   const nLog = st.filter(t => t==='log').length, nSell = st.filter(t => sellable(S,t)).length;
-  if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam){ const q = LAY.mach[G.ev.m]; return {t:`<b>Maskinstopp!</b> Spring till ${MNAME[G.ev.m].toLowerCase()} och knacka loss den`, x:q[0], z:q[1], cls:'warn'}; }
-  if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) return {t:'<b>Guldträd!</b> Hugg det innan det försvinner', x:G.ev.tree.x, z:G.ev.tree.z, cls:'gold'};
-  if(G.ev && G.ev.kind==='storm' && G.ground.length && room > 0){ let b = G.ground[0], bd = 1e9; for(const g of G.ground){ const d = Math.hypot(g.x-p.x, g.z-p.z); if(d < bd){ bd = d; b = g; } } return {t:'<b>Storm!</b> Samla stockarna på marken', x:b.x, z:b.z}; }
-  if(p.pad){ const left = padLeft(S,p.pad); return {t: S.money > 0 ? `Stå kvar så swischas pengarna till <b>${p.pad.name.toLowerCase()}</b>` : `Du behöver ${fmt(Math.ceil(left))} kr till. Gå och tjäna mer`}; }
-  const gp = goalPad(), aff = gp && S.money >= padLeft(S,gp) ? gp : null;
-  const kfull = kassaFull(G);
-  if(kfull) return {t:'<b>Kassan är full!</b> Bärarna väntar. Hämta pengarna', x:LAY.kassa[0], z:LAY.kassa[1], cls:'warn'};
-  const o = G.order && G.order.st==='open' ? G.order : null;
-  if(o && st.includes(o.type)) return {t:`Bär ${NAME[o.type]} till <b>lastbilen</b> · ${o.got}/${o.need}`, x:LAY.dock[0]+3, z:LAY.dock[1]};
-  if(o && room > 0){ const pk = o.type==='sack' ? 'sack' : o.type==='furn' ? 'furn' : 'main'; if((S.pile[pk][o.type]||0) > 0) return {t:`Hämta ${NAME[o.type]} till lastbilens beställning`, x:LAY.pile[pk][0], z:LAY.pile[pk][1]}; }
-  if(aff && !(G.order && G.order.st==='open' && nSell)) return {t:`Ställ dig på rutan: <b>${aff.name}</b>`, x:aff.at[0], z:aff.at[1]};
+  if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam && !lv(S,'mek')){ const q = LAY.mach[G.ev.m]; return {t:`<b>Maskinstopp!</b> Spring till ${MNAME[G.ev.m].toLowerCase()} och knacka loss den`, x:q[0], z:q[1], cls:'warn'}; }
+  if(G.ev && G.ev.kind==='panna') return {t:'<b>Trycket stiger!</b> Ställ dig vid ångvisslan och släpp ut ångan', x:LAY.vissla[0], z:LAY.vissla[1], cls:'warn'};
+  if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) return {t:'<b>Guldträd!</b> Hugg det innan det försvinner' + (S.vehicle==='truck' ? ' (kliv ur trucken)' : ''), x:G.ev.tree.x, z:G.ev.tree.z, cls:'gold'};
+  if(G.ev && G.ev.kind==='borre'){ const t = G.ev.trees.find(t=>t.borre); if(t) return {t:'<b>Barkborrar!</b> Fäll de bruna träden' + (S.vehicle==='truck' ? ' (kliv ur trucken)' : ''), x:t.x, z:t.z, cls:'warn'}; }
+  if(G.ev && (G.ev.kind==='storm' || G.ev.kind==='tappat') && G.ground.length && room > 0){ let b = G.ground[0], bd = 1e9; for(const g of G.ground){ const d = Math.hypot(g.x-p.x, g.z-p.z); if(d < bd){ bd = d; b = g; } } return {t: G.ev.kind==='storm' ? '<b>Storm!</b> Samla stockarna på marken' : '<b>Tappat lass!</b> Plocka stockarna vid vägen', x:b.x, z:b.z}; }
+  if(p.pad && S.money >= 1) return {t:`Stå kvar så swischas pengarna till <b>${padName(G,p.pad).toLowerCase()}</b>`};
+  if(p.padLock){ const here = G.pads.find(q => q.at.join(',') === p.padLock && padVisible(G,q)); if(here && S.money >= padLeft(G,here)) return {t:`Stå kvar så fortsätter du med <b>${padName(G,here).toLowerCase()}</b>`}; }
+  const gp = goalPad(), aff = gp && S.money >= padLeft(G,gp) ? gp : null;
+  if(kassaFull(G)) return {t:'<b>Kassan är full!</b> Bärarna väntar. Hämta pengarna', x:LAY.kassa[0], z:LAY.kassa[1], cls:'warn'};
+  const o = G.order && G.order.st==='open' ? G.order : null, c = contractHere();
+  const dockT = o && o.ship ? 'fartyget' : 'lastbilen';
+  if(o && st.includes(o.type)) return {t:`Bär ${NAME[o.type]} till <b>lastkajen</b> för ${dockT} · ${o.got}/${o.need}`, x:LAY.dock[0]+3, z:LAY.dock[1]};
+  if(c){ const it = c.items.find(x => x.got < x.need && st.includes(x.type)); if(it) return {t:`Bär ${NAME[it.type]} till <b>lastkajen</b> för kontraktet · ${it.got}/${it.need}`, x:LAY.dock[0], z:LAY.dock[1]}; }
+  if(o && room > 0 && S.vehicle !== 'skord'){ const pk = TYPE_PILE[o.type]; if((S.pile[pk][o.type]||0) > 0) return {t:`Hämta ${NAME[o.type]} till ${dockT}s beställning`, x:LAY.pile[pk][0], z:LAY.pile[pk][1]}; }
+  if(c && room > 0 && S.vehicle !== 'skord'){ const it = c.items.find(x => x.got < x.need && (S.pile[TYPE_PILE[x.type]][x.type]||0) > 0); if(it){ const pk = TYPE_PILE[it.type]; return {t:`Hämta ${NAME[it.type]} till kontraktet för ${c.kund}`, x:LAY.pile[pk][0], z:LAY.pile[pk][1]}; } }
+  if(aff && !(G.order && G.order.st==='open' && nSell)) return {t:`Ställ dig på rutan: <b>${padName(G,aff)}</b>`, x:aff.at[0], z:aff.at[1], cls: aff.kind==='epoch' ? 'gold' : ''};
   if(!bark){
     if(n && (room === 0 || n >= 4)) return {t:'Bär stockarna till <b>lastkajen</b> och sälj dem', x:LAY.dock[0], z:LAY.dock[1]};
     const t = nearestTreeTo(p.x, p.z); return {t: n ? 'Hugg några till, sedan till lastkajen' : 'Gå fram till ett träd så hugger gubben', x:t && t.x, z:t && t.z};
   }
-  if(nSell && (room === 0 || !nLog)) return {t:`Sälj vid <b>lastkajen</b>${G.order && G.order.st==='open' ? ' · lastbilen väntar' : ''}`, x:LAY.dock[0], z:LAY.dock[1]};
+  if(nSell && (room === 0 || !nLog)) return {t:`Sälj vid <b>lastkajen</b>${o ? ' · ' + dockT + ' väntar' : ''}`, x:LAY.dock[0], z:LAY.dock[1]};
   if(nLog && (room === 0 || G.ground.length === 0 && n >= Math.min(cap, 5))) return {t:'Lämna stockarna vid <b>inlastningen</b>', x:LAY.intake[0], z:LAY.intake[1]};
-  const piles = pileN(S,'main') + pileN(S,'sack') + pileN(S,'furn');
-  if(room > 0 && piles >= 3 && (!lv(S,'barare') || piles > 20 || G.order && G.order.st==='open')){ let k = 'main'; for(const k2 of ['sack','furn']) if(pileN(S,k2) > pileN(S,k)) k = k2; return {t:'Hämta virket vid högen och sälj det', x:LAY.pile[k][0], z:LAY.pile[k][1]}; }
+  const piles = PILES.reduce((a,k)=>a+pileN(S,k),0);
+  if(room > 0 && S.vehicle !== 'skord' && piles >= 3 && (!lv(S,'barare') || piles > 20 || o)){ let k = 'main'; for(const k2 of PILES) if(pileN(S,k2) > pileN(S,k)) k = k2; return {t:'Hämta virket vid högen och sälj det', x:LAY.pile[k][0], z:LAY.pile[k][1]}; }
   if(S.kassa >= 1 && !lv(S,'chauffor')) return {t:'Hämta pengarna i <b>kassan</b>', x:LAY.kassa[0], z:LAY.kassa[1]};
   if(nLog && room === 0) return {t:'Lämna stockarna vid <b>inlastningen</b>', x:LAY.intake[0], z:LAY.intake[1]};
-  if(room > 0 && S.q.intake < ECON.qcap.intake - 4){ const t = nearestTreeTo(p.x, p.z); return {t: automated(S) ? 'Allt går av sig självt. Hugg gärna lite extra' : 'Hugg träd och bär stockar', x:t && t.x, z:t && t.z}; }
-  const ng = goalPad(); if(ng) return {t:`Spara till <b>${ng.name.toLowerCase()}</b>`, x:ng.at[0], z:ng.at[1]};
-  return {t:'Sågverket sköter sig självt'};
+  if(contractsOpen(G) && !B.kontrakt.active && B.kontrakt.offers.length && automated(S)) return {t:'Ta ett <b>kontrakt</b> på kontoret: knappen uppe till höger', x:LAY.kontor[0]+2.5, z:LAY.kontor[1]};
+  if(room > 0 && S.q.intake < ECON.qcap.intake - 4 && S.vehicle !== 'truck'){ const t = nearestTreeTo(p.x, p.z); return {t: automated(S) ? 'Allt går av sig självt. Hugg gärna lite extra' : 'Hugg träd och bär stockar', x:t && t.x, z:t && t.z}; }
+  const ng = goalPad(); if(ng) return {t:`Spara till <b>${padName(G,ng).toLowerCase()}</b>`, x:ng.at[0], z:ng.at[1]};
+  return {t:'Verket sköter sig självt. Se målen överst'};
 }
 const arrow = new THREE.Mesh(merge([part(Cone(.55,.9,12),0xffffff,0,0,0,Math.PI,0,0), part(Cyl(.2,.2,.8,10),0xffffff,0,.8,0)]), new THREE.MeshLambertMaterial({color:0xffc93c, emissive:0x664400})); world.add(arrow);
 let hintCache = null, hintT = 0, lastHint = '';
@@ -1625,27 +1486,51 @@ function updateHint(dt, time){
   else {
     const [px,py] = project(G.p.x, 1, G.p.z);
     let dx = sx - px, dy = sy - py; if(sz >= 1){ dx = -dx; dy = -dy; }
-    const ang = Math.atan2(dy, dx), cx = innerWidth/2, cy = innerHeight/2;
+    const ang = Math.atan2(dy, dx), cx = innerWidth/2;
     const rx = innerWidth/2 - 34, ry = Math.max(40, (innerHeight - hudBottom - 70)/2 - 20), t = Math.min(rx/Math.abs(Math.cos(ang)||1e-6), ry/Math.abs(Math.sin(ang)||1e-6));
     edge.hidden = false; edge.className = h.cls || ''; edge.style.transform = `translate(${cx + Math.cos(ang)*t}px,${(hudBottom + innerHeight - 70)/2 + Math.sin(ang)*t}px) rotate(${ang}rad)`;
   }
 }
 const ui = { money:$('money'), rate:$('rate').querySelector('b'), last:{} };
 function setTxt(id, v){ if(ui.last[id] !== v){ ui.last[id] = v; $(id).textContent = v; } }
+function setHtml(id, v){ if(ui.last[id] !== v){ ui.last[id] = v; $(id).innerHTML = v; } }
+const lc = s => s ? s[0].toLowerCase() + s.slice(1) : '';
+const mmss = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+function kravSum(k){ const [h,n] = kravVal(G,k); return k.k==='earnedAll' || k.k==='earned' ? `${fmt(Math.min(h,n))}/${fmt(n)} kr` : `${Math.min(h,n)}/${n}`; }
+// Målkortet: titel, epok, ort och kontrakt. Tonat, huvudmålet står i raden ovanför.
+function malRows(){
+  const nx = stegDef(B.steg+1), cur = stegDef(B.steg);
+  const r1 = `🏅 <b>${cur.t}</b> → ${nx.t}: ${lc(kravTxt(G,nx.k))}`;
+  const ne = EPOKER[B.ep];
+  let r2;
+  if(!ne) r2 = `🏭 Epok: <b>${EP(B).namn}</b>`;
+  else if(ne.kommer) r2 = `🏭 Nästa epok: <b>${ne.namn}</b> · kommer i en senare version`;
+  else { const done = ne.krav.filter(k => kravOk(G,k)).length; r2 = done === ne.krav.length ? `🏭 <b>${ne.namn}</b> är redo: modernisera vid kontoret` : `🏭 Nästa epok: <b>${ne.namn}</b> · ${done}/${ne.krav.length} krav · ${lc(kravTxt(G, ne.krav.find(k => !kravOk(G,k))))}`; }
+  const done = G.def.mal.filter((k,i) => S.mal[i]).length, nOrt = ortDef(S.i+1);
+  const r3 = S.master ? (B.orter.length < ortMax(B) ? `🗺️ <b>${nOrt.namn}</b> är öppen: res dit från kartan` : `🗺️ Mästarbrev i ${G.def.namn} ✓ · nästa ort: ${ortDef(ortMax(B)-1).namn}`) : `🗺️ Nästa ort: <b>${nOrt.namn}</b> · mästarbrev ${done}/5 · ${lc(kravTxt(G, G.def.mal.find((k,i)=>!S.mal[i])))}`;
+  const c = B.kontrakt.active;
+  let r4 = '';
+  if(c) r4 = `📜 Kontrakt: ${c.items.map(x=>`${x.got}/${x.need} ${NAME[x.type]}`).join(', ')} · ${mmss(c.t)}${c.ort !== S.i ? ' (i ' + ortDef(c.ort).namn + ')' : ''}`;
+  else if(contractsOpen(G)) r4 = B.kontrakt.offers.length ? '📜 Kontrakt: <b>3 att välja på</b> vid kontoret' : `📜 Nya kontrakt om ${Math.ceil(B.kontrakt.wait)} s`;
+  else r4 = '📜 Kontrakt: öppnas när du har anställt en bärare';
+  return [r1, r2, r3, r4, !!c, ne && !ne.kommer && ne.krav.every(k => kravOk(G,k)), S.master && B.orter.length < ortMax(B)];
+}
 function updateHud(dt){
   setTxt('money', fmt(Math.floor(S.money)));
-  const r = fmt(G.autoEMA*60); if(ui.last.rate !== r){ ui.last.rate = r; ui.rate.textContent = r; } $('rate').hidden = !(lv(S,'barare') || lv(S,'chauffor'));
+  const kr = koncRate(B), r = fmt((G.autoEMA + kr)*60); if(ui.last.rate !== r){ ui.last.rate = r; ui.rate.textContent = r; } $('rate').hidden = !(lv(S,'barare') || kr > 0);
   if(coinPulse > 0){ coinPulse -= dt; $('cash').classList.add('bump'); } else $('cash').classList.remove('bump');
   const cap = carryCap(S); setTxt('carryN', `${S.stack.length}/${cap}`); $('carry').classList.toggle('full', S.stack.length >= cap);
   const ng = goalPad();
-  if(ng){ const left = padLeft(S,ng), can = S.money >= left; setTxt('gName', (can ? 'Råd med: ' : 'Nästa: ') + ng.name); setTxt('gCost', fmt(Math.ceil(left)) + ' kr'); $('gBar').style.width = Math.min(100, S.money/Math.max(1,left)*100).toFixed(1) + '%'; $('goal').classList.toggle('can', can); $('goal').hidden = false; }
-  else if(seedsFor(S) > 0){ setTxt('gName', 'Ny skog är redo (menyn)'); setTxt('gCost', ''); $('gBar').style.width = '100%'; $('goal').classList.add('can'); }
-  else { setTxt('gName', automated(S) ? 'Mot Ny skog' : 'Allt är köpt'); const P2 = ECON.prestige; setTxt('gCost', fmt(S.earnedRun) + ' / ' + fmt(P2.min)); $('gBar').style.width = Math.min(100, S.earnedRun/P2.min*100).toFixed(1) + '%'; $('goal').classList.remove('can'); }
+  if(ng){ const left = padLeft(G,ng), can = S.money >= left; setTxt('gName', (can ? 'Råd med: ' : 'Nästa: ') + padName(G,ng)); setTxt('gCost', fmt(Math.ceil(left)) + ' kr'); setTxt('gWhy', 'Varför: ' + padWhy(G,ng)); $('gBar').style.width = Math.min(100, S.money/Math.max(1,left)*100).toFixed(1) + '%'; $('goal').classList.toggle('can', can); }
+  else { const ne = EPOKER[B.ep]; setTxt('gName', ne && !ne.kommer ? 'Mot nästa epok: ' + ne.namn : 'Allt är köpt i ' + G.def.namn); setTxt('gCost', ''); setTxt('gWhy', ne && !ne.kommer ? 'Kvar: ' + lc(kravTxt(G, ne.krav.find(k=>!kravOk(G,k)) || ne.krav[0])) + '. Ger nya maskiner och mer betalt' : 'Se målen nedan: nästa ort och kontrakten'); $('gBar').style.width = '0%'; $('goal').classList.remove('can'); }
+  const [r1,r2,r3,r4,cOn,eOn,oOn] = malRows();
+  setHtml('m1', r1); setHtml('m2', r2); setHtml('m3', r3); setHtml('m4', r4);
+  $('m2').className = eOn ? 'hot' : ''; $('m3').className = oOn ? 'hot' : ''; $('m4').className = cOn ? 'hot' : '';
   // händelse
   const ev = G.ev, evb = $('evb');
   if(ev){
-    evb.hidden = false; evb.className = 'card' + (ev.kind==='storm' ? ' storm' : ev.kind==='jam' ? ' jam' : '') + (evb.classList.contains('pop') ? ' pop' : '');
-    const T = { storm:'Storm! Samla stockarna', rush:'Rusningstimme · dubbelt pris', gold:'Guldträd i skogen!', jam:'Maskinstopp: ' + (ev.m ? MNAME[ev.m] : '') };
+    evb.hidden = false; evb.className = 'card' + (ev.kind==='storm' ? ' storm' : ev.kind==='jam' || ev.kind==='panna' || ev.kind==='borre' ? ' jam' : '') + (evb.classList.contains('pop') ? ' pop' : '');
+    const T = { storm:'Storm! Samla stockarna', rush:'Rusningstimme · dubbelt pris', gold:'Guldträd i skogen!', jam:'Maskinstopp: ' + (ev.m ? MNAME[ev.m] : ''), panna:'Trycket stiger i pannan!', tappat:'Tappat lass vid vägen', borre:'Barkborrar: fäll de bruna träden' };
     setTxt('evT', T[ev.kind]); setTxt('evS', Math.ceil(ev.t) + ' s'); $('evBar').style.width = (ev.t/ev.T*100).toFixed(1) + '%';
   } else evb.hidden = true;
   // beställning
@@ -1654,13 +1539,17 @@ function updateHud(dt){
   if(o && (o.st !== 'leave' || orderFlash > 0)){
     oc.hidden = false;
     const base = 'card' + (oc.classList.contains('pop') ? ' pop' : '');
-    if(o.st==='leave'){ oc.className = base + (o.ok ? ' ok' : ' miss'); setTxt('oT', o.ok ? 'Beställningen klar!' : 'Lastbilen åkte. Nästa kommer snart'); setTxt('oS', o.ok ? '+' + fmt(o.bonus) + ' kr' : ''); $('oBar').style.width = o.ok ? '100%' : '0%'; }
-    else { oc.className = base; setTxt('oT', o.st==='arrive' ? 'En lastbil kommer…' : `Bär själv: ${o.need} ${NAME[o.type]}`); setTxt('oS', o.st==='open' ? `${o.got}/${o.need} · ${Math.ceil(o.t)} s` : ''); $('oBar').style.width = (o.st==='open' ? o.t/o.T*100 : 100).toFixed(1) + '%'; }
+    if(o.st==='leave'){ oc.className = base + (o.ok ? ' ok' : ' miss'); setTxt('oT', o.ok ? 'Beställningen klar!' : (o.ship ? 'Fartyget lade ut' : 'Lastbilen åkte') + '. Nästa kommer snart'); setTxt('oS', o.ok ? '+' + fmt(o.bonus) + ' kr' : ''); $('oBar').style.width = o.ok ? '100%' : '0%'; }
+    else { oc.className = base; setTxt('oT', o.st==='arrive' ? (o.ship ? 'Ett fartyg lägger till…' : 'En lastbil kommer…') : `${o.ship ? 'Fartyg' : 'Bär själv'}: ${o.need} ${NAME[o.type]}`); setTxt('oS', o.st==='open' ? `${o.got}/${o.need} · ${Math.ceil(o.t)} s` : ''); $('oBar').style.width = (o.st==='open' ? o.t/o.T*100 : 100).toFixed(1) + '%'; }
   } else oc.hidden = true;
   if(saleSum > 0){ saleT -= dt; if(saleT <= 0){ floatText('+' + fmt(saleSum) + ' kr', LAY.dock[0], 2.4, LAY.dock[1]); saleSum = 0; saleT = .5; } }
+  // fordon och kontoret
+  const vs = vehicles(S); $('vehBtn').hidden = vs.length < 2 || mode !== 'play';
+  if(vs.length >= 2) setTxt('vehBtn', { fot:'🚶 Till fots', truck:'🚜 Gaffeltruck', skord:'🌲 Skördare' }[S.vehicle||'fot'] + ' · byt');
+  $('officeNear').hidden = mode !== 'play' || Math.hypot(G.p.x-LAY.kontor[0], G.p.z-LAY.kontor[1]) > 5;
 }
 
-/* ================= Storm, ljus ================= */
+/* ================= Väder, ljus ================= */
 let stormK = 0;
 function updateWeather(dt, time){
   const storm = G.ev && G.ev.kind==='storm';
@@ -1670,21 +1559,39 @@ function updateWeather(dt, time){
   rainIM.count = stormK > .05 ? Math.round(RAIN*stormK) : 0;
   for(let i=0;i<rainIM.count;i++){ const r = rain[i]; r.y -= dt*22; r.x -= dt*4; if(r.y < 0){ r.y = 14 + rand(0,4); r.x = rand(-16,18); r.z = rand(-16,16); } _m4.compose(_v.set(cam.x + r.x, r.y, cam.z + r.z), _q.setFromEuler(_e.set(0,0,.2)), _one); rainIM.setMatrixAt(i,_m4); }
   rainIM.instanceMatrix.needsUpdate = true;
+  snowIM.count = curTerr.snow ? SNOW : 0;
+  for(let i=0;i<snowIM.count;i++){ const r = snow[i]; r.y -= dt*1.6; r.p += dt; if(r.y < 0){ r.y = 14 + rand(0,4); r.x = rand(-18,18); r.z = rand(-18,18); } _m4.compose(_v.set(cam.x + r.x + Math.sin(r.p)*.4, r.y, cam.z + r.z), _q.setFromEuler(_e.set(r.p,r.p,0)), _one); snowIM.setMatrixAt(i,_m4); }
+  snowIM.instanceMatrix.needsUpdate = true;
   waterTex.offset.x = time*.02; waterTex.offset.y = Math.sin(time*.3)*.02;
-  $('flash').classList.toggle('on', !!(G.ev && G.ev.kind==='rush'));
+  if(iceMesh) iceMesh.material.color.setHex(G.thaw ? 0x6fb3d9 : 0xdff1fb);
+  $('flash').classList.toggle('on', !!(G.ev && G.ev.kind==='rush') || G.vissla > 0);
 }
 
 /* ================= Skärmar ================= */
 let mode = 'menu';
-const SCREENS = ['start','bonusScr','awayScr','menuScr','prestScr','resetScr'];
+const SCREENS = ['start','bonusScr','awayScr','menuScr','officeScr','infoScr'];
 function show(id){ SCREENS.forEach(s => $(s).hidden = s!==id); }
-function closeScreens(){ show(null); mode = 'play'; }
+function closeScreens(){ show(null); mode = 'play'; if(infoQueue.length) showInfo(infoQueue.shift()); }
+function showInfo(it){
+  $('infoH').textContent = it.h; $('infoB').innerHTML = it.body;
+  const bx = $('infoBtns'); bx.innerHTML = '';
+  for(const [txt, cls, fn] of it.btns){ const b = document.createElement('button'); b.className = 'btn ' + cls; b.textContent = txt; b.onclick = () => { Snd.click(); show(null); mode = 'play'; if(fn) fn(); else if(infoQueue.length) showInfo(infoQueue.shift()); }; bx.appendChild(b); }
+  show('infoScr'); mode = 'menu2';
+}
 let pendingAway = 0;
 function startPlay(){
   Snd.init(); setMute(meta.mute);
   show(null); $('hud').hidden = false; meta.started = true; cam.orbit = 0;
+  if(loadedFrom === 'v2' && !meta.v3seen && Object.keys(S.lv).length){
+    meta.v3seen = true; evalGoals(G); G.fx = G.fx.filter(f => f.k !== 'mal');
+    $('bonusH').textContent = 'Sågverket blir ett bolag';
+    $('bonusP1').innerHTML = `Ditt sågverk finns kvar i <b>Gläntan</b>: pengar, maskiner, medhjälpare och områden.`;
+    $('bonusP2').innerHTML = `Nu börjar du aldrig om. Bolaget växer i stället: <b>modernisera</b> verket genom epokerna, öppna <b>nya orter</b> och anställ fler. Ny skog finns inte längre. Dina frön är kvar, plus frön för titlarna du redan har nått:`;
+    $('bonusAmt').textContent = `${B.seeds} frön · +${Math.round(B.seeds*ECON.fro*100)} % pris`;
+    show('bonusScr'); mode = 'menu2'; persist(); return;
+  }
   const b = meta.v1done ? 0 : v1Bonus();
-  if(!meta.v1done){ meta.v1done = true; if(b > 0){ S.money += b; $('bonusAmt').textContent = '+' + fmt(b) + ' kr'; show('bonusScr'); mode = 'menu2'; persist(); return; } }
+  if(!meta.v1done){ meta.v1done = true; meta.v3seen = true; if(b > 0){ S.money += b; $('bonusP2').textContent = 'Tack för ditt gamla sågverk. Här är en startbonus:'; $('bonusAmt').textContent = '+' + fmt(b) + ' kr'; show('bonusScr'); mode = 'menu2'; persist(); return; } }
   persist();
   afterStart();
 }
@@ -1693,60 +1600,107 @@ function afterStart(){
   mode = 'play';
 }
 $('playBtn').onclick = startPlay;
-$('bonusOk').onclick = () => { Snd.cash(); show(null); floatText('+' + $('bonusAmt').textContent.slice(1), G.p.x, 2.5, G.p.z, true); afterStart(); };
+$('bonusOk').onclick = () => { Snd.cash(); show(null); if($('bonusAmt').textContent.startsWith('+')) floatText($('bonusAmt').textContent, G.p.x, 2.5, G.p.z, true); afterStart(); };
 function fmtDur(sec){ const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60); return h ? `${h} h ${m} min` : m ? `${m} min` : `${Math.round(sec)} s`; }
 let awayInfo = null;
 function showAway(amt){
-  $('awayTxt').textContent = `Du var borta i ${fmtDur(awayInfo || 0)}${(awayInfo||0) > ECON.offlineCapH*3600 ? ' (8 h räknas)' : ''}. Medhjälparna jobbade under tiden.`;
+  $('awayTxt').textContent = `Du var borta i ${fmtDur(awayInfo || 0)}${(awayInfo||0) > ECON.offlineCapH*3600 ? ' (8 h räknas)' : ''}. Medhjälparna och koncernen jobbade under tiden.`;
   $('awayAmt').textContent = '+' + fmt(amt) + ' kr';
-  $('awayWhere').textContent = lv(S,'chauffor') ? 'Chauffören har redan satt in pengarna.' : 'Pengarna ligger i kassan vid lastkajen.';
+  $('awayWhere').textContent = lv(S,'chauffor') ? 'Pengarna är redan insatta.' : 'Det mesta ligger i kassan vid lastkajen.';
   show('awayScr'); mode = 'away';
 }
 $('awayOk').onclick = () => { Snd.cash(); closeScreens(); };
 $('menuBtn').onclick = () => { Snd.click(); openMenu(); };
-function openMenu(){ $('stRun').textContent = fmt(S.earnedRun) + ' kr'; $('stAll').textContent = fmt(meta.earnedAll + S.earnedRun) + ' kr'; $('stSold').textContent = fmt(S.sold); $('stOrd').textContent = fmt(S.orders); $('stSeeds').textContent = `${S.seeds} (×${fmtMult(valueMult(S))})`; show('menuScr'); mode = 'menu2'; }
+function openMenu(){ $('stRun').textContent = fmt(S.earnedRun) + ' kr'; $('stAll').textContent = fmt(B.earnedAll) + ' kr'; $('stSold').textContent = fmt(S.sold); $('stOrd').textContent = fmt(S.orders); $('stSeeds').textContent = `${B.seeds} (×${fmtMult(1 + B.seeds*ECON.fro)})`; $('stTitle').textContent = stegDef(B.steg).t; show('menuScr'); mode = 'menu2'; }
 $('menuClose').onclick = () => { Snd.click(); closeScreens(); };
 $('menuSnd').onclick = () => { setMute(!meta.mute); Snd.click(); };
-$('sndBtn').onclick = () => { setMute(!meta.mute); Snd.click(); };
-$('menuReset').onclick = () => { Snd.click(); show('resetScr'); };
-$('resetNo').onclick = () => { Snd.click(); openMenu(); };
-$('resetYes').onclick = () => { meta = {earnedAll:0, mute:meta.mute, t:Date.now(), started:true, v1done:true}; newRun(0); closeScreens(); persist(); };
 function fmtMult(m){ return m.toFixed(2).replace('.', ','); }
-$('menuPrest').onclick = () => { Snd.click(); openPrest(); };
-function openPrest(){
-  const seeds = seedsFor(S), P2 = ECON.prestige;
-  $('prRun').textContent = fmt(S.earnedRun) + ' kr';
-  $('prSeeds').textContent = '+' + seeds;
-  $('prMult').textContent = `×${fmtMult(valueMult(S))} → ×${fmtMult(1 + (S.seeds+seeds)*P2.per)}`;
-  $('prLock').hidden = seeds > 0;
-  $('prLockT').textContent = automated(S) ? `Låses upp när du tjänat ${fmt(P2.min)} kr i den här omgången.` : `Låses upp när sågverket är helt automatiserat (chaufför anställd) och du tjänat ${fmt(P2.min)} kr.`;
-  $('prBar').style.width = Math.min(100, S.earnedRun/P2.min*100) + '%';
-  $('prGo').disabled = seeds <= 0; $('prGo').dataset.arm = ''; $('prGo').textContent = 'Sälj och plantera';
-  show('prestScr'); mode = 'menu2';
+$('vehBtn').onclick = () => { const vs = vehicles(S), i = vs.indexOf(S.vehicle||'fot'); for(let k=1;k<=vs.length;k++){ if(setVehicle(G, vs[(i+k)%vs.length])) break; } if(S.stack.length > ECON.carry[Math.min(ECON.carry.length-1, lv(S,'pack'))]) toast('Lasta av först', 'Det du bär får inte plats'); Snd.click(); };
+$('officeBtn').onclick = () => { Snd.click(); openOffice(); };
+$('officeNear').onclick = () => { Snd.click(); openOffice(); };
+$('mal').onclick = () => { Snd.click(); openOffice(); };
+
+/* ---------- Kontoret: mål, karta, kontrakt, personal, stegen ---------- */
+let offTab = 'mal';
+function openOffice(tab){ if(tab) offTab = tab; renderOffice(); show('officeScr'); mode = 'menu2'; }
+$('offClose').onclick = () => { Snd.click(); closeScreens(); };
+$('offTabs').onclick = e => { const t = e.target.closest('button'); if(!t) return; offTab = t.dataset.t; Snd.click(); renderOffice(); };
+const chk = ok => ok ? '<span class="ok">✓</span>' : '<span class="no">○</span>';
+function renderOffice(){
+  document.querySelectorAll('#offTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === offTab));
+  $('offH').textContent = offTab==='karta' ? 'Karta över bolaget' : offTab==='kontrakt' ? 'Kontraktstavlan' : offTab==='personal' ? 'Personalliggaren' : offTab==='stege' ? 'Bolagsstegen' : `Kontoret i ${G.def.namn}`;
+  let h = '';
+  if(offTab === 'mal'){
+    const E = EP(B), ne = EPOKER[B.ep];
+    h += `<div class="orow cur"><div class="h"><b>Epok ${E.n}: ${E.namn} (${E.ar})</b><span class="tag">nu</span></div><small>${E.nytt}</small></div>`;
+    if(ne){
+      if(ne.kommer) h += `<div class="orow dim"><div class="h"><b>Epok ${ne.n}: ${ne.namn} (${ne.ar})</b><span class="tag soon">Kommer</span></div><small>${ne.nytt}. Byggs i en senare version.</small></div>`;
+      else { const ok = ne.krav.every(k=>kravOk(G,k)); h += `<div class="orow"><div class="h"><b>Nästa epok: ${ne.namn} (${ne.ar})</b><span class="tag">${fmt(ne.kost)} kr</span></div><small>Ger: ${ne.nytt.toLowerCase()}, ny maskin (${(ECON.pads.find(x=>x.id===ne.maskin)||{}).name}), nya yrken (${ne.yrken.map(r=>YRKEN[r].namn.toLowerCase()).join(', ')}) och ${ne.gubbe.toLowerCase()}.</small>${ne.krav.map(k=>`<span>${chk(kravOk(G,k))} ${kravTxt(G,k)} <small>${kravSum(k)}</small></span>`).join('')}<small>${ok ? '<b class="ok">Redo!</b> Betala på den lila rutan Modernisera vid kontoret.' : 'När kraven är klara dyker rutan Modernisera upp vid kontoret.'}</small></div>`; }
+    }
+    h += `<div class="orow"><div class="h"><b>Mästarbrev i ${G.def.namn}</b><span class="tag">${G.def.mal.filter((k,i)=>S.mal[i]).length}/5</span></div><small>${G.def.vandning}. Klara alla fem mål så öppnas ${ortDef(S.i+1).namn}.</small>${G.def.mal.map((k,i)=>`<span>${chk(S.mal[i])} ${kravTxt(G,k)} ${S.mal[i] ? '' : '<small>' + kravSum(k) + '</small>'}</span>`).join('')}</div>`;
+    h += `<div class="orow"><div class="h"><b>Alla epoker</b></div>${EPOKER.map(e=>`<span>${e.n <= B.ep ? '<span class="ok">✓</span>' : e.kommer ? '<span class="tag soon">Kommer</span>' : '○'} ${e.n}. ${e.namn} (${e.ar})</span>`).join('')}</div>`;
+  } else if(offTab === 'karta'){
+    const mx = ortMax(B);
+    h += `<div class="map"><div class="land"></div>`;
+    for(let i=0;i<Math.min(mx+1, 12);i++){ const d = ortDef(i), cur = i===B.ort, lock = i >= mx; h += `<div class="pin${cur?' cur':''}${lock?' lock':''}" style="left:${d.kart[0]}%;top:${d.kart[1]}%"><i>${lock?'🔒':cur?'📍':'🏭'}</i><span>${lock ? '?' : d.namn}</span></div>`; }
+    h += `</div>`;
+    for(let i=0;i<Math.min(mx+1, 40);i++){
+      const d = ortDef(i), o = B.orter[i], cur = i===B.ort, lock = i >= mx;
+      const st = lock ? `<small>Öppnas med mästarbrev i ${ortDef(i-1).namn}</small>` : o ? `<small>${o.master ? 'Mästarbrev ✓' : 'Mästarbrev ' + (o.mal||[]).filter(Boolean).length + '/5'} · ${automatedO(o) ? 'går av sig själv' : 'inte automatiserad'} · ${cur ? fmt(G.autoEMA*60) + ' kr/min av sig själv här' : o.lv.chauffor ? 'koncernintäkt ' + fmt((o.konc||0)*60*EP(B).pris/((EPOKER[(o.kEp||1)-1]||EPOKER[0]).pris)) + ' kr/min' : 'ingen koncernintäkt utan chaufför'}</small>` : `<small>Ny ort. Byggs från grunden med tekniken du har. Priser ×${fmt(d.cm)}.</small>`;
+      const btn = cur ? '<span class="tag">Du är här</span>' : lock ? '<span class="tag">Låst</span>' : `<button class="btn buy" data-go="${i}">${o ? 'Res hit' : 'Res dit'}</button>`;
+      h += `<div class="orow${cur?' cur':''}${lock?' dim':''}"><div class="h"><b>${i+1}. ${lock ? 'Okänd ort' : d.namn}</b>${btn}</div>${lock ? '' : `<small>${TERR_NAMN[d.terr]} · ${d.vandning}</small>`}${st}</div>`;
+    }
+    h += `<small style="text-align:center;color:var(--muted)">Orter du lämnar fortsätter av sig själva. Efter de handgjorda orterna kommer Nya marker som aldrig tar slut.</small>`;
+  } else if(offTab === 'kontrakt'){
+    const K = B.kontrakt;
+    if(!contractsOpen(G)) h += `<div class="orow"><b>Tavlan är tom än så länge</b><small>Kontrakten kommer när du har anställt en bärare.</small></div>`;
+    else if(K.active){ const c = K.active; h += `<div class="orow cur"><div class="h"><b>${c.kund}</b><span class="tag">${mmss(c.t)}</span></div>${c.items.map(x=>`<span>${chk(x.got>=x.need)} ${x.got}/${x.need} ${NAME[x.type]}</span>`).join('')}<small>Belöning: ${fmt(c.reward)} kr${c.fro ? ' och 1 frö' : ''}. Bär varorna själv till lastkajen${c.ort!==S.i ? ' i ' + ortDef(c.ort).namn : ''}.</small></div>`; }
+    else if(K.offers.length){ h += `<small style="text-align:center;color:var(--muted)">Välj ett kontrakt. Bara det du själv bär till lastkajen räknas.</small>`; K.offers.forEach((c,i) => { h += `<div class="orow"><div class="h"><b>${c.kund}</b><button class="btn buy" data-take="${i}">Ta</button></div>${c.items.map(x=>`<span>${x.need} ${NAME[x.type]}</span>`).join('')}<small>Tid: ${mmss(c.T)} · belöning: <b>${fmt(c.reward)} kr</b>${c.fro ? ' och <b>1 frö</b>' : ''}</small></div>`; }); }
+    else h += `<div class="orow"><b>Nya kontrakt kommer om ${Math.ceil(K.wait)} s</b></div>`;
+  } else if(offTab === 'personal'){
+    const tot = B.orter.reduce((a,o)=>a+o.staff.length,0);
+    h += `<small style="text-align:center;color:var(--muted)">${tot} anställda i bolaget. Utbildning på rutan Utbildning vid personalboden: nivå 1 till 5.</small>`;
+    B.orter.forEach((o,i) => {
+      if(!o.staff.length) return;
+      const capTxt = i===B.ort ? ` · plats ${staffN(S)}/${staffCap(S)}` : '';
+      h += `<div class="orow${i===B.ort?' cur':''}"><div class="h"><b>${ortDef(i).namn}</b><span class="tag">${o.staff.length} anställda${capTxt}</span></div>`;
+      for(const p of o.staff){ const l = 1 + (o.lv['utb_'+p.r]||0); h += `<span>${p.n} · ${YRKEN[p.r].namn} <span class="stars">${'★'.repeat(l)}${'☆'.repeat(5-l)}</span></span>`; }
+      h += `</div>`;
+    });
+    h += `<div class="orow"><b>Yrken</b>${Object.entries(YRKEN).map(([r,y])=>`<small>${roleN(S,r) ? '✓' : '○'} <b>${y.namn}</b>: ${y.gor}.</small>`).join('')}<small>Fler yrken i epok 5 och 6: tekniker, analytiker, robotskötare och arkitekt (kommer).</small></div>`;
+  } else if(offTab === 'stege'){
+    h += `<small style="text-align:center;color:var(--muted)">Varje steg ger frön. Varje frö gör att allt säljs ${Math.round(ECON.fro*100)} % dyrare, för alltid. Du har ${B.seeds} frön.</small>`;
+    for(let i=0;i<=B.steg+3;i++){ const d = stegDef(i); h += `<div class="orow${i===B.steg?' cur':''}${i>B.steg+1?' dim':''}"><div class="h"><b>${i<=B.steg ? '✓ ' : ''}${d.t}</b>${d.fro ? `<span class="tag">+${d.fro} frö${d.fro>1?'n':''}</span>` : ''}</div>${d.k ? `<small>${kravTxt(G,d.k)}${i>B.steg ? ' · ' + kravSum(d.k) : ''}</small>` : '<small>Där allt börjar</small>'}</div>`; }
+  }
+  $('offBody').innerHTML = h;
+  $('offBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { Snd.click(); travelTo(+b.dataset.go); });
+  $('offBody').querySelectorAll('[data-take]').forEach(b => b.onclick = () => { if(takeContract(G, +b.dataset.take)){ handleFx(); renderOffice(); } });
 }
-$('prGo').onclick = () => {
-  const seeds = seedsFor(S); if(seeds <= 0) return;
-  if(!$('prGo').dataset.arm){ $('prGo').dataset.arm = '1'; $('prGo').textContent = 'Säker? Tryck igen'; Snd.click(); return; }
-  meta.earnedAll += S.earnedRun;
-  newRun(S.seeds + seeds); closeScreens();
-  Snd.build(); toast('Ny skog planterad', `Allt säljs ×${fmtMult(valueMult(S))} för alltid`);
+// Resa: orten man lämnar sparas som den är och fortsätter som koncernintäkt
+function travelTo(i){
+  if(!canTravel(B, i)) return;
   persist();
-};
-$('prBack').onclick = () => { Snd.click(); openMenu(); };
-function newRun(seeds){
   Snd.windOff();
-  S = newSave(seeds); G = makeGame(S); G.trees.forEach((t,i)=>treeIdx.set(t,i));
+  travel(B, i); G = makeGame(B); S = G.S;
   moving.length = 0; flights.length = 0; floaters.length = 0; incoming = 0; dockTruck.n = 0;
   for(const f of workerFigs) world.remove(f.g); workerFigs.length = 0;
-  syncWorld();
+  for(const m of borreM) ortG && ortG.remove(m); borreM = [];
+  for(const m of MACHS){ const st = stations[m]; if(st.built){ st.root.remove(st.built.g); st.built = null; st.tier = -1; st.ep = 0; } }
+  kontorLv = -1;
+  buildOrt(); syncWorld();
+  cam.x = G.p.x; cam.z = G.p.z;
+  closeScreens(); persist();
+  toast('Välkommen till ' + G.def.namn, G.def.vandning);
 }
+
 document.addEventListener('visibilitychange', () => {
   if(document.hidden){ persist(); hiddenAt = Date.now(); keys.clear(); }
-  else if(hiddenAt){ const away = (Date.now()-hiddenAt)/1000; hiddenAt = 0; const amt = applyAway(S, away); if(amt > 0 && away > 60 && mode==='play'){ awayInfo = away; showAway(amt); } }
+  else if(hiddenAt){ const away = (Date.now()-hiddenAt)/1000; hiddenAt = 0; const amt = applyAway(B, away); if(amt > 0 && away > 60 && mode==='play'){ awayInfo = away; showAway(amt); } }
 });
 let hiddenAt = 0;
 window.addEventListener('pagehide', persist);
 window.addEventListener('resize', fitCamera);
+window.addEventListener('keydown', e => { if(e.key==='e' || e.key==='E'){ if(mode==='play') $('vehBtn').click(); } if((e.key==='k' || e.key==='K') && mode==='play') openOffice(); });
 
 /* ================= Huvudloop ================= */
 const fpsEl = $('fps'); let showFps = location.hash==='#fps'; fpsEl.hidden = !showFps;
@@ -1768,9 +1722,10 @@ function tick(dt){
   } else { cam.orbit += dt*.05; }
   syncT -= dt; if(syncT <= 0){ syncT = .5; syncWorld(); }
   const p = G.p, carrying = S.stack.length > 0;
-  animFigure(player, p.x, p.z, p.yaw, p.moving, ECON.walk/2.2, dt, carrying, !!p.chop || p.fixT > 0, time);
+  setFigVeh(player, S.vehicle==='truck' ? 'truck' : S.vehicle==='skord' ? 'skord' : G.def.vinter ? 'sled' : null);
+  animFigure(player, p.x, p.z, p.yaw, p.moving, walkSpeed(G)/2.2, dt, carrying, !!p.chop || p.fixT > 0, time);
   ringMesh.position.set(p.x, .05, p.z); ringMesh.scale.setScalar(1 + Math.sin(time*4)*.06);
-  G.workers.forEach((w,i) => { const f = workerFigs[i]; if(f) animFigure(f, w.x, w.z, w.yaw, w.moving, ECON.worker.walk/2.2, dt, w.stack.length > 0, w.st==='chop', time); });
+  G.workers.forEach((w,i) => { const f = workerFigs[i]; if(f) animFigure(f, w.x, w.z, w.yaw, w.moving, ECON.worker.walk/2.2, dt, w.stack.length > 0, w.st==='chop' || w.st==='oil' || w.st==='fire' || w.st==='plant' || (w.role==='flott' && !w.moving) || (w.role==='mek' && w.t > 0), time); });
   updateTrees(dt, time); updateMachines(dt, time); updatePads(dt, time); updateTrucks(dt);
   drawWorld(dt, time); updateParticles(dt); updateWeather(dt, time);
   updateCamera(dt, time); updateFloats(dt); updateLabels(); updateHint(dt, time);
@@ -1784,19 +1739,23 @@ function tick(dt){
 
 /* ================= Start ================= */
 fitCamera(); cam.d = cam.td;
-syncWorld(); setMute(meta.mute);
+buildOrt(); syncWorld(); setMute(meta.mute);
 if(hadSave){
-  const amt = applyAway(S, awaySec);
+  const amt = applyAway(B, awaySec);
   if(amt > 0 && awaySec > 60){ pendingAway = amt; awayInfo = awaySec; }
   $('playBtn').textContent = 'Fortsätt';
 }
 show('start');
 // testkrok
-window.__sv = { S:()=>S, G:()=>G, meta:()=>meta, ECON, LAY, camera, cam, renderer, THREE, persist, startPlay, newRun, fps:()=>window.__fps, mode:()=>mode,
+window.__sv = { S:()=>S, G:()=>G, B:()=>B, meta:()=>meta, ECON, LAY, EPOKER, camera, cam, renderer, THREE, persist, startPlay, travelTo, openOffice, fps:()=>window.__fps, mode:()=>mode,
   give(m){ S.money += m; },
   input(ix, iz){ testInput = ix===null ? null : [ix, iz]; },
   run(sec, dt=1/30){ for(let t=0;t<sec;t+=dt) tick(dt); return {money:S.money, x:G.p.x, z:G.p.z}; },
   walkTo(x, z, maxSec=20, dt=1/30){ for(let t=0;t<maxSec;t+=dt){ const dx = x-G.p.x, dz = z-G.p.z, d = Math.hypot(dx,dz); if(d < .3){ testInput = null; return true; } testInput = [dx/d, dz/d]; tick(dt); } testInput = null; return false; },
+  hold(dir, sec=1){ const M = {upp:'u', ner:'d', vanster:'l', 'vänster':'l', hoger:'r', 'höger':'r'}; keys.clear(); String(dir).split(/[+ ,]/).forEach(d => { if(M[d]) keys.add(M[d]); }); for(let t=0;t<sec;t+=1/30) tick(1/30); keys.clear(); return {x:+G.p.x.toFixed(1), z:+G.p.z.toFixed(1), bär:S.stack.length, pengar:Math.floor(S.money)}; },
+  follow(sec=10){ let h = null; for(let t=0;t<sec;t+=1/30){ if(!h || Math.round(t*30)%6===0) h = hintNow(); if(h && h.x!=null && Math.hypot(h.x-G.p.x, h.z-G.p.z) > .4){ const dx = h.x-G.p.x, dz = h.z-G.p.z, d = Math.hypot(dx,dz); testInput = [dx/d, dz/d]; } else testInput = null; tick(1/30); } testInput = null; return {tips:(h&&h.t||'').replace(/<[^>]+>/g,''), bär:S.stack.length, pengar:Math.floor(S.money)}; },
+  testLasUpp(n=6){ while(B.orter.length < n) B.orter.push(fixOrt(newOrt(B.orter.length), B.orter.length)); B.orter.slice(0, n-1).forEach(o => o.master = true); persist(); return 'Orter 1 till ' + n + ' är öppna på kartan'; },
+  testNollstall(){ noSave = true; try{ localStorage.removeItem(SAVE_KEY); }catch(e){} location.reload(); },
   showFps(){ showFps=true; fpsEl.hidden=false; } };
 requestAnimationFrame(t => { last = t; frame(t); });
 </script>
