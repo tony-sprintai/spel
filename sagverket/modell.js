@@ -93,7 +93,7 @@ const EPOKER = [
   { n: 2, namn: 'Ångan', ar: 1930, fart: 1.3, pris: 1.25, arb: 1.15, kost: 40000, krav: [{ k: 'auto' }, { k: 'earnedAll', n: 200000 }],
     maskin: 'ugn', produkt: 'torr', yrken: ['mask', 'eld'], nytt: 'Ångmaskin med remmar, band mellan maskinerna och lampor',
     gubbe: 'Dra i ångvisslan: alla maskiner går dubbelt så fort en stund' },
-  { n: 3, namn: 'Motorn', ar: 1960, fart: 1.7, pris: 1.6, arb: 1.35, kost: 250000, krav: [{ k: 'master', n: 1 }, { k: 'autoOrter', n: 2 }, { k: 'earnedAll', n: 1.5e6 }],
+  { n: 3, namn: 'Motorn', ar: 1960, fart: 1.7, pris: 1.6, arb: 1.35, kost: 250000, krav: [{ k: 'master', n: 1 }, { k: 'autoOrter', n: 2 }, { k: 'earnedAll', n: 1.3e6 }],
     maskin: 'lim', produkt: 'limtra', yrken: ['truck', 'mek'], nytt: 'Motorsågar och en timmerbil som hämtar timmer själv',
     gubbe: 'Kör gaffeltruck: snabbare och bär en hel pall' },
   { n: 4, namn: 'Skördaren', ar: 1990, fart: 2.2, pris: 2, arb: 1.6, kost: 2.5e6, krav: [{ k: 'master', n: 2 }, { k: 'mach', id: 'lim' }, { k: 'earnedAll', n: 1.2e7 }],
@@ -136,17 +136,85 @@ function stegDef(i) {   // efter Koncernchef skapas nya steg automatiskt
   return { t: 'Koncernchef ' + (ROMAN[n] || n), k: n % 2 ? { k: 'orter', n: 3 + Math.floor(n / 2) } : { k: 'earnedAll', n: 2e7 * Math.pow(4, n / 2) }, fro: 3 };
 }
 
-/* ================= BANA: gårdens mall, lika i alla orter (meter, z växer mot vägen) ================= */
-const LAY = {
-  start: [3.5, -19.5],
-  intake: [0, -17],
-  mach: { bark: [0, -12], sag: [0, -5], hyvel: [0, 2], press: [-5.5, -5], snick: [-5.5, 3], ugn: [17.5, -0.8], lim: [17.5, 6.2], list: [23, -0.8] },
-  machR: { bark: 1.9, sag: 1.9, hyvel: 1.9, press: 1.7, snick: 2.0, ugn: 1.9, lim: 1.9, list: 1.8 },
-  pile: { main: [0, 7.8], sack: [-5.5, -1.2], furn: [-5.5, 7.2], torr: [20.6, -5.3], lim: [21.7, 6.2], list: [24.2, -5.3] },
-  dock: [5, 12], kassa: [9.6, 10.6], road: 17.6,
-  kontor: [-11, 11.4], bod: [-11.2, -19.8], anga: [10, -11], vissla: [10, -14.4],
-  yard: { main: [-13.5, 13.5, -30.5, 14.2], ost: [13.5, 26, -8.5, 14.2] },
+/* ================= GÅRDSFORMER: varje ort har en egen gård (meter, z växer mot vägen) ================= */
+// En form beskriver huvudlinjen (O = inlastningen, d = flödesriktning, n = sidan där betalrutorna ligger, g = extra lucka efter barkmaskinen),
+// östgruppen för epok 2–4 (U = torkugnen, a och b = dess axlar), gårdens rektanglar (ep = öppnas med epoken, bro = bro över vatten),
+// vatten, träden i gården och resten av platserna. Rektanglar får bara mötas kant mot kant. slots = platser för områden i genererade orter.
+// Maskinerna sparas per id, inte per plats, så en ort behåller allt när formen ändras.
+const FORMS = {
+  rak: { namn: 'Rak linje', O: [0, -17], d: [0, 1], n: [1, 0], g: 0, U: [17.5, -0.8], a: [1, 0], b: [0, 1],
+    yard: [{ id: 'main', r: [-13.5, 13.5, -30.5, 14.2] }, { id: 'ost', r: [13.5, 26, -8.5, 14.2], ep: 2 }],
+    ugnVia: [[2, -0.8]], chute: [[-19, -15.2], [-1.6, -15.2]],
+    start: [3.5, -19.5], dock: [5, 12], kassa: [9.6, 10.6], kontor: [-11, 11.4], bod: [-11.2, -19.8], anga: [10, -11], vissla: [10, -14.4], sort: [4.4, -15.6],
+    pads: { pack: [7.5, -17.5], yxa: [10.8, -17.5], hugg: [-5, -17.5], barare: [4.6, 6.4], chauffor: [11.8, 7], utb: [-7.6, -20.6], epok: [-7.6, 11.6], kontor: [-11, 7.2], hk: [-11, 7.2],
+            mask: [7.2, -7.4], eldare: [12.2, -7.4], truckf: [11.8, 2.8], mek: [7.2, -3.4], gtruck: [8.4, 2.8], flott: [6.2, -28.9] },
+    trees: { p: [-12.2, -24.2], u: [2.7, 0], v: [1.2, -2.6], n: 10, rows: 2 },
+    slots: { ne: { r: [13.5, 37.5, -30.5, -8.5], pad: [12.2, -22] }, nord: { r: [-13.5, 13.5, -52, -30.5], pad: [0, -29] }, vast: { r: [-37.5, -13.5, -27.5, 1.5], pad: [-12.2, -12] } } },
+  // Älven rinner rakt genom gården. Barkmaskinen står på norra stranden och bandet går över bron till sågen på södra.
+  bro: { namn: 'Två stränder med bro', O: [0, -30], d: [0, 1], n: [-1, 0], g: 6, U: [-19, -6], a: [-1, 0], b: [0, 1],
+    yard: [{ id: 'main', r: [-14, 14, -40, -21] }, { id: 'bron', r: [-3, 3, -21, -16], bro: true }, { id: 'syd', r: [-14, 14, -16, 14.2] }, { id: 'ost', r: [-30, -14, -16, 8], ep: 2 }],
+    water: [{ kind: 'river', r: [-90, 90, -21, -16] }],
+    ugnVia: [[-2, -7.6], [-17, -7.6]], chute: [[-34, -18.5], [-7.5, -18.5], [-7.5, -27.5], [-1.4, -30]],
+    start: [3, -34], dock: [4, 12], kassa: [9, 10.5], kontor: [-10.5, 11.4], bod: [-10.5, -26.5], anga: [9.5, -24.5], vissla: [6, -24.5], sort: [-4, -33.5],
+    pads: { pack: [4.5, -30.2], yxa: [-6, -36], hugg: [-5.5, -30], barare: [-4.6, 4], chauffor: [11.5, 7], utb: [-10.5, -31], epok: [-6.8, 11.8], kontor: [-10.5, 7.2], hk: [-10.5, 7.2],
+            mask: [6, -35], eldare: [10.5, -35], truckf: [11.5, 2.8], mek: [8.8, 3.2], gtruck: [11.5, -1.2], flott: [-11.5, -22.6] },
+    trees: { p: [-12.2, -38.2], u: [2.7, 0], v: [1.2, 2.4], n: 10, rows: 2 },
+    slots: { ne: { r: [14, 38, -40, -16], pad: [12.8, -30] }, nord: { r: [-26, 26, -64, -40], pad: [0, -38.8] }, vast: { r: [-38, -14, -40, -21], pad: [-12.8, -35] } } },
+  // U runt en sjö: produktionen i västra armen, kajen i botten, maskinhallarna i östra. Isen är genvägen mellan armarna.
+  U: { namn: 'U runt sjön', O: [-20, -31], d: [0, 1], n: [-1, 0], g: 0, U: [18, -14], a: [1, 0], b: [0, 1], terrace: true,
+    yard: [{ id: 'main', r: [-26, -10, -40, 14.2] }, { id: 'botten', r: [-10, 10, -2, 14.2] }, { id: 'osterarm', r: [10, 26, -2, 14.2] }, { id: 'ost', r: [10, 26, -34, -2], ep: 2 }],
+    ugnVia: [[-17, -10], [-17, -3.5], [13, -3.5], [13, -14]], chute: null,
+    start: [-17, -34], dock: [3, 12], kassa: [8, 10.5], kontor: [-21, 10.6], bod: [-14.5, 3], anga: [18, 6], vissla: [14, 10], sort: [-16.5, -35],
+    pads: { pack: [-14.5, -30], yxa: [-14.5, -26.5], hugg: [-24, -31.5], barare: [-23.5, -2], chauffor: [6, 5.5], utb: [-11.4, 7], epok: [-16, 11.5], kontor: [-21, 6.2], hk: [-21, 6.2],
+            mask: [14, 2.5], eldare: [22.5, 1.8], truckf: [-6, 5.5], mek: [-2, 1.2], gtruck: [-6, 1.2], flott: [-13, -37] },
+    trees: { p: [-25, -38.4], u: [2.7, 0], v: [1.2, 1.9], n: 6, rows: 2 },
+    slots: { ne: { r: [26, 50, -34, 14.2], pad: [24.8, 9] }, nord: { r: [-26, 26, -64, -40], pad: [-18, -38.8] }, vast: { r: [-10, 10, -34, -2], pad: [-11.2, -14], mitt: true } } },
+  // Lång gård längs vägen: linjen går mot kajen och havet syns från gården.
+  lang: { namn: 'Lång gård längs vägen', O: [-34, -2], d: [1, 0], n: [0, -1], g: 0, U: [16, -2], a: [1, 0], b: [0, 1],
+    yard: [{ id: 'main', r: [-40, 10, -14, 14.2] }, { id: 'ost', r: [10, 40, -14, 14.2], ep: 2 }],
+    ugnVia: [[-12.3, -2], [-12.3, -8], [12, -8], [12, -2]], chute: null,
+    start: [-30, -9], dock: [3, 12], kassa: [7.8, 10.6], kontor: [-30, 10.8], bod: [-37, 6], anga: [4, -5.5], vissla: [4, -1.6], sort: [-30.5, 1.6],
+    pads: { pack: [-33.6, -7], yxa: [-29.6, -9.6], hugg: [-37.6, -5.8], barare: [-4.5, 6.2], chauffor: [6.5, 6.2], utb: [-37.6, 10.5], epok: [-25.5, 11.3], kontor: [-30, 6.5], hk: [-30, 6.5],
+            mask: [0, -5.4], eldare: [8, -5.4], truckf: [0, 6.2], mek: [-4.5, 2], gtruck: [0, 2.2], flott: [-6, -11] },
+    trees: { p: [-38, -12.6], u: [2.7, 0], v: [1.2, 2.4], n: 8, rows: 2 },
+    slots: { nord: { r: [-40, 10, -38, -14], pad: [0, -12.8] }, vast: { r: [-64, -40, -34, 14.2], pad: [-38.8, 2] }, ne: { r: [-40, 10, -62, -38], pad: [0, -36.8], req: ['nord'] } } },
 };
+// Spegling: x byter tecken i alla punkter, vektorer och rektanglar (min och max byter plats). Inget speglas i grafiken.
+function mirrorX(o) {
+  if (Array.isArray(o)) {
+    if (o.length === 2 && typeof o[0] === 'number') return [-o[0], o[1]];
+    if (o.length === 4 && typeof o[0] === 'number') return [-o[1], -o[0], o[2], o[3]];
+    return o.map(mirrorX);
+  }
+  if (o && typeof o === 'object') { const r = {}; for (const k in o) r[k] = mirrorX(o[k]); return r; }
+  return o;
+}
+const MACH_R = { bark: 1.9, sag: 1.9, hyvel: 1.9, press: 1.7, snick: 2.0, ugn: 1.9, lim: 1.9, list: 1.8 };
+function mkLayout(f) {
+  const P = (p, ...t) => { let x = p[0], z = p[1]; for (let i = 0; i < t.length; i += 2) { x += t[i][0] * t[i + 1]; z += t[i][1] * t[i + 1]; } return [Math.round(x * 100) / 100, Math.round(z * 100) / 100]; };
+  const { O, d, n, U, a, b } = f, g = f.g || 0;
+  const L = { form: f.namn, start: f.start, intake: O, dock: f.dock, kassa: f.kassa, kontor: f.kontor, bod: f.bod, anga: f.anga, vissla: f.vissla, sort: f.sort,
+    yard: f.yard, water: f.water || [], trees: f.trees, terrace: !!f.terrace, chute: f.chute || null, road: 17.6, machR: MACH_R };
+  L.mach = { bark: P(O, d, 5), sag: P(O, d, 12 + g), hyvel: P(O, d, 19 + g), press: P(O, d, 12 + g, n, -5.5), snick: P(O, d, 20 + g, n, -5.5), ugn: U, lim: P(U, b, 7), list: P(U, a, 5.5) };
+  L.pile = { main: P(O, d, 24.8 + g), sack: P(O, d, 15.8 + g, n, -5.5), furn: P(O, d, 24.2 + g, n, -5.5), torr: P(U, a, 3.1, b, -4.5), lim: P(U, a, 4.2, b, 7), list: P(U, a, 6.7, b, -4.5) };
+  const mp = { bark: P(O, d, 5, n, 3.4), sag: P(O, d, 12 + g, n, 3.4), hyvel: P(O, d, 19 + g, n, 3.4), press: P(O, d, 12 + g, n, -8.8), snick: P(O, d, 20 + g, n, -8.8), ugn: P(U, b, -3.8), lim: P(U, a, -2.9, b, 7), list: P(U, a, 5.5, b, 3.7) };
+  L.pads = { ...f.pads, bod: f.bod, salj: P(U, a, -2.3, b, 11.4), plant: P(U, a, .7, b, 11.4), skord: P(U, a, 3.7, b, 11.4), gskord: P(U, a, 6.7, b, 11.4) };
+  for (const m in mp) { L.pads[m] = mp[m]; L.pads['up_' + m] = mp[m]; }
+  const M = L.mach, Pl = L.pile;
+  L.routes = { in: [O, M.bark], 'bark>sag': [M.bark, M.sag], 'bark>main': [M.bark, Pl.main], 'sag>hyvel': [M.sag, M.hyvel], 'sag>main': [M.sag, Pl.main], 'hyvel>main': [M.hyvel, Pl.main],
+    'spill>press': [M.sag, M.press], 'press>sack': [M.press, Pl.sack], 'hyvel>snick': [M.hyvel, M.snick], 'snick>furn': [M.snick, Pl.furn],
+    'hyvel>ugn': [M.hyvel, ...(f.ugnVia || []), U], 'ugn>torr': [U, Pl.torr], 'ugn>lim': [U, M.lim], 'ugn>list': [U, M.list], 'lim>lim': [M.lim, Pl.lim], 'list>list': [M.list, Pl.list] };
+  // band ritas från kant till kant längs varornas vägar: [väg, kräver, radie i början, radie i slutet]
+  L.belts = [['in', 'bark', 1.1, MACH_R.bark], ['bark>sag', 'bark', MACH_R.bark, MACH_R.sag], ['sag>hyvel', 'bark', MACH_R.sag, MACH_R.hyvel], ['hyvel>main', 'bark', MACH_R.hyvel, 1.1],
+    ['spill>press', 'press', MACH_R.sag, MACH_R.press], ['press>sack', 'press', MACH_R.press, 1.1], ['hyvel>snick', 'snick', MACH_R.hyvel, MACH_R.snick], ['snick>furn', 'snick', MACH_R.snick, 1.1],
+    ['hyvel>ugn', 'ugn', MACH_R.hyvel, MACH_R.ugn], ['ugn>torr', 'ugn', MACH_R.ugn, 1.1], ['ugn>lim', 'lim', MACH_R.ugn, MACH_R.lim], ['lim>lim', 'lim', MACH_R.lim, 1.1], ['ugn>list', 'list', MACH_R.ugn, MACH_R.list], ['list>list', 'list', MACH_R.list, 1.1]];
+  return L;
+}
+function layoutFor(def) { const f = FORMS[def.form || 'rak']; return mkLayout(def.mirror ? mirrorX(f) : f); }
+// LAY är alltid gården i orten man står i. Den byts ut vid resa.
+const LAY = {};
+function setLayout(L) { for (const k in LAY) delete LAY[k]; Object.assign(LAY, L); return LAY; }
+setLayout(layoutFor({ form: 'rak' }));
 // Maskinkedjan som data: next = allt går dit när den finns, branch = delas lika mellan högen och grenarna, spill = biprodukt.
 const CHAIN = {
   bark:  { out: 'barked', pile: 'main', next: 'sag' },
@@ -159,38 +227,38 @@ const CHAIN = {
   list:  { out: 'fonster', pile: 'list' },
 };
 const MACHS = Object.keys(CHAIN);
-const PILES = Object.keys(LAY.pile);
+const PILES = ['main', 'sack', 'furn', 'torr', 'lim', 'list'];
 const PRODUCTS = ['barked', 'board', 'planed', 'sack', 'furn', 'torr', 'limtra', 'fonster', 'log'];
 const TYPE_PILE = { barked: 'main', board: 'main', planed: 'main', sack: 'sack', furn: 'furn', torr: 'torr', limtra: 'lim', fonster: 'list' };
 
 /* ================= ORTER: handgjorda banor. Efter dem skapar ortDef() nya ur ett frö. ================= */
 // rect = [x0, x1, z0, z1]. Ett område öppnas med en betalruta vid gården (pad). lake = sjö som för in stockar (flow per sekund).
-// river = älv med bro (bridge = x-intervall). ice = is som bara bär på vintern. logs = stockar per träd.
+// river = älv med bro (bro = rektangel). ice = is som bara bär på vintern, island = ö i isen. logs = stockar per träd. form = gårdsformen (FORMS).
 const ORTER = [
-  { id: 'glantan', namn: 'Gläntan', terr: 'grass', cm: 1, seed: 1703, kart: [44, 74], vandning: 'Sjön för in stockar av sig själv',
+  { id: 'glantan', namn: 'Gläntan', terr: 'grass', form: 'rak', cm: 1, seed: 1703, kart: [44, 74], vandning: 'Sjön för in stockar av sig själv',
     areas: [
       { id: 'skog', namn: 'Storskogen', rect: [13.5, 37.5, -35.5, -8.5], logs: 3, big: true, pad: [12.2, -22], cost: 4000, req: ['hugg:2'], why: 'stora träd som ger tre stockar var', icon: '🌲' },
       { id: 'sjo', namn: 'Sjön och flottning', rect: [-37.5, -13.5, -27.5, 1.5], logs: 2, lake: [-33, -19, -23, -5], flow: 0.5, pad: [-12.2, -12], cost: 11000, req: ['snick'], why: 'stockar flyter in av sig själva', icon: '🛶' },
     ],
     mal: [{ k: 'auto' }, { k: 'orders', n: 3 }, { k: 'epoch', n: 2 }, { k: 'machHere', id: 'ugn' }, { k: 'earned', n: 1.3e6 }] },
-  { id: 'alvdalen', namn: 'Älvdalen', terr: 'valley', cm: 2, seed: 2207, kart: [30, 52], vandning: 'Timret flottas på älven. Bygg bron och anställ flottare',
+  { id: 'alvdalen', namn: 'Älvdalen', terr: 'valley', form: 'bro', cm: 2, seed: 2207, kart: [30, 52], vandning: 'Älven rinner genom gården och bandet går över bron. Anställ flottare',
     areas: [
-      { id: 'alv', namn: 'Bron över älven', rect: [-24, 24, -60, -30.5], river: [-80, 80, -37.5, -33], bridge: [-1.8, 1.8], logs: 2, pad: [0, -29], cost: 2500, req: ['hugg'], why: 'skogen på andra sidan älven och flottning', icon: '🌉' },
-      { id: 'skog', namn: 'Lövskogen', rect: [13.5, 37.5, -30.5, -8.5], logs: 3, big: true, pad: [12.2, -22], cost: 9000, req: ['hugg:2'], why: 'stora träd som ger tre stockar var', icon: '🌳' },
+      { id: 'alv', namn: 'Norrskogen och flottningen', rect: [-26, 26, -64, -40], logs: 2, pad: [0, -38.8], cost: 2500, req: ['hugg'], why: 'skogen norr om gården och flottning på älven', icon: '🛶' },
+      { id: 'skog', namn: 'Lövskogen', rect: [14, 38, -40, -16], logs: 3, big: true, pad: [12.8, -30], cost: 9000, req: ['hugg:2'], why: 'stora träd som ger tre stockar var', icon: '🌳' },
     ],
     mal: [{ k: 'auto' }, { k: 'areas' }, { k: 'staffRole', r: 'flott', n: 3 }, { k: 'contracts', n: 2 }, { k: 'earned', n: 4e5 }] },
-  { id: 'fjall', namn: 'Fjällskogen', terr: 'snow', cm: 4, seed: 3301, kart: [36, 24], vinter: true, vmul: 1.6, regrow: 2.5,
-    vandning: 'Vinter: träden växer sakta men är värda mer. Isvägen bär bara när det är kallt',
+  { id: 'fjall', namn: 'Fjällskogen', terr: 'snow', form: 'U', cm: 4, seed: 3301, kart: [36, 24], vinter: true, vmul: 1.6, regrow: 2.5,
+    vandning: 'Terrasser runt en frusen sjö. Isvägen är en genväg som bara bär när det är kallt. Träden växer sakta men är värda mer',
     areas: [
-      { id: 'nord', namn: 'Fjällbjörkarna', rect: [-13.5, 13.5, -52, -30.5], logs: 2, pad: [0, -29], cost: 15000, req: ['hugg'], why: 'mer skog att hugga', icon: '🌲' },
-      { id: 'is', namn: 'Isvägen', rect: [-46, -13.5, -30.5, 6], ice: [-34, -15.5, -30.5, 6], logs: 3, big: true, pad: [-12.2, -12], cost: 60000, req: ['snick'], why: 'stora träd på andra sidan sjön', icon: '🛷' },
+      { id: 'nord', namn: 'Fjällbjörkarna', rect: [-26, 26, -64, -40], logs: 2, pad: [-18, -38.8], cost: 15000, req: ['hugg'], why: 'mer skog att hugga', icon: '🌲' },
+      { id: 'is', namn: 'Isvägen', rect: [-10, 10, -34, -2], ice: [-10, 10, -34, -2], island: [-4, 4, -22, -14], logs: 3, big: true, pad: [-11.2, -14], cost: 60000, req: ['snick'], why: 'genväg över isen och stora träd på ön', icon: '🛷' },
     ],
     mal: [{ k: 'auto' }, { k: 'areas' }, { k: 'orders', n: 4 }, { k: 'train', n: 6 }, { k: 'earned', n: 4e6 }] },
-  { id: 'kust', namn: 'Kusthamnen', terr: 'coast', cm: 8, seed: 4409, kart: [62, 40], hamn: true,
+  { id: 'kust', namn: 'Kusthamnen', terr: 'coast', form: 'lang', cm: 8, seed: 4409, kart: [62, 40], hamn: true,
     vandning: 'Fartyg lägger till med jättebeställningar',
     areas: [
-      { id: 'udde', namn: 'Udden', rect: [-37.5, -13.5, -27.5, 1.5], logs: 3, big: true, pad: [-12.2, -12], cost: 2e5, req: ['hugg:2'], why: 'stora tallar ute på udden', icon: '🌲' },
-      { id: 'skog', namn: 'Strandskogen', rect: [13.5, 37.5, -35.5, -8.5], logs: 2, pad: [12.2, -22], cost: 8e4, req: ['hugg'], why: 'mer skog att hugga', icon: '🌳' },
+      { id: 'udde', namn: 'Udden', rect: [-64, -40, -34, 14.2], logs: 3, big: true, pad: [-38.8, 2], cost: 2e5, req: ['hugg:2'], why: 'stora tallar ute på udden', icon: '🌲' },
+      { id: 'skog', namn: 'Strandskogen', rect: [-40, 10, -38, -14], logs: 2, pad: [0, -12.8], cost: 8e4, req: ['hugg'], why: 'mer skog att hugga', icon: '🌳' },
     ],
     mal: [{ k: 'auto' }, { k: 'orders', n: 3 }, { k: 'areas' }, { k: 'staff', n: 16 }, { k: 'earned', n: 4e7 }] },
 ];
@@ -207,18 +275,26 @@ function ortDef(i) {
   for (let w = 0; w < 4; w++) r();
   const terr = TERR_GEN[(i * 3 + (seed & 1)) % TERR_GEN.length], tint = r(), cm = ORTER[ORTER.length - 1].cm * Math.pow(2, k);
   const tw = pick(['sjo', 'alv', 'is', 'storm', 'guld']);
+  // Formen: två orter i rad får aldrig samma form (steget 3 av 4 går runt alla fyra)
+  const form = ['rak', 'lang', 'U', 'bro'][(i * 3 + 1) % 4], mirror = rng32(seed ^ 0x2545f491)() < .5, F = mirror ? mirrorX(FORMS[form]) : FORMS[form], sl = F.slots;
   const areas = [];
   const big = r() < .5;
-  areas.push({ id: 'ne', namn: pick(['Granskogen', 'Tallmon', 'Björkhagen', 'Urskogen']), rect: [13.5, 37.5, -35.5 + (r() * 8 | 0), -8.5], logs: big ? 3 : 2, big, pad: [12.2, -22], cost: Math.round(6000 * cm / 50) * 50, req: ['hugg'], why: 'mer skog att hugga', icon: '🌲' });
-  if (tw === 'alv') areas.push({ id: 'alv', namn: 'Bron över älven', rect: [-24, 24, -60, -30.5], river: [-80, 80, -37.5, -33], bridge: [-1.8, 1.8], logs: 2, pad: [0, -29], cost: Math.round(2500 * cm / 50) * 50, req: ['hugg'], why: 'skogen på andra sidan älven och flottning', icon: '🌉' });
-  else areas.push({ id: 'nord', namn: pick(['Norrskogen', 'Höjden', 'Myrskogen']), rect: [-13.5 - (r() * 6 | 0), 13.5, -48 - (r() * 8 | 0), -30.5], logs: 2, pad: [0, -29], cost: Math.round(9000 * cm / 50) * 50, req: ['hugg:2'], why: 'mer skog att hugga', icon: '🌳' });
-  if (tw === 'sjo') areas.push({ id: 'sjo', namn: 'Sjön', rect: [-37.5, -13.5, -27.5, 1.5], lake: [-33, -19, -23, -5], flow: .5, logs: 2, pad: [-12.2, -12], cost: Math.round(11000 * cm / 50) * 50, req: ['snick'], why: 'stockar flyter in av sig själva', icon: '🛶' });
-  else if (tw === 'is') areas.push({ id: 'is', namn: 'Isvägen', rect: [-46, -13.5, -30.5, 6], ice: [-34, -15.5, -30.5, 6], logs: 3, big: true, pad: [-12.2, -12], cost: Math.round(20000 * cm / 50) * 50, req: ['snick'], why: 'stora träd på andra sidan sjön', icon: '🛷' });
-  else areas.push({ id: 'vast', namn: pick(['Västerskogen', 'Hagen', 'Lunden']), rect: [-37.5, -13.5, -27.5 - (r() * 6 | 0), 1.5], logs: r() < .4 ? 3 : 2, pad: [-12.2, -12], cost: Math.round(11000 * cm / 50) * 50, req: ['snick'], why: 'mer skog att hugga', icon: '🌲' });
+  const cost = c => Math.round(c * cm / 50) * 50;
+  const inset = R => [R[0] + 4.5, R[1] - 5.5, R[2] + 4.5, R[3] - 6.5];
+  const mid = R => [(R[0] + R[1]) / 2 - 4, (R[0] + R[1]) / 2 + 4, (R[2] + R[3]) / 2 - 4, (R[2] + R[3]) / 2 + 4];
+  areas.push({ id: 'ne', namn: pick(['Granskogen', 'Tallmon', 'Björkhagen', 'Urskogen']), rect: sl.ne.r, logs: big ? 3 : 2, big, pad: sl.ne.pad, cost: cost(6000), req: ['hugg', ...(sl.ne.req || []).map(q => q === 'nord' && tw === 'alv' ? 'alv' : q)], why: 'mer skog att hugga', icon: '🌲' }); r();
+  if (tw === 'alv') {
+    const R = sl.nord.r, rz = form === 'bro' ? null : [R[3] - 8.5, R[3] - 4];   // älven nära gården, bron mitt för rutan
+    areas.push({ id: 'alv', namn: form === 'bro' ? 'Norrskogen och flottningen' : 'Bron över älven', rect: R, ...(rz ? { river: [-90, 90, rz[0], rz[1]], bro: [sl.nord.pad[0] - 1.8, sl.nord.pad[0] + 1.8, rz[0], rz[1]] } : {}), logs: 2, pad: sl.nord.pad, cost: cost(2500), req: ['hugg'], why: 'skogen på andra sidan älven och flottning', icon: '🌉' });
+  } else { areas.push({ id: 'nord', namn: pick(['Norrskogen', 'Höjden', 'Myrskogen']), rect: sl.nord.r, logs: 2, pad: sl.nord.pad, cost: cost(9000), req: ['hugg:2'], why: 'mer skog att hugga', icon: '🌳' }); r(); r(); }
+  const V = sl.vast;
+  if (tw === 'sjo') areas.push({ id: 'sjo', namn: 'Sjön', rect: V.r, lake: V.mitt ? [V.r[0] + 3, V.r[1] - 3, V.r[2] + 3, V.r[3] - 3] : inset(V.r), ...(V.mitt ? { island: mid(V.r) } : {}), flow: .5, logs: 2, pad: V.pad, cost: cost(11000), req: ['snick'], why: 'stockar flyter in av sig själva', icon: '🛶' });
+  else if (tw === 'is') areas.push({ id: 'is', namn: 'Isvägen', rect: V.r, ice: V.mitt ? V.r : inset(V.r), island: mid(V.r), logs: 3, big: true, pad: V.pad, cost: cost(20000), req: ['snick'], why: 'stora träd på ön mitt i isen', icon: '🛷' });
+  else { areas.push({ id: 'vast', namn: pick(['Västerskogen', 'Hagen', 'Lunden']), rect: V.r, logs: r() < .4 ? 3 : 2, pad: V.pad, cost: cost(11000), req: ['snick'], why: 'mer skog att hugga', icon: '🌲' }); r(); }
   const extra = [{ k: 'orders', n: 3 + k }, { k: 'contracts', n: 2 + k }, { k: 'train', n: 4 + 2 * k }, { k: 'staff', n: 12 + 2 * k }];
   const ex = extra.sort(() => r() - .5).slice(0, 2);
-  const def = { id: 'gen' + i, namn: pick(NAMN_A) + pick(NAMN_B), terr, tint, cm, seed, gen: true, kart: [20 + r() * 60 | 0, 10 + r() * 80 | 0],
-    vinter: terr === 'snow' || tw === 'is', vmul: terr === 'snow' ? 1.5 : 1 + k * .05, regrow: terr === 'snow' ? 2 : 1, hamn: r() < .25,
+  const def = { id: 'gen' + i, namn: pick(NAMN_A) + pick(NAMN_B), terr, tint, form, cm, seed, gen: true, kart: [20 + r() * 60 | 0, 10 + r() * 80 | 0],
+    vinter: terr === 'snow' || tw === 'is', vmul: terr === 'snow' ? 1.5 : 1 + k * .05, regrow: terr === 'snow' ? 2 : 1, hamn: r() < .25, mirror,
     storm: tw === 'storm', guld: tw === 'guld',
     vandning: { sjo: 'En sjö för in stockar', alv: 'Timret flottas på älven', is: 'Isvägen bär bara när det är kallt', storm: 'Stormigt: oftare storm och fler fallna träd', guld: 'Guldträden kommer oftare' }[tw] + (terr === 'snow' ? '. Vinter: träden växer sakta men är värda mer' : ''),
     areas, mal: [{ k: 'auto' }, { k: 'areas' }, ...ex, { k: 'earned', n: Math.round(1.5e6 * cm / 1000) * 1000 }] };
@@ -266,9 +342,9 @@ function trainTarget(S) {   // utbildningsrutan tränar alltid det anställda yr
 const ROLE_EP = { hugg: 1, bar: 1, chauf: 1, flott: 1, mask: 2, eld: 2, truck: 3, mek: 3, skord: 4, plant: 4, salj: 4 };
 function trainCost(S, r) { const T = ECON.train, ec = [1, 1, 5, 25, 120][ROLE_EP[r] || 1]; return Math.round(T.base * ec * Math.pow(T.grow, lv(S, 'utb_' + r)) / 10) * 10; }
 
-function buildPads(def) {
+function buildPads(def) {   // betalrutornas platser kommer från ortens gårdsform
   const list = [];
-  for (const p of ECON.pads) { if (p.tw && !(def.areas.some(a => a.id === p.tw) || def[p.tw])) continue; list.push(p); }
+  for (const p of ECON.pads) { if (p.tw && !(def.areas.some(a => a.id === p.tw) || def[p.tw])) continue; list.push(LAY.pads[p.id] ? { ...p, at: LAY.pads[p.id] } : p); }
   for (const a of def.areas) list.push({ id: a.id, kind: 'area', area: a.id, name: a.namn, at: a.pad, cost: [a.cost / def.cm], req: a.req, why: a.why, icon: a.icon });
   return list;
 }
@@ -324,18 +400,21 @@ function automated(S) { return ['bark', 'sag', 'hyvel', 'press', 'snick'].every(
 function kassaCap(G) { return Math.max(ECON.kassa.min, G.autoEMA * ECON.kassa.secs); }
 function kassaFull(G) { return !lv(G.S, 'chauffor') && G.S.kassa >= kassaCap(G); }
 function areaDef(G, a) { return G.def.areas.find(x => x.id === a); }
-function areaOpen(G, a) { return a === 'main' || (a === 'ost' ? G.B.ep >= 2 : lv(G.S, a) > 0); }
-function areaRect(G, a) { return LAY.yard[a] || areaDef(G, a).rect; }
+function yardOpen(G, y) { return !y.ep || G.B.ep >= y.ep; }
+function areaOpen(G, a) { if (a === 'main') return true; const y = LAY.yard.find(q => q.id === a); return y ? yardOpen(G, y) : lv(G.S, a) > 0; }
+function areaRect(G, a) { const y = LAY.yard.find(q => q.id === a); return y ? y.r : areaDef(G, a).rect; }
 const inR = (x, z, r) => x >= r[0] && x <= r[1] && z >= r[2] && z <= r[3];
 function iceOpen(G) { return !G.thaw; }
 function walkable(G, x, z) {
+  for (const y of LAY.yard) if (y.bro && yardOpen(G, y) && inR(x, z, y.r)) return true;            // broar över vatten
+  for (const a of G.def.areas) if (a.bro && areaOpen(G, a.id) && inR(x, z, a.bro)) return true;
+  for (const w of LAY.water) if (inR(x, z, w.r)) return false;                                       // älv genom gården
   for (const a of G.def.areas) {
     if (a.lake && inR(x, z, a.lake)) return false;
-    if (a.river && inR(x, z, a.river) && !(x > a.bridge[0] && x < a.bridge[1] && areaOpen(G, a.id))) return false;
-    if (a.ice && inR(x, z, a.ice) && (!iceOpen(G) || !areaOpen(G, a.id))) return false;
+    if (a.river && inR(x, z, a.river)) return false;
+    if (a.ice && inR(x, z, a.ice) && !(a.island && inR(x, z, a.island) && areaOpen(G, a.id)) && (!iceOpen(G) || !areaOpen(G, a.id))) return false;
   }
-  if (inR(x, z, LAY.yard.main)) return true;
-  if (areaOpen(G, 'ost') && inR(x, z, LAY.yard.ost)) return true;
+  for (const y of LAY.yard) if (yardOpen(G, y) && inR(x, z, y.r)) return true;
   for (const a of G.def.areas) if (areaOpen(G, a.id) && inR(x, z, a.rect)) return true;
   return false;
 }
@@ -344,11 +423,13 @@ const dist = (x, z, a) => Math.hypot(x - a[0], z - a[1]);
 function treeOk(G, t) { if (!areaOpen(G, t.area)) return false; if (t.ice && G.thaw) return false; return true; }
 
 // Träden: två rader i gården och skog i varje område. Samma frö ger samma skog.
-function makeTrees(def) {
-  const r = rng32(def.seed), T = [];
-  for (let row = 0; row < 2; row++) for (let i = 0; i < 10; i++) {
-    const x = -12.2 + i * 2.7 + (r() - .5) * .8 + (row % 2) * 1.2, z = -24.2 - row * 2.6 + (r() - .5) * .6;
-    T.push({ x, z, area: 'main' });
+// Träden: några rader i gården nära inlastningen och skog i varje område. Samma frö ger samma skog.
+function makeTrees(def, pads) {
+  const r = rng32(def.seed), T = [], tr = LAY.trees, keep = [...pads.map(p => p.at), ...Object.values(LAY.mach), ...Object.values(LAY.pile), LAY.intake, LAY.kontor, LAY.bod, LAY.anga, LAY.vissla, LAY.dock, LAY.kassa, LAY.start, LAY.sort];
+  const free = (x, z, m) => keep.every(k => Math.abs(k[0] - x) > m || Math.abs(k[1] - z) > m);
+  for (let row = 0; row < tr.rows; row++) for (let i = 0; i < tr.n; i++) {
+    const x = tr.p[0] + tr.u[0] * i + (r() - .5) * .8 + (row % 2) * tr.v[0], z = tr.p[1] + tr.u[1] * i + row * tr.v[1] + (r() - .5) * .6;
+    if (free(x, z, 1.8)) T.push({ x, z, area: 'main' });
   }
   for (const a of def.areas) {
     const R = a.rect, step = a.big ? 2.8 : 2.5, skip = a.big ? .3 : .38;
@@ -357,21 +438,23 @@ function makeTrees(def) {
       const tx = x + (r() - .5) * 1.1, tz = z + (r() - .5) * 1.1;
       if (a.lake && inR(tx, tz, [a.lake[0] - 1.5, a.lake[1] + 1.5, a.lake[2] - 1.5, a.lake[3] + 1.5])) continue;
       if (a.river && inR(tx, tz, [a.river[0], a.river[1], a.river[2] - 1.6, a.river[3] + 2.2])) continue;
-      if (a.river && Math.abs(tx) < 3.5) continue;
-      if (a.ice && inR(tx, tz, [a.ice[0] - 1.2, a.ice[1] + 1.2, a.ice[2] - 1, a.ice[3] + 1])) continue;
-      if (Math.abs(tz - LAY.intake[1]) < 1.6 && tx < -13) continue;
-      if (inR(tx, tz, LAY.yard.main) || inR(tx, tz, LAY.yard.ost)) continue;
+      if (a.bro && inR(tx, tz, [a.bro[0] - 2, a.bro[1] + 2, a.bro[2] - 3, a.bro[3] + 3])) continue;
+      const onIsland = a.island && inR(tx, tz, [a.island[0] + .8, a.island[1] - .8, a.island[2] + .8, a.island[3] - .8]);
+      if (a.ice && !onIsland && inR(tx, tz, [a.ice[0] - 1.2, a.ice[1] + 1.2, a.ice[2] - 1, a.ice[3] + 1])) continue;
+      if (LAY.water.some(w => inR(tx, tz, [w.r[0], w.r[1], w.r[2] - 1.6, w.r[3] + 1.6]))) continue;
+      if (LAY.yard.some(y => inR(tx, tz, [y.r[0] - .6, y.r[1] + .6, y.r[2] - .6, y.r[3] + .6]))) continue;
+      if (!free(tx, tz, 1.6)) continue;
       T.push({ x: tx, z: tz, area: a.id, ice: !!a.ice, big: !!a.big });
-      if (T.length > 150) break;
+      if (T.length > 170) break;
     }
   }
   return T;
 }
-
 function makeGame(B, seed = Date.now() % 1e9) {
-  const S = bindOrt(B, fixOrt(B.orter[B.ort], B.ort)), def = ortDef(B.ort), pads = buildPads(def);
+  const def = ortDef(B.ort); setLayout(layoutFor(def));
+  const S = bindOrt(B, fixOrt(B.orter[B.ort], B.ort)), pads = buildPads(def);
   const G = { B, S, def, pads, PAD: {}, t: 0, rng: rng32(seed), fx: [], noFx: false,
-    trees: makeTrees(def).map(t => ({ ...t, st: 'grown', t: 0, hits: 0, claim: null, gold: false, borre: false })),
+    trees: makeTrees(def, pads).map(t => ({ ...t, st: 'grown', t: 0, hits: 0, claim: null, gold: false, borre: false })),
     workers: [], ground: [], ev: null, order: null, lakeAcc: 0, timmerAcc: 0, vissla: 0, visslaCd: 0, season: 0, thaw: false,
     nextEv: Math.max(5, ECON.events.first - S.playT), nextOrder: ECON.orders.first,
     p: { x: S.px, z: S.pz, yaw: Math.PI, moving: false, pad: null, padT: 0, coinT: 0, chopT: 0, chop: null, pickT: 0, dropT: 0, fixT: 0, sellT: 0 },
@@ -394,7 +477,7 @@ function syncStaff(G) {
     while (have < want) { const k = B.namnN++; S.staff.push({ n: FORNAMN[(k * 7 + 3) % FORNAMN.length] + ' ' + EFTERNAMN[(k * 11 + 5) % EFTERNAMN.length], r }); have++; }
   }
 }
-const ROLE_HOME = r => r === 'flott' ? [0, -31] : r === 'eld' ? LAY.anga : r === 'mek' ? [7.2, -3.4] : r === 'salj' ? LAY.kontor : r === 'plant' ? [0, -22] : r === 'mask' ? [7.2, -7.4] : r === 'truck' ? [11.8, 2.8] : r === 'skord' ? [12, -20] : LAY.start;
+const ROLE_HOME = r => r === 'eld' ? LAY.anga : r === 'salj' ? LAY.kontor : LAY.start;
 function syncWorkers(G) {
   const S = G.S;
   for (const r in YRKEN) {
@@ -698,9 +781,9 @@ function stepWorker(G, w, dt) {
     if (G.ev && G.ev.kind === 'jam' && G.mach[G.ev.m].jam) {
       const at = LAY.mach[G.ev.m];
       if (moveTo(w, at[0] - LAY.machR[G.ev.m] - .6, at[1] + .4, W.walk * 1.3 * arb, dt)) { w.t += dt; w.ph += dt; if (w.t > 3 / tm(S, 'mek')) { w.t = 0; fixJam(G, 'w'); endEvent(G, 'mek'); } }
-    } else { w.t = 0; moveTo(w, 7.2 + 1.4, -3.4 + 1.4, W.walk, dt); }
+    } else { w.t = 0; const h = G.PAD.mek.at; moveTo(w, h[0] + 1.4, h[1] + 1.4, W.walk, dt); }
   } else if (w.role === 'plant') { // går till fällda träd och planterar
-    if (w.st === 'seek') { const c = G.trees.filter(t => t.st === 'regrow' && treeOk(G, t) && !t.pl); const t = c[(w.k * 7 + w.i * 3) % Math.max(1, c.length)]; if (t) { t.pl = 1; w.tree = t; w.st = 'walk'; } else moveTo(w, 0 + w.i, -21.5, W.walk, dt); }
+    if (w.st === 'seek') { const c = G.trees.filter(t => t.st === 'regrow' && treeOk(G, t) && !t.pl); const t = c[(w.k * 7 + w.i * 3) % Math.max(1, c.length)]; if (t) { t.pl = 1; w.tree = t; w.st = 'walk'; } else moveTo(w, LAY.intake[0] + 2 + w.i, LAY.intake[1] - 1.5, W.walk, dt); }
     else if (w.st === 'walk') { if (!w.tree) { w.st = 'seek'; return; } if (moveTo(w, w.tree.x + .3, w.tree.z + .9, W.walk * arb, dt)) { w.st = 'plant'; w.t = 1.2; } }
     else { w.moving = false; w.t -= dt; w.ph += dt; if (w.t <= 0) { if (w.tree) { w.tree.pl = 0; w.tree.t += 4; } w.tree = null; w.k++; w.st = 'seek'; } }
   } else if (w.role === 'salj') { // pendlar mellan kontoret och lastkajen
@@ -708,13 +791,14 @@ function stepWorker(G, w, dt) {
     if (w.st === 'seek') { if (moveTo(w, tgt[0] + w.i * .6, tgt[1], W.walk * .8, dt)) { w.st = 'talk'; w.t = 4; } }
     else { w.moving = false; w.t -= dt; w.ph += dt; if (w.t <= 0) { w.k++; w.st = 'seek'; } }
   } else if (w.role === 'flott') { // står vid älven och stakar timret
-    const a = (G.def.areas.find(x => x.river) || {}).river; if (!a) return;
-    moveTo(w, -9 + w.i * 6, a[3] + .6, W.walk, dt); if (!w.moving) w.ph += dt;
+    const a = (LAY.water.find(x => x.kind === 'river') || {}).r || (G.def.areas.find(x => x.river) || {}).river; if (!a) return;
+    const side = a[3] < LAY.intake[1] + 40 && a[3] > LAY.intake[1] ? a[2] - .6 : a[3] + .6;   // stranden närmast inlastningen
+    moveTo(w, LAY.intake[0] - 9 + w.i * 6, side, W.walk, dt); if (!w.moving) w.ph += dt;
   }
 }
 function flowRate(G) {   // stockar per sekund som flyter in av sig själva
   const S = G.S; let f = 0;
-  for (const a of G.def.areas) { if (!areaOpen(G, a.id)) continue; if (a.flow) f += a.flow; if (a.river) f += .35 * roleN(S, 'flott') * tm(S, 'flott'); }
+  for (const a of G.def.areas) { if (!areaOpen(G, a.id)) continue; if (a.flow) f += a.flow; if (a.river || (a.id === 'alv' && LAY.water.some(w => w.kind === 'river'))) f += .35 * roleN(S, 'flott') * tm(S, 'flott'); }
   if (G.B.ep >= 3 && lv(S, 'chauffor')) f += .4;   // timmerbilen hämtar själv
   return f;
 }
@@ -743,7 +827,7 @@ function startEvent(G) {
     else { ev.trees = []; for (let k = 0; k < E.borre.n; k++) { const t = c.splice(G.rng() * c.length | 0, 1)[0]; t.borre = true; ev.trees.push(t); } }
   }
   if (kind === 'jam') { const owned = MACHS.filter(m => lv(S, m)); ev.m = owned[G.rng() * owned.length | 0]; G.mach[ev.m].jam = true; }
-  if (kind === 'tappat') { for (let k = 0; k < E.tappat.n; k++) G.ground.push({ x: rr(G, -2, 8), z: rr(G, 12.5, 14), type: 'log', t: 0 }); }
+  if (kind === 'tappat') { for (let k = 0; k < E.tappat.n; k++) G.ground.push({ x: LAY.dock[0] + rr(G, -7, 3), z: LAY.dock[1] + rr(G, .6, 2), type: 'log', t: 0 }); }
   G.ev = ev; G.lastEv = kind; fx(G, { k: 'ev', kind, on: true });
 }
 function endEvent(G, why) {
@@ -865,7 +949,7 @@ function kravOk(G, k) { const [h, n] = kravVal(G, k); return h >= n; }
 function kravTxt(G, k) {
   const f = typeof fmt === 'function' ? fmt : String;
   switch (k.k) {
-    case 'auto': return 'Gör ett verk helt automatiserat (anställ chaufför)';
+    case 'auto': return 'Automatisera ett verk (anställ chaufför)';
     case 'autoHere': return 'Gör verket helt automatiserat';
     case 'autoOrter': return `Helt automatiserat i ${k.n} orter`;
     case 'earnedAll': return `Bolaget har tjänat ${f(k.n)} kr`;

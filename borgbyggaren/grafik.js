@@ -92,6 +92,12 @@ export const MODELLER = {
   krypta: 'gravplats/crypt.gltf',
   dodtrad: 'gravplats/tree_dead_large.gltf',
   dodtrad2: 'gravplats/tree_dead_medium.gltf',
+  // v2
+  skalle: 'gravplats/skull.gltf',            // eldanden
+  grus: 'dungeon/rubble_large.glb',          // ruiner
+  ruinhus: 'hex/building_destroyed.gltf',
+  stenA: 'hex/rock_single_A.gltf',
+  stenD: 'hex/rock_single_D.gltf',
 };
 
 // Vilken modellfil som bär animationsklippen för varje rigg.
@@ -128,6 +134,17 @@ export const TYPER = {
   skelettmagiker: { slag: 'figur', modell: 'sk_mage', rigg: 'skelett', skala: 0.66, vapen: [{ modell: 'sk_stav', ben: 'handslot.r' }], lag: 'fiende', hpHojd: 1.9, glod: 0x66ff88, klipp: { hugg: ['Spellcast_Shoot', 1.1] } },
   jatte: { slag: 'figur', modell: 'sk_warrior', rigg: 'skelett', skala: 1.2, vapen: [{ modell: 'sk_yxa', ben: 'handslot.r', skala: 1.25 }, { modell: 'sk_skold_stor', ben: 'handslot.l' }], lag: 'fiende', hpHojd: 3.1, klipp: { ga: ['Walking_D_Skeletons', 0.9], hugg: ['2H_Melee_Attack_Chop', 0.9] }, tung: true },
   boss: { slag: 'figur', modell: 'sk_warrior', rigg: 'skelett', skala: 1.8, vapen: [{ modell: 'sk_svard', ben: 'handslot.r', skala: 1.4 }, { modell: 'sk_skold_stor', ben: 'handslot.l' }], farg: 0xc9b4ff, glod: 0xff3355, krona: true, lag: 'fiende', boss: true, hpHojd: 4.6, klipp: { ga: ['Walking_D_Skeletons', 0.75], hugg: ['2H_Melee_Attack_Chop', 0.8] }, tung: true },
+  // v2: hjältar, handelsman och nya fiender. kod = figuren byggs i kod (egen enkel rigg, se KODFIGURER).
+  helare: { slag: 'figur', modell: 'rogue', rigg: 'aventyrare', skala: 0.62, delar: ['Knife', 'Rogue_Cape'], farg: 0xdcf6dc, lag: 'van', hpHojd: 1.7, lakljus: true },
+  kampe: { slag: 'figur', modell: 'barbarian', rigg: 'aventyrare', skala: 0.75, delar: ['2H_Axe', 'Barbarian_Hat'], farg: 0xffe8d8, lag: 'van', hpHojd: 2.05, klipp: { hugg: ['2H_Melee_Attack_Chop', 1.1] } },
+  handlare: { slag: 'figur', modell: 'barbarian', rigg: 'aventyrare', skala: 0.6, delar: ['Barbarian_Hat', 'Mug'], farg: 0xf0cc90, lag: 'van', hpHojd: 1.7, tillbehor: [{ modell: 'lada', pos: [1.05, 0, 0.15], skala: 4.2, rot: 0.4 }, { modell: 'tunna', pos: [-0.95, 0, -0.25], skala: 3.6 }] },
+  isvarg: { slag: 'figur', kod: 'varg', skala: 1.0, glod: 0xa8ecff, lag: 'fiende', hpHojd: 1.4 },
+  frostmagiker: { slag: 'figur', modell: 'sk_mage', rigg: 'skelett', skala: 0.66, vapen: [{ modell: 'sk_stav', ben: 'handslot.r' }], farg: 0xbfe2ff, lag: 'fiende', hpHojd: 1.9, glod: 0x58c8ff, klipp: { hugg: ['Spellcast_Shoot', 1.1] } },
+  eldande: { slag: 'svav', modell: 'skalle', skala: 1.25, hojd: 1.25, lag: 'fiende', hpHojd: 2.4 },
+  belagringsbest: { slag: 'figur', modell: 'sk_warrior', rigg: 'skelett', skala: 1.6, vapen: [{ modell: 'sk_yxa', ben: 'handslot.r', skala: 1.9 }], farg: 0x8a4c44, glod: 0xff5a1a, sprickor: 0xff5a14, lag: 'fiende', hpHojd: 4.1, klipp: { ga: ['Walking_D_Skeletons', 0.75], hugg: ['2H_Melee_Attack_Chop', 0.8] }, tung: true },
+  frostboss: { slag: 'figur', modell: 'sk_warrior', rigg: 'skelett', skala: 1.8, vapen: [{ modell: 'sk_svard', ben: 'handslot.r', skala: 1.4 }, { modell: 'sk_skold_stor', ben: 'handslot.l' }], farg: 0xb4d8ff, glod: 0x48c8ff, krona: 0xcff2ff, lag: 'fiende', boss: true, hpHojd: 4.6, klipp: { ga: ['Walking_D_Skeletons', 0.75], hugg: ['2H_Melee_Attack_Chop', 0.8] }, tung: true },
+  eldboss: { slag: 'figur', modell: 'sk_warrior', rigg: 'skelett', skala: 1.8, vapen: [{ modell: 'sk_yxa', ben: 'handslot.r', skala: 1.7 }, { modell: 'sk_skold_stor', ben: 'handslot.l' }], farg: 0xffa08a, glod: 0xff4a10, sprickor: 0xff6a1a, krona: 0xff9a2a, lag: 'fiende', boss: true, hpHojd: 4.6, klipp: { ga: ['Walking_D_Skeletons', 0.75], hugg: ['2H_Melee_Attack_Chop', 0.8] }, tung: true },
+  drake: { slag: 'figur', kod: 'drake', skala: 1.0, glod: 0xff7a24, lag: 'fiende', boss: true, hpHojd: 6.3, svav: 2.5, tung: true },
 
   // Byggnadernas skala är vald efter radierna i modell.js (TUNE.byggen): tronsal 3, torn 1,1, kasern/smedja 1,4, kojor 1,6.
   tronsal: { slag: 'bygge', modell: 'slott', skala: 2.8, hpHojd: 11.8, eldar: [[-1.65, 1.4, 3.6], [1.65, 1.4, 3.6]], radie: 3 },
@@ -144,9 +161,15 @@ export const TYPER = {
 
   fyrfat: { slag: 'eld', sort: 'fyrfat', skala: 0.9, eldHojd: 1.12, styrka: 1 },
   fackla: { slag: 'eld', sort: 'fackla', modell: 'fackla', skala: 1.3, eldHojd: 1.4, styrka: 0.6 },
+  varmeeld: { slag: 'eld', sort: 'varmeeld', skala: 1.0, eldHojd: 0.32, styrka: 1.45, flammor: [[0, 0, 0, 1], [0.42, 0, 0.18, 0.35], [-0.36, 0, -0.26, 0.35]] },
+  // v2: belägringsmaskiner och vallgrav byggs i kod (se byggMaskin, byggGrav)
+  katapult: { slag: 'maskin', sort: 'katapult', skala: 1.0, hpHojd: 3.6, radie: 1.3 },
+  ballista: { slag: 'maskin', sort: 'ballista', skala: 1.25, hpHojd: 3.2, radie: 1.1 },
+  vallgrav: { slag: 'grav', radie: 3.2 },
+  bat: { slag: 'bat' },
 
   trad: { slag: 'instans', varianter: ['trad_b', 'trad_a', 'trad_b'], skala: [3.2, 4.4], vaj: 1, stubbe: 'stubbe', farger: [0xffffff, 0xe6f2c8, 0xcfe8b0, 0xf4e9b8] },
-  sten: { slag: 'instans', varianter: ['sten_c', 'sten_e', 'sten_b'], skala: [5.5, 8], slutSkala: 0.3, farger: [0xffffff, 0xe4e4ea, 0xd8d2c8] },
+  sten: { slag: 'instans', varianter: ['sten_c', 'sten_e', 'sten_b'], skala: [5.5, 8], slutSkala: 0.3, farger: [0xffffff, 0xe4e4ea, 0xd8d2c8], dov: true },
   gravsten: { slag: 'instans', varianter: ['gravsten', 'grav_a', 'grav_b', 'gravkors'], skala: [0.52, 0.66], farger: [0xffffff, 0xd8dde0] },
   dodtrad: { slag: 'instans', varianter: ['dodtrad', 'dodtrad2'], skala: [1.5, 2.0] },
   krypta: { slag: 'bygge', modell: 'krypta', skala: 0.75, hpHojd: 7, radie: 3 },
@@ -162,7 +185,9 @@ export const TYPER = {
 // Ikoner på betalrutor och i HUD:en: ritas med canvas så att de ser likadana ut överallt (inga emoji).
 // ritaIkon(c, namn, x, y, s): c = 2D-kontext, (x, y) = mitten, s = sidans längd i bildpunkter.
 export const IKONER = ['tra', 'sten', 'guld', 'palissad', 'stenmur', 'mur', 'port', 'torn', 'kasern', 'vedkoja', 'stenkoja', 'smedja',
-  'fyrfat', 'fackla', 'tronsal', 'soldat', 'svard', 'rustning', 'bar', 'horn', 'hjarta', 'dodskalle', 'okand'];
+  'fyrfat', 'fackla', 'tronsal', 'soldat', 'svard', 'rustning', 'bar', 'horn', 'hjarta', 'dodskalle', 'okand',
+  'varmeeld', 'katapult', 'ballista', 'vallgrav', 'bagskytt', 'helare', 'kampe', 'karta', 'lada', 'eldpilar', 'dryck', 'murbruk',
+  'o_glantan', 'o_frost', 'o_vulkan'];
 export function ritaIkon(c, namn, x, y, s) {
   c.save(); c.translate(x, y); c.scale(s / 100, s / 100); c.lineJoin = 'round'; c.lineCap = 'round';
   const K = '#2a1a0c';
@@ -197,6 +222,39 @@ export function ritaIkon(c, namn, x, y, s) {
     case 'horn': c.beginPath(); c.moveTo(-44, -10); c.quadraticCurveTo(-30, 44, 30, 30); c.lineTo(40, -20); c.quadraticCurveTo(-4, 10, -36, -16); c.closePath(); fyll('#f0e2b4'); linje([8, 4, 14, 30], '#b08a52', 6); linje([-18, 0, -14, 22], '#b08a52', 6); c.save(); c.translate(36, 5); c.rotate(0.2); c.beginPath(); c.ellipse(0, 0, 9, 26, 0, 0, Math.PI * 2); fyll('#7a4e26'); c.restore(); cirkel(-42, -12, 5); fyll('#e0a820', 4); break;
     case 'hjarta': c.beginPath(); c.moveTo(0, 40); c.bezierCurveTo(-56, 4, -40, -44, 0, -18); c.bezierCurveTo(40, -44, 56, 4, 0, 40); c.closePath(); fyll('#e0483f'); break;
     case 'dodskalle': c.beginPath(); c.arc(0, -8, 34, Math.PI * 0.82, Math.PI * 0.18); c.lineTo(20, 36); c.lineTo(-20, 36); c.closePath(); fyll('#eef0e6'); cirkel(-13, -8, 9); fyll('#2a1a0c', 0); cirkel(13, -8, 9); fyll('#2a1a0c', 0); poly([0, 6, -5, 16, 5, 16]); fyll('#2a1a0c', 0); linje([-8, 24, -8, 36], K, 4); linje([0, 24, 0, 36], K, 4); linje([8, 24, 8, 36], K, 4); break;
+    // v2
+    case 'varmeeld': c.save(); c.translate(0, -8); laga(0.78); fyll('#ff7a1e'); c.translate(0, 10); laga(0.42); fyll('#ffd24a', 0); c.restore();
+      for (const [px, py, rx] of [[-34, 32, 13], [-12, 37, 14], [12, 37, 14], [34, 32, 13]]) { c.beginPath(); c.ellipse(px, py, rx, 9, 0, 0, TAU); fyll(Math.abs(px) > 20 ? '#9aa2ae' : '#b4bcc8', 4); } break;
+    case 'katapult': linje([-40, 28, 36, 28], K, 13); linje([-40, 28, 36, 28], '#a8703c', 7); linje([-20, 28, 0, -2, 20, 28], K, 11); linje([-20, 28, 0, -2, 20, 28], '#8a5a30', 5);
+      linje([0, -2, -34, -32], K, 12); linje([0, -2, -34, -32], '#c98a4b', 6); cirkel(-36, -36, 11); fyll('#aeb6c2', 4);
+      for (const px of [-30, 26]) { cirkel(px, 34, 10); fyll('#7a4e26', 4); cirkel(px, 34, 3); fyll('#e0a820', 0); } break;
+    case 'ballista': linje([0, 10, -22, 44], K, 11); linje([0, 10, 22, 44], K, 11); linje([0, 10, -22, 44], '#7a4e26', 5); linje([0, 10, 22, 44], '#7a4e26', 5);
+      c.beginPath(); c.moveTo(-44, -6); c.quadraticCurveTo(0, -40, 44, -6); c.lineWidth = 12; c.strokeStyle = K; c.stroke(); c.lineWidth = 6; c.strokeStyle = '#c98a4b'; c.stroke();
+      linje([-44, -6, 0, 6, 44, -6], '#f0e2b4', 2.5); linje([0, 18, 0, -46], K, 10); linje([0, 18, 0, -40], '#a8703c', 5); poly([-7, -38, 0, -50, 7, -38]); fyll('#c6ccd6', 3); break;
+    case 'vallgrav': c.beginPath(); c.ellipse(0, 6, 46, 30, 0, 0, TAU); fyll('#8a6a44'); c.beginPath(); c.ellipse(0, 6, 32, 19, 0, 0, TAU); fyll('#3f8fd0', 4);
+      linje([-16, 2, -4, 2], '#bfe6ff', 4); linje([6, 12, 18, 12], '#bfe6ff', 4); break;
+    case 'bagskytt': c.beginPath(); c.arc(-10, 0, 40, -1.15, 1.15); c.lineWidth = 13; c.strokeStyle = K; c.stroke(); c.lineWidth = 7; c.strokeStyle = '#a8703c'; c.stroke();
+      linje([7, -37, 7, 37], '#f0e2b4', 3); linje([-38, 0, 40, 0], K, 9); linje([-38, 0, 36, 0], '#e6d0a0', 4); poly([30, -9, 46, 0, 30, 9]); fyll('#c6ccd6', 3); poly([-40, -8, -28, 0, -40, 8, -34, 0]); fyll('#e0483f', 3); break;
+    case 'helare': cirkel(0, 0, 40); fyll('#f4fbf2'); poly([-11, -30, 11, -30, 11, -11, 30, -11, 30, 11, 11, 11, 11, 30, -11, 30, -11, 11, -30, 11, -30, -11, -11, -11]); fyll('#3fc05a', 4); break;
+    case 'kampe': linje([-34, 42, 26, -38], K, 15); linje([-34, 42, 26, -38], '#8a5a30', 8);
+      c.save(); c.translate(14, -22); c.rotate(-0.92); for (const sd of [-1, 1]) { c.beginPath(); c.moveTo(-10, sd * 6); c.lineTo(-17, sd * 30); c.quadraticCurveTo(0, sd * 44, 17, sd * 30); c.lineTo(10, sd * 6); c.closePath(); fyll('#d4dae2'); linje([-13, sd * 27, 13, sd * 27], '#f4f8ff', 3); } rr(-11, -7, 22, 14, 4); fyll('#6a717c'); c.restore(); break;
+    case 'karta': poly([-42, -30, -14, -38, 14, -30, 42, -38, 42, 32, 14, 40, -14, 32, -42, 40]); fyll('#f0dcaa'); linje([-14, -38, -14, 32], '#c9a36a', 3); linje([14, -30, 14, 40], '#c9a36a', 3);
+      c.setLineDash([6, 7]); linje([-30, 22, -12, 4, 6, 12, 22, -10], '#a8703c', 4); c.setLineDash([]); linje([16, -22, 30, -8], '#e0483f', 6); linje([30, -22, 16, -8], '#e0483f', 6); break;
+    case 'lada': rr(-38, -34, 76, 72, 6); fyll('#c98a4b'); linje([-38, -34, 38, 38], '#7a4e26', 6); linje([-38, 2, 38, 2], '#7a4e26', 5); rr(-38, -34, 76, 72, 6); c.lineWidth = 5; c.strokeStyle = K; c.stroke(); break;
+    case 'eldpilar': linje([-40, 40, 26, -26], K, 9); linje([-40, 40, 24, -24], '#e6d0a0', 4); poly([-44, 30, -32, 36, -38, 46]); fyll('#e0483f', 3);
+      c.save(); c.translate(28, -28); c.rotate(0.78); laga(0.5); fyll('#ff7a1e'); c.translate(0, 6); laga(0.26); fyll('#ffd24a', 0); c.restore(); break;
+    case 'dryck': c.beginPath(); c.moveTo(-9, -36); c.lineTo(-9, -16); c.quadraticCurveTo(-36, -6, -34, 16); c.quadraticCurveTo(-30, 42, 0, 42); c.quadraticCurveTo(30, 42, 34, 16); c.quadraticCurveTo(36, -6, 9, -16); c.lineTo(9, -36); c.closePath(); fyll('#d8eef4');
+      c.beginPath(); c.moveTo(-31, 12); c.quadraticCurveTo(-28, 38, 0, 38); c.quadraticCurveTo(28, 38, 31, 12); c.closePath(); fyll('#e0483f', 0); rr(-12, -46, 24, 12, 4); fyll('#8a5a30'); linje([-18, 14, -12, 4], '#ffd0d0', 4); break;
+    case 'murbruk': c.beginPath(); c.moveTo(-38, -6); c.lineTo(38, -6); c.lineTo(30, 40); c.lineTo(-30, 40); c.closePath(); fyll('#8a8f98'); c.beginPath(); c.ellipse(0, -6, 38, 10, 0, 0, TAU); fyll('#d8d2c4', 4);
+      linje([10, -12, 34, -44], K, 9); linje([10, -12, 34, -44], '#8a5a30', 4); poly([-8, -20, 14, -36, 22, -14, 6, -4]); fyll('#c6ccd6', 4); break;
+    case 'o_glantan': case 'o_frost': case 'o_vulkan': {
+      const fr = { o_glantan: ['#3f9fd8', '#e9d7a2', '#6ab548', '#3f7d2c'], o_frost: ['#9cc8e6', '#dfe8f0', '#f4f8fc', '#a8bccf'], o_vulkan: ['#5a6a78', '#3a3432', '#4a4240', '#2a2422'] }[namn];
+      cirkel(0, 0, 46); fyll(fr[0], 4); c.beginPath(); c.ellipse(0, 6, 38, 26, 0, 0, TAU); fyll(fr[1], 4); c.beginPath(); c.ellipse(0, 4, 30, 19, 0, 0, TAU); fyll(fr[2], 0);
+      if (namn === 'o_glantan') { for (const [px, py] of [[-12, 2], [8, -4], [16, 8]]) { poly([px - 9, py + 6, px, py - 16, px + 9, py + 6]); fyll(fr[3], 3); } }
+      else if (namn === 'o_frost') { linje([-10, -12, 10, 16], '#7aaed6', 4); linje([10, -12, -10, 16], '#7aaed6', 4); linje([-14, 2, 14, 2], '#7aaed6', 4); poly([16, 10, 26, -6, 34, 10]); fyll('#ffffff', 3); }
+      else { poly([-22, 16, -2, -24, 8, -24, 26, 16]); fyll('#5a4a44'); poly([-4, -24, 3, -14, 8, -24]); fyll('#ff7a1e', 0); linje([3, -14, -6, 2, 2, 14], '#ff7a1e', 4); cirkel(0, -32, 6); fyll('#8a8480', 0); cirkel(8, -40, 5); fyll('#a8a29e', 0); }
+      break;
+    }
     default: cirkel(0, 0, 36); fyll('#c9a36a'); c.fillStyle = K; c.font = '800 54px system-ui,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', 0, 4);
   }
   c.restore();
@@ -211,7 +269,9 @@ export const HANDELSER = {
   plock: 'guld', betalning: 'betala', lamna: 'damm', leverans: 'damm',
   boss_ny: 'skak', boss_special: 'small', boss_dod: 'small', slag: 'svep', skott: 'skott',
   // äldre och allmänna namn
-  dod: 'benpuff', guld: 'guld', betala: 'betala', magi: 'magi', explosion: 'small', mur_traff: 'murtraff', skak: 'skak', brinner: 'brinn', sten: 'stenflis',
+  dod: 'benpuff', guld: 'guld', betala: 'betala', magi: 'magi', mur_traff: 'murtraff', skak: 'skak', brinner: 'brinn', sten: 'stenflis',
+  // v2
+  explosion: 'explosion', nedslag: 'nedslag', is_traff: 'frost', lava: 'lavabrand', hjalte_ny: 'glitter', ritning: 'glitter', dryck: 'dryck', bat: 'plask',
 };
 
 // Dygnets nyckellägen. t: 0–1 dag, 1–2 skymning, 2–3 natt, 3–4 gryning (fasens andel läggs på).
@@ -243,6 +303,39 @@ const KVALITET = [
   { namn: 'utan figurskuggor', skala: 0.7, post: false, skuggor: true, figurskuggor: false },
   { namn: 'utan skuggor', skala: 0.6, post: false, skuggor: false, figurskuggor: false },
 ];
+
+// v2: tema per ö (spel.miljo.tema). mark = markens färger, vatten = sjöns färger, kust = kustlinjens faser (öns form),
+// sno = hur mycket ovansidor (normalens y) blandas mot snoFarg (snö på Frostön, aska på Vulkanön), dygn = hur dis, horisont,
+// sol och markljus dras mot temats färger (dag → natt), typer = hur typerna ritas om (läggs över TYPER), dekor = skogsbryn och sjöstenar.
+const TEMAN = {
+  sommar: {
+    mark: { gras: 0x5c9e3c, gras2: 0x7ab548, gras3: 0x468438, jord: 0xa8895c, jord2: 0x8f7650, berg: 0x7d8088, sand: 0xe9d7a2, vat: 0xb89e6e, botten: 0xcfc08e },
+    vatten: { djup: 0x0e5a8c, grund: 0x45cfc0, skum: 0xffffff },
+    kust: [1.1, 2.3, 0.4], sno: 0, snoFarg: 0xf2f6ff, glitter: 0, gras: 1, grasToner: [0xffffff, 0xe8f0c0, 0xd0e8b0, 0xfff2b0, 0xc0dca0], grasFarg: [0x4c8c34, 0x90c456], flugor: 1, nederbord: null, grav: 1,
+    dekor: { trad: 1, sten: 1, stenLand: 0xe2e0d8, stenVat: 0xb8b4aa }, typer: {}, dygn: null, fyll: 0x5866a8, punkt: 1,
+  },
+  vinter: {
+    mark: { gras: 0xd4dce6, gras2: 0xe2e8f0, gras3: 0xc0ccda, jord: 0x9c9894, jord2: 0x8a8480, berg: 0x8a96a8, sand: 0xbcc6d2, vat: 0x8696a4, botten: 0x7d94a2 },
+    vatten: { djup: 0x123c5e, grund: 0x4f9cb2, skum: 0xeaf4ff },
+    kust: [2.0, 0.7, 1.9], sno: 1, snoFarg: 0xe4ecf6, glitter: 1, gras: 0.12, grasToner: [0xffffff, 0xe8e0d0, 0xd8d0c0], grasFarg: [0x7a7656, 0xcfc49a], flugor: 0, nederbord: 'sno', grav: 0.8,
+    dekor: { trad: 0.9, sten: 1, stenLand: 0xe8eef6, stenVat: 0xc4d0dc },
+    typer: { trad: { farger: [0xc4d8d0, 0xb4ccc4, 0xd0e0d8, 0xbcd4dc] }, sten: { farger: [0xeef2f8, 0xdde4ee, 0xf4f6fa] }, gravsten: { farger: [0xe0e6ee, 0xccd4de] } },
+    dygn: { dimma: 0xd6e2ee, dimmaN: 0x2a3a62, dimmaK: 0.6, dimT: 0.92, hor: 0xe6eef6, horN: 0x2c3e6c, horK: 0.45, topp: 0x6a9ad0, toppK: 0.25,
+      sol: 0xf2f6ff, solK: 0.4, hemiH: 0xdce8ff, hemiHK: 0.3, hemiM: 0xc4d2e4, hemiMN: 0x46527a, hemiMK: 0.75, ton: 0xf2f6ff, tonK: 0.6, exp: 0.94 },
+    fyll: 0x6a7ec0, punkt: 0.4,
+  },
+  vulkan: {
+    mark: { gras: 0x4a4440, gras2: 0x5a514a, gras3: 0x3a3532, jord: 0x5e4e42, jord2: 0x4e4036, berg: 0x3e3634, sand: 0x2e2a28, vat: 0x2a2624, botten: 0x3a3430 },
+    vatten: { djup: 0x16262c, grund: 0x3a5654, skum: 0xb0a8a0 },
+    kust: [0.3, 3.4, 2.8], sno: 0.42, snoFarg: 0x3a3634, glitter: 0, gras: 0.3, grasToner: [0xffffff, 0xe0d0c0, 0xc8b8a8, 0xf0e0d0], grasFarg: [0x2e2620, 0x7a6248], flugor: 0, nederbord: 'aska', grav: 1.2,
+    dekor: { trad: 0.45, sten: 1.7, stenLand: 0x5a5250, stenVat: 0x4a4442 },
+    typer: { trad: { varianter: ['dodtrad', 'dodtrad2', 'dodtrad2'], skala: [0.78, 1.02], farger: [0x6a5a50, 0x5a4c44, 0x7a6658], vaj: 0.35 }, sten: { farger: [0x5e5654, 0x4c4442, 0x6e625c] },
+      gravsten: { farger: [0x8a8280, 0x6a6260] }, dodtrad: { farger: [0x5a4a42] } },
+    dygn: { dimma: 0xb08a78, dimmaN: 0x3a1c18, dimmaK: 0.55, dimT: 1.25, hor: 0xd07a50, horN: 0x6a2216, horK: 0.55, topp: 0x6a7a9a, toppK: 0.35,
+      sol: 0xffc8a0, solK: 0.35, hemiH: 0xe0c8c0, hemiHK: 0.3, hemiM: 0x4a3a34, hemiMN: 0x3a2420, hemiMK: 0.6, ton: 0xffe8dc, tonK: 0.6, exp: 1.0 },
+    fyll: 0x8a5a58, punkt: 1,
+  },
+};
 
 // ───────────────────────────── hjälpfunktioner ─────────────────────────────
 const TAU = Math.PI * 2;
@@ -307,10 +400,45 @@ export function skapaGrafik(canvas, opts = {}) {
   scen.add(sol, sol.target);
   const punktljus = [];
   for (let i = 0; i < 3; i++) { const p = new THREE.PointLight(0xff9a3c, 0, 17, 1.5); p.position.set(0, -50, 0); scen.add(p); punktljus.push(p); }
+  // fyllnadsljus på natten: lyfter skärmkanterna långt från elden utan att natten slutar kännas som natt
+  const fyllLjus = new THREE.AmbientLight(0x5866a8, 0); scen.add(fyllLjus);
+
+  // ─── tema (ö) ───
+  const STD_BRYGGA = { x: 47 * Math.sin(25 * Math.PI / 180), z: 47 * Math.cos(25 * Math.PI / 180), rot: 25 * Math.PI / 180 };
+  let tema = 'sommar', TM = TEMAN.sommar, miljo = null, brygga = STD_BRYGGA, lava = [], temaSign = '';
+  const temaCache = new Map();
+  // typens ritning på den här ön (TEMAN[tema].typer läggs över TYPER)
+  function temaDef(typ) {
+    const d = TYPER[typ]; if (!d) return d;
+    const over = TM.typer[typ]; if (!over) return d;
+    let r = temaCache.get(typ); if (!r) { r = Object.assign({}, d, over); temaCache.set(typ, r); }
+    return r;
+  }
+  U.sno = { value: 0 }; U.snoFarg = { value: new THREE.Color(0xf2f6ff) };
+  // Snö (eller aska) på ovansidor: blandar mot snoFarg efter normalens y i världen. Läggs in i Lambert-material för byggnader, natur och murar.
+  const GLSL_TBRUS = 'float tHsh(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }\nfloat tBrus(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f); return mix(mix(tHsh(i), tHsh(i+vec2(1,0)), u.x), mix(tHsh(i+vec2(0,1)), tHsh(i+vec2(1,1)), u.x), u.y); }\n';
+  function temaPatch(sh, dov) {
+    sh.uniforms.uSno = U.sno; sh.uniforms.uSnoFarg = U.snoFarg; sh.uniforms.uMorker = U.morker;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vTemaP;').replace('#include <project_vertex>', `#include <project_vertex>
+      { vec4 tp = vec4(transformed, 1.0);
+      #ifdef USE_INSTANCING
+        tp = instanceMatrix * tp;
+      #endif
+        vTemaP = (modelMatrix * tp).xyz; }`);
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vTemaP;\nuniform float uSno, uMorker;\nuniform vec3 uSnoFarg;\n' + GLSL_TBRUS)
+      .replace('#include <emissivemap_fragment>', `if (uSno > 0.0) { vec3 nW = normalize((vec4(normal, 0.0) * viewMatrix).xyz);
+          float sn = smoothstep(0.3, 0.68, nW.y + (tBrus(vTemaP.xz * 1.6 + vTemaP.y * 0.7) - 0.5) * 0.45) * uSno;
+          diffuseColor.rgb = mix(diffuseColor.rgb, uSnoFarg, sn); }
+        ${dov ? '{ float l = dot(diffuseColor.rgb, vec3(0.3, 0.5, 0.2)); diffuseColor.rgb = mix(diffuseColor.rgb, vec3(l) * vec3(1.04, 1.0, 0.9), uMorker * 0.7) * mix(1.0, 0.42, uMorker); }' : ''}
+        #include <emissivemap_fragment>`);
+  }
+  // material för geometri byggd i kod (färg per hörn), med snö/aska
+  const vfMat = new THREE.MeshLambertMaterial({ vertexColors: true });
+  vfMat.onBeforeCompile = (sh) => temaPatch(sh, false); vfMat.customProgramCacheKey = () => 'vf-tema';
 
   // ─── terräng ───
   const VATTEN_Y = -0.55;
-  const kustR = (th) => O.oRadie * (1 + 0.07 * Math.sin(3 * th + 1.1) + 0.045 * Math.sin(5 * th + 2.3) + 0.025 * Math.sin(9 * th + 0.4));
+  const kustR = (th) => { const k = TM.kust; return O.oRadie * (1 + 0.07 * Math.sin(3 * th + k[0]) + 0.045 * Math.sin(5 * th + k[1]) + 0.025 * Math.sin(9 * th + k[2])); };
   function markHojd(x, z) {
     const r = Math.hypot(x, z);
     if (r < O.spelRadie) return 0;
@@ -318,15 +446,24 @@ export function skapaGrafik(canvas, opts = {}) {
     if (d <= 0) return Math.max(-3, VATTEN_Y + d * 0.17);
     let h = VATTEN_Y * (1 - mjuk(0, 7, d));
     const ring = mjuk(O.spelRadie, O.spelRadie + 9, r) * mjuk(5, 13, d);
-    if (ring > 0) h += ring * (fbm(x * 0.07 + 3, z * 0.07 - 5) * 3.2 + 0.2);
+    if (ring > 0) {
+      let k = ring;
+      if (brygga) { // kullarna plattas till under bryggan
+        const ux = Math.sin(brygga.rot), uz = Math.cos(brygga.rot), dx = x - brygga.x, dz = z - brygga.z, langs = dx * ux + dz * uz, tvars = Math.abs(dx * uz - dz * ux);
+        k *= 1 - mjuk(6, 2.6, tvars) * mjuk(-4, 0, langs);
+      }
+      h += k * (fbm(x * 0.07 + 3, z * 0.07 - 5) * 3.2 + 0.2);
+    }
     return h;
   }
+  function lavaAvst(x, z) { let b = 1e9; for (const s of lava) { const vx = s.bx - s.ax, vz = s.bz - s.az, l2 = vx * vx + vz * vz; const t = l2 > 0 ? klamp(((x - s.ax) * vx + (z - s.az) * vz) / l2, 0, 1) : 0; b = Math.min(b, Math.hypot(x - s.ax - vx * t, z - s.az - vz * t)); } return b; }
   const MARK = O.oRadie * 2.7;
   function byggMark() {
     const seg = mobil ? 150 : 190;
     const g = new THREE.PlaneGeometry(MARK, MARK, seg, seg); g.rotateX(-Math.PI / 2);
     const p = g.attributes.position, farg = new Float32Array(p.count * 3);
-    const cSand = new THREE.Color(0xe9d7a2), cVat = new THREE.Color(0xb89e6e), cGras = new THREE.Color(0x5c9e3c), cGras2 = new THREE.Color(0x7ab548), cGras3 = new THREE.Color(0x468438), cJord = new THREE.Color(0xa8895c), cJord2 = new THREE.Color(0x8f7650), cBerg = new THREE.Color(0x7d8088), cBotten = new THREE.Color(0xcfc08e);
+    const F = TM.mark, cSand = new THREE.Color(F.sand), cVat = new THREE.Color(F.vat), cGras = new THREE.Color(F.gras), cGras2 = new THREE.Color(F.gras2), cGras3 = new THREE.Color(F.gras3), cJord = new THREE.Color(F.jord), cJord2 = new THREE.Color(F.jord2), cBerg = new THREE.Color(F.berg), cBotten = new THREE.Color(F.botten);
+    const cBrand = new THREE.Color(0x1a1412), cGlodK = new THREE.Color(0x4a1c10), cStig = new THREE.Color(tema === 'vinter' ? 0xa09a98 : tema === 'vulkan' ? 0x4a3e36 : 0xc2a878);
     const c = new THREE.Color();
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), z = p.getZ(i), h = markHojd(x, z);
@@ -341,6 +478,8 @@ export function skapaGrafik(canvas, opts = {}) {
       const strand = mjuk(9.5, 5.5, d + (n2 - 0.5) * 3); c.lerp(cSand, strand);
       if (d < 1.6) c.lerp(cVat, mjuk(1.6, 0.2, d) * 0.7);
       if (d < 0) c.lerp(cBotten, 0.6);
+      if (lava.length && r < O.spelRadie + 4) { const la = lavaAvst(x, z) - 1.7; if (la < 3) { c.lerp(cBrand, mjuk(3, 0.2, la + (n2 - 0.5) * 1.2) * 0.85); c.lerp(cGlodK, mjuk(0.9, -0.2, la) * 0.6); } }
+      if (brygga) { const dx = x - brygga.x, dz = z - brygga.z, ux = Math.sin(brygga.rot), uz = Math.cos(brygga.rot), langs = dx * ux + dz * uz; if (langs > -6 && langs < 1.5 && d > 1) c.lerp(cStig, mjuk(2.2, 1.0, Math.abs(dx * uz - dz * ux) + (n2 - 0.5) * 1.4) * mjuk(-6, -3.5, langs) * 0.7); }
       farg[i * 3] = c.r; farg[i * 3 + 1] = c.g; farg[i * 3 + 2] = c.b;
     }
     g.setAttribute('color', new THREE.BufferAttribute(farg, 3));
@@ -352,29 +491,36 @@ export function skapaGrafik(canvas, opts = {}) {
     const korn = new THREE.CanvasTexture(cv); korn.wrapS = korn.wrapT = THREE.RepeatWrapping; korn.repeat.set(70, 70); korn.colorSpace = THREE.SRGBColorSpace; korn.anisotropy = 4;
     const mat = new THREE.MeshLambertMaterial({ vertexColors: true, map: korn });
     mat.onBeforeCompile = (sh) => {
-      sh.uniforms.uTid = U.tid; sh.uniforms.uMolnSkugga = U.molnSkugga;
+      sh.uniforms.uTid = U.tid; sh.uniforms.uMolnSkugga = U.molnSkugga; sh.uniforms.uGlitter = { value: TM.glitter };
       sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vVarld;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvVarld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
-      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vVarld;\nuniform float uTid, uMolnSkugga;' + GLSL_BRUS)
-        .replace('#include <color_fragment>', '#include <color_fragment>\nfloat moln = smoothstep(0.42, 0.7, fbrus(vVarld.xz * 0.018 + vec2(uTid * 0.012, uTid * 0.007)));\ndiffuseColor.rgb *= (1.0 - moln * uMolnSkugga) * (0.84 + 0.3 * fbrus(vVarld.xz * 0.27)) * (0.93 + 0.14 * vbrus(vVarld.xz * 2.1));');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vVarld;\nuniform float uTid, uMolnSkugga, uGlitter;' + GLSL_BRUS)
+        .replace('#include <color_fragment>', '#include <color_fragment>\nfloat moln = smoothstep(0.42, 0.7, fbrus(vVarld.xz * 0.018 + vec2(uTid * 0.012, uTid * 0.007)));\ndiffuseColor.rgb *= (1.0 - moln * uMolnSkugga) * (0.84 + 0.3 * fbrus(vVarld.xz * 0.27)) * (0.93 + 0.14 * vbrus(vVarld.xz * 2.1));\nif (uGlitter > 0.0) diffuseColor.rgb += uGlitter * step(0.995, hsh(floor(vVarld.xz * 18.0))) * 0.6 * (0.6 + 0.4 * sin(uTid * 3.0 + hsh(floor(vVarld.xz * 18.0) + 1.7) * 40.0));');
     };
-    const m = new THREE.Mesh(g, mat); m.receiveShadow = true; m.name = 'mark';
-    scen.add(m);
+    mat.customProgramCacheKey = () => 'mark';
+    const m = new THREE.Mesh(g, mat); m.receiveShadow = true; m.name = 'mark'; m.userData.egen = true;
+    laggVarld(m);
     return m;
   }
   U.molnSkugga = { value: 0.22 };
+  U.gravar = { value: Array.from({ length: 8 }, () => new THREE.Vector3(1e4, 1e4, 0)) }; // vallgravar (x, z, radie): gräset trycks undan
 
   // ─── vatten ───
   let vattenMat;
-  function byggVatten() {
+  function vattenHojd() { // djupkarta för vattnet (ändras med öns form)
     const N = 256, data = new Uint8Array(N * N);
     for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const x = (i / (N - 1) - 0.5) * MARK, z = (j / (N - 1) - 0.5) * MARK; data[j * N + i] = klamp((markHojd(x, z) + 3) / 4, 0, 1) * 255; }
     const hojdTex = new THREE.DataTexture(data, N, N, THREE.RedFormat); hojdTex.magFilter = hojdTex.minFilter = THREE.LinearFilter; hojdTex.needsUpdate = true;
+    if (vattenMat.uniforms.uHojd.value) vattenMat.uniforms.uHojd.value.dispose();
+    vattenMat.uniforms.uHojd.value = hojdTex;
+  }
+  function byggVatten() {
     vattenMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, fog: true,
       uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, {
         uHojd: { value: null }, uMark: { value: MARK }, uNiva: { value: VATTEN_Y }, uTid: { value: 0 },
         uDjup: { value: new THREE.Color() }, uGrund: { value: new THREE.Color() }, uHimmel: { value: new THREE.Color() }, uSkum: { value: new THREE.Color() },
         uLjusRikt: { value: new THREE.Vector3(0, 1, 0) }, uLjusFarg: { value: new THREE.Color() },
+        uIs: { value: 0 }, uIsLjus: { value: new THREE.Color() }, uIsMork: { value: new THREE.Color() },
       }]),
       vertexShader: /* glsl */`
         varying vec3 vVarld;
@@ -383,7 +529,7 @@ export function skapaGrafik(canvas, opts = {}) {
           #include <fog_vertex>
         }`,
       fragmentShader: /* glsl */`
-        uniform sampler2D uHojd; uniform float uMark, uNiva, uTid; uniform vec3 uDjup, uGrund, uHimmel, uSkum, uLjusRikt, uLjusFarg;
+        uniform sampler2D uHojd; uniform float uMark, uNiva, uTid, uIs; uniform vec3 uDjup, uGrund, uHimmel, uSkum, uLjusRikt, uLjusFarg, uIsLjus, uIsMork;
         varying vec3 vVarld;
         #include <common>
         #include <fog_pars_fragment>
@@ -418,13 +564,23 @@ export function skapaGrafik(canvas, opts = {}) {
           float skum = clamp(kant + rand * 0.75, 0.0, 1.0) * (1.0 - utanfor);
           farg = mix(farg, uSkum, skum);
           float alfa = clamp(mix(0.5, 0.97, smoothstep(0.0, 1.3, djup)) + skum + fres * 0.3, 0.0, 1.0);
+          // is: sjön fryser (Frostön i skymningen och på natten). Fryser fläckvis utifrån stranden.
+          if (uIs > 0.001) {
+            float frys = smoothstep(0.0, 0.2, uIs * 1.35 - fbrus(p * 0.035) * 0.35 - smoothstep(1.0, 3.0, djup) * 0.2);
+            float spr = 1.0 - smoothstep(0.0, 0.03, abs(fbrus(p * 0.18) - 0.5));
+            spr = max(spr, (1.0 - smoothstep(0.0, 0.02, abs(vbrus(p * 0.55 + 3.0) - 0.5))) * 0.55);
+            vec3 isF = mix(uIsLjus, uIsMork, clamp(smoothstep(0.3, 0.8, fbrus(p * 0.07)) * 0.55 + spr * 0.6, 0.0, 1.0));
+            vec3 rN = reflect(-uLjusRikt, vec3(0.0, 1.0, 0.0));
+            isF += uLjusFarg * (pow(max(dot(rN, v), 0.0), 30.0) * 0.35 + gnistr * 0.5 + step(0.994, hsh(floor(p * 16.0))) * 0.35);
+            isF = mix(isF, uSkum * 0.95, smoothstep(0.5, 0.05, djup) * (1.0 - utanfor));
+            farg = mix(farg, isF, frys); alfa = mix(alfa, 1.0, frys);
+          }
           gl_FragColor = vec4(farg, alfa);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
           #include <fog_fragment>
         }`,
     });
-    vattenMat.uniforms.uHojd.value = hojdTex;
     const g = new THREE.CircleGeometry(1400, 40); g.rotateX(-Math.PI / 2);
     const m = new THREE.Mesh(g, vattenMat); m.position.y = VATTEN_Y; m.renderOrder = 1; m.name = 'vatten';
     scen.add(m);
@@ -529,7 +685,10 @@ export function skapaGrafik(canvas, opts = {}) {
     const namn = (src.map && src.map.name) || src.name || 'x';
     const key = (MODELLER[nyckel] || nyckel).split('/')[0] + '|' + namn;
     let m = matCache.get(key);
-    if (!m) { m = new THREE.MeshLambertMaterial({ map: src.map || null, color: src.map ? 0xffffff : src.color }); m.name = key; matCache.set(key, m); }
+    if (!m) {
+      m = new THREE.MeshLambertMaterial({ map: src.map || null, color: src.map ? 0xffffff : src.color }); m.name = key; matCache.set(key, m);
+      if (/^(hex|gravplats)\|/.test(key)) { m.onBeforeCompile = (sh) => temaPatch(sh, false); m.customProgramCacheKey = () => 'tema'; } // snö och aska på ovansidor
+    }
     return m;
   }
   function rensa(g) { // bara position, normal, uv så att geometrier går att slå ihop
@@ -638,13 +797,15 @@ export function skapaGrafik(canvas, opts = {}) {
     for (const b of ben) if (!behall.has(b)) b.removeFromParent();
     for (const o of [...skinnade, ...stela]) o.removeFromParent();
     const mat = new THREE.MeshLambertMaterial({ map: tex, color: def.farg ?? 0xffffff });
-    const uGlod = { value: new THREE.Color(def.glod ?? glodFarg).multiplyScalar(3.2) };
+    const uGlod = { value: new THREE.Color(def.glod ?? glodFarg).multiplyScalar(3.2) }, uSprick = { value: new THREE.Color(def.sprickor ?? 0).multiplyScalar(2.2) };
     mat.onBeforeCompile = (sh) => {
-      sh.uniforms.uGlod = uGlod;
-      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aGlod;\nvarying float vGlod;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlod = aGlod;');
-      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGlod;\nuniform vec3 uGlod;').replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vGlod * uGlod;');
+      sh.uniforms.uGlod = uGlod; sh.uniforms.uSprick = uSprick; sh.uniforms.uTid = U.tid;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aGlod;\nvarying float vGlod;' + (def.sprickor ? '\nvarying vec3 vSprick;' : '')).replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlod = aGlod;')
+        .replace('#include <skinning_vertex>', '#include <skinning_vertex>' + (def.sprickor ? '\nvSprick = transformed;' : ''));
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGlod;\nuniform vec3 uGlod;' + (def.sprickor ? '\nvarying vec3 vSprick;\nuniform vec3 uSprick;\nuniform float uTid;\n' + GLSL_TBRUS : ''))
+        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vGlod * uGlod;' + (def.sprickor ? '\n{ float sp = 1.0 - smoothstep(0.0, 0.07, abs(tBrus(vSprick.xy * 4.5 + vSprick.z * 3.1) - 0.5)); totalEmissiveRadiance += uSprick * sp * (0.65 + 0.35 * sin(uTid * 3.0 + vSprick.y * 5.0)); }' : ''));
     };
-    mat.customProgramCacheKey = () => 'figur';
+    mat.customProgramCacheKey = () => 'figur' + (def.sprickor ? 's' : '');
     const nat = new THREE.SkinnedMesh(geo, mat);
     nat.name = 'kropp'; nat.castShadow = true; nat.receiveShadow = false;
     rig.add(nat);
@@ -666,7 +827,8 @@ export function skapaGrafik(canvas, opts = {}) {
         const kd = [new THREE.CylinderGeometry(0.4, 0.37, 0.16, 10, 1, true)];
         for (let i = 0; i < 5; i++) { const k = new THREE.ConeGeometry(0.1, 0.3, 4); k.translate(Math.cos(i / 5 * TAU) * 0.37, 0.22, Math.sin(i / 5 * TAU) * 0.37); kd.push(k); }
         const kg = mergeGeometries(kd.map((d) => rensa(d).toNonIndexed()), false);
-        const km = new THREE.Mesh(kg, new THREE.MeshLambertMaterial({ color: 0xffc83a, emissive: 0x6a3a00, side: THREE.DoubleSide }));
+        const kf = typeof def.krona === 'number' ? def.krona : 0xffc83a;
+        const km = new THREE.Mesh(kg, new THREE.MeshLambertMaterial({ color: kf, emissive: new THREE.Color(kf).multiplyScalar(0.35), side: THREE.DoubleSide }));
         km.position.set(0, 0.86, 0); km.castShadow = true; hb.add(km);
       }
     }
@@ -682,7 +844,7 @@ export function skapaGrafik(canvas, opts = {}) {
   const figurLager = new Map(); // typ → lediga instanser att återanvända
   function nyFigur(typ, def) {
     let fm = figurMall.get(typ);
-    if (fm === undefined) { fm = bakaFigur(typ, def); figurMall.set(typ, fm); }
+    if (fm === undefined) { fm = def.kod ? bakaKod(typ, def) : bakaFigur(typ, def); figurMall.set(typ, fm); }
     if (!fm) return null;
     const lager = figurLager.get(typ);
     let f = lager && lager.pop();
@@ -691,6 +853,7 @@ export function skapaGrafik(canvas, opts = {}) {
       const hallare = new THREE.Group(); hallare.add(inst);
       let nat = null; inst.traverse((o) => { if (o.isSkinnedMesh) { if (o.name === 'siluett') { o.frustumCulled = false; o.castShadow = false; } else nat = o; } });
       f = { hallare, inst, nat, mixer: new THREE.AnimationMixer(inst), akt: new Map(), fm };
+      if (fm.kod) { f.ben = {}; inst.traverse((o) => { if (o.isBone) f.ben[o.name.slice(fm.kod.length + 1)] = o; }); f.T = Math.random() * 10; f.at = 0; }
     }
     f.nu = null; f.lage = ''; f.rest = 0; f.hallare.visible = true;
     return f;
@@ -702,6 +865,7 @@ export function skapaGrafik(canvas, opts = {}) {
     if (l.length < 60) l.push(f);
   }
   function bytAnim(f, lage, direkt) {
+    if (f.fm.kod) { f.at = 0; return; }
     const k = f.fm.klipp[lage] || f.fm.klipp.idle;
     if (!k) return;
     let a = f.akt.get(k.clip.name + k.tempo);
@@ -719,8 +883,9 @@ export function skapaGrafik(canvas, opts = {}) {
   function vajMaterial(bas, styrka) {
     const m = bas.clone(); m.name = bas.name + '|vaj';
     m.onBeforeCompile = (sh) => {
-      sh.uniforms.uTid = U.tid; sh.uniforms.uVind = U.vind; sh.uniforms.uFokus = U.fokus;
-      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uTid, uVind;\nuniform vec3 uFokus;\nattribute float aSkak;')
+      if (styrka < 3) temaPatch(sh, false);
+      sh.uniforms.uTid = U.tid; sh.uniforms.uVind = U.vind; sh.uniforms.uFokus = U.fokus; sh.uniforms.uGravar = U.gravar;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uTid, uVind;\nuniform vec3 uFokus;\nuniform vec3 uGravar[8];\nattribute float aSkak;')
         .replace('#include <begin_vertex>', `#include <begin_vertex>
           #ifdef USE_INSTANCING
             vec4 ip = instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
@@ -731,12 +896,15 @@ export function skapaGrafik(canvas, opts = {}) {
             ${styrka < 3 ? `// träd som står mellan kameran och spelaren hukar sig så att riddaren alltid syns
             float fz = ip.z - uFokus.z, fxa = abs(ip.x - uFokus.x);
             float huk = smoothstep(0.8, 2.6, fz) * smoothstep(12.0, 8.0, fz) * smoothstep(1.6 + fz * 0.42, 0.6 + fz * 0.3, fxa);
-            transformed.y *= 1.0 - 0.72 * huk; transformed.xz *= 1.0 - 0.25 * huk;` : ''}
+            transformed.y *= 1.0 - 0.72 * huk; transformed.xz *= 1.0 - 0.25 * huk;` : `// gräset växer inte i vallgravarna
+            for (int g = 0; g < 8; g++) { vec3 gv = uGravar[g]; if (length(ip.xz - gv.xy) < gv.z) transformed *= 0.0; }`}
           #endif`);
     };
     m.customProgramCacheKey = () => 'vaj' + styrka;
     return m;
   }
+  // Stenarna lyste starkt blå i månskenet så att figurer försvann bland dem: på natten blir de dova och varmgrå.
+  function dovMaterial(bas) { const m = bas.clone(); m.name = bas.name + '|dov'; m.onBeforeCompile = (sh) => temaPatch(sh, true); m.customProgramCacheKey = () => 'dov'; return m; }
   function pool(namn, skapa) {
     let p = pooler.get(namn);
     if (p !== undefined) return p;
@@ -745,7 +913,7 @@ export function skapaGrafik(canvas, opts = {}) {
     const max = d.max || 256, geo = d.geo.clone();
     const skak = d.vaj ? new THREE.InstancedBufferAttribute(new Float32Array(max).fill(-100), 1) : null;
     if (skak) { skak.setUsage(THREE.DynamicDrawUsage); geo.setAttribute('aSkak', skak); }
-    const mesh = new THREE.InstancedMesh(geo, d.vaj ? vajMaterial(d.mat, d.vaj) : d.mat, max);
+    const mesh = new THREE.InstancedMesh(geo, d.vaj ? vajMaterial(d.mat, d.vaj) : d.dov ? dovMaterial(d.mat) : d.mat, max);
     mesh.count = 0; mesh.frustumCulled = false; mesh.castShadow = d.skugga !== false; mesh.receiveShadow = d.tarSkugga !== false; mesh.name = 'pool:' + namn;
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     mesh.setColorAt(0, _c.set(0xffffff)); mesh.instanceColor.setUsage(THREE.DynamicDrawUsage);
@@ -765,7 +933,11 @@ export function skapaGrafik(canvas, opts = {}) {
     pooler.set(namn, p);
     return p;
   }
-  const modellPool = (nyckel, extra) => pool('m:' + nyckel + (extra && extra.vaj ? ':v' : ''), () => { const g = geoAv(nyckel); return g && Object.assign({ geo: g.geo, mat: g.mat }, extra); });
+  const modellPool = (nyckel, extra) => pool('m:' + nyckel + (extra && extra.vaj ? ':v' : '') + (extra && extra.dov ? ':d' : '') + (extra && extra.glodMat ? ':g' : ''), () => {
+    const g = geoAv(nyckel); if (!g) return null;
+    const mat = extra && extra.glodMat ? new THREE.MeshLambertMaterial({ map: g.mat.map, emissive: 0xff5a10, emissiveMap: g.mat.map, emissiveIntensity: 0.35 }) : g.mat;
+    return Object.assign({ geo: g.geo }, extra, { mat });
+  });
 
   // Palissadsegment byggt i kod: spetsade stockar längs lokal x, 1 enhet = 1 meter, längd 4 m.
   function palissadGeo() {
@@ -798,7 +970,7 @@ export function skapaGrafik(canvas, opts = {}) {
   }
 
   // ─── partiklar: en enda Points-mesh, förmultiplicerad alfa (vanliga och additiva i samma ritanrop) ───
-  const PMAX = mobil ? 900 : 1600;
+  const PMAX = mobil ? 1300 : 2400;
   const part = (() => {
     const pos = new Float32Array(PMAX * 3), farg = new Float32Array(PMAX * 4), stl = new Float32Array(PMAX * 2);
     const vel = new Float32Array(PMAX * 3), liv = new Float32Array(PMAX), maxLiv = new Float32Array(PMAX), grav = new Float32Array(PMAX), drag = new Float32Array(PMAX), bas = new Float32Array(PMAX * 5);
@@ -871,10 +1043,32 @@ export function skapaGrafik(canvas, opts = {}) {
     svep(x, z, rot = 0, hex = 0xffffff, langd = 1.25, y = 1.15) { _c.setHex(hex); const hall = R() < 0.5 ? 1 : -1; for (let i = 0; i < 7; i++) { const a = rot + hall * (-0.95 + i * 0.32), sx = Math.sin(a), cz = Math.cos(a); part.ny(x + sx * langd, y + (i - 3) * 0.05 * hall, z + cz * langd, sx * 1.4 + cz * hall * 2.2, 0.2, cz * 1.4 - sx * hall * 2.2, _c.r * 2.6, _c.g * 2.6, _c.b * 2.6, 0.85, 0.2 + (3 - Math.abs(i - 3)) * 0.035, 0.13 + i * 0.012, 1, 0, 2); } },
     skott(x, z, y = 4.4, hex = 0xfff0c8, n = 4) { fx.gnistor(x, y, z, n, hex, 1.6); part.ny(x, y, z, 0, 0, 0, 2, 1.8, 1.3, 0.7, 0.5, 0.1, 1, 0, 0); },
     betala(x, z) { part.ny(x + (R() - 0.5) * 1.6, 0.3, z + (R() - 0.5) * 1.6, 0, 1.6 + R(), 0, 4, 3, 0.8, 0.9, 0.12, 0.6, 1, -0.5, 0.5); },
+    // v2
+    explosion(x, z, radie = 3) { // eldanden sprängs: eldboll, lågor, rök och en ljusblixt
+      part.ny(x, 1.1, z, 0, 0.5, 0, 6, 3, 0.8, 1, radie * 1.6, 0.28, 1, 0, 0);
+      fx.gnistor(x, 1, z, 34, 0xff8a30, 8);
+      for (let i = 0; i < 18; i++) { const a = R() * TAU, s = 2.5 + R() * 4; part.ny(x, 0.6 + R(), z, Math.cos(a) * s, 1 + R() * 3, Math.sin(a) * s, 5, 1.8 + R() * 1.2, 0.3, 1, 0.6 + R() * 0.5, 0.35 + R() * 0.3, 1, -1, 2.2); }
+      for (let i = 0; i < 14; i++) { const a = R() * TAU, s = 0.6 + R() * 1.6; part.ny(x + Math.cos(a) * 0.6, 0.8 + R(), z + Math.sin(a) * 0.6, Math.cos(a) * s, 1.2 + R() * 1.4, Math.sin(a) * s, 0.12, 0.1, 0.09, 0.75, 1.4 + R() * 1.1, 1.6 + R() * 1.0, 0, -0.6, 1.1); }
+      fx.damm(x, z, 10, radie * 0.5, 0x5a504a);
+      ljusblixt(x, z, radie * 2.6, 3.2, 1.4, 0.3, 0.55);
+    },
+    nedslag(x, z, radie = 3.2) { // katapultstenen landar
+      for (let i = 0; i < 22; i++) { const a = i / 22 * TAU + R() * 0.3, r = radie * (0.3 + R() * 0.5); part.ny(x + Math.cos(a) * r, 0.3 + R() * 0.4, z + Math.sin(a) * r, Math.cos(a) * (2 + R() * 3), 1 + R() * 2.2, Math.sin(a) * (2 + R() * 3), 0.62, 0.55, 0.44, 0.5, 1.1 + R() * 0.9, 1.0 + R() * 0.8, 0, -0.3, 1.8); }
+      fx.stenflis(x, z, 16, 0.6); fx.jordpuff(x, z);
+    },
+    frost(x, z, y = 1.1) { // isskärvan träffar: frost och iskristaller
+      for (let i = 0; i < 16; i++) { const a = R() * TAU, s = 1 + R() * 2.6; part.ny(x, y + R() * 0.5, z, Math.cos(a) * s, 1.5 + R() * 2.5, Math.sin(a) * s, 0.8, 0.92, 1.0, 1, 0.07 + R() * 0.06, 0.6 + R() * 0.5, 2, 9, 0.8); }
+      fx.gnistor(x, y, z, 8, 0x8ad8ff, 2.5); part.ny(x, y, z, 0, 0, 0, 0.4, 1.1, 1.7, 0.7, 1.2, 0.2, 1, 0, 0);
+      for (let i = 0; i < 6; i++) { const a = R() * TAU; part.ny(x + Math.cos(a) * 0.5, 0.15, z + Math.sin(a) * 0.5, 0, 0.3, 0, 0.85, 0.95, 1.0, 0.5, 0.5 + R() * 0.4, 1.4 + R(), 0, 0, 0.5); }
+    },
+    lavabrand(x, z) { for (let i = 0; i < 6; i++) part.ny(x + (R() - 0.5) * 0.6, 0.2 + R() * 0.6, z + (R() - 0.5) * 0.6, (R() - 0.5) * 0.5, 1.2 + R() * 1.5, (R() - 0.5) * 0.5, 5, 2 + R(), 0.35, 0.9, 0.25 + R() * 0.2, 0.4 + R() * 0.3, 1, -1.2, 0.8); part.ny(x, 0.9, z, (R() - 0.5) * 0.4, 1, (R() - 0.5) * 0.4, 0.14, 0.12, 0.1, 0.4, 0.7, 1.1, 0, -0.4, 0.8); },
+    glitter(x, z, hex = 0xffd24a, n = 28) { _c.setHex(hex); for (let i = 0; i < n; i++) { const a = R() * TAU, r = R() * 1.3; part.ny(x + Math.cos(a) * r, 0.2 + R() * 1.6, z + Math.sin(a) * r, (R() - 0.5) * 0.6, 1.2 + R() * 2, (R() - 0.5) * 0.6, _c.r * 4, _c.g * 4, _c.b * 4, 1, 0.08 + R() * 0.07, 0.8 + R() * 0.7, 1, -0.4, 0.6); } part.ny(x, 1.2, z, 0, 0, 0, 2.5, 2, 0.8, 0.7, 2.2, 0.3, 1, 0, 0); },
+    dryck(x, z) { fx.glitter(x, z, 0xff6a7a, 24); fx.glitter(x, z, 0xffffff, 8); ljusblixt(x, z, 4, 0.9, 0.25, 0.3, 0.8); },
+    plask(x, z) { for (let i = 0; i < 16; i++) { const a = R() * TAU, s = 0.8 + R() * 1.6; part.ny(x + Math.cos(a) * 1.2, VATTEN_Y + 0.2, z + Math.sin(a) * 1.2, Math.cos(a) * s, 2 + R() * 2.5, Math.sin(a) * s, 0.85, 0.92, 1, 0.7, 0.25 + R() * 0.2, 0.6 + R() * 0.4, 0, 9, 0.4); } },
   };
 
   // ─── eld och glöd ───
-  const EMAX = 48, GMAX = 96;
+  const EMAX = 128, GMAX = 320;
   const eld = (() => {
     const g = new THREE.InstancedBufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute([-0.5, 0, 0, 0.5, 0, 0, 0.5, 1, 0, -0.5, 1, 0], 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2)); g.setIndex([0, 1, 2, 0, 2, 3]);
@@ -1025,33 +1219,527 @@ export function skapaGrafik(canvas, opts = {}) {
     o.tex.needsUpdate = true;
   }
 
+  // ─── v2: geometri byggd i kod (färg per hörn; i skinnläge också ben och glöd per del) ───
+  const _gm = new THREE.Matrix4(), _gq = new THREE.Quaternion(), _ge = new THREE.Euler(), _gv = new THREE.Vector3(), _gp = new THREE.Vector3(), _gs = new THREE.Vector3(1, 1, 1), _gc = new THREE.Color();
+  function geoBygg(skinn) {
+    const delar = [];
+    const B = {
+      lagg(g, farg, ben = 0, glod = 0) {
+        const ng = g.index ? g.toNonIndexed() : g;
+        for (const n of Object.keys(ng.attributes)) if (n !== 'position') ng.deleteAttribute(n);
+        ng.computeVertexNormals();
+        if (Array.isArray(farg)) _gc.setRGB(farg[0], farg[1], farg[2]); else _gc.setHex(farg);
+        const n = ng.attributes.position.count, col = new Float32Array(n * 3);
+        for (let i = 0; i < n; i++) { col[i * 3] = _gc.r; col[i * 3 + 1] = _gc.g; col[i * 3 + 2] = _gc.b; }
+        ng.setAttribute('color', new THREE.BufferAttribute(col, 3));
+        if (skinn) { skinnAttr(ng, ben); glodAttr(ng, glod); }
+        delar.push(ng); return B;
+      },
+      flytta(g, x, y, z, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) { g.applyMatrix4(_gm.compose(_gp.set(x, y, z), _gq.setFromEuler(_ge.set(rx, ry, rz)), _gs.set(sx, sy, sz))); return g; },
+      lada(w, h, d, x, y, z, farg, rx, ry, rz, ben, glod) { return B.lagg(B.flytta(new THREE.BoxGeometry(w, h, d), x, y, z, rx, ry, rz), farg, ben, glod); },
+      stav(r0, r1, a, b, farg, seg = 6, ben, glod) {
+        _gv.set(b[0] - a[0], b[1] - a[1], b[2] - a[2]); const l = _gv.length(); const g = new THREE.CylinderGeometry(r1, r0, l, seg, 1);
+        _gq.setFromUnitVectors(UPP, _gv.normalize()); g.applyMatrix4(_gm.compose(_gp.set((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2), _gq, _gs.set(1, 1, 1)));
+        return B.lagg(g, farg, ben, glod);
+      },
+      klot(r, x, y, z, farg, sx = 1, sy = 1, sz = 1, ben, glod, det = 0) { return B.lagg(B.flytta(new THREE.IcosahedronGeometry(r, det), x, y, z, 0, 0, 0, sx, sy, sz), farg, ben, glod); },
+      kon(r, h, x, y, z, farg, rx, ry, rz, seg = 5, ben, glod) { return B.lagg(B.flytta(new THREE.ConeGeometry(r, h, seg), x, y, z, rx, ry, rz), farg, ben, glod); },
+      cyl(r, h, x, y, z, farg, rx, ry, rz, seg = 10, ben, glod) { return B.lagg(B.flytta(new THREE.CylinderGeometry(r, r, h, seg), x, y, z, rx, ry, rz), farg, ben, glod); },
+      tri(pkt, farg, ben, glod) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pkt, 3)); return B.lagg(g, farg, ben, glod); },
+      klar() { const g = mergeGeometries(delar, false); g.computeBoundingBox(); g.computeBoundingSphere(); return g; },
+    };
+    return B;
+  }
+
+  // ─── v2: figurer byggda i kod (isvarg, drake). Egen enkel rigg: ett skinnat nät, benen vrids i animKod. ───
+  const KODFIGURER = {
+    varg() {
+      const BEN = ['rot', 'kropp', 'huvud', 'svans', 'benFV', 'benFH', 'benBV', 'benBH'];
+      const pos = { rot: [0, 0, 0], kropp: [0, 0.62, 0], huvud: [0, 0.8, 0.46], svans: [0, 0.72, -0.44], benFV: [0.15, 0.56, 0.34], benFH: [-0.15, 0.56, 0.34], benBV: [0.14, 0.56, -0.34], benBH: [-0.14, 0.56, -0.34] };
+      const far = { kropp: 'rot', huvud: 'kropp', svans: 'kropp', benFV: 'kropp', benFH: 'kropp', benBV: 'kropp', benBH: 'kropp' };
+      const B = geoBygg(true), i = (n) => BEN.indexOf(n);
+      const PALS = 0xc4d0de, RYGG = 0x8494aa, BUK = 0xe6edf5, MORK = 0x2a2e38;
+      B.lada(0.42, 0.42, 0.52, 0, 0.66, 0.16, PALS, 0, 0, 0, i('kropp'));
+      B.lada(0.34, 0.34, 0.52, 0, 0.64, -0.22, PALS, 0.06, 0, 0, i('kropp'));
+      B.lada(0.24, 0.08, 0.82, 0, 0.86, -0.04, RYGG, 0, 0, 0, i('kropp'));
+      B.lada(0.28, 0.1, 0.6, 0, 0.46, 0.0, BUK, 0, 0, 0, i('kropp'));
+      B.lada(0.44, 0.4, 0.26, 0, 0.76, 0.42, BUK, -0.35, 0, 0, i('kropp'));
+      B.lada(0.28, 0.26, 0.3, 0, 0.88, 0.62, PALS, 0, 0, 0, i('huvud'));
+      B.lada(0.17, 0.13, 0.25, 0, 0.82, 0.85, BUK, 0.06, 0, 0, i('huvud'));
+      B.lada(0.08, 0.06, 0.05, 0, 0.855, 0.975, MORK, 0, 0, 0, i('huvud'));
+      for (const sd of [-1, 1]) {
+        B.kon(0.065, 0.18, sd * 0.09, 1.08, 0.58, RYGG, -0.15, 0, sd * -0.18, 4, i('huvud'));
+        B.lada(0.06, 0.035, 0.02, sd * 0.085, 0.92, 0.775, 0xd8f6ff, 0, 0, 0, i('huvud'), 1);
+      }
+      B.stav(0.085, 0.03, [0, 0.72, -0.44], [0, 0.46, -0.92], RYGG, 5, i('svans'));
+      for (const [n, x, z] of [['benFV', 0.15, 0.34], ['benFH', -0.15, 0.34], ['benBV', 0.14, -0.34], ['benBH', -0.14, -0.34]]) {
+        B.stav(0.08, 0.055, [x, 0.6, z], [x, 0.26, z + 0.02], PALS, 5, i(n));
+        B.stav(0.05, 0.04, [x, 0.26, z + 0.02], [x, 0.05, z], PALS, 5, i(n));
+        B.lada(0.09, 0.05, 0.14, x, 0.025, z + 0.03, RYGG, 0, 0, 0, i(n));
+      }
+      return { BEN, pos, far, geo: B.klar(), radie: 1.1 };
+    },
+    drake() {
+      const BEN = ['rot', 'kropp', 'hals1', 'hals2', 'huvud', 'kak', 'vV1', 'vV2', 'vH1', 'vH2', 's1', 's2', 's3'];
+      const pos = { rot: [0, 0, 0], kropp: [0, 1.6, 0], hals1: [0, 1.95, 0.85], hals2: [0, 2.5, 1.45], huvud: [0, 2.85, 1.85], kak: [0, 2.78, 2.12],
+        vV1: [0.42, 2.0, 0.25], vV2: [2.0, 2.25, 0.05], vH1: [-0.42, 2.0, 0.25], vH2: [-2.0, 2.25, 0.05], s1: [0, 1.55, -0.95], s2: [0, 1.38, -1.95], s3: [0, 1.22, -2.85] };
+      const far = { kropp: 'rot', hals1: 'kropp', hals2: 'hals1', huvud: 'hals2', kak: 'huvud', vV1: 'kropp', vV2: 'vV1', vH1: 'kropp', vH2: 'vH1', s1: 'kropp', s2: 's1', s3: 's2' };
+      const B = geoBygg(true), i = (n) => BEN.indexOf(n);
+      const RD = 0x8a2418, MRK = 0x3e0c08, BUK = 0xff8a30, HORN = 0xeadfc4, VING = 0x5c1610;
+      B.klot(1, 0, 1.62, 0.05, RD, 0.78, 0.72, 1.35, i('kropp'), 0, 1);
+      B.klot(1, 0, 1.34, 0.12, BUK, 0.56, 0.42, 1.12, i('kropp'), 0.55, 1);
+      for (let k = 0; k < 5; k++) B.kon(0.13, 0.4, 0, 2.3 - k * 0.04, 0.72 - k * 0.42, MRK, -0.55, 0, 0, 4, i('kropp'));
+      B.stav(0.36, 0.27, [0, 1.85, 0.75], [0, 2.5, 1.45], RD, 7, i('hals1'));
+      B.stav(0.2, 0.15, [0, 1.72, 0.92], [0, 2.32, 1.55], BUK, 5, i('hals1'), 0.35);
+      B.stav(0.27, 0.22, [0, 2.5, 1.45], [0, 2.86, 1.86], RD, 7, i('hals2'));
+      B.lada(0.52, 0.42, 0.7, 0, 2.95, 2.05, RD, 0, 0, 0, i('huvud'));
+      B.lada(0.38, 0.26, 0.56, 0, 2.9, 2.56, RD, 0.08, 0, 0, i('huvud'));
+      B.lada(0.58, 0.1, 0.26, 0, 3.17, 2.2, MRK, 0, 0, 0, i('huvud'));
+      for (const sd of [-1, 1]) {
+        B.kon(0.085, 0.62, sd * 0.17, 3.34, 1.84, HORN, -1.05, 0, sd * -0.2, 5, i('huvud'));
+        B.kon(0.05, 0.3, sd * 0.28, 3.12, 1.98, HORN, -0.9, 0, sd * -0.6, 4, i('huvud'));
+        B.lada(0.09, 0.06, 0.05, sd * 0.22, 3.03, 2.33, 0xffd040, 0, 0, 0, i('huvud'), 1);
+        B.lada(0.05, 0.04, 0.04, sd * 0.1, 2.98, 2.85, MRK, 0, 0, 0, i('huvud'));
+        B.kon(0.03, 0.1, sd * 0.13, 2.74, 2.72, HORN, Math.PI, 0, 0, 4, i('huvud'));
+      }
+      B.lada(0.34, 0.1, 0.56, 0, 2.73, 2.42, RD, 0, 0, 0, i('kak'));
+      B.lada(0.26, 0.04, 0.42, 0, 2.79, 2.4, 0xff6a20, 0, 0, 0, i('kak'), 1);
+      for (const sd of [-1, 1]) { // vingarna (vänster sd = 1 längs +x)
+        const v1 = i(sd > 0 ? 'vV1' : 'vH1'), v2 = i(sd > 0 ? 'vV2' : 'vH2'), X = (x) => x * sd;
+        B.stav(0.11, 0.08, [X(0.42), 2.0, 0.25], [X(2.0), 2.25, 0.05], MRK, 5, v1);
+        B.tri([X(0.42), 2.0, 0.45, X(2.0), 2.25, 0.05, X(2.0), 2.02, -1.05, X(0.42), 2.0, 0.45, X(2.0), 2.02, -1.05, X(0.42), 1.98, -0.8], VING, v1);
+        B.stav(0.08, 0.04, [X(2.0), 2.25, 0.05], [X(3.75), 2.05, -0.35], MRK, 5, v2);
+        B.stav(0.06, 0.03, [X(2.0), 2.25, 0.05], [X(3.05), 1.98, -1.15], MRK, 4, v2);
+        B.tri([X(2.0), 2.25, 0.05, X(3.75), 2.05, -0.35, X(3.05), 1.98, -1.15, X(2.0), 2.25, 0.05, X(3.05), 1.98, -1.15, X(2.0), 2.02, -1.05], VING, v2);
+        B.kon(0.06, 0.22, X(2.0), 2.36, 0.1, HORN, 0, 0, 0, 4, v2);
+        B.stav(0.14, 0.1, [X(0.38), 1.35, 0.6], [X(0.42), 0.85, 0.8], RD, 5, i('kropp'));
+        B.lada(0.16, 0.08, 0.22, X(0.42), 0.82, 0.86, MRK, 0, 0, 0, i('kropp'));
+        B.stav(0.22, 0.13, [X(0.45), 1.35, -0.5], [X(0.5), 0.78, -0.35], RD, 5, i('kropp'));
+        B.lada(0.2, 0.1, 0.3, X(0.5), 0.74, -0.28, MRK, 0, 0, 0, i('kropp'));
+      }
+      B.stav(0.4, 0.28, [0, 1.55, -0.85], [0, 1.38, -1.95], RD, 7, i('s1'));
+      B.stav(0.28, 0.16, [0, 1.38, -1.95], [0, 1.22, -2.85], RD, 6, i('s2'));
+      B.stav(0.16, 0.05, [0, 1.22, -2.85], [0, 1.08, -3.75], RD, 5, i('s3'));
+      for (const [z, y, b] of [[-1.4, 1.78, 's1'], [-2.3, 1.55, 's2'], [-3.1, 1.32, 's3']]) B.kon(0.09, 0.28, 0, y, z, MRK, -0.6, 0, 0, 4, i(b));
+      B.tri([0, 1.08, -3.55, 0.32, 1.08, -3.85, 0, 1.08, -4.3, 0, 1.08, -3.55, 0, 1.08, -4.3, -0.32, 1.08, -3.85], MRK, i('s3'));
+      return { BEN, pos, far, geo: B.klar(), radie: 4.6, dubbel: true };
+    },
+  };
+  function bakaKod(typ, def) {
+    const k = KODFIGURER[def.kod](), rig = new THREE.Group();
+    const ben = k.BEN.map((n) => { const b = new THREE.Bone(); b.name = def.kod + '_' + n; return b; });
+    k.BEN.forEach((n, j) => { const p = k.pos[n], f = k.far[n]; if (f) { const pf = k.pos[f]; ben[j].position.set(p[0] - pf[0], p[1] - pf[1], p[2] - pf[2]); ben[k.BEN.indexOf(f)].add(ben[j]); } else { ben[j].position.set(p[0], p[1], p[2]); rig.add(ben[j]); } });
+    rig.updateMatrixWorld(true);
+    const skel = new THREE.Skeleton(ben);
+    const mat = new THREE.MeshLambertMaterial({ vertexColors: true, side: k.dubbel ? THREE.DoubleSide : THREE.FrontSide });
+    const uGlod = { value: new THREE.Color(def.glod ?? 0xffffff).multiplyScalar(3.2) };
+    mat.onBeforeCompile = (sh) => {
+      sh.uniforms.uGlod = uGlod;
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aGlod;\nvarying float vGlod;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlod = aGlod;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGlod;\nuniform vec3 uGlod;').replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vGlod * uGlod;');
+    };
+    mat.customProgramCacheKey = () => 'kodfigur' + (k.dubbel ? 'd' : '');
+    const nat = new THREE.SkinnedMesh(k.geo, mat); nat.name = 'kropp'; nat.castShadow = true; nat.receiveShadow = false;
+    rig.add(nat); nat.bind(skel, new THREE.Matrix4());
+    const hojd = k.geo.boundingBox.max.y;
+    nat.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, hojd * 0.5, 0), k.radie);
+    return { mall: rig, klipp: {}, hojd, kod: def.kod, tri: k.geo.attributes.position.count / 3 };
+  }
+  // Animation för kodfigurer. o.lage = anim-läget, f.at = tid sedan läget byttes, f.T = egen klocka.
+  function animKod(o, dt) {
+    const f = o.f, b = f.ben; f.at += dt; f.T += dt;
+    const l = o.lage, T = f.T, at = f.at;
+    if (f.fm.kod === 'varg') {
+      b.rot.rotation.set(0, 0, 0); b.rot.position.set(0, 0, 0); b.kropp.position.set(0, 0.62, 0); b.kropp.rotation.set(0, 0, 0); b.huvud.rotation.set(0, 0, 0); b.svans.rotation.set(0.3, 0, 0);
+      b.benFV.rotation.set(0, 0, 0); b.benFH.rotation.set(0, 0, 0); b.benBV.rotation.set(0, 0, 0); b.benBH.rotation.set(0, 0, 0);
+      if (l === 'ga' || l === 'spring' || l === 'bar') {
+        const sp = l !== 'ga', ph = T * (sp ? 13 : 8.5), a = sp ? 0.8 : 0.45, s = Math.sin(ph);
+        b.benFV.rotation.x = s * a; b.benBH.rotation.x = s * a * 0.9; b.benFH.rotation.x = -s * a; b.benBV.rotation.x = -s * a * 0.9;
+        b.kropp.position.y = 0.62 + Math.abs(Math.cos(ph)) * (sp ? 0.07 : 0.03); b.kropp.rotation.x = Math.sin(ph * 2) * (sp ? 0.06 : 0.03);
+        b.huvud.rotation.x = -Math.sin(ph * 2) * 0.06 + (sp ? 0.18 : 0); b.svans.rotation.x = (sp ? 0.9 : 0.5) + s * 0.15; b.svans.rotation.y = Math.cos(ph) * 0.2;
+      } else if (l === 'hugg' || l === 'hugg2') {
+        const k = (at * 2.4) % 1, u = Math.sin(k * Math.PI);
+        b.kropp.position.z = u * 0.3; b.kropp.position.y = 0.62 + u * 0.1; b.kropp.rotation.x = -u * 0.2;
+        b.benFV.rotation.x = -u * 0.9; b.benFH.rotation.x = -u * 0.75; b.benBV.rotation.x = u * 0.35; b.benBH.rotation.x = u * 0.35;
+        b.huvud.rotation.x = 0.25 - u * 0.15; b.svans.rotation.x = 0.7;
+      } else if (l === 'do') {
+        const k = Math.min(1, at / 0.45), e = k * k * (3 - 2 * k);
+        b.rot.rotation.z = e * 1.45; b.rot.position.y = e * 0.2; b.huvud.rotation.x = e * 0.35; b.svans.rotation.x = 0.1;
+        b.benFV.rotation.x = -e * 0.3; b.benBV.rotation.x = e * 0.3; b.benFH.rotation.x = -e * 0.15; b.benBH.rotation.x = e * 0.15;
+      } else {
+        b.kropp.position.y = 0.62 + Math.sin(T * 2.2) * 0.01; b.huvud.rotation.y = Math.sin(T * 0.6) * 0.35; b.huvud.rotation.x = Math.sin(T * 0.9) * 0.08 - 0.05;
+        b.svans.rotation.y = Math.sin(T * 4) * 0.35;
+      }
+    } else if (f.fm.kod === 'drake') {
+      const dod = l === 'do';
+      f.vph = (f.vph || 0) + dt * (dod ? 0 : (l === 'ga' || l === 'spring') ? 3.8 : 2.8);
+      const s = Math.sin(f.vph), s2 = Math.sin(f.vph - 0.75);
+      b.rot.rotation.set(0, 0, 0); b.kak.rotation.set(0.05, 0, 0); b.hals2.rotation.set(0, 0, 0);
+      if (dod) {
+        const k = Math.min(1, at / 1.1), e = k * k * (3 - 2 * k);
+        b.vV1.rotation.set(0, 0, -0.2 - e * 0.3); b.vV2.rotation.set(0, 0, -e * 1.1); b.vH1.rotation.set(0, 0, 0.2 + e * 0.3); b.vH2.rotation.set(0, 0, e * 1.1);
+        b.rot.rotation.z = e * 0.45; b.hals1.rotation.set(e * 0.7, 0, 0); b.huvud.rotation.set(e * 0.4, 0, 0); b.kropp.position.y = 1.6;
+      } else {
+        b.vV1.rotation.set(0, Math.cos(f.vph) * 0.16, s * 0.62 + 0.12); b.vV2.rotation.set(0, 0, s2 * 0.5);
+        b.vH1.rotation.set(0, -Math.cos(f.vph) * 0.16, -(s * 0.62 + 0.12)); b.vH2.rotation.set(0, 0, -s2 * 0.5);
+        b.kropp.position.y = 1.6 - s * 0.13;
+        b.hals1.rotation.set(Math.sin(T * 0.9) * 0.06, 0, 0); b.huvud.rotation.set(Math.sin(T * 0.8) * 0.06, Math.sin(T * 0.55) * 0.3, 0);
+        b.kak.rotation.x = 0.05 + Math.max(0, Math.sin(T * 0.7)) * 0.1;
+        if (l === 'hugg' || l === 'hugg2') {
+          const k = (at * 1.25) % 1, u = Math.sin(k * Math.PI);
+          b.hals1.rotation.x = u * 0.6; b.hals2.rotation.x = u * 0.25; b.huvud.rotation.x = -u * 0.3; b.kak.rotation.x = 0.05 + u * 0.65;
+          if (k > 0.35 && k < 0.85 && o.ibild !== false) { // eldsprut ur gapet
+            b.kak.getWorldPosition(_gp); const r = o.rot, dx = Math.sin(r), dz = Math.cos(r);
+            for (let n = 0; n < 3; n++) { const sp = 7 + R() * 5; part.ny(_gp.x + dx * 0.5, _gp.y, _gp.z + dz * 0.5, dx * sp + (R() - 0.5) * 2, -2.5 - R() * 2, dz * sp + (R() - 0.5) * 2, 5, 1.6 + R(), 0.3, 1, 0.3 + R() * 0.25, 0.4 + R() * 0.25, 1, -1, 1.6); }
+          }
+        }
+      }
+      b.s1.rotation.set(Math.sin(T * 1.1) * 0.05, Math.sin(T * 1.3) * 0.22, 0); b.s2.rotation.set(0, Math.sin(T * 1.3 - 0.8) * 0.3, 0); b.s3.rotation.set(0, Math.sin(T * 1.3 - 1.6) * 0.38, 0);
+    }
+  }
+
+  // ─── v2: belägringsmaskiner, vallgrav, värmeeld, båtar, brygga och isskärvor ───
+  const maskinGeoCache = new Map();
+  function maskinGeo(sort, niva) {
+    const nyckel = sort + niva; let r = maskinGeoCache.get(nyckel); if (r) return r;
+    const TRA = 0x8a5a34, TRA2 = 0x6a4026, TRA3 = 0xa87344, JARN = niva > 1 ? 0x3e4048 : 0x55585f, REP = 0xc9a070;
+    r = {};
+    if (sort === 'katapult') {
+      const B = geoBygg(false);
+      for (const sd of [-1, 1]) {
+        B.lada(0.22, 0.22, 3.0, sd * 0.7, 0.5, 0, TRA);
+        B.stav(0.09, 0.08, [sd * 0.7, 0.58, -0.5], [sd * 0.6, 1.78, 0.08], TRA2, 5); B.stav(0.09, 0.08, [sd * 0.7, 0.58, 0.62], [sd * 0.6, 1.78, 0.08], TRA2, 5);
+        for (const z of [-1.05, 1.05]) { B.cyl(0.42, 0.14, sd * 0.86, 0.42, z, TRA2, 0, 0, Math.PI / 2, 10); B.cyl(0.1, 0.18, sd * 0.88, 0.42, z, JARN, 0, 0, Math.PI / 2, 6); }
+        if (niva > 1) { B.lada(0.26, 0.06, 3.04, sd * 0.7, 0.62, 0, JARN); B.lada(0.26, 0.26, 0.08, sd * 0.7, 0.5, 0.9, JARN); B.lada(0.26, 0.26, 0.08, sd * 0.7, 0.5, -0.9, JARN); }
+      }
+      for (const z of [-1.2, 0, 1.2]) B.lada(1.62, 0.18, 0.2, 0, 0.5, z, TRA2);
+      B.lada(1.42, 0.2, 0.2, 0, 1.8, 0.1, TRA2);
+      B.cyl(0.07, 1.5, 0, 0.95, -0.2, JARN, 0, 0, Math.PI / 2, 6);
+      B.cyl(0.2, 0.95, 0, 0.95, -0.2, REP, 0, 0, Math.PI / 2, 8);
+      r.bas = B.klar();
+      const A = geoBygg(false);
+      A.lada(0.17, 0.17, 2.65, 0, 0, -1.1, TRA3); A.cyl(0.3, 0.16, 0, 0.12, -2.35, TRA2, 0, 0, 0, 8);
+      if (niva > 1) { A.lada(0.2, 0.2, 0.08, 0, 0, -0.6, JARN); A.lada(0.2, 0.2, 0.08, 0, 0, -1.6, JARN); }
+      r.arm = A.klar();
+      r.sten = geoBygg(false).klot(0.24, 0, 0.3, -2.35, 0x8a8f98, 1, 0.9, 1).klar();
+    } else {
+      const B = geoBygg(false);
+      B.stav(0.11, 0.09, [0, 0, 0], [0, 1.3, 0], TRA2, 6);
+      for (const [x, z] of [[0.78, -0.45], [-0.78, -0.45], [0, 0.85]]) B.stav(0.075, 0.06, [0, 1.1, 0], [x, 0, z], TRA, 5);
+      if (niva > 1) B.cyl(0.16, 0.1, 0, 1.25, 0, JARN, 0, 0, 0, 8);
+      r.bas = B.klar();
+      const H = geoBygg(false);
+      H.lada(0.22, 0.16, 2.3, 0, 0.05, 0.2, TRA); H.lada(0.52, 0.42, 0.2, 0, 0.1, 1.1, TRA2); H.lada(0.56, 0.08, 0.24, 0, 0.33, 1.1, JARN);
+      for (const sd of [-1, 1]) { H.stav(0.075, 0.05, [sd * 0.2, 0.1, 1.1], [sd * 1.28, 0.12, 0.72], TRA3, 5); H.lada(0.1, 0.1, 0.12, sd * 1.28, 0.12, 0.72, JARN); }
+      H.cyl(0.18, 0.08, 0, 0.0, -0.86, TRA2, 0, 0, Math.PI / 2, 8);
+      if (niva > 1) { H.lada(0.26, 0.2, 0.08, 0, 0.05, -0.3, JARN); H.lada(0.26, 0.2, 0.08, 0, 0.05, 0.5, JARN); }
+      r.huvud = H.klar();
+      const S1 = geoBygg(false), S2 = geoBygg(false);
+      for (const sd of [-1, 1]) { S1.stav(0.012, 0.012, [sd * 1.28, 0.13, 0.72], [0, 0.14, -0.45], 0xf0e2b4, 3); S2.stav(0.012, 0.012, [sd * 1.28, 0.13, 0.72], [0, 0.14, 0.76], 0xf0e2b4, 3); }
+      r.spand = S1.klar(); r.slapp = S2.klar();
+      const P = geoBygg(false); P.stav(0.035, 0.035, [0, 0.2, -0.45], [0, 0.2, 1.4], 0x7a4e26, 5); P.kon(0.07, 0.22, 0, 0.2, 1.5, 0xc6ccd6, Math.PI / 2, 0, 0, 4);
+      P.tri([0, 0.2, -0.4, 0, 0.36, -0.5, 0, 0.2, -0.15], 0xe0483f); P.tri([0, 0.2, -0.4, 0.16, 0.2, -0.5, 0, 0.2, -0.15], 0xe0483f);
+      r.bult = P.klar();
+    }
+    maskinGeoCache.set(nyckel, r); return r;
+  }
+  function byggMaskinDelar(o, e, niva) {
+    const g = maskinGeo(o.def.sort, Math.min(2, niva)), sk = (o.def.skala || 1) * (niva > 1 ? 1.15 : 1);
+    o.grp.clear(); o.inre = new THREE.Group(); o.grp.add(o.inre); o.inre.scale.setScalar(sk);
+    const mesh = (geo) => { const m = new THREE.Mesh(geo, vfMat); m.castShadow = true; m.receiveShadow = true; return m; };
+    o.inre.add(mesh(g.bas));
+    if (o.def.sort === 'katapult') { o.arm = new THREE.Group(); o.arm.position.set(0, 0.95, -0.2); o.arm.add(mesh(g.arm)); o.stenM = mesh(g.sten); o.arm.add(o.stenM); o.inre.add(o.arm); }
+    else { o.huvud = new THREE.Group(); o.huvud.position.set(0, 1.32, 0); o.spand = mesh(g.spand); o.slapp = mesh(g.slapp); o.bult = mesh(g.bult); o.huvud.add(mesh(g.huvud), o.spand, o.slapp, o.bult); o.inre.add(o.huvud); }
+    if (o.ruin) o.grp.add(o.ruin);
+  }
+  // Ruin för raserade byggen: porten blir en bruten mur med grushögar, övriga byggen en rasad byggnad.
+  function byggRuin(def, e, bredd) {
+    const grp = new THREE.Group(), lagg = (nyckel, x, y, z, ry, sx, sy, sz) => { const g = geoAv(nyckel); if (!g) return; const m = new THREE.Mesh(g.geo, g.mat); m.position.set(x, y, z); m.rotation.y = ry; m.scale.set(sx, sy, sz); m.castShadow = true; m.receiveShadow = true; grp.add(m); };
+    if (def.port) { lagg('ruinmur', 0, 0, 0, 0, bredd / 4, 0.42, 1.25); lagg('grus', 0.4, 0, 1.0, 0.2, 0.32, 0.38, 0.4); lagg('grus', -0.8, 0, -1.0, 2.9, 0.28, 0.32, 0.36); }
+    else { const s = (def.radie || 1.5) * 1.55; lagg('ruinhus', 0, 0, 0, 0.6, s, s * 0.9, s); lagg('grus', (def.radie || 1.5) * 0.7, 0, (def.radie || 1.5) * 0.5, 1.2, 0.22, 0.28, 0.28); }
+    return grp;
+  }
+  // vallgravens yta: vatten (Gläntan), is (Frostön) eller lava (Vulkanön)
+  const gravMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, fog: true,
+    uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTid: { value: 0 }, uSlag: { value: 0 }, uNatt: { value: 0 }, uLjus: { value: new THREE.Color(1, 1, 1) }, uLjusRikt: { value: new THREE.Vector3(0, 1, 0) } }]),
+    vertexShader: /* glsl */`varying vec2 vUv; varying vec3 vVarld;
+      #include <fog_pars_vertex>
+      void main(){ vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vVarld = w.xyz; vec4 mvPosition = viewMatrix * w; gl_Position = projectionMatrix * mvPosition;
+        #include <fog_vertex>
+      }`,
+    fragmentShader: /* glsl */`uniform float uTid, uSlag, uNatt; uniform vec3 uLjus, uLjusRikt; varying vec2 vUv; varying vec3 vVarld;
+      #include <common>
+      #include <fog_pars_fragment>
+      ${GLSL_BRUS}
+      void main(){
+        float d = length(vUv - 0.5) * 2.0; vec2 p = vVarld.xz; vec3 c; float a = smoothstep(1.0, 0.94, d);
+        if (uSlag < 0.5) {
+          float v = sin(p.x * 2.1 + uTid * 1.6) * 0.5 + sin(p.y * 1.7 - uTid * 1.3) * 0.5 + fbrus(p * 1.3 + uTid * 0.3);
+          c = mix(vec3(0.16, 0.42, 0.46), vec3(0.05, 0.22, 0.34), smoothstep(0.95, 0.4, d)) * uLjus;
+          c += uLjus * smoothstep(0.75, 1.0, v * 0.5 + 0.4) * 0.25; c = mix(c, vec3(0.25, 0.2, 0.14) * uLjus, smoothstep(0.82, 0.98, d));
+        } else if (uSlag < 1.5) {
+          float spr = 1.0 - smoothstep(0.0, 0.04, abs(fbrus(p * 0.9) - 0.5));
+          c = mix(vec3(0.78, 0.88, 0.95), vec3(0.52, 0.7, 0.84), smoothstep(0.3, 0.8, fbrus(p * 0.6)) * 0.6 + spr * 0.6) * uLjus * 1.1;
+          c += uLjus * step(0.994, hsh(floor(p * 16.0))) * 0.4; c = mix(c, vec3(0.92, 0.95, 1.0) * uLjus, smoothstep(0.78, 0.98, d));
+        } else {
+          float n = fbrus(p * 0.9 + vec2(uTid * 0.25, -uTid * 0.18)), n2 = vbrus(p * 2.6 - uTid * 0.4);
+          c = mix(vec3(0.9, 0.17, 0.02), vec3(1.7, 0.75, 0.15), smoothstep(0.4, 0.8, n)) * (1.0 - uNatt * 0.25);
+          c = mix(c, vec3(0.08, 0.05, 0.04) * uLjus, smoothstep(0.62, 0.72, n2) * 0.8);
+          c = mix(c, vec3(0.1, 0.07, 0.05) * uLjus + vec3(0.8, 0.2, 0.02) * (1.0 - smoothstep(0.0, 0.05, abs(n - 0.5))), smoothstep(0.7, 0.95, d));
+        }
+        gl_FragColor = vec4(c, a);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        #include <fog_fragment>
+      }`,
+  });
+  let gravGeo = null;
+  function byggGravDelar(o, niva) {
+    if (!gravGeo) {
+      const pk = [[2.78, -0.02], [2.95, 0.16], [3.2, 0.3], [3.5, 0.27], [3.8, 0.1], [3.98, -0.02]].map(([x, y]) => new THREE.Vector2(x, y));
+      const vall = new THREE.LatheGeometry(pk, 36); vall.deleteAttribute('uv');
+      const ng = vall.toNonIndexed(); ng.computeVertexNormals();
+      const col = new Float32Array(ng.attributes.position.count * 3); ng.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      const yta = new THREE.CircleGeometry(2.96, 40); yta.rotateX(-Math.PI / 2);
+      const P = geoBygg(false); for (let i = 0; i < 16; i++) { const a = i / 16 * TAU, rr = 3.55; P.kon(0.07, 0.75, Math.cos(a) * rr, 0.45, Math.sin(a) * rr, 0x8a5a34, 0, 0, 0, 5); P.stav(0.075, 0.07, [Math.cos(a) * rr, -0.1, Math.sin(a) * rr], [Math.cos(a) * rr, 0.1, Math.sin(a) * rr], 0x6a4026, 5); }
+      gravGeo = { vall: ng, yta, palar: P.klar() };
+    }
+    // vallens färg efter ön
+    const f = new THREE.Color(tema === 'vinter' ? 0x9a948f : tema === 'vulkan' ? 0x3e3430 : 0x7a5c3c), c = gravGeo.vall.attributes.color;
+    for (let i = 0; i < c.count; i++) c.setXYZ(i, f.r, f.g, f.b); c.needsUpdate = true;
+    o.grp.clear();
+    const v = new THREE.Mesh(gravGeo.vall, vfMat); v.receiveShadow = true; v.castShadow = true;
+    const y = new THREE.Mesh(gravGeo.yta, gravMat); y.position.y = 0.06; y.renderOrder = 2;
+    o.grp.add(v, y);
+    if (niva > 1) { const p = new THREE.Mesh(gravGeo.palar, vfMat); p.castShadow = true; o.grp.add(p); }
+  }
+  let varmeeldG = null;
+  function varmeeldGeo() {
+    if (varmeeldG) return varmeeldG;
+    const B = geoBygg(false), r = slump32(31);
+    for (let i = 0; i < 11; i++) { const a = i / 11 * TAU + r() * 0.2; B.klot(0.24 + r() * 0.06, Math.cos(a) * 0.95, 0.14, Math.sin(a) * 0.95, r() < 0.5 ? 0x8a8f98 : 0x6e737c, 1.1, 0.75, 1, 0, 0, 0); }
+    for (let i = 0; i < 5; i++) { const a = i / 5 * TAU + 0.3; B.stav(0.09, 0.06, [Math.cos(a) * 0.62, 0.08, Math.sin(a) * 0.62], [Math.cos(a) * 0.1, 0.62, Math.sin(a) * 0.1], i % 2 ? 0x6a4026 : 0x4a2e1a, 5); }
+    B.cyl(0.62, 0.08, 0, 0.06, 0, [1.4, 0.42, 0.08], 0, 0, 0, 10);
+    varmeeldG = B.klar(); return varmeeldG;
+  }
+  let isskarvaG = null;
+  function isskarvaGeo() { if (!isskarvaG) { isskarvaG = new THREE.OctahedronGeometry(0.17, 0); isskarvaG.scale(0.55, 2.3, 0.55); isskarvaG.computeBoundingBox(); } return isskarvaG; }
+
+  // segelbåt: skrov, mast och råsegel. slag 'handel' (randigt segel) eller 'resa' (större, sköldar längs relingen)
+  const batMallar = {};
+  function batModell(slag) {
+    if (batMallar[slag]) return batMallar[slag];
+    const resa = slag === 'resa', L = resa ? 10 : 7, Bb = resa ? 3.1 : 2.4, H = resa ? 1.35 : 1.1;
+    const pos = [], col = [], c1 = new THREE.Color(0x8a5a34), c2 = new THREE.Color(0x5e3a22), c3 = new THREE.Color(0xb08050);
+    const sek = 14, tvar = [[-1, 1], [-0.93, 0.5], [-0.6, 0.12], [0, 0], [0.6, 0.12], [0.93, 0.5], [1, 1]];
+    const punkt = (u, k) => { const w = Bb / 2 * (u < 0.62 ? 0.78 + 0.22 * Math.sin(u / 0.62 * Math.PI / 2) : Math.cos((u - 0.62) / 0.38 * Math.PI / 2)), top = H * (1 + 0.35 * Math.pow(Math.max(0, (u - 0.7) / 0.3), 2) + 0.15 * Math.pow(Math.max(0, (0.15 - u) / 0.15), 2)); return [tvar[k][0] * w, tvar[k][1] * top, -L / 2 + u * L]; };
+    const tri = (a, b, c, f) => { pos.push(...a, ...b, ...c); for (let i = 0; i < 3; i++) col.push(f.r, f.g, f.b); };
+    for (let i = 0; i < sek; i++) {
+      const u0 = i / sek, u1 = (i + 1) / sek;
+      for (let k = 0; k < tvar.length - 1; k++) { const a = punkt(u0, k), b = punkt(u0, k + 1), c = punkt(u1, k + 1), d = punkt(u1, k), f = (k === 0 || k === 5) ? c2 : c1; tri(a, b, c, f); tri(a, c, d, f); }
+      const dv = (u, sd) => { const q = punkt(u, sd > 0 ? 6 : 0); return [q[0] * 0.96, q[1] - 0.12, q[2]]; };
+      tri(dv(u0, -1), dv(u1, 1), dv(u0, 1), c3); tri(dv(u0, -1), dv(u1, -1), dv(u1, 1), c3);
+    }
+    for (let k = 0; k < tvar.length - 2; k++) tri(punkt(0, 0), punkt(0, k + 2), punkt(0, k + 1), c2); // akterspegel
+    const skrov = new THREE.BufferGeometry(); skrov.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); skrov.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); skrov.computeVertexNormals();
+    const grp = new THREE.Group(), s = new THREE.Mesh(skrov, new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide })); s.castShadow = true; grp.add(s);
+    const mh = resa ? 8 : 6, M = geoBygg(false);
+    M.stav(0.12, 0.08, [0, H - 0.2, L * 0.06], [0, mh, L * 0.06], 0x6a4026, 6); M.stav(0.07, 0.07, [-Bb * 0.85, mh * 0.88, L * 0.06 + 0.15], [Bb * 0.85, mh * 0.88, L * 0.06 + 0.15], 0x6a4026, 5);
+    M.stav(0.025, 0.025, [0, mh, L * 0.06], [0, H, L / 2 - 0.2], 0xd8c8a0, 3); M.stav(0.025, 0.025, [0, mh, L * 0.06], [0, H, -L / 2 + 0.3], 0xd8c8a0, 3);
+    if (resa) for (let i = 0; i < 5; i++) for (const sd of [-1, 1]) { const u = 0.22 + i * 0.12, q = punkt(u, sd > 0 ? 6 : 0); M.cyl(0.32, 0.06, q[0] * 1.02, q[1] - 0.15, q[2], i % 2 ? 0x3f7fd0 : 0xe0a820, 0, 0, Math.PI / 2, 10); }
+    const mm = new THREE.Mesh(M.klar(), vfMat); mm.castShadow = true; grp.add(mm);
+    // segel med egen canvastextur
+    const cv = document.createElement('canvas'); cv.width = 128; cv.height = 128; const cx = cv.getContext('2d');
+    if (resa) { cx.fillStyle = '#f2e8d2'; cx.fillRect(0, 0, 128, 128); cx.fillStyle = '#2f6fc0'; cx.fillRect(0, 44, 128, 40); cx.fillStyle = '#ffd24a'; cx.beginPath(); cx.moveTo(40, 80); cx.lineTo(44, 52); cx.lineTo(54, 64); cx.lineTo(64, 48); cx.lineTo(74, 64); cx.lineTo(84, 52); cx.lineTo(88, 80); cx.closePath(); cx.fill(); }
+    else for (let i = 0; i < 8; i++) { cx.fillStyle = i % 2 ? '#f4ead6' : '#c8402e'; cx.fillRect(i * 16, 0, 16, 128); }
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const sb = Bb * 1.75, sh2 = mh * 0.62, sg = new THREE.PlaneGeometry(sb, sh2, 6, 4), sp = sg.attributes.position;
+    for (let i = 0; i < sp.count; i++) { const x = sp.getX(i) / sb + 0.5, y = sp.getY(i) / sh2 + 0.5; sp.setZ(i, Math.sin(x * Math.PI) * Math.sin((y * 0.8 + 0.2) * Math.PI) * 0.55); }
+    sg.computeVertexNormals();
+    const segel = new THREE.Mesh(sg, new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide })); segel.position.set(0, mh * 0.88 - sh2 / 2 - 0.05, L * 0.06 + 0.22); segel.castShadow = true; grp.add(segel);
+    const fl = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1, 3), new THREE.MeshLambertMaterial({ color: resa ? 0x2f6fc0 : 0xc8402e })); fl.rotation.z = Math.PI / 2; fl.position.set(-0.55, mh + 0.1, L * 0.06); grp.add(fl);
+    grp.userData.L = L;
+    batMallar[slag] = grp; return grp;
+  }
+
+  // ─── v2: öns värld (rivs och byggs om vid öbyte) ───
+  const varldObj = [];
+  function laggVarld(m) { scen.add(m); varldObj.push(m); return m; }
+  let lavaMat = null;
+  function byggLava() {
+    lavaMat = null;
+    if (!lava.length) return;
+    const segs = lava.slice(0, 32), pos = [], ind = [];
+    for (const s of segs) {
+      const dx = s.bx - s.ax, dz = s.bz - s.az, l = Math.hypot(dx, dz) || 1, ux = dx / l, uz = dz / l, W = (s.bredd || 1.7) * 1.3, nx = -uz * W, nz = ux * W, b = pos.length / 3;
+      pos.push(s.ax - ux * W + nx, 0.04, s.az - uz * W + nz, s.ax - ux * W - nx, 0.04, s.az - uz * W - nz, s.bx + ux * W - nx, 0.04, s.bz + uz * W - nz, s.bx + ux * W + nx, 0.04, s.bz + uz * W + nz);
+      ind.push(b, b + 2, b + 1, b, b + 3, b + 2);
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(ind);
+    const seg = []; for (let i = 0; i < 32; i++) { const s = segs[i]; seg.push(s ? new THREE.Vector4(s.ax, s.az, s.bx, s.bz) : new THREE.Vector4(1e4, 1e4, 1e4, 1e4)); }
+    lavaMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, fog: true,
+      uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTid: { value: 0 }, uN: { value: segs.length }, uBredd: { value: segs[0].bredd || 1.7 }, uLjus: { value: new THREE.Color(1, 1, 1) }, uNatt: { value: 0 } }]),
+      vertexShader: /* glsl */`varying vec3 vVarld;
+        #include <fog_pars_vertex>
+        void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vVarld = w.xyz; vec4 mvPosition = viewMatrix * w; gl_Position = projectionMatrix * mvPosition;
+          #include <fog_vertex>
+        }`,
+      fragmentShader: /* glsl */`uniform float uTid, uN, uBredd, uNatt; uniform vec4 uSeg[32]; uniform vec3 uLjus; varying vec3 vVarld;
+        #include <common>
+        #include <fog_pars_fragment>
+        ${GLSL_BRUS}
+        void main(){
+          vec2 p = vVarld.xz; float d = 1e3; vec2 dir = vec2(1.0, 0.0); float t0 = 0.0;
+          for (int i = 0; i < 32; i++) { if (float(i) >= uN) break; vec4 s = uSeg[i]; vec2 ab = s.zw - s.xy; float t = clamp(dot(p - s.xy, ab) / dot(ab, ab), 0.0, 1.0); float di = length(p - s.xy - ab * t); if (di < d) { d = di; dir = normalize(ab); } }
+          float k = d / uBredd;
+          if (k > 1.3) discard;
+          vec2 fl = normalize(p + vec2(1e-3)) * uTid; // lavan rinner inåt mot borgen; brus i världens koordinater så att bitarna möts utan skarvar
+          float n = fbrus(p * 0.6 + fl * 0.45), n2 = vbrus(p * 1.7 + fl * 0.8);
+          float karna = smoothstep(1.0, 0.6, k + (n - 0.5) * 0.4);
+          vec3 lavaF = mix(vec3(0.95, 0.17, 0.02), vec3(1.9, 0.82, 0.14), smoothstep(0.35, 0.85, n)) * (1.0 - uNatt * 0.25);
+          float flak = smoothstep(0.56, 0.66, n2) * smoothstep(0.1, 0.7, k) * 0.9;
+          vec3 skorpa = vec3(0.07, 0.05, 0.045) * uLjus;
+          vec3 c = mix(skorpa, mix(lavaF, skorpa + vec3(0.35, 0.05, 0.0), flak), karna);
+          c += vec3(0.7, 0.13, 0.01) * smoothstep(1.25, 0.95, k) * (1.0 - karna) * (0.5 + 0.5 * sin(uTid * 2.0 + (p.x + p.y) * 0.6));
+          gl_FragColor = vec4(c, smoothstep(1.3, 1.08, k));
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+          #include <fog_fragment>
+        }`,
+    });
+    lavaMat.uniforms.uSeg = { value: seg };
+    const m = new THREE.Mesh(g, lavaMat); m.renderOrder = 2; m.frustumCulled = false; m.name = 'lava'; m.userData.egen = true;
+    laggVarld(m);
+    // lavakällor: mörka stenar där fårorna börjar
+    const r = slump32(77);
+    for (const s of lava) { const ar = Math.hypot(s.ax, s.az); if (ar < 48) continue; const p = modellPool('sten_c', { max: 900, dov: true }); if (!p) break;
+      for (let i = 0; i < 4; i++) { const a = r() * TAU, rr = 2 + r() * 1.4, x = s.ax + Math.cos(a) * rr, z = s.az + Math.sin(a) * rr, sk = 4 + r() * 4; _m4.compose(_v3.set(x, markHojd(x, z) - 0.1, z), _q.setFromAxisAngle(UPP, r() * TAU), _s3.set(sk, sk * (0.7 + r() * 0.8), sk)); p.lagg(null, _m4, _c.setHex(0x3a3432)); } }
+  }
+  let bryggaL = 0;
+  function byggBrygga() {
+    const b = brygga; if (!b) return;
+    const ux = Math.sin(b.rot), uz = Math.cos(b.rot);
+    let L = 6; while (L < 40 && markHojd(b.x + ux * L, b.z + uz * L) > VATTEN_Y - 0.75) L += 0.5; L += 3; bryggaL = L;
+    const B = geoBygg(false), r = slump32(5), dy = (s) => (s < 1.4 ? 0.06 + 0.3 * s / 1.4 : 0.36);
+    for (let s = 0; s < L; s += 0.5) B.lada(2.6 + (r() - 0.5) * 0.12, 0.09, 0.44, (r() - 0.5) * 0.06, dy(s + 0.25), s + 0.25, r() < 0.5 ? 0x9a6a3e : 0x8a5a34, 0, (r() - 0.5) * 0.04, 0);
+    for (const sd of [-1, 1]) {
+      B.lada(0.16, 0.18, L - 1.2, sd * 0.95, 0.24, 1.2 + (L - 1.2) / 2, 0x5e3a22);
+      for (let s = 2.2; s < L; s += 2.4) B.stav(0.13, 0.12, [sd * 1.2, -2.6, s], [sd * 1.2, 0.62, s], 0x6a4026, 6);
+    }
+    B.stav(0.16, 0.14, [-0.9, 0.3, L - 0.3], [-0.9, 0.95, L - 0.3], 0x4a2e1a, 6); B.stav(0.16, 0.14, [0.9, 0.3, L - 0.3], [0.9, 0.95, L - 0.3], 0x4a2e1a, 6);
+    const g = B.klar(); g.applyMatrix4(_m4.compose(_v3.set(b.x, 0, b.z), _q.setFromAxisAngle(UPP, b.rot), _s3.set(1, 1, 1)));
+    const m = new THREE.Mesh(g, vfMat); m.castShadow = true; m.receiveShadow = true; m.name = 'brygga'; m.userData.egen = true;
+    laggVarld(m);
+  }
+  // Isvakar på Frostön: där de odöda kliver upp ur isen (NO, SO, SV, NV).
+  function byggIsvakar(r) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = 256; const c = cv.getContext('2d');
+    let gr = c.createRadialGradient(128, 128, 10, 128, 128, 127); gr.addColorStop(0, 'rgba(190,220,240,1)'); gr.addColorStop(0.62, 'rgba(176,206,228,0.95)'); gr.addColorStop(0.8, 'rgba(225,236,246,0.8)'); gr.addColorStop(1, 'rgba(235,242,250,0)');
+    c.fillStyle = gr; c.fillRect(0, 0, 256, 256);
+    c.strokeStyle = 'rgba(120,160,195,0.8)'; c.lineWidth = 2;
+    for (let i = 0; i < 9; i++) { const a = r() * TAU; c.beginPath(); c.moveTo(128 + Math.cos(a) * 30, 128 + Math.sin(a) * 30); let x = 128 + Math.cos(a) * 30, y = 128 + Math.sin(a) * 30; for (let k = 0; k < 4; k++) { x += Math.cos(a + (r() - 0.5)) * 18; y += Math.sin(a + (r() - 0.5)) * 18; c.lineTo(x, y); } c.stroke(); }
+    gr = c.createRadialGradient(128, 128, 4, 128, 128, 34); gr.addColorStop(0, 'rgba(6,24,44,1)'); gr.addColorStop(0.75, 'rgba(14,46,74,1)'); gr.addColorStop(1, 'rgba(120,170,205,0.0)');
+    c.fillStyle = gr; c.beginPath(); c.arc(128, 128, 34, 0, TAU); c.fill();
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    const mat = new THREE.MeshLambertMaterial({ map: tex, transparent: true, depthWrite: false }), geo = new THREE.PlaneGeometry(1, 1); geo.rotateX(-Math.PI / 2);
+    for (const k of ['NO', 'SO', 'SV', 'NV']) {
+      const v = RIKTPOS[k], m = new THREE.Mesh(geo, mat); m.position.set(v.x, markHojd(v.x, v.z) + 0.03, v.z); m.scale.set(10, 1, 10); m.rotation.y = r() * TAU; m.renderOrder = 1; m.receiveShadow = true; m.userData.egen = m.userData.egenMat = true; laggVarld(m);
+      const p = modellPool('stenA', { max: 120, dov: true }); if (!p) continue;
+      for (let i = 0; i < 6; i++) { const a = r() * TAU, rr = 3.4 + r() * 1.6, x = v.x + Math.cos(a) * rr, z = v.z + Math.sin(a) * rr, sk = 2.5 + r() * 3; _m4.compose(_v3.set(x, markHojd(x, z) - 0.05, z), _q.setFromEuler(_e.set((r() - 0.5) * 0.5, r() * TAU, (r() - 0.5) * 0.5)), _s3.set(sk, sk * (1 + r()), sk)); p.lagg(null, _m4, _c.setHex(0xcfe6ff)); }
+    }
+  }
+  const RIKTPOS = { S: { x: 0, z: 42 }, O: { x: 42, z: 0 }, N: { x: 0, z: -42 }, V: { x: -42, z: 0 } };
+  for (const [k, g] of [['SO', 45], ['NO', 135], ['NV', 225], ['SV', 315]]) RIKTPOS[k] = { x: 49 * Math.sin(g * Math.PI / 180), z: 49 * Math.cos(g * Math.PI / 180) };
+
+  // snöfall (Frostön), glöd och askregn (Vulkanön): punkter som faller i skuggaren runt fokus, ingen CPU-kostnad
+  const nederbord = (() => {
+    const N = mobil ? 1000 : 1800, p = new Float32Array(N * 3), fs = new Float32Array(N);
+    for (let i = 0; i < N; i++) { p[i * 3] = R() * 56; p[i * 3 + 1] = R() * 18; p[i * 3 + 2] = R() * 56; fs[i] = R(); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('aFas', new THREE.BufferAttribute(fs, 1));
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+      uniforms: { uTid: U.tid, uFokus: { value: new THREE.Vector3() }, uSkala: { value: 600 }, uStyrka: { value: 0 }, uFall: { value: 1.5 }, uStorlek: { value: 0.09 }, uFarg: { value: new THREE.Color(1, 1, 1) }, uGlod: { value: 0 }, uLjus: { value: new THREE.Color(1, 1, 1) }, uVind: { value: 0.4 } },
+      vertexShader: /* glsl */`attribute float aFas; uniform float uTid, uSkala, uStyrka, uFall, uStorlek, uGlod, uVind; uniform vec3 uFokus; varying float vA; varying float vEm;
+        void main(){ vec3 q = position; float f = fract(aFas * 13.7);
+          vEm = step(1.0 - uGlod, fract(aFas * 5.31));
+          float fart = mix(uFall * (0.7 + 0.6 * fract(aFas * 7.1)), -0.9 - f, vEm);
+          q.y = mod(q.y - uTid * fart, 18.0);
+          q.x += sin(uTid * 0.7 + aFas * 40.0) * 0.8 + uTid * uVind; q.z += cos(uTid * 0.53 + aFas * 31.0) * 0.6 + uTid * uVind * 0.3;
+          q.xz = mod(q.xz - uFokus.xz + 28.0, 56.0) - 28.0 + uFokus.xz;
+          vA = step(aFas, uStyrka) * smoothstep(0.0, 1.0, q.y) * smoothstep(18.0, 14.0, q.y) * mix(1.0, 0.6 + 0.4 * sin(uTid * 5.0 + aFas * 50.0), vEm);
+          vec4 mv = viewMatrix * vec4(q, 1.0); gl_Position = projectionMatrix * mv; gl_PointSize = min(36.0, uStorlek * mix(0.6 + 0.8 * f, 0.7, vEm) * uSkala / max(-mv.z, 0.1)); }`,
+      fragmentShader: /* glsl */`uniform vec3 uFarg, uLjus; varying float vA; varying float vEm;
+        void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.12, d) * vA; if (a < 0.01) discard;
+          vec3 c = mix(uFarg * uLjus, vec3(3.2, 1.2, 0.25), vEm);
+          gl_FragColor = vec4(c * a, a * (1.0 - vEm));
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }`,
+    });
+    const m = new THREE.Points(g, mat); m.frustumCulled = false; m.renderOrder = 23; m.name = 'nederbord'; m.visible = false; scen.add(m);
+    const nu = { styrka: 0, glod: 0, fall: 1.5, storlek: 0.09, farg: new THREE.Color(1, 1, 1) };
+    function steg(dt, aska) {
+      let mal;
+      if (TM.nederbord === 'sno') mal = { styrka: 0.32 + 0.2 * dygn.morker, glod: 0, fall: 1.4, storlek: 0.085, farg: 0xf4f8ff, vind: 0.35 };
+      else if (TM.nederbord === 'aska') mal = aska ? { styrka: 1, glod: 0.1, fall: 0.9, storlek: 0.1, farg: 0x8a8480, vind: 0.6 } : { styrka: 0.22, glod: 0.6, fall: 0.6, storlek: 0.08, farg: 0x9a948e, vind: 0.25 };
+      else mal = { styrka: 0, glod: 0, fall: 1, storlek: 0.08, farg: 0xffffff, vind: 0 };
+      const k = 1 - Math.exp(-1.2 * dt), u = mat.uniforms;
+      nu.styrka = lerp(nu.styrka, mal.styrka, k); nu.glod = lerp(nu.glod, mal.glod, k); nu.fall = lerp(nu.fall, mal.fall, k); nu.storlek = lerp(nu.storlek, mal.storlek, k); nu.farg.lerp(_c.setHex(mal.farg), k);
+      m.visible = nu.styrka > 0.01;
+      u.uStyrka.value = nu.styrka; u.uGlod.value = nu.glod; u.uFall.value = nu.fall; u.uStorlek.value = nu.storlek; u.uFarg.value.copy(nu.farg); u.uVind.value = mal.vind; u.uFokus.value.copy(kam.mal);
+      u.uLjus.value.copy(dygn.ljus).multiplyScalar(1.1).addScalar(0.08);
+    }
+    function nolla() { nu.styrka = 0; }
+    return { mat, steg, nolla };
+  })();
+  // korta ljusblixtar på marken (explosioner): ritas med markljus och glöd tills de klingat av
+  const blixtar = [];
+  function ljusblixt(x, z, radie, r, gg, b, tid) { blixtar.push({ x, z, radie, r, gg, b, tid, max: tid }); }
+  // utropstecken över hjältar som väntar på att rekryteras
+  let utropTex = null;
+  function nyttUtrop() {
+    if (!utropTex) {
+      const cv = document.createElement('canvas'); cv.width = 64; cv.height = 96; const c = cv.getContext('2d');
+      c.beginPath(); c.moveTo(20, 8); c.lineTo(44, 8); c.lineTo(38, 62); c.lineTo(26, 62); c.closePath(); c.fillStyle = '#ffd24a'; c.fill(); c.lineWidth = 5; c.lineJoin = 'round'; c.strokeStyle = 'rgba(40,24,0,0.9)'; c.stroke();
+      c.beginPath(); c.arc(32, 80, 9, 0, TAU); c.fill(); c.stroke();
+      utropTex = new THREE.CanvasTexture(cv); utropTex.colorSpace = THREE.SRGBColorSpace;
+    }
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: utropTex, transparent: true, depthTest: false, depthWrite: false, fog: false })); s.renderOrder = 57; s.center.set(0.5, 0); scen.add(s);
+    return s;
+  }
+
   // ─── dekor och gräs ───
   function byggDekor() {
-    const r = slump32(O.fro + 11);
-    const tDef = TYPER.trad, sDef = TYPER.sten;
+    const r = slump32(O.fro + 11 + (tema === 'sommar' ? 0 : tema.length * 17));
+    const tDef = temaDef('trad'), sDef = temaDef('sten'), D = TM.dekor;
     let n = 0;
-    for (let i = 0; i < 2600 && n < (mobil ? 220 : 340); i++) {
+    for (let i = 0; i < 2600 && n < (mobil ? 220 : 340) * D.trad; i++) {
       const a = r() * TAU, rad = O.spelRadie + 3 + r() * (O.oRadie - O.spelRadie), x = Math.cos(a) * rad, z = Math.sin(a) * rad, d = kustR(a) - rad;
       if (d < 8.5 || fbm(x * 0.05 + 40, z * 0.05) < 0.36) continue;
-      const p = modellPool(tDef.varianter[(r() * tDef.varianter.length) | 0], { max: 900, vaj: 1 }); if (!p) break;
+      if (brygga) { const ux = Math.sin(brygga.rot), uz = Math.cos(brygga.rot), dx = x - brygga.x, dz = z - brygga.z; if (Math.abs(dx * uz - dz * ux) < 5 && dx * ux + dz * uz > -5) continue; }
+      const p = modellPool(tDef.varianter[(r() * tDef.varianter.length) | 0], { max: 900, vaj: tDef.vaj || 1 }); if (!p) break;
       const s = lerp(tDef.skala[0], tDef.skala[1], r()) * 1.1;
       _m4.compose(_v3.set(x, markHojd(x, z) - 0.1, z), _q.setFromAxisAngle(UPP, r() * TAU), _s3.set(s, s * (0.9 + r() * 0.3), s));
       p.lagg(null, _m4, _c.setHex(tDef.farger[(r() * tDef.farger.length) | 0])); n++;
     }
-    for (let i = 0; i < 90; i++) { // stenar längs stranden och ute i vattnet
-      const a = r() * TAU, d = -5 + r() * 12, rad = kustR(a) - d, x = Math.cos(a) * rad, z = Math.sin(a) * rad;
+    for (let i = 0; i < 90 * D.sten; i++) { // stenar längs stranden och ute i vattnet
+      const a = r() * TAU, d = -5 + r() * (tema === 'vulkan' ? 20 : 12), rad = kustR(a) - d, x = Math.cos(a) * rad, z = Math.sin(a) * rad;
       if (rad < O.spelRadie + 2) continue;
-      const p = modellPool(sDef.varianter[(r() * sDef.varianter.length) | 0], { max: 500 }); if (!p) break;
+      if (brygga) { const ux = Math.sin(brygga.rot), uz = Math.cos(brygga.rot), dx = x - brygga.x, dz = z - brygga.z; if (Math.abs(dx * uz - dz * ux) < 6 && dx * ux + dz * uz > -4) continue; }
+      const p = modellPool(sDef.varianter[(r() * sDef.varianter.length) | 0], { max: 900, dov: true }); if (!p) break;
       const s = lerp(4, 12, r() * r());
       _m4.compose(_v3.set(x, markHojd(x, z) - 0.15, z), _q.setFromAxisAngle(UPP, r() * TAU), _s3.set(s, s * (0.8 + r() * 0.8), s));
-      p.lagg(null, _m4, _c.setHex(d < 1 ? 0xb8b4aa : 0xe2e0d8));
+      p.lagg(null, _m4, _c.setHex(d < 1 ? D.stenVat : D.stenLand));
     }
     byggGravfalt(r);
   }
   // Gravfälten i de fyra väderstrecken: härifrån kommer de odöda. Ren dekor (krockar inte), med en fri gång i mitten.
   function byggGravfalt(r) {
     const cv = document.createElement('canvas'); cv.width = cv.height = 128; const cx = cv.getContext('2d');
-    const gr = cx.createRadialGradient(64, 64, 6, 64, 64, 63); gr.addColorStop(0, 'rgba(58,50,52,0.9)'); gr.addColorStop(0.55, 'rgba(62,56,52,0.7)'); gr.addColorStop(1, 'rgba(70,62,54,0)'); cx.fillStyle = gr; cx.fillRect(0, 0, 128, 128);
+    const jf = tema === 'vinter' ? [96, 100, 112] : tema === 'vulkan' ? [30, 24, 22] : [62, 54, 52];
+    const gr = cx.createRadialGradient(64, 64, 6, 64, 64, 63); gr.addColorStop(0, `rgba(${jf[0] - 4},${jf[1] - 4},${jf[2]},0.9)`); gr.addColorStop(0.55, `rgba(${jf},0.7)`); gr.addColorStop(1, `rgba(${jf[0] + 8},${jf[1] + 6},${jf[2] + 2},0)`); cx.fillStyle = gr; cx.fillRect(0, 0, 128, 128);
     const jordTex = new THREE.CanvasTexture(cv); jordTex.colorSpace = THREE.SRGBColorSpace;
     const jordMat = new THREE.MeshLambertMaterial({ map: jordTex, transparent: true, depthWrite: false });
     const jordGeo = new THREE.PlaneGeometry(1, 1); jordGeo.rotateX(-Math.PI / 2);
@@ -1059,7 +1747,7 @@ export function skapaGrafik(canvas, opts = {}) {
       const v = VADERSTRECK[namn], l = Math.hypot(v.x, v.z), ux = v.x / l, uz = v.z / l, tx = -uz, tz = ux; // u pekar utåt, t tvärs
       const mot = Math.atan2(-ux, -uz); // vänd mot borgen
       const stall = (typ, ut, tvars, rot, max) => {
-        const d = TYPER[typ], x = v.x + ux * ut + tx * tvars, z = v.z + uz * ut + tz * tvars;
+        const d = temaDef(typ), x = v.x + ux * ut + tx * tvars, z = v.z + uz * ut + tz * tvars;
         const p = modellPool(d.varianter[(r() * d.varianter.length) | 0], { max }); if (!p) return;
         const sk = lerp(d.skala[0], d.skala[1], r());
         _m4.compose(_v3.set(x, markHojd(x, z) - 0.03, z), _q.setFromAxisAngle(UPP, rot), _s3.set(sk, sk, sk));
@@ -1070,13 +1758,15 @@ export function skapaGrafik(canvas, opts = {}) {
         stall('gravsten', -4.5 + rad * 3.1 + (r() - 0.5) * 0.9, i * 2.4 + (r() - 0.5) * 0.8, mot + (r() - 0.5) * 0.6, 120);
       }
       stall('dodtrad', -1.5, -10, r() * TAU, 32); stall('dodtrad', 4.5, 9.5, r() * TAU, 32); stall('dodtrad', 9.5, -6.5, r() * TAU, 32); stall('dodtrad', 10.5, 5.5, r() * TAU, 32);
-      const jord = new THREE.Mesh(jordGeo, jordMat); jord.position.set(v.x + ux * 2.5, 0.035, v.z + uz * 2.5); jord.scale.set(30, 1, 30); jord.renderOrder = 1; jord.receiveShadow = true; scen.add(jord);
+      const jord = new THREE.Mesh(jordGeo, jordMat); jord.position.set(v.x + ux * 2.5, 0.035, v.z + uz * 2.5); jord.scale.set(30, 1, 30); jord.renderOrder = 1; jord.receiveShadow = true; jord.userData.egen = jord.userData.egenMat = true; laggVarld(jord);
       const kg = geoAv(TYPER.krypta.modell);
-      if (kg) { const m = new THREE.Mesh(kg.geo, kg.mat), kx = v.x + ux * 9.5, kz = v.z + uz * 9.5; m.position.set(kx, markHojd(kx, kz) - 0.03, kz); m.rotation.y = mot; m.scale.setScalar(TYPER.krypta.skala); m.castShadow = true; m.receiveShadow = true; m.name = 'krypta:' + namn; scen.add(m); }
+      if (kg) { const m = new THREE.Mesh(kg.geo, kg.mat), kx = v.x + ux * 9.5, kz = v.z + uz * 9.5; m.position.set(kx, markHojd(kx, kz) - 0.03, kz); m.rotation.y = mot; m.scale.setScalar(TYPER.krypta.skala); m.castShadow = true; m.receiveShadow = true; m.name = 'krypta:' + namn; laggVarld(m); }
     }
+    if (tema === 'vinter') byggIsvakar(r);
   }
   function byggGras() {
-    const N = mobil ? 7000 : 12000, r = slump32(O.fro + 23);
+    const N = Math.round((mobil ? 7000 : 12000) * TM.gras), r = slump32(O.fro + 23);
+    if (N <= 0) return;
     const pos = [], farg = [], nor = [];
     const cBas = new THREE.Color(0x4c8c34), cTopp = new THREE.Color(0x90c456);
     for (let b = 0; b < 6; b++) { // varje strå ritas med båda lindningarna och normalen uppåt, så att det lyses som marken
@@ -1088,13 +1778,18 @@ export function skapaGrafik(canvas, opts = {}) {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(farg, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
     g.computeBoundingBox();
-    const p = pool('gras', () => ({ geo: g, mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: N, vaj: 9, skugga: false }));
-    const toner = [0xffffff, 0xe8f0c0, 0xd0e8b0, 0xfff2b0, 0xc0dca0].map((h) => new THREE.Color(h));
+    const p = pool('gras', () => ({ geo: g, mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: mobil ? 7000 : 12000, vaj: 9, skugga: false }));
+    { // strånas färg efter ön (grönt, frostigt halmgult, förtorkat brunt)
+      const ca = p.mesh.geometry.attributes.color, py = p.mesh.geometry.attributes.position, b0 = new THREE.Color(TM.grasFarg[0]), b1 = new THREE.Color(TM.grasFarg[1]);
+      for (let i = 0; i < ca.count; i++) { const f = py.getY(i) > 0.01 ? b1 : b0; ca.setXYZ(i, f.r, f.g, f.b); } ca.needsUpdate = true;
+    }
+    const toner = TM.grasToner.map((h) => new THREE.Color(h));
     let n = 0;
     for (let i = 0; i < N * 4 && n < N; i++) {
       const a = r() * TAU, rad = Math.sqrt(r()) * O.oRadie, x = Math.cos(a) * rad, z = Math.sin(a) * rad;
       if (rad < O.gardRadie + 1.5 || kustR(a) - rad < 9.5) continue;
       if (fbm(x * 0.11 + 70, z * 0.11 - 20) < 0.25 + r() * 0.25) continue;
+      if (lava.length && lavaAvst(x, z) < 3) continue;
       const s = 0.5 + r() * 0.45;
       _m4.compose(_v3.set(x, markHojd(x, z) - 0.02, z), _q.setFromAxisAngle(UPP, r() * TAU), _s3.set(s, s * (0.7 + r() * 0.7), s));
       p.lagg(null, _m4, toner[(r() * toner.length) | 0]); n++;
@@ -1105,38 +1800,64 @@ export function skapaGrafik(canvas, opts = {}) {
   const dygn = { ljus: new THREE.Color(1, 1, 1), morker: 0, rikt: new THREE.Vector3(0, 1, 0), dagsljus: 1 };
   const _ca = new THREE.Color(), _cb = new THREE.Color();
   const blanda = (a, b, k, ut) => ut.copy(_ca.setHex(a)).lerp(_cb.setHex(b), k);
+  const ask = { k: 0 }; // askregnets styrka (Vulkanön), tonas in och ut
   function uppdateraDygn(tid) {
     let t = (FASBAS[tid && tid.fas] ?? 0) + klamp(tid && typeof tid.andel === 'number' ? tid.andel : 0, 0, 1);
     t = ((t % 4) + 4) % 4;
     let i = 0; while (i < DYGN.length - 2 && DYGN[i + 1].t <= t) i++;
     const a = DYGN[i], b = DYGN[i + 1], k = klamp((t - a.t) / (b.t - a.t), 0, 1);
-    const styrka = lerp(a.styrka, b.styrka, k), hI = lerp(a.hemi, b.hemi, k), man = a.man && b.man ? 1 : 0;
+    let styrka = lerp(a.styrka, b.styrka, k), hI = lerp(a.hemi, b.hemi, k);
+    const man = a.man && b.man ? 1 : 0;
     const h = lerp(a.solH, b.solH, k) * Math.PI / 180, az = lerp(a.solAz, b.solAz, k) * Math.PI / 180;
     dygn.rikt.set(Math.sin(az) * Math.cos(h), Math.sin(h), -Math.cos(az) * Math.cos(h)).normalize();
-    blanda(a.sol, b.sol, k, sol.color); sol.intensity = styrka;
-    blanda(a.hemiH, b.hemiH, k, hemi.color); blanda(a.hemiM, b.hemiM, k, hemi.groundColor); hemi.intensity = hI;
-    blanda(a.dimma, b.dimma, k, scen.fog.color); scen.fog.density = lerp(a.dimT, b.dimT, k);
     const sollikt = (a.man || b.man) ? 0 : 1;
     dygn.dagsljus = klamp((1 - Math.max(a.man * (1 - k), b.man * k)) * (sollikt ? styrka / 3 : 0), 0, 1);
     dygn.morker = 1 - mjuk(0.08, 0.85, dygn.dagsljus);
-    U.morker.value = dygn.morker; U.molnSkugga.value = 0.24 * dygn.dagsljus;
-    dygn.ljus.copy(hemi.color).multiplyScalar(hI * 0.5).add(_c.copy(sol.color).multiplyScalar(styrka * 0.2));
-    dygn.niva = klamp(dygn.ljus.r * 0.3 + dygn.ljus.g * 0.6 + dygn.ljus.b * 0.1, 0.25, 1);
+    const mk = dygn.morker, ak = ask.k;
+    blanda(a.sol, b.sol, k, sol.color);
+    blanda(a.hemiH, b.hemiH, k, hemi.color); blanda(a.hemiM, b.hemiM, k, hemi.groundColor);
+    blanda(a.dimma, b.dimma, k, scen.fog.color); scen.fog.density = lerp(a.dimT, b.dimT, k);
     const hu = himmelMat.uniforms;
     blanda(a.topp, b.topp, k, hu.uTopp.value); blanda(a.hor, b.hor, k, hu.uHor.value);
-    hu.uSolFarg.value.copy(sol.color); hu.uStj.value = lerp(a.stj, b.stj, k);
-    hu.uSolSynlig.value = sollikt; hu.uManSynlig.value = man * mjuk(0, 1, styrka);
+    let exp = lerp(a.exp, b.exp, k);
+    blanda(a.ton, b.ton, k, post.U.uTon.value);
+    const D = TM.dygn;
+    if (D) { // öns ton: kall dimma och snöljus på Frostön, rödaktig dis och glöd på Vulkanön
+      const tv = (dag, natt) => _c2.setHex(dag).lerp(_ca.setHex(natt), mk);
+      scen.fog.color.lerp(tv(D.dimma, D.dimmaN), D.dimmaK); scen.fog.density *= D.dimT;
+      hu.uHor.value.lerp(tv(D.hor, D.horN), D.horK); hu.uTopp.value.lerp(_c2.setHex(D.topp), D.toppK * (1 - mk));
+      sol.color.lerp(_c2.setHex(D.sol), D.solK); hemi.color.lerp(_c2.setHex(D.hemiH), D.hemiHK);
+      hemi.groundColor.lerp(tv(D.hemiM, D.hemiMN), D.hemiMK); post.U.uTon.value.lerp(_c2.setHex(D.ton), D.tonK);
+      exp *= D.exp;
+    }
+    if (ak > 0.001) { // askregn: mörkare, dovare, tätare dis
+      scen.fog.color.lerp(_c2.setRGB(0.16, 0.14, 0.13), 0.5 * ak); scen.fog.density *= 1 + 0.7 * ak;
+      styrka *= 1 - 0.3 * ak; hI *= 1 - 0.15 * ak; exp *= 1 - 0.08 * ak;
+      hu.uHor.value.lerp(_c2.setRGB(0.22, 0.1, 0.07), 0.5 * ak);
+    }
+    sol.intensity = styrka; hemi.intensity = hI;
+    U.morker.value = mk; U.molnSkugga.value = 0.24 * dygn.dagsljus;
+    dygn.ljus.copy(hemi.color).multiplyScalar(hI * 0.5).add(_c.copy(sol.color).multiplyScalar(styrka * 0.2));
+    dygn.niva = klamp(dygn.ljus.r * 0.3 + dygn.ljus.g * 0.6 + dygn.ljus.b * 0.1, 0.25, 1);
+    hu.uSolFarg.value.copy(sol.color); hu.uStj.value = lerp(a.stj, b.stj, k) * (1 - ak);
+    hu.uSolSynlig.value = sollikt; hu.uManSynlig.value = man * mjuk(0, 1, styrka) * (1 - ak);
     if (man) hu.uManRikt.value.copy(dygn.rikt); else hu.uSolRikt.value.copy(dygn.rikt);
     hu.uMolnFarg.value.copy(dygn.ljus).multiplyScalar(0.8).lerp(hu.uHor.value, 0.35);
-    const vu = vattenMat.uniforms;
-    vu.uDjup.value.setHex(0x0e5a8c).multiply(dygn.ljus); vu.uGrund.value.setHex(0x45cfc0).multiply(dygn.ljus); vu.uSkum.value.setRGB(1, 1, 1).multiply(dygn.ljus).multiplyScalar(1.05);
+    const vu = vattenMat.uniforms, V = TM.vatten;
+    vu.uDjup.value.setHex(V.djup).multiply(dygn.ljus); vu.uGrund.value.setHex(V.grund).multiply(dygn.ljus); vu.uSkum.value.setHex(V.skum).multiply(dygn.ljus).multiplyScalar(1.05);
+    vu.uIsLjus.value.setHex(0xd2e6f4).multiply(dygn.ljus).multiplyScalar(1.05); vu.uIsMork.value.setHex(0x86aecb).multiply(dygn.ljus);
     vu.uHimmel.value.copy(hu.uHor.value).lerp(hu.uTopp.value, 0.45);
     vu.uLjusRikt.value.copy(dygn.rikt); vu.uLjusFarg.value.copy(sol.color).multiplyScalar(styrka * (man ? 1.6 : 0.9));
+    gravMat.uniforms.uLjus.value.copy(dygn.ljus).multiplyScalar(1.15); gravMat.uniforms.uLjusRikt.value.copy(dygn.rikt); gravMat.uniforms.uNatt.value = mk;
+    if (lavaMat) { lavaMat.uniforms.uLjus.value.copy(dygn.ljus); lavaMat.uniforms.uNatt.value = mk; }
     part.mat.uniforms.uLjus.value.copy(dygn.ljus).multiplyScalar(0.72);
-    flugor.mat.uniforms.uStyrka.value = dygn.morker;
-    eld.mat.uniforms.uStyrka.value = lerp(0.36, 1, dygn.morker); // i dagsljus ska lågan vara orange, inte vitglödgad
-    const exp = lerp(a.exp, b.exp, k);
-    renderer.toneMappingExposure = exp; post.U.uExp.value = exp; post.U.uBloom.value = lerp(a.bloom, b.bloom, k); blanda(a.ton, b.ton, k, post.U.uTon.value);
+    flugor.mat.uniforms.uStyrka.value = mk * TM.flugor;
+    eld.mat.uniforms.uStyrka.value = lerp(0.36, 1, mk); // i dagsljus ska lågan vara orange, inte vitglödgad
+    // natten var för mörk i skärmkanterna: ett svagt fyllnadsljus och en mildare vinjett när det är mörkt
+    fyllLjus.color.setHex(TM.fyll); fyllLjus.intensity = mk * 0.62 * (1 - 0.3 * ak);
+    post.U.uVinjett.value = lerp(0.3, 0.1, mk);
+    post.U.uMattnad.value = 1.12 - 0.22 * ak;
+    renderer.toneMappingExposure = exp; post.U.uExp.value = exp; post.U.uBloom.value = lerp(a.bloom, b.bloom, k);
   }
 
   // ─── kamera ───
@@ -1178,7 +1899,7 @@ export function skapaGrafik(canvas, opts = {}) {
     renderer.setPixelRatio(pr); renderer.setSize(bredd, hojd, false);
     const db = renderer.getDrawingBufferSize(new THREE.Vector2());
     if (q.post) post.storlek(db.x, db.y); else post.fri();
-    const ph = db.y; part.mat.uniforms.uSkala.value = ph / (2 * Math.tan(kamera.fov * Math.PI / 360)); flugor.mat.uniforms.uSkala.value = part.mat.uniforms.uSkala.value;
+    const ph = db.y; part.mat.uniforms.uSkala.value = ph / (2 * Math.tan(kamera.fov * Math.PI / 360)); flugor.mat.uniforms.uSkala.value = part.mat.uniforms.uSkala.value; nederbord.mat.uniforms.uSkala.value = part.mat.uniforms.uSkala.value;
     if (sol.castShadow !== q.skuggor) { sol.castShadow = q.skuggor; }
     renderer.shadowMap.autoUpdate = q.skuggor;
     if (!q.skuggor) renderer.shadowMap.needsUpdate = true;
@@ -1249,7 +1970,7 @@ export function skapaGrafik(canvas, opts = {}) {
   function laggEld(o, x, y, z, styrka) { const el = { x, y, z, styrka, fas: Math.random() * 10, agare: o, gnista: Math.random() }; eldar.push(el); (o.eldar || (o.eldar = [])).push(el); }
 
   function skapa(e, nyckel) {
-    const def = TYPER[e.typ];
+    const def = temaDef(e.typ);
     let o;
     if (!def) o = platshallare(e);
     else if (def.slag === 'figur') {
@@ -1260,17 +1981,30 @@ export function skapaGrafik(canvas, opts = {}) {
         scen.add(f.hallare);
         f.nat.castShadow = KVALITET[kval].figurskuggor;
         o = { slag: 'figur', f, rot: e.rot || 0, in: forsta ? 1 : 0, lage: '', skala: def.skala * (e.skala || 1), fasn: (Math.random() * 3) | 0, ack: 0 };
-        if (!forsta && def.lag === 'fiende') fx.jordpuff(e.x, e.z);
+        if (!forsta && def.lag === 'fiende' && !def.svav) fx.jordpuff(e.x, e.z);
+        if (def.tillbehor) { // lådor och tunnor bredvid handelsmannen
+          o.tillb = []; const r0 = e.rot || 0, c = Math.cos(r0), sn = Math.sin(r0);
+          for (const t of def.tillbehor) { const p = modellPool(t.modell, { max: 64 }); if (!p) continue; const a = { pool: p, idx: -1 }, x = e.x + t.pos[0] * c + t.pos[2] * sn, z = e.z - t.pos[0] * sn + t.pos[2] * c;
+            _m4.compose(_v3.set(x, markHojd(x, z), z), _q.setFromAxisAngle(UPP, r0 + (t.rot || 0)), _s3.setScalar(t.skala)); a.idx = p.lagg(a, _m4); o.tillb.push(a); }
+        }
       }
     } else if (def.slag === 'bygge') o = { slag: 'bygge', mesh: null, niva: -1, res: 1 };
+    else if (def.slag === 'maskin' || def.slag === 'grav') { const grp = new THREE.Group(); scen.add(grp); o = { slag: def.slag, grp, niva: -1, res: 1, ras: false }; }
+    else if (def.slag === 'bat') { const grp = batModell(e.slag === 'resa' ? 'resa' : 'handel').clone(); scen.add(grp); o = { slag: 'bat', grp, fas: Math.random() * 6 }; }
+    else if (def.slag === 'svav') {
+      const p = modellPool(def.modell, { max: 160, glodMat: true, tarSkugga: false });
+      o = { slag: 'svav', pool: p, rot: e.rot || 0, fas: Math.random() * 6, in: forsta ? 1 : 0, dodK: 0, skala: def.skala };
+      if (p) { _m4.makeScale(0, 0, 0); o.idx = p.lagg(o, _m4); }
+      laggEld(o, e.x, def.hojd, e.z, 0.7); o.el = o.eldar[0];
+    }
     else if (def.slag === 'mur') {
-      const p = def.sort === 'palissad' ? pool('palissad', () => ({ geo: palissadGeo(), mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: 400 })) : modellPool(def.modell, { max: 400 });
+      const p = def.sort === 'palissad' ? pool('palissad', () => ({ geo: palissadGeo(), mat: vfMat, max: 400 })) : modellPool(def.modell, { max: 400 });
       if (!p) o = platshallare(e);
       else { o = { slag: 'mur', pool: p, delar: [], hpSedd: -1, raserad: false }; murDelar(o, e, def, p, nyckel, forsta ? 1 : 0); }
     } else if (def.slag === 'instans') {
       const slut = naturSlut(e), stubbe = def.stubbe && slut;
       const vn = stubbe ? def.stubbe : def.varianter[(h01(e.id, 1) * def.varianter.length) | 0];
-      const p = modellPool(vn, { max: 900, vaj: def.vaj && !stubbe ? def.vaj : 0 });
+      const p = modellPool(vn, { max: 900, vaj: def.vaj && !stubbe ? def.vaj : 0, dov: !!def.dov });
       if (!p) o = platshallare(e);
       else {
         const s = lerp(def.skala[0], def.skala[1], h01(e.id, 2)) * (e.skala || 1) * (slut && !stubbe && def.slutSkala ? def.slutSkala : 1);
@@ -1280,9 +2014,10 @@ export function skapaGrafik(canvas, opts = {}) {
         if (o.res < 1) resningar.add(o);
       }
     } else if (def.slag === 'eld') {
-      const p = def.sort === 'fyrfat' ? pool('fyrfat', () => ({ geo: fyrfatGeo(), mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: 128 })) : modellPool(def.modell, { max: 128 });
-      const s = def.skala || 1;
-      o = { slag: 'eld', pool: p, nyckel, x: e.x, y: markHojd(e.x, e.z) + (def.sort === 'fackla' ? 0.55 : 0), z: e.z, rot: e.rot || 0, sx: s, sy: s, sz: s, res: forsta ? 1 : 0, tand: null };
+      const p = def.sort === 'fyrfat' ? pool('fyrfat', () => ({ geo: fyrfatGeo(), mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: 128 }))
+        : def.sort === 'varmeeld' ? pool('varmeeld', () => ({ geo: varmeeldGeo(), mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: 32 })) : modellPool(def.modell, { max: 128 });
+      const s = (def.skala || 1) * (def.sort === 'varmeeld' ? 1 + 0.3 * ((e.niva || 1) - 1) : 1);
+      o = { slag: 'eld', pool: p, nyckel, x: e.x, y: markHojd(e.x, e.z) + (def.sort === 'fackla' ? 0.55 : 0), z: e.z, rot: e.rot || 0, sx: s, sy: s, sz: s, res: forsta ? 1 : 0, tand: null, niva: e.niva || 1 };
       if (p) { o.idx = p.lagg(o, murMatris(o, o.res)); if (o.res < 1) resningar.add(o); }
     } else if (def.slag === 'ruta') {
       const grp = new THREE.Group();
@@ -1294,9 +2029,12 @@ export function skapaGrafik(canvas, opts = {}) {
       o = { slag: 'ruta', grp, dekal, skylt, ctx: cv.getContext('2d'), tex, sign: '', rader: [], andel: 0, fas: Math.random() * 6, storlek: e.storlek || (e.radie ? e.radie * 2 : def.storlek) };
     } else if (def.slag === 'projektil') {
       const sort = e.slag ?? e.sort ?? 'pil';
-      const y0 = e.y ?? (sort === 'pil' ? tornTopp(e.x, e.z) : 1.9);
-      o = { slag: 'projektil', magi: sort === 'magi' || sort === 'eld', sort, fx: e.x, fz: e.z, fy: y0, x0: e.x, z0: e.z, y0, rikt: new THREE.Vector3(0, 0, 1) };
-      if (!o.magi) { o.pool = modellPool(def.modell, { max: 200, tarSkugga: false }); if (o.pool) { _m4.makeScale(0, 0, 0); o.idx = o.pool.lagg(o, _m4); } }
+      const y0 = e.y ?? (sort === 'pil' ? (tornTopp(e.x, e.z) ?? 1.45) : sort === 'spjut' ? 1.75 : sort === 'sten' ? 2.4 : 1.9);
+      o = { slag: 'projektil', magi: sort === 'magi' || sort === 'eld' || sort === 'is', sort, fx: e.x, fz: e.z, fy: y0, x0: e.x, z0: e.z, y0, rikt: new THREE.Vector3(0, 0, 1), t: 0, skala: def.skala };
+      if (sort === 'pil' || sort === 'spjut') { o.pool = modellPool(def.modell, { max: 200, tarSkugga: false }); if (sort === 'spjut') o.skala = def.skala * 2.1; }
+      else if (sort === 'sten') { o.pool = modellPool('sten_e', { max: 900, dov: true }); o.skala = 2.4; }
+      else if (sort === 'is') { o.pool = pool('isskarva', () => ({ geo: isskarvaGeo(), mat: new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 2.4, 3.2) }), max: 120, skugga: false, tarSkugga: false })); o.skala = 1; }
+      if (o.pool) { _m4.makeScale(0, 0, 0); o.idx = o.pool.lagg(o, _m4); }
     } else if (def.slag === 'resurs') {
       const sort = (def.sorter[e.slag] ? e.slag : null) ?? e.sort ?? e.resurs ?? 'tra', sd = def.sorter[sort] || def.sorter.tra;
       o = { slag: 'resurs', sort, pool: modellPool(sd[0], { max: 400 }), s: sd[1], fas: Math.random() * 6, in: forsta ? 1 : 0 };
@@ -1311,8 +2049,11 @@ export function skapaGrafik(canvas, opts = {}) {
     objekt.delete(o.nyckel);
     resningar.delete(o);
     if (o.eldar) { for (const el of o.eldar) { const i = eldar.indexOf(el); if (i >= 0) eldar.splice(i, 1); } o.eldar = null; }
-    if (o.slag === 'figur') { if (tyst) slappFigur(o.typ, o.f); else doende.push({ o, t: 0, tid: o.dod ? 1.1 : 0.25 }); }
-    else if (o.slag === 'bygge') { if (o.mesh) scen.remove(o.mesh); slappDelar(o); }
+    if (o.tillb) { for (const a of o.tillb) if (a.idx >= 0) { a.pool.tabort(a.idx); a.idx = -1; } o.tillb = null; }
+    if (o.utrop) { scen.remove(o.utrop); o.utrop.material.dispose(); o.utrop = null; }
+    if (o.slag === 'figur') { if (tyst) slappFigur(o.typ, o.f); else doende.push({ o, t: 0, tid: o.dod ? (o.def.svav ? 1.6 : 1.1) : 0.25 }); }
+    else if (o.slag === 'bygge') { if (o.mesh) scen.remove(o.mesh); if (o.ruin) scen.remove(o.ruin); slappDelar(o); }
+    else if (o.slag === 'maskin' || o.slag === 'grav' || o.slag === 'bat') scen.remove(o.grp);
     else if (o.slag === 'mur') slappDelar(o);
     else if (o.slag === 'ruta') { scen.remove(o.grp); o.tex.dispose(); o.dekal.material.dispose(); o.skylt.material.dispose(); }
     else if (o.slag === 'plats') scen.remove(o.mesh);
@@ -1388,18 +2129,37 @@ export function skapaGrafik(canvas, opts = {}) {
     const def = o.def;
     switch (o.slag) {
       case 'figur': {
-        const f = o.f, hl = f.hallare;
-        hl.position.set(e.x, markHojd(e.x, e.z), e.z);
+        const f = o.f, hl = f.hallare, mark = markHojd(e.x, e.z);
+        let gy = mark;
+        if (def.svav) { // draken svävar 3 till 5 m upp och dalar när den dör
+          const dor = e.dod > 0 || e.anim === 'do', mal = dor ? 0 : def.svav + Math.sin(U.tid.value * 1.1 + o.fasn) * 0.35;
+          o.svav = o.svav === undefined ? mal : lerp(o.svav, mal, 1 - Math.exp(-(dor ? 2.4 : 3) * dt)); gy += o.svav;
+        }
+        hl.position.set(e.x, gy, e.z);
         if (typeof e.rot === 'number') { o.rot = vinkelMot(o.rot, e.rot, 1 - Math.exp(-14 * dt)); hl.rotation.y = o.rot; }
         if (o.in < 1) o.in = Math.min(1, o.in + dt * 3.5);
         hl.scale.setScalar(o.skala * (0.3 + 0.7 * utBack(o.in)));
         const lage = e.dod > 0 ? 'do' : (e.anim || 'idle');
         if (lage !== o.lage) { bytAnim(f, lage, o.lage === ''); o.lage = lage; o.dod = lage === 'do'; }
         figurer.push(o);
-        if (klickN < SMAX && !o.dod) { const r = o.skala * (def.tung ? 1.9 : 1.5); _m4.makeScale(r, 1, r); _m4.setPosition(e.x, hl.position.y + 0.04, e.z); klick.setMatrixAt(klickN++, _m4); }
+        if (klickN < SMAX && !o.dod) { const r = def.svav ? 5.5 - (o.svav || 0) * 0.5 : o.skala * (def.tung ? 1.9 : def.kod ? 1.3 : 1.5); _m4.makeScale(r, 1, r); _m4.setPosition(e.x, mark + 0.04, e.z); klick.setMatrixAt(klickN++, _m4); }
+        if (def.svav && dygn.morker > 0.1 && !o.dod) { markljus.lagg(e.x, 0.08, e.z, 5, 0.5 * dygn.morker, 0.16 * dygn.morker, 0.03 * dygn.morker); }
+        if (e.vantar) { // hjälten väntar på att rekryteras: utropstecken och ett gyllene sken
+          if (!o.utrop) o.utrop = nyttUtrop();
+          const t = U.tid.value, pu = 0.7 + 0.3 * Math.sin(t * 4);
+          o.utrop.visible = true; o.utrop.position.set(e.x, hl.position.y + def.hpHojd + 0.35 + Math.abs(Math.sin(t * 3)) * 0.18, e.z); o.utrop.scale.set(0.5, 0.75, 1);
+          markljus.lagg(e.x, 0.07, e.z, 2.4, 0.5 * pu, 0.38 * pu, 0.08 * pu);
+          if (Math.random() < dt * 5) part.ny(e.x + (R() - 0.5) * 1.2, 0.2, e.z + (R() - 0.5) * 1.2, 0, 1 + R(), 0, 4, 3, 0.8, 0.9, 0.08, 0.9, 1, -0.3, 0.5);
+        } else if (o.utrop) o.utrop.visible = false;
+        if (def.lakljus && !e.vantar && !(e.dod > 0)) { // helarens gröna läkeljus
+          const pu = 0.75 + 0.25 * Math.sin(U.tid.value * 2.5 + o.fasn), mk = 0.25 + 0.75 * dygn.morker;
+          markljus.lagg(e.x, 0.07, e.z, 3.4, 0.05 * pu * mk, 0.4 * pu * mk, 0.14 * pu * mk);
+          if (Math.random() < dt * 4) part.ny(e.x + (R() - 0.5) * 1.4, 0.3 + R() * 0.8, e.z + (R() - 0.5) * 1.4, 0, 0.8 + R() * 0.6, 0, 0.8, 4, 1.4, 0.9, 0.09, 1.0, 1, -0.2, 0.6);
+        }
         if (e.maxHp > 0 && e.hp > 0 && (e.hp < e.maxHp || def.boss)) hp.lagg(e.x, hl.position.y + def.hpHojd, e.z, e.hp / e.maxHp, def.boss ? 4 : def.tung ? 2 : 1.25, def.boss ? 2 : def.lag === 'fiende' ? 1 : 0, 1);
         if (e.bar !== undefined || e.last !== undefined || lage === 'bar') ritaLast(e, o);
-        if (def.boss && dygn.morker > 0.2) glod.lagg(e.x, 2.6, e.z, 5, 0.5 * dygn.morker, 0.05, 0.12);
+        if (def.boss && dygn.morker > 0.2) { const gf = e.typ === 'frostboss' ? [0.03, 0.1, 0.26] : e.typ === 'eldboss' || e.typ === 'drake' ? [0.55, 0.18, 0.02] : [0.5, 0.05, 0.12]; glod.lagg(e.x, hl.position.y + (def.svav ? 1.6 : 2.6), e.z, 5, gf[0] * dygn.morker, gf[1] * dygn.morker, gf[2] * dygn.morker); }
+        if (def.sprickor && dygn.morker > 0.2) markljus.lagg(e.x, 0.07, e.z, 3.2, 0.4 * dygn.morker, 0.1 * dygn.morker, 0.02 * dygn.morker);
         if (!(e.varnar > 0)) o.varnMax = 0;
         if (e.varnar > 0 && typeof e.vx === 'number') { o.varnMax = Math.max(o.varnMax || 0, e.varnar); varnRing.visa(e.vx, e.vz, e.vRadie || 3, 1 - e.varnar / o.varnMax);
           const pu = 0.6 + 0.4 * Math.sin(U.tid.value * 14), vr = (e.vRadie || 3); markljus.lagg(e.vx, 0.09, e.vz, vr * 1.25, 1.5 * pu, 0.12 * pu, 0.08 * pu); markljus.lagg(e.vx, 0.1, e.vz, vr * 0.6, 0.9 * pu, 0.3 * pu, 0.1 * pu); }
@@ -1411,8 +2171,13 @@ export function skapaGrafik(canvas, opts = {}) {
         if (niva !== o.niva) { const fore = o.niva; o.niva = niva; bytByggmodell(o, e, niva); if (!forsta || fore > 0) { o.res = 0; if (fore > 0) fx.byggdamm(e.x, e.z, def.radie || 2); } }
         if (o.mesh) {
           const ras = !!e.raserad;
-          if (ras !== o.ras) { o.ras = ras; o.mesh.scale.y = o.bas[1] * (ras ? 0.25 : 1); if (o.delar) for (const d of o.delar) { d.sy = d.syBas * (ras ? 0.25 : 1); d.res = Math.min(d.res, 0.999); resningar.add(d); } }
-          if (o.res < 1) { o.res = Math.min(1, o.res + dt / 0.85); const s = utBack(o.res) * (ras ? 0.25 : 1); o.mesh.scale.set(o.bas[0] * (0.7 + 0.3 * s), o.bas[1] * Math.max(0.001, s), o.bas[2] * (0.7 + 0.3 * s)); }
+          if (ras !== o.ras) { // raserat: en riktig ruin i stället för en platt byggnad
+            o.ras = ras; o.mesh.visible = !ras;
+            if (ras && !o.ruin) { o.ruin = byggRuin(def, e, Math.min(o.bas[0] * 2, def.portBredd || 4.6)); o.ruin.position.copy(o.mesh.position); o.ruin.rotation.y = o.mesh.rotation.y; scen.add(o.ruin); }
+            if (o.ruin) o.ruin.visible = ras;
+            if (o.delar) for (const d of o.delar) { d.sy = d.syBas * (ras ? 0.35 : 1); d.res = Math.min(d.res, 0.999); resningar.add(d); }
+          }
+          if (o.res < 1) { o.res = Math.min(1, o.res + dt / 0.85); const s = utBack(o.res); o.mesh.scale.set(o.bas[0] * (0.7 + 0.3 * s), o.bas[1] * Math.max(0.001, s), o.bas[2] * (0.7 + 0.3 * s)); }
           if (e.maxHp > 0 && e.hp > 0 && e.hp < e.maxHp) hp.lagg(e.x, def.hpHojd || 4, e.z, e.hp / e.maxHp, def.radie ? def.radie * 1.1 : 2.4, 0, 1);
           if (def === TYPER.tronsal) genomlys(o, e, dt);
         }
@@ -1435,8 +2200,70 @@ export function skapaGrafik(canvas, opts = {}) {
         break;
       }
       case 'eld': {
-        const tand = e.tand !== false;
-        if (tand !== o.tand) { o.tand = tand; if (o.eldar) { for (const el of o.eldar) { const i = eldar.indexOf(el); if (i >= 0) eldar.splice(i, 1); } o.eldar = null; } if (tand) laggEld(o, e.x, o.y + def.eldHojd - (def.sort === 'fackla' ? 0.55 : 0), e.z, def.styrka || 1); }
+        const tand = e.tand !== false, niva = e.niva || 1;
+        if (niva !== o.niva && o.pool && o.idx >= 0) { o.niva = niva; const s = (def.skala || 1) * (1 + 0.3 * (niva - 1)); o.sx = o.sy = o.sz = s; o.res = 0; resningar.add(o); o.tand = null; }
+        if (tand !== o.tand) {
+          o.tand = tand; if (o.eldar) { for (const el of o.eldar) { const i = eldar.indexOf(el); if (i >= 0) eldar.splice(i, 1); } o.eldar = null; }
+          if (tand) { const sk = o.sx / (def.skala || 1), fl = def.flammor || [[0, 0, 0, 1]]; for (const [fx0, fy0, fz0, st] of fl) laggEld(o, e.x + fx0 * sk, o.y + def.eldHojd * sk + fy0 - (def.sort === 'fackla' ? 0.55 : 0), e.z + fz0 * sk, (def.styrka || 1) * st * sk); }
+        }
+        break;
+      }
+      case 'svav': { // eldanden: en brinnande dödskalle som guppar fram
+        if (o.in < 1) o.in = Math.min(1, o.in + dt * 3);
+        const t = U.tid.value, dor = e.dod > 0 || e.anim === 'do';
+        if (dor) o.dodK = Math.min(1, o.dodK + dt * 4);
+        if (typeof e.rot === 'number') o.rot = vinkelMot(o.rot, e.rot, 1 - Math.exp(-8 * dt));
+        const mark = markHojd(e.x, e.z), y = mark + def.hojd + Math.sin(t * 3.2 + o.fas) * 0.18, s = def.skala * utBack(o.in) * (1 - o.dodK);
+        if (o.pool && o.idx >= 0) {
+          _q.setFromEuler(_e.set(Math.sin(t * 2.1 + o.fas) * 0.18, o.rot + Math.sin(t * 1.3 + o.fas) * 0.25, Math.sin(t * 1.7 + o.fas) * 0.14, 'YXZ'));
+          _m4.compose(_v3.set(e.x, y - 0.45 * s, e.z), _q, _s3.setScalar(Math.max(0.001, s))); o.pool.satt(o.idx, _m4);
+        }
+        if (o.el) { o.el.x = e.x; o.el.y = y + 0.22 * s; o.el.z = e.z; o.el.styrka = 0.42 * Math.max(0.05, 1 - o.dodK); }
+        glod.lagg(e.x, y, e.z, 2.0, 0.22 * (1 - o.dodK), 0.07 * (1 - o.dodK), 0.01);
+        if (Math.random() < 0.5) part.ny(e.x + (R() - 0.5) * 0.4, y + 0.3, e.z + (R() - 0.5) * 0.4, (R() - 0.5) * 0.5, 0.8 + R(), (R() - 0.5) * 0.5, 5, 2, 0.4, 1, 0.06, 0.5, 1, -0.5, 0.6);
+        if (klickN < SMAX && !dor) { _m4.makeScale(1.1, 1, 1.1); _m4.setPosition(e.x, mark + 0.04, e.z); klick.setMatrixAt(klickN++, _m4); }
+        if (e.maxHp > 0 && e.hp > 0 && e.hp < e.maxHp) hp.lagg(e.x, mark + def.hpHojd, e.z, e.hp / e.maxHp, 1.25, 1, 1);
+        break;
+      }
+      case 'maskin': { // katapult och ballista
+        const niva = e.niva ?? 1;
+        if (niva !== o.niva) { const fore = o.niva; o.niva = niva; byggMaskinDelar(o, e, niva); if (!forsta || fore > 0) { o.res = 0; if (fore > 0) fx.byggdamm(e.x, e.z, def.radie || 1.5); } }
+        const bas = (e.rot || 0) + Math.PI;
+        if (o.yaw === undefined) { o.yaw = bas; o.malYaw = bas; o.skottT = 9; }
+        o.grp.position.set(e.x, markHojd(e.x, e.z), e.z);
+        const ras = !!e.raserad;
+        if (ras !== o.ras) { o.ras = ras; if (ras && !o.ruin) { o.ruin = byggRuin({ radie: (def.radie || 1.2) * 0.8 }, e); o.grp.add(o.ruin); } if (o.ruin) o.ruin.visible = ras; if (o.inre) o.inre.visible = !ras; }
+        if (o.res < 1) { o.res = Math.min(1, o.res + dt / 0.85); const s = utBack(o.res); o.grp.scale.set(0.7 + 0.3 * s, Math.max(0.001, s), 0.7 + 0.3 * s); } else o.grp.scale.set(1, 1, 1);
+        o.yaw = vinkelMot(o.yaw, o.malYaw, 1 - Math.exp(-4 * dt)); o.skottT += dt;
+        if (def.sort === 'katapult') {
+          if (o.inre) o.inre.rotation.y = o.yaw;
+          const t = o.skottT; let v = -0.32;
+          if (t < 0.16) v = lerp(-0.32, 1.6, mjuk(0, 0.16, t)); else if (t < 0.55) v = 1.6; else if (t < 2.3) v = lerp(1.6, -0.32, mjuk(0.55, 2.3, t));
+          if (o.arm) o.arm.rotation.x = v; if (o.stenM) o.stenM.visible = t > 2.2 || t < 0.1;
+        } else {
+          if (o.inre) o.inre.rotation.y = bas; if (o.huvud) { o.huvud.rotation.y = o.yaw - bas; const t = o.skottT, laddad = t > 1.6 || t < 0.02; o.spand.visible = o.bult.visible = laddad; o.slapp.visible = !laddad; o.huvud.position.z = t < 0.25 ? -Math.sin(t / 0.25 * Math.PI) * 0.12 : 0; }
+        }
+        if (!ras && e.maxHp > 0 && e.hp > 0 && e.hp < e.maxHp) hp.lagg(e.x, def.hpHojd || 3, e.z, e.hp / e.maxHp, 2.2, 0, 1);
+        break;
+      }
+      case 'grav': { // vallgrav: vatten, is eller lava efter ön
+        const niva = e.niva ?? 1;
+        if (niva !== o.niva) { const fore = o.niva; o.niva = niva; byggGravDelar(o, niva); if (!forsta || fore > 0) o.res = 0; }
+        o.grp.position.set(e.x, markHojd(e.x, e.z), e.z);
+        if (o.res < 1) { o.res = Math.min(1, o.res + dt / 0.85); const s = utBack(o.res); o.grp.scale.set(0.6 + 0.4 * s, Math.max(0.001, s), 0.6 + 0.4 * s); }
+        if (tema === 'vulkan') { const ms = 0.06 + 0.32 * dygn.morker; markljus.lagg(e.x, 0.08, e.z, 6.5, 1.0 * ms, 0.35 * ms, 0.06 * ms); }
+        break;
+      }
+      case 'bat': { // båten guppar i vattnet vid bryggans ände (flyttas ut om kusten ligger längre ut)
+        if (o.wx === undefined || o.ex !== e.x || o.ez !== e.z) {
+          o.ex = e.x; o.ez = e.z; const r0 = Math.hypot(e.x, e.z) || 1, ux = e.x / r0, uz = e.z / r0; let r = r0;
+          while (r < r0 + 30 && markHojd(ux * r, uz * r) > VATTEN_Y - 1.1) r += 0.5;
+          o.wx = ux * (r + 1.5); o.wz = uz * (r + 1.5);
+        }
+        const t = U.tid.value, frusen = isNiva > 0.5;
+        o.grp.position.set(o.wx, VATTEN_Y - 0.38 + (frusen ? 0 : Math.sin(t * 1.3 + o.fas) * 0.08), o.wz);
+        o.grp.rotation.set(frusen ? 0 : Math.sin(t * 1.1 + o.fas) * 0.03, e.rot || 0, frusen ? 0.02 : Math.sin(t * 0.9 + o.fas + 1) * 0.045, 'YXZ');
+        o.x = o.wx; o.z = o.wz;
         break;
       }
       case 'ruta': {
@@ -1455,19 +2282,39 @@ export function skapaGrafik(canvas, opts = {}) {
         break;
       }
       case 'projektil': {
+        o.t += dt;
         let y = e.y ?? def.hojd;
-        if (e.y === undefined) { // båge från avfyrningshöjden mot målets bröst
-          const m = e.malId !== undefined ? idKarta.get(e.malId) : null;
-          if (m) { const kvar = Math.hypot(m.x - e.x, m.z - e.z), gatt = Math.hypot(e.x - o.x0, e.z - o.z0), k = gatt / Math.max(0.01, gatt + kvar); const my = m.slag === 'figur' ? 1.2 * (m.skala || 0.66) / 0.66 : 1.6; y = lerp(o.y0, my, k) + Math.sin(k * Math.PI) * Math.min(1.2, (gatt + kvar) * 0.06); }
-          else y = o.fy;
+        if (e.y === undefined) {
+          if (o.sort === 'sten' && typeof e.tx === 'number') { // katapultsten: hög båge mot punkten
+            const kvar = Math.hypot(e.tx - e.x, e.tz - e.z), gatt = Math.hypot(e.x - o.x0, e.z - o.z0), tot = gatt + kvar, k = gatt / Math.max(0.01, tot);
+            y = lerp(o.y0, 0.4, k) + Math.sin(k * Math.PI) * Math.max(2.5, tot * 0.36);
+          } else { // båge från avfyrningshöjden mot målets bröst
+            const m = e.malId !== undefined ? idKarta.get(e.malId) : null;
+            if (m) { const kvar = Math.hypot(m.x - e.x, m.z - e.z), gatt = Math.hypot(e.x - o.x0, e.z - o.z0), k = gatt / Math.max(0.01, gatt + kvar); const my = m.slag === 'figur' ? 1.2 * (m.skala || 0.66) / 0.66 + (m.svav || 0) : m.slag === 'svav' ? 1.2 : 1.6; y = lerp(o.y0, my, k) + Math.sin(k * Math.PI) * Math.min(o.sort === 'spjut' ? 0.5 : 1.2, (gatt + kvar) * (o.sort === 'spjut' ? 0.02 : 0.06)); }
+            else y = o.fy;
+          }
         }
         const dx = e.x - o.fx, dz = e.z - o.fz, dy = y - o.fy;
         if (typeof e.vx === 'number') o.rikt.set(e.vx, e.vy || 0, e.vz || 0).normalize();
         else if (dx * dx + dz * dz + dy * dy > 1e-6) o.rikt.set(dx, dy, dz).normalize();
         else if (typeof e.rot === 'number') o.rikt.set(Math.sin(e.rot), 0, Math.cos(e.rot));
         o.fx = e.x; o.fz = e.z; o.fy = y;
-        if (o.magi) { const gr = o.sort === 'eld'; glod.lagg(e.x, y, e.z, 1.5, gr ? 3 : 0.5, gr ? 1.2 : 3, gr ? 0.3 : 1.0); if (Math.random() < 0.7) part.ny(e.x, y, e.z, (R() - 0.5), (R() - 0.5), (R() - 0.5), gr ? 4 : 0.8, gr ? 1.5 : 4, gr ? 0.3 : 1.4, 0.9, 0.16, 0.35, 1, 0, 1); }
-        else if (o.pool && o.idx >= 0) { _m4.compose(_v3.set(e.x, y, e.z), _q.setFromUnitVectors(UPP, o.rikt), _s3.setScalar(def.skala)); o.pool.satt(o.idx, _m4); glod.lagg(e.x, y, e.z, 0.7, 0.5, 0.42, 0.28); if (Math.random() < 0.5) part.ny(e.x, y, e.z, 0, 0, 0, 1.6, 1.5, 1.2, 0.5, 0.09, 0.22, 1, 0, 0); }
+        if (o.magi) {
+          const gf = o.sort === 'eld' ? [3, 1.2, 0.3] : o.sort === 'is' ? [0.2, 0.7, 1.5] : [0.5, 3, 1.0];
+          glod.lagg(e.x, y, e.z, 1.5, gf[0], gf[1], gf[2]);
+          if (Math.random() < 0.7) part.ny(e.x, y, e.z, (R() - 0.5), (R() - 0.5), (R() - 0.5), o.sort === 'eld' ? 4 : o.sort === 'is' ? 1.2 : 0.8, o.sort === 'eld' ? 1.5 : o.sort === 'is' ? 2.6 : 4, o.sort === 'eld' ? 0.3 : o.sort === 'is' ? 4 : 1.4, 0.9, 0.16, 0.35, 1, 0, 1);
+          if (o.pool && o.idx >= 0) { _q.setFromUnitVectors(UPP, o.rikt); _q.multiply(_gq.setFromAxisAngle(UPP, o.t * 9)); _m4.compose(_v3.set(e.x, y, e.z), _q, _s3.setScalar(o.skala)); o.pool.satt(o.idx, _m4); }
+        } else if (o.pool && o.idx >= 0) {
+          if (o.sort === 'sten') {
+            _q.setFromEuler(_e.set(o.t * 6, o.t * 4, 0)); _m4.compose(_v3.set(e.x, y - 0.25, e.z), _q, _s3.setScalar(o.skala)); o.pool.satt(o.idx, _m4);
+            if (klickN < SMAX) { const r = 1.3 / (1 + y * 0.15); _m4.makeScale(r, 1, r); _m4.setPosition(e.x, markHojd(e.x, e.z) + 0.04, e.z); klick.setMatrixAt(klickN++, _m4); }
+            if (Math.random() < 0.4) part.ny(e.x, y, e.z, 0, 0, 0, 0.6, 0.55, 0.5, 0.4, 0.35, 0.5, 0, 0.2, 0.5);
+          } else {
+            _m4.compose(_v3.set(e.x, y, e.z), _q.setFromUnitVectors(UPP, o.rikt), _s3.setScalar(o.skala)); o.pool.satt(o.idx, _m4);
+            if (e.brinner) { glod.lagg(e.x, y, e.z, 1.1, 1.6, 0.6, 0.1); if (Math.random() < 0.9) part.ny(e.x + o.rikt.x * 0.5, y + o.rikt.y * 0.5, e.z + o.rikt.z * 0.5, (R() - 0.5) * 0.4, 0.6 + R() * 0.6, (R() - 0.5) * 0.4, 5, 2 + R(), 0.4, 1, 0.16, 0.28, 1, -0.6, 1); }
+            else { glod.lagg(e.x, y, e.z, o.sort === 'spjut' ? 1.0 : 0.7, 0.5, 0.42, 0.28); if (Math.random() < 0.5) part.ny(e.x, y, e.z, 0, 0, 0, 1.6, 1.5, 1.2, 0.5, 0.09, 0.22, 1, 0, 0); }
+          }
+        }
         break;
       }
       case 'resurs': {
@@ -1486,9 +2333,12 @@ export function skapaGrafik(canvas, opts = {}) {
   function hantera(h) {
     const slag = HANDELSER[h.typ];
     if (h.typ === 'varning' && Array.isArray(h.platser)) { varnPlatser = h.platser; return; }
+    if (h.typ === 'skott' && (h.fran === 'katapult' || h.fran === 'ballista')) maskinSkott(h);
     if (!slag) return;
+    if (slag === 'plask') { for (const b of objekt.values()) if (b.slag === 'bat' && b.wx !== undefined && (!h.slag || b.typ === 'bat')) fx.plask(b.wx, b.wz); return; }
     let x = h.x, z = h.z; const o = h.id !== undefined ? (((slag === 'bygge' || slag === 'ras' || slag === 'murtraff') && objekt.get('byggen#' + h.id)) || idKarta.get(h.id)) : null;
     if (x === undefined && o) { x = o.x; z = o.z; }
+    if (x === undefined && slag === 'glitter' && spelarPost) { x = spelarPost.x; z = spelarPost.z; }
     if (x === undefined) { if (slag === 'skak') skaka(h.styrka ?? 0.4); return; }
     switch (slag) {
       case 'bygge': fx.byggdamm(x, z, (o && o.def.radie) || 2.2); skaka(0.5); if (o && o.slag === 'bygge' && o.res >= 1) o.res = 0; if (o && o.slag === 'eld' && o.res >= 1) { o.res = 0; resningar.add(o); } if (o && o.delar) for (const d of o.delar) if (d.res >= 1) { d.res = 0; resningar.add(d); } break;
@@ -1497,7 +2347,21 @@ export function skapaGrafik(canvas, opts = {}) {
       case 'flis': if (h.slag === 'sten') fx.stenflis(x, z); else { fx.flis(x, z); skakaNarmaste(x, z); } break;
       case 'tradfall': if (h.slag === 'sten') { fx.stenflis(x, z, 16, 1); fx.damm(x, z, 8, 1, 0x9a9aa0); } else { fx.flis(x, z, 16, 2); fx.damm(x, z, 8, 1.2); } skaka(0.15); break;
       case 'stenflis': fx.stenflis(x, z); break;
-      case 'benpuff': fx.benpuff(x, z); break;
+      case 'benpuff': {
+        const ft = h.fiendeTyp || (o && o.typ);
+        if (ft === 'eldande') { if (!h.sprang) fx.explosion(x, z, 1.5); }
+        else if (ft === 'isvarg') { fx.damm(x, z, 10, 0.7, 0xdfe8f2); fx.frost(x, z, 0.6); }
+        else if (ft === 'drake') { fx.explosion(x, z, 4.5); fx.explosion(x + 1.5, z - 1, 3); skaka(0.9); }
+        else if (ft === 'belagringsbest' || ft === 'eldboss') { fx.benpuff(x, z); fx.gnistor(x, 1.5, z, 20, 0xff6a20, 4); }
+        else fx.benpuff(x, z);
+        break;
+      }
+      case 'explosion': fx.explosion(x, z, h.radie || 3); skaka(0.55); break;
+      case 'nedslag': fx.nedslag(x, z, h.radie || 3.2); skaka(0.32); break;
+      case 'frost': fx.frost(x, z); break;
+      case 'lavabrand': fx.lavabrand(x, z); break;
+      case 'glitter': fx.glitter(x, z); break;
+      case 'dryck': fx.dryck(x, z); break;
       case 'guld': fx.guld(x, z); break;
       case 'betala': fx.betala(x, z); break;
       case 'magi': fx.magi(x, z, h.y ?? 1.3); break;
@@ -1508,11 +2372,28 @@ export function skapaGrafik(canvas, opts = {}) {
       case 'damm': fx.damm(x, z, 8, 1); break;
       case 'jordpuff': fx.jordpuff(x, z); break;
       case 'svep': { const fo = idKarta.get(h.id), sk = fo && fo.skala ? fo.skala / 0.66 : 1; fx.svep(x, z, fo && typeof fo.rot === 'number' ? fo.rot : 0, h.vem === 'fiende' ? 0xb8ffc8 : h.vem === 'soldat' ? 0xfff0d0 : 0xffffff, 1.2 * sk, 1.15 * sk); break; }
-      case 'skott': if (h.fran === 'torn') fx.skott(x, z, tornTopp(x, z)); else if (h.fran === 'boss') fx.skott(x, z, 3.2, 0xff5070, 10); else fx.skott(x, z, 1.9, 0x7dff9a, 6); break;
+      case 'skott':
+        if (h.fran === 'torn') fx.skott(x, z, tornTopp(x, z) ?? 4.4, h.slag === 'eld' || (o && o.slag === 'projektil' && o.brinner) ? 0xffa040 : 0xfff0c8);
+        else if (h.fran === 'boss') fx.skott(x, z, 3.2, 0xff5070, 10);
+        else if (h.fran === 'katapult') fx.damm(x, z, 8, 1.4);
+        else if (h.fran === 'ballista') fx.skott(x, z, 1.8, 0xfff0c8, 3);
+        else if (h.fran === 'hjalte') fx.skott(x, z, 1.4, 0xfff0c8, 3);
+        else if (h.slag === 'is') fx.skott(x, z, 1.9, 0x8ad8ff, 6);
+        else fx.skott(x, z, 1.9, 0x7dff9a, 6);
+        break;
     }
   }
   // höjden där pilarna lämnar tornet (efter tornets nivå), 4,4 m om inget torn hittas
-  function tornTopp(x, z) { for (const o of objekt.values()) if (o.typ === 'torn' && Math.abs(o.x - x) < 0.6 && Math.abs(o.z - z) < 0.6) return 3.6 + 0.9 * Math.min(3, o.niva || 1); return 4.4; }
+  function tornTopp(x, z) { for (const o of objekt.values()) if (o.typ === 'torn' && Math.abs(o.x - x) < 0.6 && Math.abs(o.z - z) < 0.6) return 3.6 + 0.9 * Math.min(3, o.niva || 1); return null; }
+  // katapulten slår med armen och ballistan vrider sig mot målet när de skjuter
+  let senSpel = null;
+  function maskinSkott(h) {
+    let b = null; for (const o of objekt.values()) if (o.slag === 'maskin' && Math.abs(o.x - h.x) < 0.8 && Math.abs(o.z - h.z) < 0.8) { b = o; break; }
+    if (!b) return;
+    b.skottT = 0;
+    const p = senSpel && Array.isArray(senSpel.projektiler) ? senSpel.projektiler.find((q) => q.id === h.id) : null;
+    if (p) b.malYaw = typeof p.tx === 'number' ? Math.atan2(p.tx - b.x, p.tz - b.z) : (p.rot ?? b.malYaw);
+  }
   function skakaNarmaste(x, z) { let b = null, bd = 9; for (const o of objekt.values()) if (o.slag === 'instans' && o.pool && o.pool.skak) { const d = (o.x - x) * (o.x - x) + (o.z - z) * (o.z - z); if (d < bd) { bd = d; b = o; } } if (b) b.pool.skaka(b.idx); }
 
   // ─── hörnstolpar: fyller kilarna där två mursegment möts i vinkel (sten om någon granne är av sten eller en port) ───
@@ -1553,7 +2434,7 @@ export function skapaGrafik(canvas, opts = {}) {
     for (const [k, v] of vill) {
       let o = hornstolpar.get(k);
       if (!o) {
-        const p = pool(v.sten ? 'hornsten' : 'hornstock', () => ({ geo: hornGeo(v.sten), mat: new THREE.MeshLambertMaterial({ vertexColors: true }), max: 64 }));
+        const p = pool(v.sten ? 'hornsten' : 'hornstock', () => ({ geo: hornGeo(v.sten), mat: vfMat, max: 64 }));
         o = { pool: p, nyckel: v.nyckel, x: v.x, y: markHojd(v.x, v.z), z: v.z, rot: Math.atan2(v.x, v.z), sx: 1, sy: 1, sz: 1, res: forsta ? 1 : 0, skak: 0, sten: v.sten, hel: true };
         o.idx = p.lagg(o, murMatris(o, o.res));
         if (o.idx < 0) continue;
@@ -1588,10 +2469,48 @@ export function skapaGrafik(canvas, opts = {}) {
   const VADERSTRECK = { S: { x: 0, z: 42 }, O: { x: 42, z: 0 }, N: { x: 0, z: -42 }, V: { x: -42, z: 0 } }; // gravfälten i KARTA
   const naturSlut = (e) => e.anim === 'do' || e.ater > 0 || e.hp <= 0 || !!e.fallen;
   const _frustum = new THREE.Frustum(), _sf = new THREE.Sphere();
+  // Ön byggs om när spel.oId (tema, brygga, lava) ändras: allt rivs och terräng, natur, dekor och gravfält ritas för det nya temat.
+  function temaSignatur(spel) {
+    const mj = spel.miljo && typeof spel.miljo === 'object' ? spel.miljo : null, t = (mj && mj.tema) || spel.tema || 'sommar', b = mj && mj.brygga;
+    return t + '|' + ((mj && mj.oId) || spel.oId || '') + '|' + (b ? b.x.toFixed(1) + ',' + b.z.toFixed(1) : '') + '|' + (mj && Array.isArray(mj.lava) ? mj.lava.length : 0);
+  }
+  function rivVarld() {
+    for (const o of [...objekt.values()]) tabort(o, true);
+    for (const d of doende) slappFigur(d.o.typ, d.o.f); doende.length = 0;
+    idKarta.clear(); resningar.clear(); eldar.length = 0; blixtar.length = 0; varnPlatser = null;
+    for (const o of hornstolpar.values()) if (o.idx >= 0) o.idx = -1; hornstolpar.clear(); hornSign = '';
+    for (const p of pooler.values()) if (p) { p.mesh.count = 0; p.agare.length = 0; p.mesh.instanceMatrix.needsUpdate = true; }
+    for (const m of varldObj) { scen.remove(m); if (m.userData.egen && m.geometry) m.geometry.dispose(); if (m.userData.egenMat && m.material) { if (m.material.map) m.material.map.dispose(); m.material.dispose(); } }
+    if (lavaMat) { lavaMat.dispose(); lavaMat = null; }
+    varldObj.length = 0;
+  }
+  function byggVarld(temaNamn, mj) {
+    rivVarld();
+    tema = TEMAN[temaNamn] ? temaNamn : 'sommar'; TM = TEMAN[tema]; temaCache.clear();
+    miljo = mj || null; brygga = (mj && mj.brygga && typeof mj.brygga.x === 'number') ? mj.brygga : STD_BRYGGA;
+    lava = (mj && Array.isArray(mj.lava)) ? mj.lava.filter((q) => q && typeof q.ax === 'number') : [];
+    U.sno.value = TM.sno; U.snoFarg.value.setHex(TM.snoFarg);
+    gravMat.uniforms.uSlag.value = tema === 'vinter' ? 1 : tema === 'vulkan' ? 2 : 0;
+    byggMark(); vattenHojd();
+    if (O.dekor) byggDekor();
+    if (O.gras) byggGras();
+    byggLava(); byggBrygga();
+    nederbord.nolla(); isNiva = 0; ask.k = 0;
+    forsta = true; kam.forsta = true;
+  }
+  let isNiva = 0;
   function synka(spel, dt) {
     if (!laddad || !spel) return;
     dt = klamp(dt || 0, 0, 0.1);
+    { const sign = temaSignatur(spel); if (sign !== temaSign) { temaSign = sign; byggVarld(sign.split('|')[0], spel.miljo); } }
+    senSpel = spel;
     U.tid.value += dt; bild++;
+    { // sjön fryser (Frostön) och askregnet (Vulkanön) tonas in och ut
+      const mj = spel.miljo;
+      isNiva = lerp(isNiva, mj && mj.isNu ? 1 : 0, 1 - Math.exp(-dt / 2.2)); vattenMat.uniforms.uIs.value = forsta ? (mj && mj.isNu ? 1 : 0) : isNiva;
+      if (forsta) isNiva = vattenMat.uniforms.uIs.value;
+      ask.k = lerp(ask.k, mj && mj.aska && spel.tid && spel.tid.fas !== 'dag' ? 1 : 0, 1 - Math.exp(-dt / 2.5));
+    }
     uppdateraDygn(spel.tid);
     figurer.length = 0; klickN = 0; hp.nolla(); glod.nolla(); markljus.nolla(); spelarPost = null; spelarMarke.visible = false; varnRing.grp.visible = false;
     for (const k of Object.keys(lastPooler)) if (lastPooler[k]) { lastPooler[k].count = 0; lastPooler[k].instanceMatrix.needsUpdate = true; } // utan needsUpdate blev lasten kvar där den först ritades
@@ -1601,7 +2520,7 @@ export function skapaGrafik(canvas, opts = {}) {
       const nyckel = lista + '#' + e.id;
       let o = objekt.get(nyckel);
       const def = TYPER[e.typ];
-      if (def && (def.slag === 'mur' || def.slag === 'eld') && !byggd(e)) { if (o) tabort(o, true); return; }
+      if (def && (def.slag === 'mur' || def.slag === 'eld' || def.slag === 'maskin' || def.slag === 'grav') && !byggd(e)) { if (o) tabort(o, true); return; }
       if (def && def.slag === 'bygge' && !byggd(e)) { if (o && o.mesh) { tabort(o, true); o = null; } if (!o) return; }
       if (o && o.typ !== e.typ) { tabort(o, true); o = null; }
       if (!o) o = skapa(e, nyckel);
@@ -1615,14 +2534,21 @@ export function skapaGrafik(canvas, opts = {}) {
     }
     for (const o of objekt.values()) if (o.sedd !== bild) tabort(o, forsta);
     if (Array.isArray(spel.byggen)) uppdateraHorn(spel.byggen, 'byggen');
+    { let gi = 0; for (const o of objekt.values()) if (o.slag === 'grav' && gi < 8) U.gravar.value[gi++].set(o.x, o.z, 3.5); for (; gi < 8; gi++) U.gravar.value[gi].set(1e4, 1e4, 0); }
     if (bild % 240 === 0) for (const [id, o] of idKarta) if (!objekt.has(o.nyckel)) idKarta.delete(id);
     if (Array.isArray(spel.handelser)) for (const h of spel.handelser) { if (h && typeof h === 'object' && !sedda.has(h)) { sedda.add(h); hantera(h); } }
     // skymningens varning: grönt sken där de odöda kommer
     let varn = null;
-    if (spel.tid && spel.tid.fas === 'skymning') { varn = varnPlatser; if (!varn && spel.vag && Array.isArray(spel.vag.riktningar)) varn = spel.vag.riktningar.map((r) => VADERSTRECK[r]).filter(Boolean); } else varnPlatser = null;
+    if (spel.tid && spel.tid.fas === 'skymning') { varn = varnPlatser; if (!varn && spel.vag && Array.isArray(spel.vag.riktningar)) varn = spel.vag.riktningar.map((r) => RIKTPOS[r]).filter(Boolean); } else varnPlatser = null;
     if (Array.isArray(spel.varningar)) varn = (varn || []).concat(spel.varningar);
     if (dygn.morker > 0.3) for (const k in VADERSTRECK) { const v = VADERSTRECK[k], fl = dygn.morker * (0.75 + 0.25 * Math.sin(U.tid.value * 1.7 + v.x)); markljus.lagg(v.x, 0.08, v.z, 8, 0.03 * fl, 0.2 * fl, 0.08 * fl); glod.lagg(v.x - v.x / 42 * -9.5, 2.2, v.z - v.z / 42 * -9.5, 3.2, 0.03 * fl, 0.3 * fl, 0.1 * fl); }
+    if (tema === 'vinter' && dygn.morker > 0.3) for (const k of ['NO', 'SO', 'SV', 'NV']) { const v = RIKTPOS[k], fl = dygn.morker * (0.75 + 0.25 * Math.sin(U.tid.value * 1.7 + v.z)); markljus.lagg(v.x, 0.08, v.z, 6, 0.02 * fl, 0.14 * fl, 0.1 * fl); }
     if (varn) for (const v of varn) { const fl = 0.6 + 0.4 * Math.sin(U.tid.value * 9 + v.x) * Math.sin(U.tid.value * 5.3); glod.lagg(v.x, 2.5, v.z, 7, 0.15 * fl, 1.3 * fl, 0.35 * fl); markljus.lagg(v.x, 0.08, v.z, 9, 0.05 * fl, 0.5 * fl, 0.12 * fl); }
+    // lavans sken på marken, starkare på natten
+    if (lava.length) { const t = U.tid.value, ms = 0.05 + 0.3 * dygn.morker; for (let i = 0; i < lava.length; i++) { const q = lava[i], fl = ms * (0.85 + 0.15 * Math.sin(t * 2 + i)); markljus.lagg((q.ax + q.bx) / 2, 0.08, (q.az + q.bz) / 2, 4.2, 1.0 * fl, 0.32 * fl, 0.05 * fl); if (i % 3 === 0 && dygn.morker > 0.2) glod.lagg(q.ax, 0.6, q.az, 3.2, 0.25 * fl, 0.07 * fl, 0.01); }
+      if (Math.random() < dt * 3) { const q = lava[(Math.random() * lava.length) | 0], k = Math.random(), x = lerp(q.ax, q.bx, k), z = lerp(q.az, q.bz, k); part.ny(x, 0.2, z, (R() - 0.5) * 0.3, 0.6 + R() * 0.5, (R() - 0.5) * 0.3, 0.3, 0.27, 0.25, 0.35, 0.9 + R() * 0.8, 2 + R(), 0, -0.25, 0.4); }
+      if (Math.random() < dt * 4) { const q = lava[(Math.random() * lava.length) | 0], k = Math.random(); fx.gnistor(lerp(q.ax, q.bx, k), 0.15, lerp(q.az, q.bz, k), 2, 0xff7020, 1.5); } }
+    for (let i = blixtar.length - 1; i >= 0; i--) { const b = blixtar[i]; b.tid -= dt; if (b.tid <= 0) { blixtar.splice(i, 1); continue; } const k = b.tid / b.max; markljus.lagg(b.x, 0.09, b.z, b.radie, b.r * k, b.gg * k, b.b * k); glod.lagg(b.x, 1.4, b.z, b.radie * 0.8, b.r * k * 0.4, b.gg * k * 0.4, b.b * k * 0.4); }
 
     foljKamera(dt, spelarPost);
 
@@ -1638,7 +2564,7 @@ export function skapaGrafik(canvas, opts = {}) {
     // döende figurer sjunker undan
     for (let i = doende.length - 1; i >= 0; i--) {
       const d = doende[i]; d.t += dt; const k = d.t / d.tid, hl = d.o.f.hallare;
-      if (d.o.dod) { hl.position.y -= dt * 1.3; d.o.f.mixer.update(dt); } else hl.scale.multiplyScalar(Math.max(0, 1 - dt * 6));
+      if (d.o.dod) { hl.position.y -= dt * (d.o.def.svav ? 0.6 : 1.3); if (d.o.f.fm.kod) animKod(d.o, dt); else d.o.f.mixer.update(dt); } else hl.scale.multiplyScalar(Math.max(0, 1 - dt * 6));
       if (k >= 1) { slappFigur(d.o.typ, d.o.f); doende.splice(i, 1); }
     }
     // animationer: närmaste figurer varje bildruta, resten var tredje, utanför bild inte alls
@@ -1650,10 +2576,10 @@ export function skapaGrafik(canvas, opts = {}) {
     for (let i = 0; i < figurer.length; i++) {
       const o = figurer[i], f = o.f;
       f.nat.castShadow = i < fsk;
-      _sf.center.set(o.x, 1.2 * o.skala, o.z); _sf.radius = 2.4 * o.skala;
-      const ibild = _frustum.intersectsSphere(_sf);
+      _sf.center.set(o.x, 1.2 * o.skala + (o.svav || 0), o.z); _sf.radius = (o.def.svav ? 5 : 2.4) * o.skala;
+      const ibild = _frustum.intersectsSphere(_sf); o.ibild = ibild;
       if (!ibild) { o.ack = Math.min(0.5, o.ack + dt); continue; }
-      if (i < maxAnimerade || (bild + o.fasn) % 3 === 0) { f.mixer.update(dt + o.ack); o.ack = 0; anim++; } else o.ack += dt;
+      if (i < maxAnimerade || (bild + o.fasn) % 3 === 0) { if (f.fm.kod) animKod(o, dt + o.ack); else f.mixer.update(dt + o.ack); o.ack = 0; anim++; } else o.ack += dt;
     }
     mat.figurer = figurer.length; mat.animerade = anim;
     klick.count = klickN; klick.instanceMatrix.needsUpdate = true;
@@ -1667,22 +2593,23 @@ export function skapaGrafik(canvas, opts = {}) {
       if (en2 < EMAX) { eld.data[en2 * 4] = el.x; eld.data[en2 * 4 + 1] = el.y; eld.data[en2 * 4 + 2] = el.z; eld.data[en2 * 4 + 3] = 0.95 * Math.sqrt(el.styrka) * (0.92 + fl * 0.1); eld.fas[en2] = el.fas; en2++; }
       const gs = (0.012 + 0.24 * mk) * fl * el.styrka;
       glod.lagg(el.x, el.y + 0.35, el.z, 2.6 * Math.sqrt(el.styrka), 1.0 * gs, 0.48 * gs, 0.14 * gs);
-      const ms = mk * 0.42 * fl;
-      if (ms > 0.01) markljus.lagg(el.x, 0.07, el.z, 8.5 * Math.sqrt(el.styrka), 1.0 * ms, 0.5 * ms, 0.16 * ms);
+      const ms = mk * 0.42 * fl * Math.min(1, 0.6 + 0.4 / el.styrka);
+      if (ms > 0.01 && el.styrka > 0.3) markljus.lagg(el.x, 0.07, el.z, 8.5 * Math.sqrt(el.styrka), 1.0 * ms, 0.5 * ms, 0.16 * ms);
       el.gnista -= dt; if (el.gnista <= 0 && el.avst < 1600) { el.gnista = 0.12 + R() * 0.3; part.ny(el.x + (R() - 0.5) * 0.3, el.y + 0.4, el.z + (R() - 0.5) * 0.3, (R() - 0.5) * 0.8, 1.6 + R() * 1.6, (R() - 0.5) * 0.8, 5, 2.2, 0.4, 1, 0.07, 0.7 + R() * 0.6, 1, -0.6, 0.6); }
     }
     eld.g.instanceCount = en2; eld.aData.needsUpdate = true; eld.aFas.needsUpdate = true;
     eldar.sort((a, b) => a.avst - b.avst);
     for (let i = 0; i < punktljus.length; i++) {
       const p = punktljus[i], el = eldar[i];
-      if (el && el.avst < 2500) { p.position.set(el.x, el.y + 0.7, el.z); p.intensity = (0.06 + mk * 0.94) * 46 * el.styrka * el.fl; } else p.intensity = 0;
+      if (el && el.avst < 2500) { p.position.set(el.x, el.y + 0.7, el.z); p.intensity = (0.06 + mk * 0.94) * 46 * Math.min(1.1, el.styrka) * el.fl * TM.punkt; /* snön kastar tillbaka mer ljus än gräset */ } else p.intensity = 0;
     }
     glod.klar(); markljus.klar(); hp.klar();
     part.steg(dt);
     mat.partiklar = part.antal();
     flugor.mat.uniforms.uFokus.value.copy(kam.mal);
     if (spelarPost) U.fokus.value.set(lerp(U.fokus.value.x, spelarPost.x, 1 - Math.exp(-6 * dt)), 0, lerp(U.fokus.value.z, spelarPost.z, 1 - Math.exp(-6 * dt)));
-    vattenMat.uniforms.uTid.value = t; himmelMat.uniforms.uTid.value = t;
+    vattenMat.uniforms.uTid.value = t; himmelMat.uniforms.uTid.value = t; gravMat.uniforms.uTid.value = t; if (lavaMat) lavaMat.uniforms.uTid.value = t;
+    nederbord.steg(dt, !!(miljo && spel.miljo && spel.miljo.aska && ask.k > 0.3));
     // skuggkameran följer fokus (snäpps till hela meter för att inte flimra)
     const fxm = Math.round(kam.mal.x), fzm = Math.round(kam.mal.z - (kam.staende ? 6 : 3));
     sol.target.position.set(fxm, 0, fzm); sol.position.set(fxm + dygn.rikt.x * 110, dygn.rikt.y * 110, fzm + dygn.rikt.z * 110); sol.target.updateMatrixWorld();
@@ -1705,10 +2632,9 @@ export function skapaGrafik(canvas, opts = {}) {
     const hamta = async (k) => { for (let forsok = 0; forsok < 3; forsok++) { try { gltf[k] = await loader.loadAsync(O.assets + MODELLER[k]); return; } catch (fel) { if (forsok === 2) console.warn('[grafik] kunde inte ladda', MODELLER[k], fel && fel.message); else await new Promise((r) => setTimeout(r, 250 * (forsok + 1))); } } };
     const arbetare = async () => { while (ko.length) { const k = ko.shift(); await hamta(k); klara++; if (framsteg) framsteg(klara / nycklar.length * 0.9, MODELLER[k]); } };
     await Promise.all(Array.from({ length: 6 }, arbetare));
-    byggMark(); byggVatten(); byggHimmel();
-    if (O.dekor) byggDekor();
-    if (O.gras) byggGras();
-    for (const typ of Object.keys(TYPER)) { const d = TYPER[typ]; if (d.slag === 'figur' && !figurMall.has(typ)) figurMall.set(typ, bakaFigur(typ, d)); }
+    byggVatten(); byggHimmel();
+    byggVarld('sommar', null); temaSign = 'sommar|glantan|' + STD_BRYGGA.x.toFixed(1) + ',' + STD_BRYGGA.z.toFixed(1) + '|0';
+    for (const typ of Object.keys(TYPER)) { const d = TYPER[typ]; if (d.slag === 'figur' && !figurMall.has(typ)) figurMall.set(typ, d.kod ? bakaKod(typ, d) : bakaFigur(typ, d)); }
     uppdateraDygn({ fas: 'dag', andel: 0.3 });
     laddad = true;
     if (bredd <= 1) storlek(canvas.clientWidth || innerWidth, canvas.clientHeight || innerHeight); else tillampaKvalitet();

@@ -146,7 +146,7 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 #goal .why{font-size:12px;line-height:1.2;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #goal.can .why{color:#eaffdf;}
 #mal{pointer-events:auto;align-self:stretch;background:rgba(20,36,29,.66);border-radius:12px;padding:4px 10px 5px;display:flex;flex-direction:column;gap:1px;font-size:12px;line-height:1.3;font-weight:600;color:var(--muted);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.25);}
-#mal div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#mal div{white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-wrap:pretty;}
 #mal b{color:var(--cream);font-weight:800;}
 #mal .hot{color:#bff5a8;}
 #mal .hot b{color:#d9ffcb;}
@@ -182,8 +182,12 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
   #mal{grid-column:2;grid-row:1 / span 2;}
   .card{grid-column:2;grid-row:auto;}
   .titleblock{margin-top:2vh;}
-  .map{height:170px;}
-  .olist{max-height:52vh;}
+  .map{height:150px;}
+  .olist{max-height:62vh;}
+  .panel{padding:10px 14px;gap:7px;max-width:640px;}
+  .panel h2{font-size:20px;}
+  .tabs button{padding:3px 9px 2px;font-size:14px;}
+  .panel .btn{padding:6px 10px 4px;font-size:16px;}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
 </style>
@@ -277,7 +281,7 @@ button:focus-visible{outline:3px solid var(--saw);outline-offset:2px;}
 window.__errs=[]; window.addEventListener('error', e => window.__errs.push(String(e.message)+' @'+e.lineno));
 setTimeout(function(){ if(!window.__sv){ var d=document.createElement('div'); d.className='screen scrim'; d.innerHTML='<div class="panel"><h2>Spelet laddade inte</h2><p>3D-motorn hämtades inte. Kontrollera nätet och ladda om sidan.</p></div>'; document.getElementById('app').appendChild(d); } }, 15000);
 </script>
-<script src="modell.js?v=3.1"></script>
+<script src="modell.js?v=3.4"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -498,11 +502,11 @@ const beltTexBase = canvasTex(64,64,(g,w,h)=>{
 function plane(w,d,mat,x,y,z,parent=world){ const m = new THREE.Mesh(new THREE.PlaneGeometry(w,d), mat); m.rotation.x = -Math.PI/2; m.position.set(x,y,z); m.receiveShadow = true; parent.add(m); return m; }
 plane(4.6,240,new THREE.MeshLambertMaterial({map:roadTex}),0,.03,LAY.road).rotation.z = Math.PI/2;
 const waterMat = new THREE.MeshLambertMaterial({map:waterTex, color:0xbfe6ff});
-const iceMat = new THREE.MeshLambertMaterial({color:0xdff1fb});
+const iceMat = new THREE.MeshLambertMaterial({color:0xa8d3ee, emissive:0x0a2a40});
 /* ================= Orten: mark, skog, vatten och staket byggs om vid varje resa ================= */
-let ortG = null, curTerr = TERR.grass, fenceG = null, fenceSig = '', ostG = null;
+let ortG = null, curTerr = TERR.grass, fenceG = null, fenceSig = '', yardPlanes = [], bridges = [], shipX = -14;
 let ctIM = null, stumpIM = null, goldTree = null, NT = 0, TREE_S = [], TREE_R = [], wob = new Float32Array(1), fallDir = new Float32Array(1), treeIdx = new Map();
-let curTreeGeo = null, river = null, iceMesh = null, sea = null, ship = null, chanG = null, CH = null;
+let curTreeGeo = null, river = null, iceMesh = null, sea = null, ship = null, chanG = null;
 const goldMat = new THREE.MeshLambertMaterial({color:0xffd23f, emissive:0x8a5a00});
 const borreMat = new THREE.MeshLambertMaterial({color:0xb5651d, emissive:0x3a1a00});
 function disposeGroup(g){ g.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material && o.material.map && o.material.map !== waterTex) o.material.map.dispose(); }); }
@@ -521,46 +525,57 @@ function buildOrt(){
   },[50,50]);
   plane(400,400,new THREE.MeshLambertMaterial({map:grass}),0,0,0,ortG);
   const yardTex = canvasTex(256,256,(g,w,h)=>{ g.fillStyle=T.yard; g.fillRect(0,0,w,h); for(let i=0;i<2600;i++){ g.fillStyle=`rgba(${Math.random()<.5?60:255},${Math.random()<.5?60:255},${Math.random()<.5?50:255},${rand(.03,.08)})`; g.fillRect(rand(0,w),rand(0,h),rand(1,3),rand(1,3)); } },[7,11]);
-  const M = LAY.yard.main;
-  plane(M[1]-M[0], M[3]+19.5, new THREE.MeshLambertMaterial({map:yardTex}), 0, .02, (M[3]-19.5)/2, ortG);
-  ostG = new THREE.Group(); ortG.add(ostG);
-  const O = LAY.yard.ost; plane(O[1]-O[0], O[3]-O[2], new THREE.MeshLambertMaterial({map:yardTex}), (O[0]+O[1])/2, .021, (O[2]+O[3])/2, ostG);
-  // vatten: sjöar, älv med bro, is och hav
-  river = null; iceMesh = null; sea = null; ship = null; CH = null;
+  // gårdens ytor, en per rektangel. Terrasser får olika ton och stenkanter.
+  yardPlanes = [];
+  LAY.yard.forEach((y,k) => { if(y.bro) return; const R = y.r, toRoad = R[3] >= 14 ? LAY.road - R[3] : 0;
+    const mat = new THREE.MeshLambertMaterial({map:yardTex, color: LAY.terrace ? [0xffffff,0xe4eaee,0xd3dbe1,0xc6cfd6][k%4] : 0xffffff});
+    const m = plane(R[1]-R[0], R[3]-R[2]+toRoad, mat, (R[0]+R[1])/2, .02 + k*.002, (R[2]+R[3]+toRoad)/2, ortG); m.userData.ep = y.ep || 0; yardPlanes.push(m); });
+  if(LAY.terrace){ const P2 = [];
+    LAY.yard.forEach((y,i) => LAY.yard.forEach((q,j) => { if(j <= i || y.bro || q.bro) return; for(const e of rectEdges(y.r)){ const ov = edgeOverlap(e, q.r); if(!ov) continue; const len = ov[1]-ov[0], cx = e.h ? (ov[0]+ov[1])/2 : e.c, cz = e.h ? e.c : (ov[0]+ov[1])/2;
+      for(let s2=0;s2<len;s2+=2.4) P2.push(part(Box(e.h?2.2:.8, .3, e.h?.8:2.2), 0x8d8f91, e.h ? ov[0]+s2+1.1 : cx, .15, e.h ? cz : ov[0]+s2+1.1)); P2.push(part(Box(e.h?len:.3, .5, e.h?.3:len), 0xa7aaad, cx, .25, cz)); } }));
+    if(P2.length) ortG.add(mesh(merge(P2))); }
+  // vatten: sjöar, älvar med bro, is med ö och hav
+  river = null; iceMesh = null; sea = null; ship = null; bridges = [];
+  const sand = new THREE.MeshLambertMaterial({color:0xcdb98a});
+  const drawRiver = R => { river = plane(R[1]-R[0], R[3]-R[2], waterMat, (R[0]+R[1])/2, .05, (R[2]+R[3])/2, ortG);
+    plane(R[1]-R[0], 1.0, sand, (R[0]+R[1])/2, .03, R[3]+.4, ortG); plane(R[1]-R[0], 1.0, sand, (R[0]+R[1])/2, .03, R[2]-.4, ortG);
+    const P2 = []; for(let x=R[0]+6;x<R[1]-6;x+=11) for(const fz of [-1,0,1]) P2.push(part(Box(.45,.3,.45),0x9a9a9a, x + fz*1.3, .12, (R[2]+R[3])/2 + fz*1.1)); ortG.add(mesh(merge(P2))); };
+  const drawBridge = (R, area) => { const w = R[1]-R[0], l = R[3]-R[2]+2.2, BP = [part(Box(w+.6,.22,l), WOOD, 0,.35,0)];
+    for(const sx of [-1,1]){ BP.push(part(Box(.14,.7,l), 0x6b4426, sx*(w+.4)/2,.75,0)); for(let k=0;k<5;k++) BP.push(part(Box(.18,.9,.18), 0x6b4426, sx*(w+.4)/2,.5,-l/2+k*l/4)); }
+    const bm = mesh(merge(BP)); bm.position.set((R[0]+R[1])/2, 0, (R[2]+R[3])/2); bm.userData.area = area; ortG.add(bm); bridges.push(bm); };
+  for(const w of LAY.water) if(w.kind==='river') drawRiver(w.r);
+  for(const y of LAY.yard) if(y.bro) drawBridge(y.r, null);
   for(const a of def.areas){
-    if(a.lake){ const L = a.lake; plane(L[1]-L[0]+1.2, L[3]-L[2]+1.2, new THREE.MeshLambertMaterial({color:0xd9c58f}), (L[0]+L[1])/2, .025, (L[2]+L[3])/2, ortG); plane(L[1]-L[0], L[3]-L[2], waterMat, (L[0]+L[1])/2, .05, (L[2]+L[3])/2, ortG); CH = {x0:L[1], x1:-1.6, z:-15.2, kind:'lake'}; }
-    if(a.river){ const R = a.river; river = plane(R[1]-R[0], R[3]-R[2], waterMat, (R[0]+R[1])/2, .05, (R[2]+R[3])/2, ortG);
-      plane(R[1]-R[0], 1.0, new THREE.MeshLambertMaterial({color:0xcdb98a}), (R[0]+R[1])/2, .03, R[3]+.4, ortG); plane(R[1]-R[0], 1.0, new THREE.MeshLambertMaterial({color:0xcdb98a}), (R[0]+R[1])/2, .03, R[2]-.4, ortG);
-      const br = a.bridge, BP = [part(Box(br[1]-br[0]+.6,.22,R[3]-R[2]+2.2), WOOD, 0,.35,0)];
-      for(const sx of [-1,1]){ BP.push(part(Box(.14,.7,R[3]-R[2]+2.2), 0x6b4426, sx*(br[1]-br[0]+.4)/2,.75,0)); for(let k=0;k<5;k++) BP.push(part(Box(.18,.9,.18), 0x6b4426, sx*(br[1]-br[0]+.4)/2,.5,-(R[3]-R[2])/2-1+k*(R[3]-R[2]+2)/4)); }
-      for(const fz of [-1.4,0,1.4]) BP.push(part(Box(.5,.6,.5),0x9a9a9a,(br[0]+br[1])/2 + 3.5, .15, (R[2]+R[3])/2+fz), part(Box(.4,.4,.4),0xb0b0b0,(br[0]+br[1])/2 - 4 + fz, .12, (R[2]+R[3])/2+fz*.6));
-      const bm = mesh(merge(BP)); bm.position.set((br[0]+br[1])/2, 0, (R[2]+R[3])/2); bm.userData.area = a.id; ortG.add(bm); bm.visible = false; ortG.userData.bridge = bm;
-      CH = {x0:-24, x1:-4, z:R[3]-1.6, kind:'river'}; }
-    if(a.ice){ const I = a.ice; iceMesh = plane(I[1]-I[0], I[3]-I[2], iceMat.clone(), (I[0]+I[1])/2, .05, (I[2]+I[3])/2, ortG); }
+    if(a.lake){ const L = a.lake; plane(L[1]-L[0]+1.2, L[3]-L[2]+1.2, new THREE.MeshLambertMaterial({color:0xd9c58f}), (L[0]+L[1])/2, .025, (L[2]+L[3])/2, ortG); plane(L[1]-L[0], L[3]-L[2], waterMat, (L[0]+L[1])/2, .05, (L[2]+L[3])/2, ortG); }
+    if(a.river){ drawRiver(a.river); if(a.bro) drawBridge(a.bro, a.id); }
+    if(a.ice){ const I = a.ice; iceMesh = plane(I[1]-I[0], I[3]-I[2], iceMat.clone(), (I[0]+I[1])/2, .05, (I[2]+I[3])/2, ortG);
+      if(a.island){ const J = a.island; plane(J[1]-J[0], J[3]-J[2], new THREE.MeshLambertMaterial({color:new THREE.Color(T.ground)}), (J[0]+J[1])/2, .07, (J[2]+J[3])/2, ortG); } }
   }
+  shipX = LAY.dock[0] - 19;
   if(def.hamn || T.sea){ sea = plane(400, 120, waterMat, 0, .04, LAY.road + 64, ortG);
     plane(400, 2.6, new THREE.MeshLambertMaterial({color:0xe3d3a0}), 0, .03, LAY.road + 3.6, ortG);
-    const Q = mesh(merge([part(Box(10,.6,5),CONC,0,.3,0), ...[-4,-2,0,2,4].map(x=>part(Box(.4,.8,.4),0x3a3f45,x,.4,2.3))])); Q.position.set(-16, 0, LAY.road+5.5); ortG.add(Q);
-    const crane = mesh(merge([part(Box(.6,6,.6),0xe5484d,0,3,0), part(Box(5,.5,.5),0xe5484d,1.8,6,0), part(Cyl(.05,.05,2.4,4),0x333333,4,4.7,0), part(Box(.8,.6,.8),0x34373b,0,.3,0)])); crane.position.set(-19.5, .6, LAY.road+5.5); ortG.add(crane);
+    const Q = mesh(merge([part(Box(10,.6,5),CONC,0,.3,0), ...[-4,-2,0,2,4].map(x=>part(Box(.4,.8,.4),0x3a3f45,x,.4,2.3))])); Q.position.set(shipX - 2, 0, LAY.road+5.5); ortG.add(Q);
+    const crane = mesh(merge([part(Box(.6,6,.6),0xe5484d,0,3,0), part(Box(5,.5,.5),0xe5484d,1.8,6,0), part(Cyl(.05,.05,2.4,4),0x333333,4,4.7,0), part(Box(.8,.6,.8),0x34373b,0,.3,0)])); crane.position.set(shipX - 5.5, .6, LAY.road+5.5); ortG.add(crane);
     ship = new THREE.Group(); ship.add(mesh(merge([part(Box(14,2.2,4),0x2b4a6e,0,1.1,0), part(Box(14.2,.3,4.2),0xe5484d,0,.2,0), part(Box(3,2.4,3.2),0xf2efe6,-4.5,3.3,0), part(Box(1,.4,3.4),0x2b2b2b,-4.5,4.7,0), part(Box(8,.8,3.2),0xc89a5e,2,2.6,0), part(Cyl(.3,.3,2,8),0xe5484d,-4.5,5.4,0)])));
     ship.position.set(-90, 0, LAY.road+9); ortG.add(ship); }
-  // flottningsränna från sjön eller älven till inlastningen
+  // flottningsränna: en upphöjd träränna längs gårdens väg från vattnet till inlastningen
   chanG = null;
-  if(CH){ chanG = new THREE.Group(); ortG.add(chanG);
-    if(CH.kind==='lake'){ const m = new THREE.Mesh(new THREE.PlaneGeometry(CH.x1-CH.x0, 1.1), waterMat); m.rotation.x = -Math.PI/2; m.position.set((CH.x0+CH.x1)/2, .06, CH.z); chanG.add(m);
-      const P2 = []; for(const sz of [-1,1]) P2.push(part(Box(CH.x1-CH.x0,.25,.18), WOOD, (CH.x0+CH.x1)/2, .12, CH.z+sz*.64)); chanG.add(mesh(merge(P2), false)); }
-    else { const P2 = [part(Box(.9,.2,LAY.intake[1]-CH.z-1),0x6b4426,-4,.35,(CH.z+LAY.intake[1]-1)/2)]; const m = new THREE.Mesh(new THREE.PlaneGeometry(.7, LAY.intake[1]-CH.z-1), waterMat); m.rotation.x = -Math.PI/2; m.position.set(-4,.47,(CH.z+LAY.intake[1]-1)/2); chanG.add(m); chanG.add(mesh(merge(P2), false)); }
-  }
+  if(LAY.chute && (def.areas.some(a => a.lake) || (LAY.water.some(w => w.kind==='river') && def.areas.some(a => a.id==='alv')))){
+    chanG = new THREE.Group(); ortG.add(chanG); const P2 = [], C = LAY.chute;
+    for(let k=1;k<C.length;k++){ const [x0,z0] = C[k-1], [x1,z1] = C[k], len = Math.hypot(x1-x0, z1-z0), yaw = Math.atan2(x1-x0, z1-z0), cx = (x0+x1)/2, cz = (z0+z1)/2;
+      P2.push(part(Box(1.1,.2,len+.6), WOOD, cx,.32,cz, 0,yaw,0)); for(const sd of [-1,1]) P2.push(part(Box(.12,.28,len+.6), 0x6b4426, cx + Math.cos(yaw)*sd*.55, .5, cz - Math.sin(yaw)*sd*.55, 0,yaw,0));
+      const wm = new THREE.Mesh(new THREE.PlaneGeometry(.85, len+.6), waterMat); wm.rotation.set(-Math.PI/2, 0, yaw); wm.position.set(cx,.44,cz); chanG.add(wm); }
+    chanG.add(mesh(merge(P2), false)); }
   // skog runt omkring (pynt, kan inte fällas)
   curTreeGeo = treeGeo(T);
-  const regs = [LAY.yard.main, LAY.yard.ost, ...def.areas.map(a=>a.rect)];
+  const regs = [...LAY.yard.map(y=>y.r), ...def.areas.map(a=>a.rect)], waters = [...LAY.water.map(w=>w.r), ...def.areas.filter(a=>a.river).map(a=>a.river)];
   const r = rng32(def.seed + 5), Tr = [];
   for(let i=0;i<5000 && Tr.length<560;i++){
     const x = -75 + r()*150, z = -85 + r()*133;
     if(regs.some(R => inRect(x,z,R,2))) continue;
     if(Math.abs(z-LAY.road)<3.6) continue;
     if(sea && z > LAY.road + 2) continue;
-    if(river && inRect(x,z,def.areas.find(a=>a.river).river,1.5)) continue;
+    if(waters.some(R => inRect(x,z,R,1.5))) continue;
     Tr.push([x,z,.85+r()*.75,r()*6.28]);
   }
   const im = new THREE.InstancedMesh(curTreeGeo, vcMat, Tr.length);
@@ -570,7 +585,7 @@ function buildOrt(){
   const bushG = merge([part(new THREE.IcosahedronGeometry(.7,0),T.bush,0,.35,0), part(new THREE.IcosahedronGeometry(.5,0),T.bush,.5,.3,.2)]);
   for(const [geo,count] of [[rockG,30],[bushG,46]]){
     const im2 = new THREE.InstancedMesh(geo, vcMat, count); let k = 0;
-    for(let i=0;i<400 && k<count;i++){ const x=-40+r()*80, z=-40+r()*66; if(regs.slice(0,2).some(R=>inRect(x,z,R,.5)) || def.areas.some(a => a.lake && inRect(x,z,a.lake,1) || a.river && inRect(x,z,a.river,1) || a.ice && inRect(x,z,a.ice,1)) || Math.abs(z-LAY.road)<3 || sea && z > LAY.road) continue; _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,r()*6,0)), _one.clone().multiplyScalar(.6+r()*.7)); im2.setMatrixAt(k++,_m4); }
+    for(let i=0;i<400 && k<count;i++){ const x=-40+r()*80, z=-40+r()*66; if(LAY.yard.some(y=>inRect(x,z,y.r,.5)) || waters.some(R=>inRect(x,z,R,1)) || def.areas.some(a => a.lake && inRect(x,z,a.lake,1) || a.ice && inRect(x,z,a.ice,1)) || Math.abs(z-LAY.road)<3 || sea && z > LAY.road) continue; _m4.compose(_v.set(x,0,z), _q.setFromEuler(_e.set(0,r()*6,0)), _one.clone().multiplyScalar(.6+r()*.7)); im2.setMatrixAt(k++,_m4); }
     im2.count = k; im2.castShadow = true; ortG.add(im2);
   }
   // träd att fälla
@@ -584,7 +599,7 @@ function buildOrt(){
   goldTree = new THREE.Mesh(curTreeGeo, goldMat); goldTree.castShadow = true; goldTree.visible = false; ortG.add(goldTree);
   treeIdx = new Map(); G.trees.forEach((t,i)=>treeIdx.set(t,i));
   fenceSig = ''; fenceG = null;
-  buildPads();
+  buildPads(); placeYard();
 }
 // Staket: runt gården och varje område. Där ett område möter gården står en rödvit grind tills det är köpt.
 function rectEdges(r){ return [{h:true,c:r[2],a:r[0],b:r[1]},{h:true,c:r[3],a:r[0],b:r[1]},{h:false,c:r[0],a:r[2],b:r[3]},{h:false,c:r[1],a:r[2],b:r[3]}]; }
@@ -600,8 +615,7 @@ function fenceParts(P2, e, a, b, gate){
   if(gate) for(let i=0;i<n;i++){ const t=(i+.5)/n; P2.push(part(Box(.06,.5,.7), i%2?0xe5484d:0xffffff, lerp(x0,x1,t),.6,lerp(z0,z1,t), 0,yaw,0)); }
 }
 function buildFences(){
-  const regs = [{id:'main', r:LAY.yard.main, open:true}];
-  if(areaOpen(G,'ost')) regs.push({id:'ost', r:LAY.yard.ost, open:true});
+  const regs = LAY.yard.filter(y => areaOpen(G, y.id)).map(y => ({id:y.id, r:y.r, open:true, bro:!!y.bro}));
   for(const a of G.def.areas) regs.push({id:a.id, r:a.rect, open:areaOpen(G,a.id), area:true});
   const sig = regs.map(x=>x.id+(x.open?1:0)).join(',');
   if(sig === fenceSig) return; fenceSig = sig;
@@ -618,7 +632,7 @@ function buildFences(){
         const gate = (R.open !== Q.open) && (R.area || Q.area);
         fenceParts(P2, e, ov[0], ov[1], gate);
       });
-      for(const [a,b] of ints) fenceParts(P2, e, a, b, false);
+      if(!R.bro) for(const [a,b] of ints) fenceParts(P2, e, a, b, false);
     }
   });
   fenceG = mesh(merge(P2)); ortG.add(fenceG);
@@ -895,12 +909,8 @@ for(const k of PILES){
   const g = mesh(merge([part(Box(2.3,.14,2.3), WOOD, 0,.07,0), ...[-1,0,1].map(s=>part(Box(2.3,.1,.3), 0x6b4426, 0,.16,s*.9))]));
   g.position.set(LAY.pile[k][0],0,LAY.pile[k][1]); g.visible = false; world.add(g); pileBase[k] = g;
 }
-{
-  const [dx,dz] = LAY.dock;
-  const dock = mesh(merge([part(Box(5.6,.5,3.6), CONC, 0,.25,.2), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,-1.5), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,1.9),
-    ...[-2,-1,0,1,2].map(i=>part(Box(.5,.08,.4), 0x2b2b2b, i*1.1,.53,1.9))]));
-  dock.position.set(dx,0,dz); world.add(dock);
-}
+const dockMesh = mesh(merge([part(Box(5.6,.5,3.6), CONC, 0,.25,.2), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,-1.5), part(Box(5.6,.06,.24), 0xffc93c, 0,.52,1.9),
+  ...[-2,-1,0,1,2].map(i=>part(Box(.5,.08,.4), 0x2b2b2b, i*1.1,.53,1.9))])); world.add(dockMesh);
 const kassaG = new THREE.Group(); kassaG.position.set(LAY.kassa[0],0,LAY.kassa[1]); world.add(kassaG);
 kassaG.add(mesh(merge([part(Box(1.5,.9,1),0x9e2b25,0,.45,0), part(Box(1.6,.08,1.1),0xf2efe6,0,.92,0), part(Box(.6,.35,.5),0x3a3f45,-.3,1.12,0), part(Box(.4,.05,.3),0x9be27f,-.3,1.31,.05)])));
 kassaG.visible = false;
@@ -927,68 +937,83 @@ angaG.add(mesh(merge([part(Box(3.4,.3,3.0),CONC,0,.15,0), part(Cyl(.9,.9,2.6,14)
 const flywheel = mesh(merge([part(Cyl(1.0,1.0,.16,18),0x34373b,0,0,0,Math.PI/2,0,0), part(Box(.14,1.9,.18),0xc8a24a,0,0,0), part(Box(1.9,.14,.18),0xc8a24a,0,0,0)])); flywheel.position.set(1.5,1.3,.9); angaG.add(flywheel);
 // remmar från svänghjulet till maskinerna
 const remG = new THREE.Group(); world.add(remG); remG.visible = false;
-{ const P2 = []; for(const m of ['bark','sag','hyvel']){ const [mx,mz] = LAY.mach[m], ax = LAY.anga[0]+1.5, az = LAY.anga[1]+.9, len = Math.hypot(mx+1.6-ax, mz-az), yaw = Math.atan2(mx+1.6-ax, mz-az); P2.push(part(Box(.08,.08,len),0x3a2a1c,(ax+mx+1.6)/2,3.4,(az+mz)/2,0,yaw,0)); P2.push(part(Box(.16,3.4,.16),0x6b4426,mx+1.6,1.7,mz)); } remG.add(mesh(merge(P2), false)); }
+function buildRem(){   // remmar från svänghjulet till de maskiner som står nära ångmaskinen
+  while(remG.children.length){ const c = remG.children.pop(); c.geometry.dispose(); }
+  const P2 = [], ax = LAY.anga[0]+1.5, az = LAY.anga[1]+.9;
+  for(const m of ['bark','sag','hyvel','press','snick']){ const [mx,mz] = LAY.mach[m], tx = mx + 1.6, len = Math.hypot(tx-ax, mz-az); if(len > 22) continue; const yaw = Math.atan2(tx-ax, mz-az); P2.push(part(Box(.08,.08,len),0x3a2a1c,(ax+tx)/2,3.4,(az+mz)/2,0,yaw,0)); P2.push(part(Box(.16,3.4,.16),0x6b4426,tx,1.7,mz)); }
+  if(P2.length) remG.add(mesh(merge(P2), false));
+}
 const visslaG = new THREE.Group(); visslaG.position.set(LAY.vissla[0],0,LAY.vissla[1]); visslaG.visible = false; world.add(visslaG);
 visslaG.add(mesh(merge([part(Cyl(.12,.12,2.2,8),0xc8a24a,0,1.1,0), part(Cyl(.22,.18,.5,10),0xc8a24a,0,2.35,0), part(Box(.06,.6,.06),0x34373b,.25,1.6,0)])));
 const visslaRing = new THREE.Mesh(new THREE.RingGeometry(1.1,1.4,28), new THREE.MeshBasicMaterial({color:0xc8a24a, transparent:true, opacity:.8})); visslaRing.rotation.x = -Math.PI/2; visslaRing.position.y = .06; visslaG.add(visslaRing);
 const lampG = new THREE.Group(); world.add(lampG); lampG.visible = false;
 const bulbMat = new THREE.MeshLambertMaterial({color:0xfff2b0, emissive:0xffc93c});
-for(const [x,z] of [[-12.5,-14],[-12.5,5],[12.5,-14],[12.5,0],[-3,13.5],[8,-21]]){ const l = mesh(merge([part(Cyl(.07,.09,3.4,6),0x34373b,0,1.7,0), part(Box(.6,.08,.08),0x34373b,.25,3.35,0)])); l.position.set(x,0,z); lampG.add(l); const b = new THREE.Mesh(new THREE.SphereGeometry(.16,8,6), bulbMat); b.position.set(x+.5,3.2,z); lampG.add(b); }
+const lampPost = merge([part(Cyl(.07,.09,3.4,6),0x34373b,0,1.7,0), part(Box(.6,.08,.08),0x34373b,.25,3.35,0)]), bulbGeo = new THREE.SphereGeometry(.16,8,6);
+function buildLamps(){   // lampor i gårdens hörn
+  while(lampG.children.length) lampG.children.pop();
+  let n = 0; for(const y of LAY.yard){ if(y.bro) continue; const R = y.r; for(const [x,z] of [[R[0]+.9,R[2]+.9],[R[1]-.9,R[2]+.9],[R[0]+.9,R[3]-3],[R[1]-.9,R[3]-3]]){ if(n++ > 12) break; const l = new THREE.Mesh(lampPost, vcMat); l.castShadow = true; l.position.set(x,0,z); lampG.add(l); const b = new THREE.Mesh(bulbGeo, bulbMat); b.position.set(x+.5,3.2,z); lampG.add(b); } }
+}
 const sortG = mesh(merge([part(Box(2.2,1.6,1.8),0xdfe6ec,0,.8,0), part(Box(2.3,.12,1.9),0x2c6bb3,0,1.66,0), part(Box(1.4,.08,.5),0x2f6fd6,0,1.0,1.1), ...[-.6,0,.6].map(x=>part(Box(.3,.3,.08),0xffc93c,x,1.2,.91))]));
 sortG.position.set(4.4,0,-15.6); sortG.visible = false; world.add(sortG);
 const solarG = new THREE.Group(); world.add(solarG);
 
 /* ================= Transportband ================= */
 const BELT_Y = .62, BELT_V = 2.2;
-const BELTS = [
-  {id:'main',  a:[0,-15.9], b:[0,6.7],  need:'bark'},
-  {id:'spill', a:[-1.6,-5], b:[-3.9,-5], need:'press'},
-  {id:'sackb', a:[-5.5,-3.3], b:[-5.5,-2.3], need:'press'},
-  {id:'snb',   a:[-1.6,2.3], b:[-3.5,2.8], need:'snick'},
-  {id:'furnb', a:[-5.5,5.0], b:[-5.5,6.1], need:'snick'},
-  {id:'ugnb',  a:[2.0,-0.8], b:[15.6,-0.8], need:'ugn'},
-  {id:'torrb', a:[18.7,-2.5], b:[20.1,-4.2], need:'ugn'},
-  {id:'limb',  a:[17.5,1.1], b:[17.5,4.3], need:'lim'},
-  {id:'limp',  a:[19.4,6.2], b:[20.6,6.2], need:'lim'},
-  {id:'listb', a:[19.4,-0.8], b:[21.2,-0.8], need:'list'},
-  {id:'listp', a:[23.5,-2.6], b:[24.0,-4.2], need:'list'},
-];
-for(const b of BELTS){
-  const ax = b.b[0]-b.a[0], az = b.b[1]-b.a[1]; b.len = Math.hypot(ax,az); b.yaw = Math.atan2(ax/b.len, az/b.len);
-  const g = new THREE.Group(); g.position.set(b.a[0],0,b.a[1]); g.rotation.y = b.yaw;
-  const P2 = [part(Box(1.5,.5,b.len+.3), 0x58616b, 0,.3,b.len/2)];
-  for(const sx of [-1,1]) P2.push(part(Box(.12,.2,b.len+.3), 0xffc93c, sx*.72,.62,b.len/2));
-  for(let z=.4;z<b.len;z+=1.4) for(const sx of [-1,1]) P2.push(part(Box(.12,.3,.12), 0x3a3f45, sx*.6,.15,z));
-  g.add(mesh(merge(P2)));
-  const tex = beltTexBase.clone(); tex.needsUpdate = true; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, b.len/1.1);
-  const top = new THREE.Mesh(new THREE.PlaneGeometry(1.25, b.len+.2), new THREE.MeshLambertMaterial({map:tex}));
-  top.rotation.x = -Math.PI/2; top.position.set(0,.56,b.len/2); top.receiveShadow = true; g.add(top);
-  b.tex = tex; b.g = g; g.visible = false; world.add(g);
+let BELTS = [];
+const beltGroup = new THREE.Group(); world.add(beltGroup);
+function buildBelts(){   // banden räknas fram ur ortens gård: ett band per raksträcka, från kant till kant
+  while(beltGroup.children.length){ const c = beltGroup.children.pop(); disposeGroup(c); }
+  BELTS = [];
+  for(const [rid, need, r0, r1] of LAY.belts){
+    const pts = LAY.routes[rid];
+    for(let k=1;k<pts.length;k++){
+      let a = pts[k-1].slice(), b = pts[k].slice(); const L0 = Math.hypot(b[0]-a[0], b[1]-a[1]); if(L0 < .1) continue;
+      const ux = (b[0]-a[0])/L0, uz = (b[1]-a[1])/L0;
+      if(k === 1){ a = [a[0]+ux*r0, a[1]+uz*r0]; } if(k === pts.length-1){ b = [b[0]-ux*r1, b[1]-uz*r1]; }
+      const len = Math.hypot(b[0]-a[0], b[1]-a[1]); if(len < .4) continue;
+      const g = new THREE.Group(); g.position.set(a[0],0,a[1]); g.rotation.y = Math.atan2(ux, uz);
+      const P2 = [part(Box(1.5,.5,len+.3), 0x58616b, 0,.3,len/2)];
+      for(const sx of [-1,1]) P2.push(part(Box(.12,.2,len+.3), 0xffc93c, sx*.72,.62,len/2));
+      for(let z=.4;z<len;z+=1.4) for(const sx of [-1,1]) P2.push(part(Box(.12,.3,.12), 0x3a3f45, sx*.6,.15,z));
+      g.add(mesh(merge(P2)));
+      const tex = beltTexBase.clone(); tex.needsUpdate = true; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, len/1.1);
+      const top = new THREE.Mesh(new THREE.PlaneGeometry(1.25, len+.2), new THREE.MeshLambertMaterial({map:tex}));
+      top.rotation.x = -Math.PI/2; top.position.set(0,.56,len/2); top.receiveShadow = true; g.add(top);
+      g.visible = false; beltGroup.add(g); BELTS.push({id:rid, need, tex, g, main: need === 'bark'});
+    }
+  }
+}
+// Allt som hör till gården flyttas till ortens platser
+function placeYard(){
+  for(const m of MACHS){ const st = stations[m]; st.root.position.set(LAY.mach[m][0], 0, LAY.mach[m][1]); }
+  intakeG.position.set(LAY.intake[0],0,LAY.intake[1]);
+  for(const k of PILES) pileBase[k].position.set(LAY.pile[k][0],0,LAY.pile[k][1]);
+  dockMesh.position.set(LAY.dock[0],0,LAY.dock[1]); kassaG.position.set(LAY.kassa[0],0,LAY.kassa[1]);
+  kontorG.position.set(LAY.kontor[0],0,LAY.kontor[1]); bodG.position.set(LAY.bod[0],0,LAY.bod[1]);
+  angaG.position.set(LAY.anga[0],0,LAY.anga[1]); visslaG.position.set(LAY.vissla[0],0,LAY.vissla[1]); sortG.position.set(LAY.sort[0],0,LAY.sort[1]);
+  // dörr och skylt mot gården: kontoret vänds mot gårdens mitt
+  const cx = LAY.yard.reduce((s,y)=>s+(y.r[0]+y.r[1])/2,0)/LAY.yard.length; kontorG.rotation.y = LAY.kontor[0] > cx ? Math.PI : 0;
+  buildRem(); buildLamps(); buildBelts();
 }
 const moving = [];
-const ROUTE = {
-  'bark>sag':[[0,-12],[0,-5]], 'bark>main':[[0,-12],[0,6.6]], 'sag>hyvel':[[0,-5],[0,2]], 'sag>main':[[0,-5],[0,6.6]],
-  'hyvel>main':[[0,2],[0,6.6]], 'hyvel>snick':[[0,2],[-1.4,2.2],[-5.5,3]], 'spill>press':[[0,-5],[-5.5,-5]],
-  'press>sack':[[-5.5,-5],[-5.5,-2.2]], 'snick>furn':[[-5.5,3],[-5.5,6.2]], 'in':[[0,-16],[0,-12]],
-  'hyvel>ugn':[[0,2],[2,-0.8],[17.5,-0.8]], 'ugn>torr':[[17.5,-0.8],[18.7,-2.5],[20.6,-5.3]], 'ugn>lim':[[17.5,-0.8],[17.5,6.2]], 'ugn>list':[[17.5,-0.8],[23,-0.8]],
-  'lim>lim':[[17.5,6.2],[21.7,6.2]], 'list>list':[[23,-0.8],[24.2,-5.3]],
-};
 const ROUTE_TYPE = { 'bark':'barked', 'sag':'board', 'hyvel':'planed', 'spill':'chip', 'press':'sack', 'snick':'furn', 'ugn':'torr', 'lim':'limtra', 'list':'fonster' };
-function addMover(route, type){ const pts = ROUTE[route]; if(!pts || moving.length > 240) return; let len = 0; for(let i=1;i<pts.length;i++) len += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); moving.push({pts, len, s:0, type}); }
+function addMover(route, type){ const pts = LAY.routes[route]; if(!pts || moving.length > 240) return; let len = 0; for(let i=1;i<pts.length;i++) len += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); moving.push({pts, len, s:0, type}); }
 const floaters = [];   // stockar i rännan
 function updateBelts(dt){
-  for(const b of BELTS){ b.g.visible = lv(S, b.need) > 0; if(b.g.visible && (b.id!=='main' || G.mach.bark.busy > 0 || moving.length)) b.tex.offset.y -= BELT_V/1.1*dt*(G.vissla>0?2:1); }
+  for(const b of BELTS){ b.g.visible = lv(S, b.need) > 0; if(b.g.visible && (!b.main || G.mach.bark.busy > 0 || moving.length)) b.tex.offset.y -= BELT_V/1.1*dt*(G.vissla>0?2:1); }
   for(let i=moving.length-1;i>=0;i--){
     const mv = moving[i]; mv.s += BELT_V*dt*(G.vissla>0?2:1); if(mv.s >= mv.len){ moving.splice(i,1); continue; }
     let s = mv.s, k = 1; while(k < mv.pts.length-1){ const l = Math.hypot(mv.pts[k][0]-mv.pts[k-1][0], mv.pts[k][1]-mv.pts[k-1][1]); if(s <= l) break; s -= l; k++; }
     const a = mv.pts[k-1], b2 = mv.pts[k], l = Math.hypot(b2[0]-a[0], b2[1]-a[1]) || 1, t = s/l;
     setItem(mv.type, lerp(a[0],b2[0],t), BELT_Y + ITEM[mv.type].h*.6, lerp(a[1],b2[1],t), Math.atan2(b2[0]-a[0], b2[1]-a[1]) + Math.PI/2);
   }
-  if(chanG) chanG.visible = !!CH && (CH.kind==='lake' ? G.def.areas.some(a=>a.lake && areaOpen(G,a.id)) : roleN(S,'flott') > 0);
+  if(chanG) chanG.visible = G.def.areas.some(a=>a.lake && areaOpen(G,a.id)) || roleN(S,'flott') > 0;
+  const C = LAY.chute;
   for(let i=floaters.length-1;i>=0;i--){
-    const f = floaters[i];
-    if(f.kind==='lake'){ f.x += 2.6*dt; if(f.x >= CH.x1+.6){ floaters.splice(i,1); continue; } setItem('log', f.x, .12 + Math.sin(f.x*2)*.03, CH.z + Math.sin(f.x)*.1, Math.PI/2 + Math.sin(f.x*.7)*.15); }
-    else { if(f.x < -4){ f.x += 2.8*dt; setItem('log', f.x, .1, CH.z + Math.sin(f.x)*.2, Math.PI/2); } else { f.z += 3*dt; if(f.z >= LAY.intake[1]-1){ floaters.splice(i,1); continue; } setItem('log', -4, .55, f.z, 0); } }
+    const f = floaters[i]; f.s += 2.7*dt;
+    let s2 = f.s, k = 1; while(k < C.length-1){ const l = Math.hypot(C[k][0]-C[k-1][0], C[k][1]-C[k-1][1]); if(s2 <= l) break; s2 -= l; k++; }
+    const a = C[k-1], b2 = C[k], l = Math.hypot(b2[0]-a[0], b2[1]-a[1]) || 1; if(s2 >= l && k === C.length-1){ floaters.splice(i,1); continue; }
+    const t = s2/l; setItem('log', lerp(a[0],b2[0],t), k === 1 ? .12 + Math.sin(f.s*2)*.03 : .5, lerp(a[1],b2[1],t), Math.atan2(b2[0]-a[0], b2[1]-a[1]) + Math.PI/2 + Math.sin(f.s)*.1);
   }
 }
 
@@ -1032,10 +1057,10 @@ function updateTrucks(dt){
     const f2 = o.st==='leave' && o.ok ? 1 : Math.min(1, o.got/o.need);
     ot.cargo.scale.set(1, Math.max(.001, f2), 1); ot.cargo.visible = f2 > .02;
   }
-  if(ship){ let sx = -90; if(useShip){ if(o.st==='arrive') sx = lerp(-90, -14, 1-Math.pow(1-Math.min(1,o.a/2.5),3)); else if(o.st==='open') sx = -14; else sx = lerp(-14, 90, Math.min(1,o.a/3)**2); } else sx = ship.position.x < -14 ? -90 : lerp(ship.position.x, 90, Math.min(1, dt)); ship.position.x = sx; ship.position.y = Math.sin(performance.now()/900)*.08; }
+  if(ship){ let sx = -90; if(useShip){ if(o.st==='arrive') sx = lerp(-90, shipX, 1-Math.pow(1-Math.min(1,o.a/2.5),3)); else if(o.st==='open') sx = shipX; else sx = lerp(shipX, 90, Math.min(1,o.a/3)**2); } else sx = ship.position.x < shipX ? -90 : lerp(ship.position.x, 90, Math.min(1, dt)); ship.position.x = sx; ship.position.y = Math.sin(performance.now()/900)*.08; }
   // timmerbilen (från Motorn) kör in timmer av sig själv
   const tb = timmerBil, tbOn = B.ep >= 3 && lv(S,'chauffor') > 0; tb.g.visible = tbOn;
-  if(tbOn){ tb.t += dt; const T2 = 16, k = (tb.t % T2)/T2; tb.x = k < .35 ? lerp(80, -1.5, k/.35) : k < .6 ? -1.5 : lerp(-1.5, -80, (k-.6)/.4); tb.g.position.x = tb.x; tb.cargo.visible = k < .45; }
+  if(tbOn){ tb.t += dt; const T2 = 16, k = (tb.t % T2)/T2; const sx = LAY.dock[0]-6.5; tb.x = k < .35 ? lerp(80, sx, k/.35) : k < .6 ? sx : lerp(sx, -80, (k-.6)/.4); tb.g.position.x = tb.x; tb.cargo.visible = k < .45; }
 }
 
 /* ================= Betalrutor ================= */
@@ -1214,8 +1239,8 @@ function syncWorld(celebrate=null){
   kassaG.visible = lv(S,'barare') > 0;
   bodG.visible = lv(S,'bod') > 0;
   angaG.visible = B.ep >= 2; remG.visible = B.ep >= 2 && lv(S,'bark') > 0; visslaG.visible = B.ep >= 2; lampG.visible = B.ep >= 2; sortG.visible = B.ep >= 4 && lv(S,'bark') > 0;
-  if(ostG) ostG.visible = B.ep >= 2;
-  if(ortG && ortG.userData.bridge) ortG.userData.bridge.visible = lv(S,'alv') > 0;
+  for(const m of yardPlanes) m.visible = B.ep >= m.userData.ep;
+  for(const b of bridges) b.visible = !b.userData.area || areaOpen(G, b.userData.area);
   buildKontor(); buildFences();
   syncWorkerFigs();
 }
@@ -1228,7 +1253,7 @@ function updateMachines(dt, time){
     for(const b of st.built.bob) b.m.position.y = b.base - Math.abs(Math.sin(time*b.sp*(.2+st.act)*boost))*b.amp*st.act;
     let sc = 1; if(st.pop > 0){ st.pop = Math.max(0, st.pop - dt*1.8); const k = 1-st.pop; sc = k < .5 ? k*2*1.15 : 1.15 - (k-.5)*.3; }
     let sh = 0; if(M.jam) sh = Math.sin(time*40)*.04; if(st.shake > 0){ st.shake = Math.max(0, st.shake-dt); sh += Math.sin(time*60)*.08*st.shake/.25; }
-    st.root.scale.setScalar(Math.max(.001, sc)); st.root.position.x = LAY.mach[m][0] + sh;
+    st.root.scale.setScalar(Math.max(.001, sc)); st.root.position.set(LAY.mach[m][0] + sh, 0, LAY.mach[m][1]);
     const e = st.built.emit, p = st.root.position;
     if(m==='sag' && st.act > .1 && Math.random() < dt*14*st.act) burst(p.x+e.x+rand(-.6,.6), e.y, p.z+e.z, [0xf3d9a4,0xe8c98a,0xffffff], 2, 2.6, .7, .6, 3.5);
     if((m==='hyvel' || m==='list') && st.act > .1 && Math.random() < dt*6*st.act) burst(p.x+e.x, e.y, p.z+e.z, [0xf3d9a4,0xe8c98a], 1, 1.5, .6, .8, 1.5);
@@ -1317,7 +1342,7 @@ function handleFx(){
       case 'fall': { const i = G.trees.findIndex(t => t.x===f.x && t.z===f.z); if(i>=0){ const dx = f.x - p.x, dz = f.z - p.z; fallDir[i] = f.by==='p' ? Math.atan2(dx, -dz) : rand(0,6.28); }
         const near = Math.hypot(f.x-p.x, f.z-p.z) < 14; if(near) Snd.thud(f.by==='p' ? 1 : .5); burst(f.x, .5, f.z, [curTerr.tree[0],curTerr.tree[1],0x7a5230], 8, 2.5, 1, .8, 3); break; }
       case 'pick': { const from = f.pile ? [LAY.pile[f.pile][0], 1, LAY.pile[f.pile][1]] : [f.x, .3, f.z]; incoming++; fly(f.type, from, stackTop, .22, .8, () => { incoming = Math.max(0, incoming-1); }); Snd.pop(S.stack.length); break; }
-      case 'feed': if(f.who==='p'){ fly('log', stackTop(), [LAY.intake[0]+rand(-.6,.6), .9, LAY.intake[1]], .25, .8); Snd.drop(); } else if(f.who==='lake' && CH && chanG && chanG.visible) floaters.push(CH.kind==='lake' ? {kind:'lake', x:CH.x0 + .5} : {kind:'river', x:CH.x0, z:CH.z}); break;
+      case 'feed': if(f.who==='p'){ fly('log', stackTop(), [LAY.intake[0]+rand(-.6,.6), .9, LAY.intake[1]], .25, .8); Snd.drop(); } else if(f.who==='lake' && chanG && chanG.visible && LAY.chute && floaters.length < 40) floaters.push({s:0}); break;
       case 'proc': { const type = ROUTE_TYPE[f.m]; if(f.m==='bark') addMover('in','log'); addMover(f.m + '>' + f.to, type); if(f.m==='sag' && Math.hypot(LAY.mach.sag[0]-p.x, LAY.mach.sag[1]-p.z) < 16) Snd.saw(.7); break; }
       case 'sell': {
         dockTruck.n = Math.min(TRUCK_CAP, dockTruck.n + 1);
@@ -1415,7 +1440,7 @@ function updateLabels(){
     label('kontor', LAY.kontor[0], kontorLv===2?7:kontorLv===1?5:3.6, LAY.kontor[1], `<span class="pill">Kontoret${B.kontrakt.offers.length && !B.kontrakt.active ? ' · nya kontrakt' : ''}</span>`, Math.hypot(G.p.x-LAY.kontor[0], G.p.z-LAY.kontor[1]) < 5 ? 'can' : 'info');
     if(B.ep >= 2) label('vissla', LAY.vissla[0], 3, LAY.vissla[1], `<span class="pill">${G.ev && G.ev.kind==='panna' ? 'Släpp ångan!' : G.vissla > 0 ? 'Full fart! ' + Math.ceil(G.vissla) + ' s' : G.visslaCd > 0 ? 'Ångvissla · ' + Math.ceil(G.visslaCd) + ' s' : 'Ångvissla · ställ dig här'}</span>`, G.ev && G.ev.kind==='panna' ? 'warn' : G.vissla > 0 ? 'gold' : G.visslaCd > 0 ? 'info' : 'can');
     if(lv(S,'barare') && !lv(S,'chauffor')) label('kassa', LAY.kassa[0], 2.1, LAY.kassa[1], `<span class="pill">${kassaFull(G) ? 'Full kassa!' : 'Kassa'} ${coinI}<span class="num">${fmt(S.kassa)}</span></span>`, kassaFull(G) ? 'warn' : S.kassa >= 1 ? 'can' : 'info');
-    if(G.order && G.order.st==='open') label('order', G.order.ship ? -14 : LAY.dock[0]+6.2, 3.6, G.order.ship ? LAY.road+8 : LAY.road-.9, `<span class="pill">${G.order.got}/${G.order.need} · ${Math.ceil(G.order.t)} s</span>`, 'pay');
+    if(G.order && G.order.st==='open') label('order', G.order.ship ? shipX : LAY.dock[0]+6.2, 3.6, G.order.ship ? LAY.road+8 : LAY.road-.9, `<span class="pill">${G.order.got}/${G.order.need} · ${Math.ceil(G.order.t)} s</span>`, 'pay');
     if(G.ev && G.ev.kind==='jam' && G.mach[G.ev.m].jam){ const q = LAY.mach[G.ev.m]; label('jam', q[0], 4.6, q[1], `<span class="pill">Stopp! Knacka loss</span>`, 'warn'); }
     if(G.ev && G.ev.kind==='gold' && G.ev.tree && G.ev.tree.gold) label('gold', G.ev.tree.x, 5.4, G.ev.tree.z, `<span class="pill">Guldträd ${G.ev.tree.hits}/${ECON.events.gold.hits}</span>`, 'gold');
     if(G.ev && G.ev.kind==='borre') G.ev.trees.forEach((t,k) => { if(t.borre) label('borre'+k, t.x, 5, t.z, `<span class="pill">Barkborrar</span>`, 'warn'); });
@@ -1563,7 +1588,7 @@ function updateWeather(dt, time){
   for(let i=0;i<snowIM.count;i++){ const r = snow[i]; r.y -= dt*1.6; r.p += dt; if(r.y < 0){ r.y = 14 + rand(0,4); r.x = rand(-18,18); r.z = rand(-18,18); } _m4.compose(_v.set(cam.x + r.x + Math.sin(r.p)*.4, r.y, cam.z + r.z), _q.setFromEuler(_e.set(r.p,r.p,0)), _one); snowIM.setMatrixAt(i,_m4); }
   snowIM.instanceMatrix.needsUpdate = true;
   waterTex.offset.x = time*.02; waterTex.offset.y = Math.sin(time*.3)*.02;
-  if(iceMesh) iceMesh.material.color.setHex(G.thaw ? 0x6fb3d9 : 0xdff1fb);
+  if(iceMesh) iceMesh.material.color.setHex(G.thaw ? 0x4f93c9 : 0xa8d3ee);
   $('flash').classList.toggle('on', !!(G.ev && G.ev.kind==='rush') || G.vissla > 0);
 }
 
@@ -1650,6 +1675,7 @@ function renderOffice(){
       const btn = cur ? '<span class="tag">Du är här</span>' : lock ? '<span class="tag">Låst</span>' : `<button class="btn buy" data-go="${i}">${o ? 'Res hit' : 'Res dit'}</button>`;
       h += `<div class="orow${cur?' cur':''}${lock?' dim':''}"><div class="h"><b>${i+1}. ${lock ? 'Okänd ort' : d.namn}</b>${btn}</div>${lock ? '' : `<small>${TERR_NAMN[d.terr]} · ${d.vandning}</small>`}${st}</div>`;
     }
+    h += `<div class="orow dim"><div class="h"><b>Bruksorten</b><span class="tag soon">Kommer</span></div><small>Massabruk som gör flis till papper. Byggs i en senare version.</small></div>`;
     h += `<small style="text-align:center;color:var(--muted)">Orter du lämnar fortsätter av sig själva. Efter de handgjorda orterna kommer Nya marker som aldrig tar slut.</small>`;
   } else if(offTab === 'kontrakt'){
     const K = B.kontrakt;
@@ -1714,7 +1740,7 @@ function frame(now){
 }
 function tick(dt){
   time += dt;
-  if(mode !== 'menu'){
+  if(mode !== 'menu' && mode !== 'menu2'){   // kontoret, menyn och rutorna pausar spelet
     const [ix, iz] = mode==='play' ? inputVec() : [0,0];
     const n = Math.max(1, Math.ceil(dt/(1/30))), h = dt/n;
     for(let k=0;k<n;k++) step(G, h, ix, iz);

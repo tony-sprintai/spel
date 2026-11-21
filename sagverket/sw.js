@@ -1,7 +1,7 @@
 // Service worker: gör spelet spelbart utan nät efter första besöket.
 // Sidan och spelets egna skriptfiler hämtas från nätet först (så nya versioner kommer fram
 // och hör ihop), allt annat från cachen först.
-const CACHE = 'spel-sagverket-20261121-174048';
+const CACHE = 'spel-sagverket-20261121-213401';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './ikon-192.png'])).then(() => self.skipWaiting()));

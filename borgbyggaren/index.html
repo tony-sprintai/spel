@@ -179,6 +179,27 @@ html, body { margin: 0; height: 100%; background: #14101c; overflow: hidden; ove
 }
 @media (max-width: 350px) { .pill b { font-size: 16px; } .pill { padding: 0 6px 0 4px; } #tron .stapel { width: 64px; } }
 @media (prefers-reduced-motion: reduce) { #mal.guide, #tron.lag, #k-horn.vink { animation: none; } }
+
+/* ── sjökartan (v2) ── */
+#karta .panel { width: min(100%, 380px); gap: 9px; }
+#karta-hav { position: relative; width: 100%; aspect-ratio: 1.3; border-radius: 14px; border: 2px solid #2c1a0b; overflow: hidden; background: #2a5f86; }
+#karta-hav canvas.bak { position: absolute; inset: 0; width: 100%; height: 100%; }
+#karta-hav button.o { position: absolute; width: 92px; margin-left: -46px; margin-top: -40px; display: flex; flex-direction: column; align-items: center; gap: 1px; border-radius: 12px; padding: 4px 2px; }
+#karta-hav button.o canvas { width: 50px; height: 50px; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .5)); }
+#karta-hav button.o b { font: 800 16px/1 "Grenze Gotisch", Georgia, serif; color: #fff3d6; text-shadow: 0 1px 2px #000, 0 0 6px #000; letter-spacing: .3px; }
+#karta-hav button.o small { font-size: 11px; color: #ffe9b8; text-shadow: 0 1px 2px #000; white-space: nowrap; }
+#karta-hav button.o.vald { background: rgba(255, 226, 122, .28); box-shadow: 0 0 0 2px #ffe27a; }
+#karta-hav button.o.last { filter: grayscale(.8) brightness(.7); }
+#karta-info { min-height: 58px; font-size: 14px; color: #f6e2bd; }
+#karta-info b { color: #ffe27a; }
+@media (orientation: landscape) and (max-height: 520px) {
+  #karta .panel { width: min(100%, 700px); display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: auto 1fr auto auto; column-gap: 14px; align-items: center; }
+  #karta .panel h2 { grid-column: 2; grid-row: 1; }
+  #karta-hav { grid-column: 1; grid-row: 1 / span 4; height: min(290px, calc(100vh - 70px)); width: auto; aspect-ratio: 1.3; justify-self: center; }
+  #karta-info { grid-column: 2; grid-row: 2; min-height: 0; }
+  #k-res { grid-column: 2; grid-row: 3; }
+  #k-stanna { grid-column: 2; grid-row: 4; }
+}
 </style>
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
@@ -190,7 +211,7 @@ html, body { margin: 0; height: 100%; background: #14101c; overflow: hidden; ove
 
   <div id="hud" class="dold">
     <div id="pil-mal" class="pil dold"></div>
-    <div id="pil-v0" class="pil varn dold"></div><div id="pil-v1" class="pil varn dold"></div><div id="pil-v2" class="pil varn dold"></div><div id="pil-v3" class="pil varn dold"></div>
+    <div id="pil-v0" class="pil varn dold"></div><div id="pil-v1" class="pil varn dold"></div><div id="pil-v2" class="pil varn dold"></div><div id="pil-v3" class="pil varn dold"></div><div id="pil-v4" class="pil varn dold"></div><div id="pil-v5" class="pil varn dold"></div>
     <div id="markor" class="dold"></div>
     <div id="hudtopp">
       <div id="ovan">
@@ -259,9 +280,19 @@ html, body { margin: 0; height: 100%; background: #14101c; overflow: hidden; ove
   <div id="seger" class="lager dold">
     <div class="panel tra">
       <h2>Seger!</h2>
-      <p>Borgen står efter 20 nätter. De odöda har gett upp. Nästan.</p>
+      <p id="seger-rubrik">Borgen står efter 20 nätter. De odöda har gett upp. Nästan.</p>
       <p id="seger-text"></p>
       <button class="knapp" id="k-andlost">Fortsätt i ändlöst läge</button>
+    </div>
+  </div>
+
+  <div id="karta" class="lager dold">
+    <div class="panel tra">
+      <h2>Sjökartan</h2>
+      <div id="karta-hav"><canvas class="bak" width="380" height="292"></canvas></div>
+      <p id="karta-info"></p>
+      <button class="knapp" id="k-res">Res hit</button>
+      <button class="knapp andra" id="k-stanna">Stanna kvar</button>
     </div>
   </div>
 
@@ -276,7 +307,8 @@ html, body { margin: 0; height: 100%; background: #14101c; overflow: hidden; ove
 // ═══════════════════════════ Borgbyggaren – spelet ═══════════════════════════
 const $ = (s) => document.querySelector(s);
 const q = new URLSearchParams(location.search);
-const NYCKEL = 'borgbyggaren.v1', NYCKEL_INST = 'borgbyggaren.v1.installningar';
+const NYCKEL = 'borgbyggaren.v2', NYCKEL_INST = 'borgbyggaren.v2.installningar';
+const NYCKEL_V1 = 'borgbyggaren.v1', NYCKEL_INST_V1 = 'borgbyggaren.v1.installningar';   // v1 läses men skrivs aldrig
 const MAXSTEG = 0.05;             // längsta spelsteg per bildruta (s). Går det långsammare än 20 fps saktar spelet in i stället för att hoppa.
 const rot = $('#bb'), canvas = $('#c');
 const fel = [];
@@ -293,7 +325,7 @@ try {
   fel.push('import: ' + (e && e.message));
   throw e;
 }
-const { KARTA, TUNE } = M;
+const { TUNE } = M;   // M.KARTA läses alltid via M: den byts när riddaren reser till en annan ö
 const g = G.skapaGrafik(canvas, { autoKvalitet: q.get('auto') !== '0', kvalitet: +(q.get('kval') || 0), mobil: q.has('mobil') ? q.get('mobil') === '1' : undefined });
 
 // ─── tillstånd ───
@@ -311,10 +343,11 @@ function radera(k) { try { localStorage.removeItem(k); } catch (e) { /* inget at
 // Efter en förlust sparas inget: den senaste sparningen (gryningen eller senaste bygget) ligger kvar, så att en omladdning ger en ny chans.
 function spara() { if (!spel) return false; try { harSparning = skriv(NYCKEL, JSON.stringify(M.tillSparning(spel))) || harSparning; return true; } catch (e) { return false; } }
 function sparaInst() { skriv(NYCKEL_INST, JSON.stringify(inst)); }
-try { const i = JSON.parse(las(NYCKEL_INST) || 'null'); if (i && typeof i === 'object') { inst.ljud = i.ljud !== false; inst.musik = i.musik !== false; } } catch (e) { /* standardval */ }
+try { const i = JSON.parse(las(NYCKEL_INST) || las(NYCKEL_INST_V1) || 'null'); if (i && typeof i === 'object') { inst.ljud = i.ljud !== false; inst.musik = i.musik !== false; } } catch (e) { /* standardval */ }
 const nyttFro = () => (q.has('fro') ? +q.get('fro') : ((Math.random() * 2e9) | 0)) || 1;
 function laddaSparning() {
-  const raw = las(NYCKEL);
+  // v2-sparningen i första hand. Finns bara en v1-sparning flyttas den över till Gläntan (franSparning migrerar). v1-nyckeln lämnas orörd.
+  const raw = las(NYCKEL) || las(NYCKEL_V1);
   if (raw) { const s = M.franSparning(raw); if (s.aterstalld !== 'ny') { harSparning = true; return s; } }
   harSparning = false;
   return M.nyttSpel({ fro: nyttFro() });
@@ -404,9 +437,22 @@ const LJUD = {
   brinn(t, v) { brus(t, 0.5, 0.16 * v, 'highpass', 2500, 6000); },
   klick(t) { ton('triangle', 660, 880, t, 0.05, 0.12); },
   uggla(t) { ton('sine', 372, 330, t, 0.3, 0.09, A.amb, 0.06); ton('sine', 352, 300, t + 0.44, 0.55, 0.11, A.amb, 0.08); },
+  // v2
+  is(t, v) { for (let i = 0; i < 3; i++) ton('sine', rnd(1800, 2600), rnd(2600, 3400), t + i * 0.03, 0.12, 0.06 * v); brus(t, 0.12, 0.12 * v, 'highpass', 4000, 7000); },
+  nedslag(t, v) { ton('sine', 120, 40, t, 0.35, 0.6 * v); brus(t, 0.3, 0.35 * v, 'lowpass', 900, 150); },
+  kast(t, v) { ton('triangle', 180, 90, t, 0.2, 0.25 * v); brus(t, 0.15, 0.15 * v, 'bandpass', 700, 300, 1); },
+  spjut(t, v) { ton('sawtooth', 220, 110, t, 0.12, 0.12 * v); brus(t, 0.08, 0.1 * v, 'highpass', 2500, 4500); },
+  handel(t) { LJUD.guld(t); ton('triangle', 523, 523, t + 0.12, 0.2, 0.15); ton('triangle', 784, 784, t + 0.22, 0.3, 0.15); },
+  hjalte(t) { [392, 523, 659, 784].forEach((f, i) => { ton('triangle', f, f, t + i * 0.1, 0.35, 0.2); ton('square', f / 2, f / 2, t + i * 0.1, 0.3, 0.04); }); },
+  ritning(t) { LJUD.uppgradering(t); },
+  resa(t) { LJUD.horn(t); for (let i = 0; i < 3; i++) brus(t + 0.4 + i * 0.9, 1.2, 0.12, 'lowpass', 700, 250, 0.7); },
+  klocka(t) { for (const d of [0, 0.35]) { ton('sine', 880, 878, t + d, 0.9, 0.12); ton('sine', 1320, 1318, t + d, 0.6, 0.05); } },
+  varg(t) { const c = A.ctx, o = c.createOscillator(), gn = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(420, t); o.frequency.linearRampToValueAtTime(640, t + 0.5); o.frequency.linearRampToValueAtTime(520, t + 1.4);
+    gn.gain.setValueAtTime(0.0001, t); gn.gain.linearRampToValueAtTime(0.09, t + 0.3); gn.gain.exponentialRampToValueAtTime(0.0001, t + 1.5); o.connect(gn); gn.connect(A.amb); o.start(t); o.stop(t + 1.6); },
+  drake(t) { ton('sawtooth', 90, 45, t, 1.6, 0.35, null, 0.15); ton('sawtooth', 140, 60, t, 1.4, 0.2, null, 0.1); brus(t, 1.4, 0.4, 'lowpass', 1200, 200); },
   fagel(t, v, ut) { const f = rnd(2600, 3600), n = 2 + ((Math.random() * 3) | 0); for (let i = 0; i < n; i++) ton('sine', f, f * rnd(1.15, 1.4), t + i * 0.09, 0.07, 0.035, ut && ut.connect ? ut : A.amb, 0.015); },
 };
-const MININT = { hugg: 0.07, sten: 0.07, betala: 0.045, svep: 0.07, traff: 0.05, murtraff: 0.07, pil: 0.06, magi: 0.09, ben: 0.07, guld: 0.07, brinn: 0.1, small: 0.2, aj: 0.2, ras: 0.3, lamna: 0.2, tradfall: 0.15 };
+const MININT = { is: 0.1, nedslag: 0.12, kast: 0.1, spjut: 0.1, varg: 2.5, hugg: 0.07, sten: 0.07, betala: 0.045, svep: 0.07, traff: 0.05, murtraff: 0.07, pil: 0.06, magi: 0.09, ben: 0.07, guld: 0.07, brinn: 0.1, small: 0.2, aj: 0.2, ras: 0.3, lamna: 0.2, tradfall: 0.15 };
 function spela(namn, x, z, extra) {
   if (!A.ctx || !inst.ljud || A.ctx.state !== 'running' || !LJUD[namn]) return;
   const t = A.ctx.currentTime;
@@ -438,7 +484,7 @@ function musikLage() {
   if (!spel || lage === 'paus' || lage === 'forlust' || lage === 'ladd') return 'tyst';
   if (lage === 'start') return 'dag';
   const f = spel.tid.fas;
-  if (f === 'natt' && spel.fiender.some((e) => e.typ === 'boss' && e.hp > 0)) return 'boss';
+  if (f === 'natt' && spel.fiender.some((e) => e.boss && e.hp > 0)) return 'boss';
   return f === 'natt' || f === 'skymning' ? 'natt' : 'dag';
 }
 function musikTick() {
@@ -471,7 +517,8 @@ for (const typ of ['pointerdown', 'touchend', 'keydown']) addEventListener(typ, 
 // ═══════════════════════════ HUD ═══════════════════════════
 const el = {};
 for (const id of ['hud', 'hudtopp', 'p-tra', 'p-sten', 'p-guld', 'p-bar', 'klocka', 'urtavla', 'kl-namn', 'kl-tid', 'tron', 'tron-fyll', 'tron-tal', 'mal', 'mal-text', 'mal-under', 'mal-stapel', 'boss', 'boss-namn', 'boss-fyll',
-  'toastar', 'banner', 'finger', 'k-horn', 'spak', 'fps', 'pil-mal', 'pil-v0', 'pil-v1', 'pil-v2', 'pil-v3', 'markor', 'start', 'start-info', 'k-spela', 'k-nytt', 'bekrafta', 'bekrafta-text', 'pausmeny', 'paus-info', 'forlust', 'forlust-text', 'seger', 'seger-text', 'ladd', 'sond']) el[id] = document.getElementById(id);
+  'toastar', 'banner', 'finger', 'k-horn', 'spak', 'fps', 'pil-mal', 'pil-v0', 'pil-v1', 'pil-v2', 'pil-v3', 'markor', 'start', 'start-info', 'k-spela', 'k-nytt', 'bekrafta', 'bekrafta-text', 'pausmeny', 'paus-info', 'forlust', 'forlust-text', 'seger', 'seger-text', 'ladd', 'sond',
+  'seger-rubrik', 'pil-v4', 'pil-v5', 'karta', 'karta-hav', 'karta-info', 'k-res', 'k-stanna']) el[id] = document.getElementById(id);
 document.querySelectorAll('canvas[data-ikon]').forEach((cv) => { cv.width = cv.height = 72; G.ritaIkon(cv.getContext('2d'), cv.dataset.ikon, 36, 36, 68); });
 const cache = {};
 function text(id, v, nod) { if (cache[id] !== v) { cache[id] = v; (nod || el[id]).textContent = v; } }
@@ -485,7 +532,9 @@ function tal(id, v, txt) {
   if (fore !== undefined && v > fore && el[id].animate) el[id].animate([{ transform: 'scale(1.14)' }, { transform: 'scale(1)' }], { duration: 200 });
 }
 const mmss = (s) => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
-const NAMN = { palissad: 'Palissad', stenmur: 'Stenmur', mur: 'Mur', port: 'Port', torn: 'Bågskyttetorn', kasern: 'Kasern', vedkoja: 'Vedhuggarkoja', stenkoja: 'Stenhuggarkoja', smedja: 'Smedja', fyrfat: 'Fyrfat', tronsal: 'Tronsal', svard: 'Svärdet', rustning: 'Rustningen', bar: 'Bärförmågan' };
+const NAMN = { palissad: 'Palissad', stenmur: 'Stenmur', mur: 'Mur', port: 'Port', torn: 'Bågskyttetorn', kasern: 'Kasern', vedkoja: 'Vedhuggarkoja', stenkoja: 'Stenhuggarkoja', smedja: 'Smedja', fyrfat: 'Fyrfat', tronsal: 'Tronsal', svard: 'Svärdet', rustning: 'Rustningen', bar: 'Bärförmågan',
+  varmeeld: 'Värmeeld', katapult: 'Katapult', ballista: 'Ballista', vallgrav: 'Vallgrav', bagskytt: 'Bågskytten', helare: 'Helaren', kampe: 'Kämpen' };
+const oNamn = () => M.OAR[spel.o] ? M.OAR[spel.o].namn : '';
 
 function toast(t, k) {
   const d = document.createElement('div'); d.className = 'toast' + (k ? ' ' + k : ''); d.textContent = t;
@@ -543,7 +592,7 @@ function uppdateraHud(dt) {
   text('tron-tal', String(Math.max(0, Math.ceil(tr.hp)))); klass('tron', 'lag', ta < 0.35 && lage === 'spel');
   // boss
   let boss = null, lever = 0;
-  for (const e of spel.fiender) if (e.hp > 0) { lever++; if (e.typ === 'boss') boss = e; }
+  for (const e of spel.fiender) if (e.hp > 0) { lever++; if (e.boss) boss = e; }
   visa('boss', !!boss);
   if (boss) { text('boss-namn', boss.namn || 'Boss'); const ba = Math.round(boss.hp / boss.maxHp * 200) / 200; if (cache.boss !== ba) { cache.boss = ba; el['boss-fyll'].style.transform = `scaleX(${ba})`; } }
   // målrad
@@ -564,6 +613,13 @@ function uppdateraHud(dt) {
       }
     }
   }
+  if (t.fas === 'dag') {     // står riddaren vid en handelsruta, hjälterutan eller sjökartan: visa vad den gör
+    for (const r of spel.rutor) {
+      if (!r.text || Math.max(Math.abs(k.x - r.x), Math.abs(k.z - r.z)) > 2.6) continue;
+      const pr = []; if (r.pris.tra) pr.push(r.pris.tra + ' trä'); if (r.pris.sten) pr.push(r.pris.sten + ' sten'); if (r.pris.guld) pr.push(r.pris.guld + ' guld');
+      under = r.text + (pr.length ? ' · ' + pr.join(', ') : ''); andel = -1; break;
+    }
+  }
   text('mal-under', under); visa('mal-under', !!under);
   visa('mal-stapel', andel >= 0);
   if (andel >= 0) { const ap = Math.round(andel * 100); if (cache.malA !== ap) { cache.malA = ap; el['mal-stapel'].firstElementChild.style.transform = `scaleX(${andel.toFixed(2)})`; } }
@@ -580,21 +636,24 @@ function uppdateraHud(dt) {
   } else { hornNere = false; hornHall = 0; }
   // pilar och markör
   hudKyl -= dt; if (hudKyl <= 0) { hudKyl = 0.5; hudNere = el.hudtopp.getBoundingClientRect().bottom - rot.getBoundingClientRect().top; }
-  let syns = null;
+  let syns = null, viaPa = false;
   if (lage === 'spel' && m.slag !== 'ingen' && m.slag !== 'forlust' && m.slag !== 'riktning') {
     const fiende = m.slag === 'fiende';
     klass('pil-mal', 'fiende', fiende);
-    syns = kantpil(el['pil-mal'], m.x, m.z);
+    // pilen pekar på vägpunkten (porten när en mur står i vägen), markören står över själva målet
+    viaPa = Math.hypot(m.px - m.x, m.pz - m.z) > 0.5;
+    syns = kantpil(el['pil-mal'], viaPa ? m.px : m.x, viaPa ? m.pz : m.z);
     if (fiende || k.dod > 0) syns = null;
   } else el['pil-mal'].classList.add('dold');
-  if (syns && MARKERA[m.slag] && Math.hypot(m.x - k.x, m.z - k.z) > 1.6) {
-    const p = tillSkarm(m.x, MARKERA[m.slag], m.z);
+  const mx = viaPa ? m.px : m.x, mz = viaPa ? m.pz : m.z;
+  if (syns && MARKERA[m.slag] && Math.hypot(mx - k.x, mz - k.z) > 1.6) {
+    const p = tillSkarm(mx, viaPa ? 2.6 : MARKERA[m.slag], mz);
     el.markor.style.transform = `translate(${p.x.toFixed(1)}px,${(p.y + Math.sin(tid * 5) * 5).toFixed(1)}px)`;
     visa('markor', p.y > hudNere + 24);
   } else visa('markor', false);
   // anfallsriktning: gröna pilar i skymningen och de första sekunderna av natten
   const rk = (t.fas === 'skymning' || (natt && t.t < 6)) && lage === 'spel' ? spel.vag.riktningar : [];
-  for (let i = 0; i < 4; i++) { const pe = el['pil-v' + i]; if (i < rk.length) { const gf = KARTA.gravfalt[rk[i]]; kantpil(pe, gf.x, gf.z); } else if (i < varnPilar) pe.classList.add('dold'); }
+  for (let i = 0; i < 6; i++) { const pe = el['pil-v' + i]; if (i < rk.length) { const gf = M.KARTA.gravfalt[rk[i]]; kantpil(pe, gf.x, gf.z); } else if (i < varnPilar) pe.classList.add('dold'); }
   varnPilar = rk.length;
   if (fpsPa) { fpsKyl -= dt; if (fpsKyl <= 0) { fpsKyl = 0.4; const mt = g.matning(); el.fps.textContent = `${mt.fps.toFixed(0)} fps  ${mt.bildtid.toFixed(1)} ms\nritanrop ${mt.ritanrop}  tri ${(mt.trianglar / 1000).toFixed(0)}k\nfigurer ${mt.figurer} (anim ${mt.animerade})  partiklar ${mt.partiklar}\nkvalitet: ${mt.kvalitetNamn}`; } }
 }
@@ -623,10 +682,11 @@ function hanteraHandelser(tyst) {
         break;
       case 'varning': {
         if (tyst) break;
-        const namn = h.riktningar.map((r) => KARTA.riktningNamn[r]);
+        const namn = h.riktningar.map((r) => M.KARTA.riktningNamn[r]);
         const var_ = namn.length > 1 ? namn.slice(0, -1).join(', ') + ' och ' + namn[namn.length - 1] : namn[0];
-        const bn = TUNE.fiender.boss.namn, bossNamn = h.boss ? bn[(Math.round(h.natt / 5) - 1) % bn.length] : '';
-        banner(h.boss ? 'Bossnatt!' : 'Skymning', (h.boss ? bossNamn + ' och de odöda' : 'De odöda') + ' kommer från ' + var_ + '!', h.boss ? 'boss' : 'varn', 5.5);
+        const bossNamn = h.bossNamn || '';
+        const isVag = h.riktningar.some((r) => r.length === 2);
+        banner(h.boss ? 'Bossnatt!' : 'Skymning', (h.boss ? bossNamn + ' och de odöda' : 'De odöda') + ' kommer från ' + var_ + (isVag ? ', över isen' : '') + '!' + (h.aska ? ' Askregn: tornen ser kortare.' : ''), h.boss ? 'boss' : 'varn', 5.5);
         spela('varning');
         break;
       }
@@ -634,9 +694,17 @@ function hanteraHandelser(tyst) {
       case 'horn': if (!tyst) { spela('horn'); if (h.guld > 0) toast('+' + h.guld + ' guld för tidig natt', 'guld'); } break;
       case 'riddare_fall': if (!tyst) { spela('fall'); toast('Riddaren föll! Han reser sig vid tronsalen.', 'rod'); } break;
       case 'riddare_ater': if (!tyst) spela('ater'); break;
-      case 'boss_ny': if (!tyst) { spela('bossNy'); banner(h.namn, 'Besegra bossen!', 'boss', 3.4); } break;
       case 'boss_dod': if (!tyst) { spela('bossDod'); toast(h.namn + ' är besegrad!', 'guld'); } break;
       case 'bygge_raserat': if (!tyst) { spela('ras', h.x, h.z); toast((NAMN[h.byggTyp] || 'Ett bygge') + ' föll!', 'rod'); } break;
+      // v2
+      case 'sjokarta': visaKarta(); break;   // öppnas alltid, också när testkroken spolar (spolningen stannar då)
+      case 'resa': skaSpara = true; if (!tyst) { spela('resa'); const O = M.OAR[h.o]; banner(h.namn, h.ater ? 'Tillbaka på ' + h.namn + '. Borgen står kvar.' : O.text, '', 5); } break;
+      case 'handlare': if (!tyst) { spela('klocka'); banner('Handelsmannen', 'Han har lagt till vid bryggan i söder.', '', 3.4); } break;
+      case 'handel': skaSpara = true; if (!tyst) { spela('handel'); toast(h.text, 'guld'); } break;
+      case 'hjalte_ny': skaSpara = true; if (!tyst) { spela('hjalte'); banner(h.namn, 'följer nu riddaren.', '', 3.4); } break;
+      case 'ritning': if (!tyst) { spela('ritning'); toast(h.text, 'guld'); } break;
+      case 'dryck': if (!tyst) { spela('ater'); toast('Läkedrycken reste riddaren!', 'guld'); } break;
+      case 'boss_ny': if (!tyst) { spela(h.bossTyp === 'drake' ? 'drake' : 'bossNy'); banner(h.namn, 'Besegra bossen!', 'boss', 3.4); } break;
       default: if (!tyst) ljudFor(h);
     }
   }
@@ -653,7 +721,12 @@ function ljudFor(h) {
     case 'slag': spela('svep', h.x, h.z); break;
     case 'traff': spela(h.mal === 'riddare' ? 'aj' : 'traff', h.x, h.z); break;
     case 'bygge_traff': spela('murtraff', h.x, h.z); break;
-    case 'skott': spela(h.fran === 'torn' ? 'pil' : 'magi', h.x, h.z); break;
+    case 'skott': spela(h.fran === 'torn' || h.fran === 'hjalte' ? 'pil' : h.fran === 'katapult' ? 'kast' : h.fran === 'ballista' ? 'spjut' : h.slag === 'is' ? 'is' : 'magi', h.x, h.z); break;
+    case 'explosion': spela('small', h.x, h.z); break;
+    case 'nedslag': spela('nedslag', h.x, h.z); break;
+    case 'is_traff': spela('is', h.x, h.z); break;
+    case 'lava': spela('brinn', h.x, h.z); break;
+    case 'fiende_ny': if (h.fiendeTyp === 'isvarg' && Math.random() < 0.3) spela('varg', h.x, h.z); break;
     case 'fiende_dod': spela('ben', h.x, h.z); break;
     case 'fiende_brinner': spela('brinn', h.x, h.z); break;
     case 'soldat_dod': spela('aj', h.x, h.z); break;
@@ -671,6 +744,7 @@ function sattLage(nytt) {
   el.pausmeny.classList.toggle('dold', nytt !== 'paus');
   el.forlust.classList.toggle('dold', nytt !== 'forlust');
   el.seger.classList.toggle('dold', nytt !== 'seger');
+  el.karta.classList.toggle('dold', nytt !== 'karta');
   el.bekrafta.classList.add('dold');
   if (nytt !== 'spel') { slappSpak(); tangenter.clear(); hornNere = false; }
   if (A.ctx) { if (nytt === 'paus') A.ctx.suspend().catch(() => {}); else if (!document.hidden) A.ctx.resume().catch(() => {}); }
@@ -680,7 +754,7 @@ function visaStart() {
   const n = spel.tid.natt;
   el['k-spela'].textContent = harSparning ? 'Fortsätt' : 'Spela';
   el['k-nytt'].classList.toggle('dold', !harSparning);
-  el['start-info'].textContent = harSparning ? (spel.tid.fas === 'dag' ? 'Dag ' : 'Natt ') + n + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : '') + (spel.seger ? ' · ändlöst läge' : '') : 'Överlev 20 nätter.';
+  el['start-info'].textContent = harSparning ? oNamn() + ' · ' + (spel.tid.fas === 'dag' ? 'dag ' : 'natt ') + n + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : '') + (spel.seger ? ' · ändlöst läge' : '') : 'Överlev 20 nätter. Sedan väntar båten.';
   el['bekrafta-text'].textContent = 'Den sparade borgen (' + (spel.tid.fas === 'dag' ? 'dag ' : 'natt ') + n + ') försvinner.';
   sattLage('start');
 }
@@ -699,12 +773,13 @@ function visaForlust() {
 }
 function gorOm() { if (spel.lage !== 'forlust') return; M.gorOm(spel); g.snapp(); sattLage('spel'); spara(); }
 function visaSeger() {
-  const s = spel.stat;
+  const s = spel.stat, nasta = M.OAR[spel.o + 1];
+  el['seger-rubrik'].textContent = oNamn() + ' står efter 20 nätter! ' + (nasta ? 'En båt har lagt till vid bryggan. Res till ' + nasta.namn + ' när du vill, eller stanna i ändlöst läge.' : 'Alla tre öarna är vunna. Du är rikets störste borgbyggare.');
   el['seger-text'].textContent = 'Speltid ' + Math.round(s.speltid / 60) + ' min · ' + s.dodade + ' odöda besegrade · ' + s.forluster + (s.forluster === 1 ? ' förlorad natt' : ' förlorade nätter');
   sattLage('seger'); spela('seger');
 }
 function paus(pa) {
-  if (pa && lage === 'spel') { el['paus-info'].textContent = (spel.tid.fas === 'natt' || spel.tid.fas === 'skymning' ? 'Natt ' : 'Dag ') + spel.tid.natt + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : ''); spara(); sattLage('paus'); }
+  if (pa && lage === 'spel') { el['paus-info'].textContent = oNamn() + ' · ' + (spel.tid.fas === 'natt' || spel.tid.fas === 'skymning' ? 'natt ' : 'dag ') + spel.tid.natt + (spel.basta > 0 ? ' · bästa natt ' + spel.basta : ''); spara(); sattLage('paus'); }
   else if (!pa && lage === 'paus') sattLage('spel');
 }
 const knapp = (id, f) => document.getElementById(id).addEventListener('click', () => { startaLjud(); spela('klick'); f(); });
@@ -716,7 +791,64 @@ knapp('k-paus', () => paus(true));
 knapp('k-fortsatt', () => paus(false));
 knapp('k-tillstart', () => { spara(); visaStart(); });
 knapp('k-igen', gorOm);
-knapp('k-andlost', () => { spara(); sattLage('spel'); toast('Ändlöst läge: hur länge håller borgen?', 'guld'); });
+knapp('k-andlost', () => { spara(); sattLage('spel'); toast(M.OAR[spel.o + 1] ? 'Båten väntar vid bryggan när det blir dag.' : 'Ändlöst läge: hur länge håller borgen?', 'guld'); });
+knapp('k-stanna', () => { sattLage('spel'); toast('Båten ligger kvar vid bryggan.'); });
+knapp('k-res', () => { if (karta.vald >= 0) resTill(karta.vald); });
+
+// ═══════════════════════════ sjökartan ═══════════════════════════
+const karta = { vald: -1, knappar: [] };
+const TEMAFARG = { sommar: ['#5c9e3c', '#e9d7a2'], vinter: ['#eef4fa', '#b8cfe0'], vulkan: ['#3a2a26', '#c4502a'] };
+function ritaHav(data) {
+  const cv = el['karta-hav'].querySelector('canvas'), c = cv.getContext('2d'), w = cv.width, h = cv.height;
+  const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#2f6f9a'); gr.addColorStop(1, '#1d4a6e'); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+  c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 1.5;
+  for (let i = 0; i < 16; i++) { const x = (i * 97) % w, y = (i * 53) % h; c.beginPath(); c.arc(x, y, 9, Math.PI * 1.1, Math.PI * 1.9); c.stroke(); }
+  // rutten mellan öarna
+  c.setLineDash([6, 7]); c.strokeStyle = 'rgba(255, 233, 184, .75)'; c.lineWidth = 3; c.beginPath();
+  data.forEach((o, i) => { const x = o.x * w, y = o.y * h; if (i) c.lineTo(x, y); else c.moveTo(x, y); }); c.stroke(); c.setLineDash([]);
+  for (const o of data) {     // öarna som klumpar i sina färger
+    const x = o.x * w, y = o.y * h, [f1, f2] = TEMAFARG[o.tema] || TEMAFARG.sommar;
+    c.fillStyle = f2; c.beginPath(); c.ellipse(x, y + 4, 44, 30, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = f1; c.beginPath(); c.ellipse(x, y + 1, 36, 23, 0, 0, Math.PI * 2); c.fill();
+    if (o.tema === 'vulkan') { c.fillStyle = '#ff8a3c'; c.beginPath(); c.arc(x + 8, y - 4, 6, 0, Math.PI * 2); c.fill(); }
+  }
+}
+function visaKarta() {
+  const data = M.sjokarta(spel), hav = el['karta-hav'];
+  karta.knappar.forEach((b) => b.remove()); karta.knappar = [];
+  ritaHav(data);
+  karta.vald = -1;
+  for (const o of data) {
+    const b = document.createElement('button');
+    b.className = 'o' + (o.status === 'last' ? ' last' : '');
+    b.style.left = (o.x * 100) + '%'; b.style.top = (o.y * 100) + '%';
+    const cv = document.createElement('canvas'); cv.width = cv.height = 72; G.ritaIkon(cv.getContext('2d'), 'o_' + o.id, 36, 36, 68);
+    const n = document.createElement('b'); n.textContent = o.namn;
+    const st = document.createElement('small'); st.textContent = o.status === 'har' ? 'du är här' : o.status === 'last' ? 'låst' : o.status === 'klar' ? 'vunnen' : o.besokt ? 'bästa natt ' + o.basta : 'ny ö';
+    b.append(cv, n, st);
+    b.addEventListener('click', () => { startaLjud(); spela('klick'); valjO(o.nr); });
+    hav.appendChild(b); karta.knappar.push(b);
+  }
+  const forsta = data.find((o) => o.kanResa && !o.besokt) || data.find((o) => o.kanResa) || data[spel.o];
+  valjO(forsta.nr);
+  sattLage('karta');
+}
+function valjO(nr) {
+  const data = M.sjokarta(spel), o = data[nr];
+  karta.vald = nr;
+  karta.knappar.forEach((b, i) => b.classList.toggle('vald', i === nr));
+  el['karta-info'].innerHTML = '';
+  const t = document.createElement('b'); t.textContent = o.namn + '. ';
+  el['karta-info'].append(t, document.createTextNode(o.text + (o.status === 'last' ? ' Vinn ön före för att låsa upp den.' : o.besokt && o.status !== 'har' ? ' Din borg där står kvar (bästa natt ' + o.basta + ').' : '')));
+  el['k-res'].textContent = o.status === 'har' ? 'Du är här' : o.status === 'last' ? 'Låst' : 'Res till ' + o.namn;
+  el['k-res'].classList.toggle('av', !o.kanResa);
+}
+function resTill(nr) {
+  if (!M.sjokarta(spel)[nr].kanResa) return;
+  if (!M.resa(spel, nr)) { toast('Det går inte att resa just nu.'); return; }
+  for (const k of Object.keys(cache)) delete cache[k];
+  g.snapp(); sattLage('spel'); hanteraHandelser(false);
+}
 document.querySelectorAll('[data-inst]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.inst; inst[k] = !inst[k]; startaLjud(); tillampaInst(); sparaInst(); spela('klick'); }));
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { if (lage === 'spel') paus(true); else if (spel && lage !== 'ladd' && lage !== 'start') spara(); if (A.ctx) A.ctx.suspend().catch(() => {}); }
@@ -808,20 +940,13 @@ function bild(nu) {
 
 // ═══════════════════════════ testkrok ═══════════════════════════
 // Webbläsarpanelen ritar bara cirka en bildruta i sekunden när den är dold. Med kroken går spelet att spola och styra ändå.
-let autoPa = false, autoRik = false;
+let autoPa = false, autoRik = false, autoBot = null;
+// Autopiloten är samma bot som sim.mjs kör (M.botSteg, skicklighet 1): den går via portarna, lagar, bygger och slåss.
 function autopilot() {
-  const k = spel.riddare, m = spel.mal, t = spel.tid;
+  if (!autoBot || autoBot.spel !== spel) { autoBot = M.nyBot({ fro: spel.fro, skicklighet: 1 }); autoBot.spel = spel; }
   if (autoRik) { spel.lager.tra = Math.max(spel.lager.tra, 400); spel.lager.sten = Math.max(spel.lager.sten, 400); spel.lager.guld = Math.max(spel.lager.guld, 200); }
-  let mx = m ? m.x : 0, mz = m ? m.z : 0, nara = 0.4;
-  if (t.fas === 'natt' && m && m.slag === 'fiende' && Math.hypot(m.x, m.z) > 21) { const l = Math.hypot(m.x, m.z); mx = m.x / l * 12; mz = m.z / l * 12; }
-  if (t.fas === 'dag' && (!m || m.slag === 'ingen')) { mx = KARTA.start.x; mz = KARTA.start.z; }
-  if (t.fas === 'dag' && k.last >= k.barMax && m && m.slag !== 'ruta') { mx = KARTA.forrad.x; mz = KARTA.forrad.z; nara = 1.5; }
-  const dx = mx - k.x, dz = mz - k.z, d = Math.hypot(dx, dz);
-  input.dx = d > nara ? dx / d : 0; input.dz = d > nara ? dz / d : 0;
-  // fastnat mot en mur? gå i sidled en stund (autopiloten kan inte hitta vägar, men den tar sig runt ett segment)
-  const ap = autopilot;
-  if (d > 2.6 && (input.dx || input.dz)) { ap.n = (ap.n || 0) + 1; if (ap.n >= 12) { if (Math.hypot(k.x - ap.x, k.z - ap.z) < 0.6) { ap.sida = 26; ap.hall = ap.hall || 1; } ap.n = 0; ap.x = k.x; ap.z = k.z; } } else ap.n = 0;
-  if (ap.sida > 0) { ap.sida--; const r = Math.hypot(k.x, k.z) || 1, tx = k.z / r * ap.hall, tz = -k.x / r * ap.hall; input.dx = tx; input.dz = tz; }
+  const inp = M.botSteg(spel, autoBot, MAXSTEG);
+  input.dx = inp.dx; input.dz = inp.dz; if (inp.horn) input.horn = true;
 }
 const bb = window.__bb = {
   M, G, input, fel, inst,
@@ -854,7 +979,7 @@ const bb = window.__bb = {
     autoRik = rik;
     while ((spel.tid.natt < natt || spel.tid.fas !== 'dag') && vakt++ < 600000) {
       if (spel.lage === 'forlust') M.gorOm(spel);
-      autopilot(); input.horn = spel.tid.fas === 'dag' && spel.tid.t > (opts.dag ?? 40);
+      input.horn = false; autopilot(); if (opts.dag !== false) input.horn = input.horn || (spel.tid.fas === 'dag' && spel.tid.t > (opts.dag ?? 40));
       M.steg(spel, MAXSTEG, input); spel.handelser.length = 0;
     }
     autoRik = false; input.horn = false; input.dx = input.dz = 0; segerVanta = -1;
@@ -862,6 +987,10 @@ const bb = window.__bb = {
     return bb.tillstand();
   },
   sattNatt(n) { spel.tid.natt = n; return bb.tillstand(); },
+  // ö(nr): nytt spel direkt på ö nr (0 Gläntan, 1 Frostön, 2 Vulkanön). resa(nr): res som med sjökartan (kräver dag och upplåst ö).
+  o(nr = 1) { spel = M.nyttSpel({ fro: nyttFro(), o: nr, guide: false }); startaSpel(); g.snapp(); return bb.tillstand(); },
+  resa(nr) { const ok = M.resa(spel, nr); if (ok) { g.snapp(); hanteraHandelser(true); spel.handelser.length = 0; } return ok; },
+  sjokarta() { return M.sjokarta(spel); },
   // hoppa till slutet av fasen (t.ex. fas() på dagen ger skymning direkt)
   fas() { spel.tid.t = spel.tid.langd - 0.01; return bb.steg(0.1); },
   ge(tra = 0, sten = 0, guld = 0) { spel.lager.tra += tra; spel.lager.sten += sten; spel.lager.guld += guld; return spel.lager; },
@@ -891,6 +1020,8 @@ try {
   laddText.textContent = 'Kunde inte ladda modellerna. Ladda om sidan.'; fel.push('ladda: ' + (e && e.message)); throw e;
 }
 spel = laddaSparning();
+// ?o=1 i adressen: nytt spel direkt på ö 1 (0 Gläntan, 1 Frostön, 2 Vulkanön). För test och provspelning.
+if (q.has('o')) { const nr = Math.max(0, Math.min(M.OAR.length - 1, +q.get('o') || 0)); spel = M.nyttSpel({ fro: nyttFro(), o: nr, guide: nr === 0 }); harSparning = false; }
 storlek();
 tillampaInst();
 visaStart();
